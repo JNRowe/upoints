@@ -1,0 +1,10 @@
+^build/
+^dist/
+^html/
+
+^\.hg_version$
+\.py[co]$
+
+^ChangeLog$
+^README\.html$
+^MANIFEST$
