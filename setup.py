@@ -29,14 +29,38 @@ from sys import version_info
 if version_info < (2, 5, 0, 'final'):
     raise SystemExit("Requires Python v2.5+ for conditional expressions")
 
-# Pull the documentation from main docstring, and remove links
-long_description = re.sub("U{([^<]*)[^}]*}", r"\1",
-                          earth_distance.__doc__[:earth_distance.__doc__.rfind('\n\n')])
-# Convert epytext style command markup to reST.
-long_description = re.sub("C{([^}]*)}", r"``\1``",
-                          long_description).splitlines()[1:]
-# Refill the text, to fix the formatting post-substition
-long_description = textwrap.fill("".join(long_description))
+long_description = """
+``earth_distance`` is a collection of GPL v3 licensed modules for working with
+points on a spherical object.  It allows you to calculate the distance and
+bearings between points, mangle xearth_/xplanet_ data files, work with online UK
+trigpoint databases, `GNU miscfiles`_ city databases and NOAA_'s weather station
+database.
+
+The ``earth_distance.point`` module is the simplest interface available, and is
+mainly useful as a naïve object for simple calculation and for subclassing for
+specific usage.  An example of how to use it follows::
+
+    >>> Home = point.Point(52.015, -0.221)
+    >>> Telford = point.Point(52.6333, -2.5000)
+    >>> int(Home.distance(Telford))
+    169
+    >>> int(Home.bearing(Telford))
+    294
+    >>> int(Home.final_bearing(Telford))
+    293
+    >>> import datetime
+    >>> Home.sun_events(datetime.date(2007, 6, 28))
+    (datetime.time(3, 42), datetime.time(20, 25))
+    >>> Home.sunrise(datetime.date(2007, 6, 28))
+    datetime.time(3, 42)
+    >>> Home.sunset(datetime.date(2007, 6, 28))
+    datetime.time(20, 25)
+
+.. _xearth: http://www.cs.colorado.edu/~tuna/xearth/
+.. _xplanet: http://xplanet.sourceforge.net/
+.. _GNU miscfiles: http://www.gnu.org/directory/miscfiles.html
+.. _NOAA: http://weather.noaa.gov/
+"""
 
 setup(
     name = "earth_distance",
