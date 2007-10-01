@@ -1,7 +1,7 @@
 #! /usr/bin/python -tt
 # vim: set sw=4 sts=4 et tw=80 fileencoding=utf-8:
 #
-"""cities - Imports cities data files"""
+"""cities - Imports GNU miscfiles cities data files"""
 # Copyright (C) 2007  James Rowe
 #
 # This program is free software: you can redistribute it and/or modify
@@ -19,10 +19,25 @@
 #
 
 import os
-import sys
 import time
 
-import trigpoints
+from earth_distance import trigpoints
+from earth_distance import utils
+
+TEMPLATE = """\
+ID          : %s
+Type        : %s
+Population  : %s
+Size        : %s
+Name        : %s
+ Country    : %s
+ Region     : %s
+Location    : %s
+ Longitude  : %s
+ Latitude   : %s
+ Elevation  : %s
+Date        : %s
+Entered-By  : %s"""
 
 class City(trigpoints.Trigpoint):
     """
@@ -78,7 +93,7 @@ class City(trigpoints.Trigpoint):
         @type entered: C{str} or C{None}
         @param entered: Entry's author
         """
-        trigpoints.Trigpoint.__init__(self, latitude, longitude, altitude, name)
+        super(City, self).__init__(latitude, longitude, altitude, name)
         self.identifier = identifier
         self.ptype = ptype
         self.region = region
@@ -96,7 +111,7 @@ class City(trigpoints.Trigpoint):
         >>> City(498, "Zwickau", "City", "Sachsen", "DE", "Earth", 108835,
         ...      None, 12.5, 50.72, None, (1997, 4, 10, 0, 0, 0, 3, 100, -1),
         ...      "M.Dowling@tu-bs.de")
-        City(498, "Zwickau", "City", "Sachsen", "DE", "Earth", 108835, None, 12.5, 50.72, None, (1997, 4, 10, 0, 0, 0, 3, 100, -1), "M.Dowling@tu-bs.de")
+        City(498, 'Zwickau', 'City', 'Sachsen', 'DE', 'Earth', 108835, None, 12.5, 50.72, None, (1997, 4, 10, 0, 0, 0, 3, 100, -1), 'M.Dowling@tu-bs.de')
 
         @rtype: C{str}
         @return: String to recreate C{City} object
@@ -106,15 +121,13 @@ class City(trigpoints.Trigpoint):
                   self.country, self.location, self.population, self.size,
                   self.latitude, self.longitude, self.altitude, self.date,
                   self.entered):
-            if i is None:
-                data.append("None")
-            elif isinstance(i, str):
-                data.append('"%s"' % str(i))
+            if isinstance(i, (type(None), str)):
+                data.append(repr(i))
             else:
                 data.append(str(i))
         return "City(" + ", ".join(data) + ")"
 
-    def __str__(self, mode="miscfiles"):
+    def __str__(self):
         """
         Pretty printed location string
 
@@ -123,7 +136,7 @@ class City(trigpoints.Trigpoint):
         >>> t = City(498, "Zwickau", "City", "Sachsen", "DE", "Earth", 108835,
         ...          None, 50.72, 12.5, None,
         ...          (1997, 4, 10, 0, 0, 0, 3, 100, -1), "M.Dowling@tu-bs.de")
-        >>> print t
+        >>> print(t)
         ID          : 498
         Type        : City
         Population  : 108835
@@ -138,42 +151,24 @@ class City(trigpoints.Trigpoint):
         Date        : 19970410
         Entered-By  : M.Dowling@tu-bs.de
 
-        @type mode: C{str}
-        @param mode: Output type
         @rtype: C{str}
         @return: Human readable string representation of C{City} object
         """
-        output = []
-        output.append("ID          : %i" %
-                      (self.identifier if self.identifier else ""))
-        output.append("Type        : %s" %
-                      (self.ptype if self.ptype else ""))
-        output.append("Population  : %s" %
-                      (self.population if self.population else ""))
-        output.append("Size        : %s" %
-                      (self.size if self.size else ""))
-        output.append("Name        : %s" %
-                      (self.name if self.name else ""))
-        output.append(" Country    : %s" %
-                      (self.country if self.country else ""))
-        output.append(" Region     : %s" %
-                      (self.region if self.region else ""))
-        output.append("Location    : %s" %
-                      (self.location if self.location else ""))
-        output.append(" Longitude  : %s" %
-                      (self.longitude if self.longitude else ""))
-        output.append(" Latitude   : %s" %
-                      (self.latitude if self.latitude else ""))
-        output.append(" Elevation  : %s" %
-                      (self.altitude if self.altitude else ""))
-        output.append("Date        : %s" %
-                      (time.strftime("%Y%m%d", self.date) if self.date else ""))
-        output.append("Entered-By  : %s" %
-                      (self.entered if self.entered else ""))
-        return "\n".join(output)
+        values = tuple(map(utils.value_or_empty,
+                           (self.identifier, self.ptype,
+                            self.population, self.size,
+                            self.name, self.country,
+                            self.region, self.location,
+                            self.longitude, self.latitude,
+                            self.altitude,
+                            time.strftime("%Y%m%d", self.date) if self.date else "",
+                            self.entered)))
+        return TEMPLATE % values
 
 def import_cities_file(data):
     """
+    Parse GNU miscfiles cities data files
+
     C{import_cities_file()} returns a dictionary with keys containing the WMO
     numeric identifer, and values consisting of a C{trigpoints.Trigpoint} object
     and a heap of other data from the U{GNU miscfiles
@@ -220,9 +215,11 @@ def import_cities_file(data):
                 -3.867, 5.333, None, (1996, 12, 6, 0, 0, 0, 4, 341, -1),
                 "Rob.Hooft@EMBL-Heidelberg.DE")
 
-
-    >>> import StringIO
-    >>> cities_file = StringIO.StringIO("\\n".join([
+    >>> try:
+    ...     from io import StringIO
+    ... except ImportError:
+    ...     from StringIO import StringIO
+    >>> cities_file = StringIO("\\n".join([
     ...     'ID          : 126',
     ...     'Type        : City',
     ...     'Population  : 6574009',
@@ -266,8 +263,8 @@ def import_cities_file(data):
     ...     'Entered-By  : Rob.Hooft@EMBL-Heidelberg.DE']))
     >>> Cities = import_cities_file(cities_file)
     >>> for key, value in sorted(Cities.items()):
-    ...     print "%i - %s (%s;%s)" % (key, value.name, value.latitude, 
-    ...                                value.longitude)
+    ...     print("%i - %s (%s;%s)" % (key, value.name, value.latitude, 
+    ...                                value.longitude))
     126 - London (51.5;-0.083)
     127 - Luxembourg (49.617;6.117)
     128 - Lyon (45.767;4.867)
@@ -276,8 +273,7 @@ def import_cities_file(data):
     @param data: NOAA station data to read
     @rtype: C{dict}
     @return: Places with C{trigpoints.Trigpoint} objects and associated data
-    @raise ValueError: Invalid value for data
-    @raise ValueError: Unknown file format
+    @raise TypeError: Invalid value for data
     """
     if hasattr(data, "readlines"):
         data = data.read().split("//\n")
@@ -287,7 +283,7 @@ def import_cities_file(data):
         if os.path.isfile(data):
             data = open(data).read().split("//\n")
     else:
-        raise ValueError("Unable to handle data of type `%s`" % type(data))
+        raise TypeError("Unable to handle data of type `%s`" % type(data))
 
     entries = {}
     for record in data:
@@ -312,6 +308,5 @@ def import_cities_file(data):
     return entries
 
 if __name__ == '__main__':
-    import doctest
-    sys.exit(doctest.testmod(optionflags=doctest.REPORT_UDIFF)[0])
+    utils.run_tests()
 

@@ -22,8 +22,11 @@ utils - Support code for earth_distance
 
 from __future__ import division
 
+__bug_report__ = "James Rowe <jnrowe@ukfsn.org>"
+
 import datetime
 import math
+import re
 
 BODIES = {
     # Body radii in kilometres
@@ -53,6 +56,47 @@ BODIES = {
 BODY_RADIUS = BODIES['Earth']
 NAUTICAL_MILE = 1.852 #kM
 STATUTE_MILE = 1.609 #kM
+
+# Maidenhead locator constants
+LONGITUDE_FIELD = 20
+LATITUDE_FIELD = 10
+LONGITUDE_SQUARE = LONGITUDE_FIELD / 10
+LATITUDE_SQUARE = LATITUDE_FIELD / 10
+LONGITUDE_SUBSQUARE = LONGITUDE_SQUARE / 24
+LATITUDE_SUBSQUARE = LATITUDE_SQUARE / 24
+LONGITUDE_EXTSQUARE = LONGITUDE_SUBSQUARE / 10
+LATITUDE_EXTSQUARE = LATITUDE_SUBSQUARE / 10
+
+class FileFormatError(ValueError):
+    """
+    Error object for data parsing error
+    """
+    def __init__(self, site):
+        ValueError.__init__(self)
+        self.site = site
+    def __str__(self):
+        if self.site:
+            return ("Incorrect data format, if you're using a file downloaded "
+                    "from %s please report this to %s." % (self.site,
+                                                           __bug_report__))
+        else:
+            return "Unsupported data format."
+
+def value_or_empty(value):
+    """
+    Return an empty string for display when value is C{None}
+
+    >>> value_or_empty(None)
+    ''
+    >>> value_or_empty("test")
+    'test'
+
+    @type value: C{None}, C{str} or coercible to C{str}
+    @param value: Value to prepare for display
+    @rtype: C{str}
+    @return: String representation of C{value}
+    """
+    return value if value else ""
 
 def to_dms(angle, style="dms"):
     """
@@ -105,6 +149,189 @@ def to_dd(degrees, minutes, seconds=0):
     @return: Angle converted to decimal degrees
     """
     return degrees + minutes / 60 + seconds / 3600
+
+def from_iso6709(coordinates):
+    """
+    Parse ISO 6709 coordinate strings
+
+    This function will parse ISO 6709-1983(E) "Standard representation of
+    latitude, longitude and altitude for geographic point locations" elements.
+    Unfortunately, the standard is rather convoluted and this implementation is
+    incomplete, but it does support most of the common formats in the wild.
+
+    The W3C has a simplified profile for ISO 6709 in U{Latitude, Longitude and
+    Altitude format for geospatial information
+    <http://www.w3.org/2005/Incubator/geo/Wiki/LatitudeLongitudeAltitude>}.  It
+    unfortunately hasn't received widespread support as yet, but hopefully it
+    will grow just as the U{simplified ISO 8601 profile
+    <http://www.w3.org/2005/Incubator/geo/Wiki/LatitudeLongitudeAltitude>} has.
+
+    The following tests are from the examples contained in the U{wikipedia
+    ISO 6709 page <http://en.wikipedia.org/wiki/ISO_6709>}.
+
+    >>> from_iso6709("+00-025/") # Atlantic Ocean
+    (0.0, -25.0, None)
+    >>> from_iso6709("+46+002/") # France
+    (46.0, 2.0, None)
+    >>> from_iso6709("+4852+00220/") # Paris
+    (48.866666666666667, 2.3333333333333335, None)
+    >>> from_iso6709("+48.8577+002.295/") # Eiffel Tower
+    (48.857700000000001, 2.2949999999999999, None)
+    >>> from_iso6709("+27.5916+086.5640+8850/") # Mount Everest
+    (27.5916, 86.563999999999993, 8850.0)
+    >>> from_iso6709("+90+000/") # North Pole
+    (90.0, 0.0, None)
+    >>> from_iso6709("+00-160/") # Pacific Ocean
+    (0.0, -160.0, None)
+    >>> from_iso6709("-90+000+2800/") # South Pole
+    (-90.0, 0.0, 2800.0)
+    >>> from_iso6709("+38-097/") # United States
+    (38.0, -97.0, None)
+    >>> from_iso6709("+40.75-074.00/") # New York City
+    (40.75, -74.0, None)
+    >>> from_iso6709("+40.6894-074.0447/") # Statue of Liberty
+    (40.689399999999999, -74.044700000000006, None)
+
+    The following tests are from the U{Latitude, Longitude and Altitude format
+    for geospatial information
+    <http://www.w3.org/2005/Incubator/geo/Wiki/LatitudeLongitudeAltitude>} page.
+
+    >>> from_iso6709("+27.5916+086.5640+8850/") # Mount Everest
+    (27.5916, 86.563999999999993, 8850.0)
+    >>> from_iso6709("-90+000+2800/") # South Pole
+    (-90.0, 0.0, 2800.0)
+    >>> from_iso6709("+40.75-074.00/") # New York City
+    (40.75, -74.0, None)
+    >>> from_iso6709("+352139+1384339+3776/") # Mount Fuji
+    (35.360833333333332, 138.72749999999999, 3776.0)
+    >>> from_iso6709("+35.658632+139.745411/") # Tokyo Tower
+    (35.658631999999997, 139.74541099999999, None)
+
+    @type coordinates: C{str}
+    @param coordinates: ISO 6709 coordinates string
+    @rtype: C{tuple}
+    @return: A tuple consisting of latitude and longitude in degrees, along with
+        the elevation in metres
+    @raise ValueError: Input string is not ISO 6709 compliant
+    @raise ValueError: Invalid value for latitude
+    @raise ValueError: Invalid value for longitude
+    """
+    matches = re.match(r'^([-+][\d\.]+)([-+][\d\.]+)([+-][\d\.]+)?/$',
+                       coordinates)
+    try:
+        latitude, longitude, altitude = matches.groups()
+    except:
+        raise ValueError("Incorrect format for string")
+    latitude_head = len(latitude.split(".")[0])
+    if latitude_head == 3: # ±DD(.D{1,4})?
+        latitude = float(latitude)
+    elif latitude_head == 5: # ±DDMM(.M{1,4})?
+        latitude = float(latitude[:3]) + (float(latitude[3:]) / 60)
+    elif latitude_head == 7: # ±DDMMSS(.S{1,4})?
+        latitude = float(latitude[:3]) + (float(latitude[3:5]) / 60) \
+                   + (float(latitude[5:]) / 3600)
+    else:
+        raise ValueError("Incorrect format for latitude `%s'" % latitude)
+    longitude_head = len(longitude.split(".")[0])
+    if longitude_head == 4: # ±DDD(.D{1,4})?
+        longitude = float(longitude)
+    elif longitude_head == 6: # ±DDDMM(.M{1,4})?
+        longitude = float(longitude[:4]) + (float(longitude[4:]) / 60)
+    elif longitude_head == 8: # ±DDDMMSS(.S{1,4})?
+        longitude = float(longitude[:4]) + (float(longitude[4:6]) / 60) \
+                    + (float(longitude[6:]) / 3600)
+    else:
+        raise ValueError("Incorrect format for longitude `%s'" % longitude)
+    if altitude:
+        altitude = float(altitude)
+    return latitude, longitude, altitude
+
+def to_iso6709(latitude, longitude, altitude=None, format="dd", precision=4):
+    """
+    Produce ISO 6709 coordinate strings
+
+    This function will produce ISO 6709-1983(E) "Standard representation of
+    latitude, longitude and altitude for geographic point locations" elements.
+
+    @see: C{from_iso6709}
+
+    The following tests are from the examples contained in the U{wikipedia
+    ISO 6709 page <http://en.wikipedia.org/wiki/ISO_6709>}.
+
+    >>> to_iso6709(0.0, -25.0, None, "d") # Atlantic Ocean
+    '+00-025/'
+    >>> to_iso6709(46.0, 2.0, None, "d") # France
+    '+46+002/'
+    >>> to_iso6709(48.866666666666667, 2.3333333333333335, None, "dm") # Paris
+    '+4852+00220/'
+    >>> to_iso6709(48.857700000000001, 2.2949999999999999, None) # Eiffel Tower # doctest: +SKIP
+    # This test is skipped, because the example from wikipedia uses differing
+    # precision widths for latitude and longitude. Also, that degree of
+    # formatting flexibility is not seen anywhere else and adds very little.
+    '+48.8577+002.295/'
+    >>> to_iso6709(27.5916, 86.563999999999993, 8850.0) # Mount Everest
+    '+27.5916+086.5640+8850/'
+    >>> to_iso6709(90.0, 0.0, None, "d") # North Pole
+    '+90+000/'
+    >>> to_iso6709(0.0, -160.0, None, "d") # Pacific Ocean
+    '+00-160/'
+    >>> to_iso6709(-90.0, 0.0, 2800.0, "d") # South Pole
+    '-90+000+2800/'
+    >>> to_iso6709(38.0, -97.0, None, "d") # United States
+    '+38-097/'
+    >>> to_iso6709(40.75, -74.0, None, precision=2) # New York City
+    '+40.75-074.00/'
+    >>> to_iso6709(40.689399999999999, -74.044700000000006, None) # Statue of Liberty
+    '+40.6894-074.0447/'
+
+    The following tests are from the U{Latitude, Longitude and Altitude format
+    for geospatial information
+    <http://www.w3.org/2005/Incubator/geo/Wiki/LatitudeLongitudeAltitude>} page.
+
+    >>> to_iso6709(27.5916, 86.563999999999993, 8850.0) # Mount Everest
+    '+27.5916+086.5640+8850/'
+    >>> to_iso6709(-90.0, 0.0, 2800.0, "d") # South Pole
+    '-90+000+2800/'
+    >>> to_iso6709(40.75, -74.0, None, precision=2) # New York City
+    '+40.75-074.00/'
+    >>> to_iso6709(35.360833333333332, 138.72749999999999, 3776.0, "dms") # Mount Fuji
+    '+352139+1384339+3776/'
+    >>> to_iso6709(35.658631999999997, 139.74541099999999, None, precision=6) # Tokyo Tower
+    '+35.658632+139.745411/'
+
+    @type latitude: C{float} or coercible to C{float}
+    @param latitude: Location's latitude
+    @type longitude: C{float} or coercible to C{float}
+    @param longitude: Location's longitude
+    @type altitude: C{float} or coercible to C{float}
+    @param altitude: Location's altitude
+    @type format: C{str}
+    @param format: Format type for string
+    @type precision: C{int}
+    @param precision: Latitude/longitude precision
+    @rtype: C{str}
+    @return: ISO 6709 coordinates string
+    @raise ValueError: Unknown value for C{format}
+    """
+    if format == "d":
+        text = "%+03i%+04i" % (latitude, longitude)
+    elif format == "dd":
+        text = "%+0*.*f%+0*.*f" % (precision + 4, precision, latitude,
+                                   precision + 5, precision, longitude)
+    elif format == "dm":
+        text = "%+03i%02i" % to_dms(latitude, "dm")
+        text += "%+04i%02i" % to_dms(longitude, "dm")
+    elif format == "dms":
+        text = "%+03i%02i%02i" % to_dms(latitude)
+        text += "%+04i%02i%02i" % to_dms(longitude)
+    else:
+        raise ValueError("Unknown format type `%s'" % format)
+    if altitude and int(altitude) == altitude:
+        text += "%+i" % altitude
+    elif altitude:
+        text += "%+.3f" % altitude
+    text += "/"
+    return text
 
 def angle_to_distance(angle, format="metric"):
     """
@@ -251,8 +478,8 @@ def sun_rise_set(latitude, longitude, date, mode="rise", timezone=0,
     m = (0.9856 * t) - 3.289
 
     # Calculate the Sun's true longitude
-    l = m + 1.916 * math.sin(math.radians(m)) + 0.020 * \
-        math.sin(2 * math.radians(m)) + 282.634
+    l = m + 1.916 * math.sin(math.radians(m)) + 0.020 \
+        * math.sin(2 * math.radians(m)) + 282.634
     l = abs(l) % 360
 
     # Calculate the Sun's right ascension
@@ -271,9 +498,9 @@ def sun_rise_set(latitude, longitude, date, mode="rise", timezone=0,
     cosDec = math.cos(math.asin(sinDec))
 
     # Calculate the Sun's local hour angle
-    cosH = (math.radians(zenith) - 
-            (sinDec * math.sin(math.radians(latitude)))) / \
-           (cosDec * math.cos(math.radians(latitude)))
+    cosH = (math.radians(zenith) -
+            (sinDec * math.sin(math.radians(latitude)))) \
+           / (cosDec * math.cos(math.radians(latitude)))
 
     if cosH > 1:
         # The sun never rises on this location (on the specified date)
@@ -308,7 +535,6 @@ def sun_rise_set(latitude, longitude, date, mode="rise", timezone=0,
     if minute < 0:
         minute += 60
     return datetime.time(hour, minute)
-
 
 def sun_events(latitude, longitude, date, timezone=0, zenith=None):
     """
@@ -360,8 +586,8 @@ def sun_events(latitude, longitude, date, timezone=0, zenith=None):
     ...            zenith="nautical") # TIA
     (datetime.time(18, 18), datetime.time(11, 6))
 
-    Astronomical twilight starts/ends when the Sun's center is 18
-    degrees below the horizon.
+    Astronomical twilight starts/ends when the Sun's centre is 18 degrees below
+    the horizon.
 
     >>> sun_events(52.015, -0.221, datetime.date(2007, 6, 15),
     ...            zenith="astronomical")
@@ -392,8 +618,311 @@ def sun_events(latitude, longitude, date, timezone=0, zenith=None):
     return (sun_rise_set(latitude, longitude, date, "rise", timezone, zenith),
             sun_rise_set(latitude, longitude, date, "set", timezone, zenith))
 
-if __name__ == '__main__':
+def prepare_read(data):
+    """
+    Prepare various input types for parsing
+
+    @type data: C{file} like object, C{list}, C{str}
+    @param data: Data to read
+    @rtype: C{list}
+    @returns: List suitable for parsing
+    @raise ValueError: Invalid value for data
+    """
+    if hasattr(data, "readlines"):
+        data = data.readlines()
+    elif isinstance(data, list):
+        pass
+    elif isinstance(data, str):
+        data = open(data).readlines()
+    else:
+        raise ValueError("Unable to handle data of type `%s`" % type(data))
+    return data
+
+def from_grid_locator(locator):
+    """
+    Calculate geodesic latitude/longitude from Maidenhead locator
+
+    >>> "%.3f, %.3f" % from_grid_locator("BL11bh16")
+    '21.319, -157.904'
+    >>> "%.3f, %.3f" % from_grid_locator("IO92va")
+    '52.021, -0.208'
+    >>> "%.3f, %.3f" % from_grid_locator("IO92")
+    '52.021, -1.958'
+
+    @type locator: C{str}
+    @param locator: Maidenhead locator string
+    @rtype: C{tuple} of C{float}s
+    @return: Geodesic latitude and longitude values
+    @raise ValueError: Incorrect grid locator length
+    @raise ValueError: Invalid values in locator string
+    """
+    if not len(locator) in (4, 6, 8):
+        raise ValueError("Locator must be 4, 6 or 8 characters long `%s'"
+                         % locator)
+
+    # Convert the locator string to a list, because we need it to be mutable to
+    # munge the values
+    locator = list(locator)
+
+    # Convert characters to numeric value, fields are always uppercase
+    locator[0] = ord(locator[0]) - 65
+    locator[1] = ord(locator[1]) - 65
+
+    # Values for square are always integers
+    locator[2] = int(locator[2])
+    locator[3] = int(locator[3])
+
+    if len(locator) >= 6:
+        # Some people use uppercase for the subsquare data, in spite of
+        # lowercase being the accepted style, so handle that too.
+        locator[4] = ord(locator[4].lower()) - 97
+        locator[5] = ord(locator[5].lower()) - 97
+
+    if len(locator) == 8:
+        # Extended square values are always integers
+        locator[6] = int(locator[6])
+        locator[7] = int(locator[7])
+
+    # Check field values within 'A'(0) to 'R'(17), and square values are within
+    # 0 to 9
+    if not 0 <= locator[0] <= 17 \
+       or not 0 <= locator[1] <= 17 \
+       or not 0 <= locator[2] <= 9 \
+       or not 0 <= locator[3] <= 9:
+        raise ValueError("Invalid values in locator `%s'" % locator)
+
+    # Check subsquare values are within 'a'(0) to 'x'(23)
+    if len(locator) >= 6:
+        if not 0 <= locator[4] <= 23 \
+           or not 0 <= locator[5] <= 23:
+            raise ValueError("Invalid values in locator `%s'" % locator)
+
+    # Extended square values must be within 0 to 9
+    if len(locator) == 8:
+        if not 0 <= locator[6] <= 9 \
+           or not 0 <= locator[7] <= 9:
+            raise ValueError("Invalid values in locator `%s'" % locator)
+
+    longitude = LONGITUDE_FIELD * locator[0] \
+                + LONGITUDE_SQUARE * locator[2]
+    latitude = LATITUDE_FIELD * locator[1] \
+               + LATITUDE_SQUARE * locator[3]
+
+    if len(locator) >= 6:
+        longitude += LONGITUDE_SUBSQUARE * locator[4]
+        latitude += LATITUDE_SUBSQUARE * locator[5]
+
+    if len(locator) == 8:
+        longitude += LONGITUDE_EXTSQUARE * locator[6] + LONGITUDE_EXTSQUARE / 2
+        latitude  += LATITUDE_EXTSQUARE * locator[7] + LATITUDE_EXTSQUARE / 2
+    else:
+        longitude += LONGITUDE_EXTSQUARE * 5
+        latitude  += LATITUDE_EXTSQUARE * 5
+
+    # Rebase longitude and latitude to normal geodesic
+    longitude -= 180
+    latitude -= 90
+
+    return latitude, longitude
+
+def to_grid_locator(latitude, longitude, precision="square"):
+    """
+    Calculate Maidenhead locator from latitude and longitude
+
+    >>> to_grid_locator(21.319, -157.904, "extsquare")
+    'BL11bh16'
+    >>> to_grid_locator(52.021, -0.208, "subsquare")
+    'IO92va'
+    >>> to_grid_locator(52.021, -1.958)
+    'IO92'
+
+    @type latitude: C{float}
+    @param latitude: Position's latitude
+    @type longitude: C{float}
+    @param longitude: Position's longitude
+    @type precision: C{str}
+    @param precision: Precision with which generate locator string
+    @rtype: C{str}
+    @return: Maidenhead locator for latitude and longitude
+    @raise ValueError: Invalid precision identifier
+    @raise ValueError: Invalid latitude or longitude value
+    """
+    if not precision in ("square", "subsquare", "extsquare"):
+        raise ValueError("Unsupported precision value `%s'" % precision)
+
+    if not -90 <= latitude <= 90:
+        raise ValueError("Invalid latitude value `%f'" % latitude)
+    if not -180 <= longitude <= 180:
+        raise ValueError("Invalid longitude value `%f'" % longitude)
+
+    latitude  += 90.0
+    longitude += 180.0
+
+    locator = []
+
+    field = int(longitude / LONGITUDE_FIELD)
+    locator.append(chr(field + 65))
+    longitude -= field * LONGITUDE_FIELD
+
+    field = int(latitude / LATITUDE_FIELD)
+    locator.append(chr(field + 65))
+    latitude -= field * LATITUDE_FIELD
+
+    square = int(longitude / LONGITUDE_SQUARE)
+    locator.append(str(square))
+    longitude -= square * LONGITUDE_SQUARE
+
+    square = int(latitude / LATITUDE_SQUARE)
+    locator.append(str(square))
+    latitude -= square * LATITUDE_SQUARE
+
+    if precision in ("subsquare", "extsquare"):
+        subsquare = int(longitude / LONGITUDE_SUBSQUARE)
+        locator.append(chr(subsquare + 97))
+        longitude -= subsquare * LONGITUDE_SUBSQUARE
+
+        subsquare = int(latitude / LATITUDE_SUBSQUARE)
+        locator.append(chr(subsquare + 97))
+        latitude -= subsquare * LATITUDE_SUBSQUARE
+
+    if precision == "extsquare":
+        extsquare = int(longitude / LONGITUDE_EXTSQUARE)
+        locator.append(str(extsquare))
+
+        extsquare = int(latitude / LATITUDE_EXTSQUARE)
+        locator.append(str(extsquare))
+
+    return "".join(locator)
+
+def dump_xearth_markers(markers, name="identifier"):
+    """
+    Generate an xearth compatible marker file
+
+    C{dump_xearth_markers()} writes a simple U{xearth
+    <http://www.cs.colorado.edu/~tuna/xearth/>} marker file from a dictionary of
+    C{trigpoints.Trigpoint} objects.
+
+    It expects a dictionary in one of the following formats. For support of
+    C{Trigpoint} that is::
+
+        {500936: (Trigpoint(52.066035, -0.281449, 37.0, "Broom Farm"),
+         501097: (Trigpoint(52.010585, -0.173443, 97.0, "Bygrave"),
+         505392: (Trigpoint(51.910886, -0.186462, 136.0, "Sish Lane")}
+
+    And generates output of the form::
+
+        52.066035 -0.281449 "500936" # Broom Farm, alt 37m
+        52.010585 -0.173443 "501097" # Bygrave, alt 97m
+        51.910886 -0.186462 "205392" # Sish Lane, alt 136m
+
+    Or similar to the following if the C{name} parameter is set to C{name}::
+
+        52.066035 -0.281449 "Broom Farm" # 500936 alt 37m
+        52.010585 -0.173443 "Bygrave" # 501097 alt 97m
+        51.910886 -0.186462 "Sish Lane" # 205392 alt 136m
+
+    Point objects should be provided in the following format::
+
+        {"Broom Farm": Point(52.066035, -0.281449),
+         "Bygrave": Point(52.010585, -0.173443),
+         "Sish Lane": Point(51.910886, -0.186462)}
+
+    And generates output of the form::
+
+        52.066035 -0.281449 "Broom Farm"
+        52.010585 -0.173443 "Bygrave"
+        51.910886 -0.186462 "Sish Lane"
+
+    @note: U{xplanet <http://xplanet.sourceforge.net/>} also supports xearth
+    marker files, and as such can use the output from this function.
+
+    >>> from earth_distance.trigpoints import Trigpoint
+    >>> markers = {
+    ...     500936: Trigpoint(52.066035, -0.281449, 37.000000, "Broom Farm"),
+    ...     501097: Trigpoint(52.010585, -0.173443, 97.000000, "Bygrave"),
+    ...     505392: Trigpoint(51.910886, -0.186462, 136.000000, "Sish Lane")
+    ... }
+    >>> print("\\n".join(dump_xearth_markers(markers)))
+    52.066035 -0.281449 "500936" # Broom Farm, alt 37m
+    52.010585 -0.173443 "501097" # Bygrave, alt 97m
+    51.910886 -0.186462 "505392" # Sish Lane, alt 136m
+    >>> print("\\n".join(dump_xearth_markers(markers, "name")))
+    52.066035 -0.281449 "Broom Farm" # 500936, alt 37m
+    52.010585 -0.173443 "Bygrave" # 501097, alt 97m
+    51.910886 -0.186462 "Sish Lane" # 505392, alt 136m
+
+    >>> from earth_distance.point import Point
+    >>> points = {
+    ...     "Broom Farm": Point(52.066035, -0.281449),
+    ...     "Bygrave": Point(52.010585, -0.173443),
+    ...     "Sish Lane": Point(51.910886, -0.186462)
+    ... }
+    >>> print("\\n".join(dump_xearth_markers(points)))
+    52.066035 -0.281449 "Broom Farm"
+    52.010585 -0.173443 "Bygrave"
+    51.910886 -0.186462 "Sish Lane"
+
+    @see: C{import_marker_file}
+    @type markers: C{dict}
+    @param markers: Dictionary of identifer keys, with C{Trigpoint} values
+    @type name: C{str}
+    @param name: Value to use as xearth display string
+    @rtype: C{list}
+    @return: List of strings representing an xearth marker file
+    @raise ValueError: Unsupported value for C{name}
+    """
+    output = []
+    for identifier, point in markers.items():
+        line = "%f %f " % (point.latitude, point.longitude)
+        if hasattr(point, 'name') and point.name:
+            if name == "identifier":
+                line += '"%s" # %s' % (identifier, point.name)
+            elif name == "name":
+                line += '"%s" # %s' % (point.name, identifier)
+            else:
+                raise ValueError("Unknown name type `%s'" % name)
+            if hasattr(point, 'altitude') and point.altitude:
+                line += ", alt %im" % point.altitude
+        else:
+            line += '"%s"' % identifier
+        output.append(line)
+    # Return the list sorted on the marker name
+    return sorted(output, lambda x, y: cmp(x.split()[2], y.split()[2]))
+
+def run_tests(module=None, exit=True):
+    """
+    Run doctests found in the module
+
+    @type module: C{str}, C{None} or C{tuple}
+    @param module: Modules tests to process
+    @type exit: C{bool}
+    @param exit: If true, exit instead of number of failed tests
+    """
     import doctest
     import sys
-    sys.exit(doctest.testmod(optionflags=doctest.REPORT_UDIFF)[0])
+
+    doctest_options = {"optionflags": (doctest.REPORT_UDIFF
+                                       + doctest.DONT_ACCEPT_TRUE_FOR_1)}
+
+    passes = 0
+    fails = 0
+    if isinstance(module, str):
+        module = (module, )
+    if module:
+        for entry in module:
+            results = doctest.testmod(m=entry, **doctest_options)
+            passes += results[1] - results[0]
+            fails += results[0]
+    else:
+        results = doctest.testmod(**doctest_options)
+        passes += results[1] - results[0]
+        fails += results[0]
+    print("%i passed, %i failed." % (passes, fails))
+    if exit:
+        sys.exit(fails)
+    else:
+        return fails
+
+if __name__ == '__main__':
+    run_tests()
 

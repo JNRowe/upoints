@@ -23,7 +23,7 @@ from __future__ import division
 import datetime
 import math
 
-import utils
+from earth_distance import utils
 
 class Point(object):
     """
@@ -34,6 +34,7 @@ class Point(object):
     @ivar longitude: Locations's longitude
     @ivar rad_latitude: Location's latitude in radians
     @ivar rad_longitude: Location's longitude in radians
+    @ivar timezone: Location's offset from UTC in minutes
     """
 
     __slots__ = ('format', 'latitude', 'longitude', 'rad_latitude',
@@ -42,21 +43,25 @@ class Point(object):
     def __init__(self, latitude, longitude, format="metric",
                  angle="degrees", timezone=0):
         """
-        Initialise a new Point object
+        Initialise a new C{Point} object
 
         >>> Home = Point(52.015, -0.221)
         >>> Home = Point(52.015, -0.221, timezone=60) # BST
         >>> Home = Point(52.015, -0.221, "nautical")
-
         >>> test = Point(math.pi / 4, math.pi / 2, angle="radians")
         >>> test.latitude == 45
         True
         >>> test.longitude == 90
         True
+        >>> test = Point((50, 20, 10), (-1, -3, -12))
+        >>> "%.3f" % test.latitude
+        '50.336'
+        >>> "%.3f" % test.longitude
+        '-1.053'
 
-        @type latitude: C{float} or coercible to C{float}
+        @type latitude: C{float} or coercible to C{float}, C{tuple} or C{list}
         @param latitude: Location's latitude
-        @type longitude: C{float} or coercible to C{float}
+        @type longitude: C{float} or coercible to C{float}, C{tuple} or C{list}
         @param longitude: Location's longitude
         @type angle: C{str}
         @param angle: Format for specified angles
@@ -66,8 +71,13 @@ class Point(object):
         @param timezone: Offset from UTC in minutes
         @raise ValueError: Unknown value for C{angle}
         @raise ValueError: Unknown value for C{format}
+        @raise ValueError: Invalid value for C{latitude} or C{longitude}
         """
         if angle == "degrees":
+            if isinstance(latitude, (tuple, list)):
+                latitude = utils.to_dd(*latitude)
+            if isinstance(longitude, (tuple, list)):
+                longitude = utils.to_dd(*longitude)
             self.latitude = float(latitude)
             self.longitude = float(longitude)
             self.rad_latitude = math.radians(self.latitude)
@@ -79,6 +89,11 @@ class Point(object):
             self.longitude = math.degrees(self.rad_longitude)
         else:
             raise ValueError("Unknown angle type `%s'" % angle)
+        if not -90 <= self.latitude <= 90:
+            raise ValueError("Invalid latitude value `%f'" % latitude)
+        if not -180 <= self.longitude <= 180:
+            raise ValueError("Invalid longitude value `%f'" % longitude)
+
         if format in ("imperial", "metric", "nautical"):
             self.format = format
         elif format == "US customary":
@@ -92,26 +107,28 @@ class Point(object):
         Self-documenting string representation
 
         >>> Point(52.015, -0.221)
-        Point(52.015000, -0.221000, "metric", 0)
+        Point(52.015000, -0.221000, 'metric', 0)
 
         @rtype: C{str}
         @return: String to recreate Point object
         """
-        return 'Point(%f, %f, "%s", %i)' % (self.latitude, self.longitude,
-                                            self.format, self.timezone)
+        return 'Point(%f, %f, %s, %i)' % (self.latitude, self.longitude,
+                                          repr(self.format), self.timezone)
 
     def __str__(self, mode="dd"):
         """
         Pretty printed location string
 
-        >>> print Point(52.015, -0.221)
+        >>> print(Point(52.015, -0.221))
         N52.015°; W000.221°
-        >>> print Point(52.015, -0.221).__str__(mode="dm")
+        >>> print(Point(52.015, -0.221).__str__(mode="dm"))
         52°00.90'N, 000°13.25'W
-        >>> print Point(52.015, -0.221).__str__(mode="dms")
+        >>> print(Point(52.015, -0.221).__str__(mode="dms"))
         52°00'54"N, 000°13'15"W
-        >>> print Point(33.9400, -118.4000).__str__(mode="dms")
+        >>> print(Point(33.9400, -118.4000).__str__(mode="dms"))
         33°56'23"N, 118°24'00"W
+        >>> print(Point(52.015, -0.221).__str__(mode="locator"))
+        IO92
 
         @type mode: C{str}
         @param mode: Coordinate formatting system to use
@@ -143,6 +160,8 @@ class Point(object):
                                             abs(longitude_dms[1] +
                                                 (longitude_dms[2] / 60)))
             text += "W" if self.longitude < 0 else "E"
+        elif mode == "locator":
+            text = utils.to_grid_locator(self.latitude, self.longitude)
         else:
             raise ValueError("Unknown mode type `%s'" % mode)
 
@@ -211,6 +230,25 @@ class Point(object):
         @return: Hash of string representation
         """
         return hash(self.__str__())
+
+    def to_grid_locator(self, precision="square"):
+        """
+        Calculate Maidenhead locator from latitude and longitude
+
+        >>> Home = Point(52.015, -0.221)
+        >>> Home.to_grid_locator("extsquare")
+        'IO92va33'
+        >>> Home.to_grid_locator("subsquare")
+        'IO92va'
+        >>> Home.to_grid_locator()
+        'IO92'
+
+        @type precision: C{str}
+        @param precision: Precision with which generate locator string
+        @rtype: C{str}
+        @return: Maidenhead locator for latitude and longitude
+        """
+        return utils.to_grid_locator(self.latitude, self.longitude, precision)
 
     def distance(self, other, method="haversine"):
         """
@@ -341,15 +379,15 @@ class Point(object):
         Calculate the destination from self given bearing and distance
 
         >>> Point(52.015, -0.221).destination(294, 169)
-        Point(52.611188, -2.507554, "metric", 0)
+        Point(52.611188, -2.507554, 'metric', 0)
         >>> Home = Point(52.015, -0.221, "imperial")
         >>> Home.destination(294, 169 / utils.STATUTE_MILE)
-        Point(52.611188, -2.507554, "metric", 0)
+        Point(52.611188, -2.507554, 'metric', 0)
         >>> Home = Point(52.015, -0.221, "nautical")
         >>> Home.destination(294, 169 / utils.NAUTICAL_MILE)
-        Point(52.611188, -2.507554, "metric", 0)
+        Point(52.611188, -2.507554, 'metric', 0)
         >>> Point(36.1200, -86.6700).destination(274, 2885)
-        Point(33.692355, -118.303507, "metric", 0)
+        Point(33.692355, -118.303507, 'metric', 0)
 
         @type bearing: C{float} or coercible to C{float}
         @param bearing: Bearing from self
@@ -461,7 +499,5 @@ class Point(object):
                                 self.timezone, zenith)
 
 if __name__ == '__main__':
-    import doctest
-    import sys
-    sys.exit(doctest.testmod(optionflags=doctest.REPORT_UDIFF)[0])
+    utils.run_tests()
 

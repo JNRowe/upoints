@@ -21,7 +21,7 @@
 import csv
 import os
 
-import point
+from earth_distance import point
 
 class Trigpoint(point.Point):
     """
@@ -55,7 +55,7 @@ class Trigpoint(point.Point):
         @type name: C{string}
         @param name: Name for location
         """
-        point.Point.__init__(self, latitude, longitude, format, angle)
+        super(Trigpoint, self).__init__(latitude, longitude, format, angle)
         self.altitude = altitude
         self.name = name
 
@@ -64,16 +64,13 @@ class Trigpoint(point.Point):
         Self-documenting string representation
 
         >>> Trigpoint(52.010585, -0.173443, 97.0, "Bygrave")
-        Trigpoint(52.010585, -0.173443, 97.000000, "Bygrave")
-
+        Trigpoint(52.010585, -0.173443, 97.000000, 'Bygrave')
 
         @rtype: C{str}
         @return: String to recreate Trigpoint object
         """
-        return 'Trigpoint(%f, %f, %f, "%s")' % (self.latitude,
-                                                self.longitude,
-                                                self.altitude,
-                                                self.name)
+        return 'Trigpoint(%f, %f, %f, %s)' % (self.latitude, self.longitude,
+                                              self.altitude, repr(self.name))
 
     def __str__(self, mode="dms"):
         """
@@ -81,13 +78,13 @@ class Trigpoint(point.Point):
 
         @see: C{trigpoints.Trigpoint}
 
-        >>> print Trigpoint(52.010585, -0.173443, 97.0)
+        >>> print(Trigpoint(52.010585, -0.173443, 97.0))
         52°00'38"N, 000°10'24"W alt 97m
-        >>> print Trigpoint(52.010585, -0.173443, 97.0).__str__(mode="dd")
+        >>> print(Trigpoint(52.010585, -0.173443, 97.0).__str__(mode="dd"))
         N52.011°; W000.173° alt 97m
-        >>> print Trigpoint(52.010585, -0.173443, 97.0).__str__(mode="dm")
+        >>> print(Trigpoint(52.010585, -0.173443, 97.0).__str__(mode="dm"))
         52°00.63'N, 000°10.40'W alt 97m
-        >>> print Trigpoint(52.010585, -0.173443, 97.0, "Bygrave")
+        >>> print(Trigpoint(52.010585, -0.173443, 97.0, "Bygrave"))
         Bygrave (52°00'38"N, 000°10'24"W alt 97m)
 
         @type mode: C{str}
@@ -95,8 +92,9 @@ class Trigpoint(point.Point):
         @rtype: C{str}
         @return: Human readable string representation of Point object
         """
-        text = super(Trigpoint, self).__str__(mode) + \
-               " alt %im" % self.altitude
+        text = super(Trigpoint, self).__str__(mode)
+        if self.altitude:
+            text += " alt %im" % self.altitude
 
         if self.name:
             return "%s (%s)" % (self.name, text)
@@ -130,12 +128,15 @@ def import_marker_file(marker_file):
     processed by C{import_marker_file()} will return the following C{dict}
     object::
 
-        500936: (point.Point(52.066035, -0.281449, 37.0, "Broom Farm"),
-        501097: (point.Point(52.010585, -0.173443, 97.0, "Bygrave")
-        505392: (point.Point(51.910886, -0.186462, 136.0, "Sish Lane")
+        {500936: (point.Point(52.066035, -0.281449, 37.0, "Broom Farm"),
+         501097: (point.Point(52.010585, -0.173443, 97.0, "Bygrave"),
+         505392: (point.Point(51.910886, -0.186462, 136.0, "Sish Lane")}
 
-    >>> import StringIO
-    >>> marker_file = StringIO.StringIO("\\n".join([
+    >>> try:
+    ...     from io import StringIO
+    ... except ImportError:
+    ...     from StringIO import StringIO
+    >>> marker_file = StringIO("\\n".join([
     ...     'H  SOFTWARE NAME & VERSION',
     ...     'I  GPSU 4.04,',
     ...     'S SymbolSet=0',
@@ -145,7 +146,7 @@ def import_marker_file(marker_file):
     ...     'W,505392,N51.910886,W000.186462,   136.0,Sish Lane']))
     >>> markers = import_marker_file(marker_file)
     >>> for key, value in sorted(markers.items()):
-    ...     print key, '-', value
+    ...     print("%s - %s" % (key, value))
     500936 - Broom Farm (52°03'57"N, 000°16'53"W alt 37m)
     501097 - Bygrave (52°00'38"N, 000°10'24"W alt 97m)
     505392 - Sish Lane (51°54'39"N, 000°11'11"W alt 136m)
@@ -188,75 +189,7 @@ def import_marker_file(marker_file):
         markers[identity] = Trigpoint(latitude, longitude, altitude, name)
     return markers
 
-def dump_xearth_markers(markers, name="identifier"):
-    """
-    Generate an xearth compatible marker file
-
-    C{dump_xearth_markers()} writes a simple U{xearth
-    <http://www.cs.colorado.edu/~tuna/xearth/>} marker file from a dictionary of
-    C{trigpoints.Trigpoint} objects.
-
-    It expects a dictionary in the same format that C{import_marker_file}
-    returns, that is::
-
-        500936: (point.Point(52.066035, -0.281449, 37.0, "Broom Farm"),
-        501097: (point.Point(52.010585, -0.173443, 97.0, "Bygrave")
-        505392: (point.Point(51.910886, -0.186462, 136.0, "Sish Lane")
-
-    And generates output of the form::
-
-        52.066035 -0.281449 "500936" # Broom Farm, alt 37m
-        52.010585 -0.173443 "501097" # Bygrave, alt 97m
-        51.910886 -0.186462 "205392" # Sish Lane, alt 136m
-
-    Or similar to the following if the C{name} parameter is set to C{name}::
-
-        52.066035 -0.281449 "Broom Farm" # 500936 alt 37m
-        52.010585 -0.173443 "Bygrave" # 501097 alt 97m
-        51.910886 -0.186462 "Sish Lane" # 205392 alt 136m
-
-    @note: U{xplanet <http://xplanet.sourceforge.net/>} also supports xearth
-    marker files, and as such can use the output from this function.
-
-    >>> markers = {
-    ...     500936: Trigpoint(52.066035, -0.281449, 37.000000, "Broom Farm"),
-    ...     501097: Trigpoint(52.010585, -0.173443, 97.000000, "Bygrave"),
-    ...     505392: Trigpoint(51.910886, -0.186462, 136.000000, "Sish Lane")
-    ... }
-    >>> print "\\n".join(dump_xearth_markers(markers))
-    52.066035 -0.281449 "500936" # Broom Farm, alt 37m
-    52.010585 -0.173443 "501097" # Bygrave, alt 97m
-    51.910886 -0.186462 "505392" # Sish Lane, alt 136m
-    >>> print "\\n".join(dump_xearth_markers(markers, "name"))
-    52.066035 -0.281449 "Broom Farm" # 500936, alt 37m
-    52.010585 -0.173443 "Bygrave" # 501097, alt 97m
-    51.910886 -0.186462 "Sish Lane" # 505392, alt 136m
-
-    @see: C{import_marker_file}
-    @type markers: C{dict}
-    @param markers: Dictionary of identifer keys, with C{Trigpoint} values
-    @type name: C{str}
-    @param name: Value to use as xearth display string
-    @rtype: C{list}
-    @return: List of strings representing an xearth marker file
-    @raise ValueError: Unsupported value for C{name}
-    """
-    output = []
-    for identifier, trigpoint in markers.items():
-        line = "%f %f " % (trigpoint.latitude, trigpoint.longitude)
-        if name == "identifier":
-            line += '"%s" # %s' % (identifier, trigpoint.name)
-        elif name == "name":
-            line += '"%s" # %s' % (trigpoint.name, identifier)
-        else:
-            raise ValueError("Unknown name type `%s'" % name)
-        if trigpoint.altitude:
-            line += ", alt %im" % trigpoint.altitude
-        output.append(line)
-    return output
-
 if __name__ == '__main__':
-    import doctest
-    import sys
-    sys.exit(doctest.testmod(optionflags=doctest.REPORT_UDIFF)[0])
+    from earth_distance import utils
+    utils.run_tests()
 

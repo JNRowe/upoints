@@ -24,6 +24,11 @@ PACKAGE_NAME := earth_distance
 SNAPSHOT_DATE := $(shell date -I)
 
 PYTHON := python
+PYTHON_ENV := PYTHONPATH=$$PYTHONPATH:$(shell pwd)
+
+RST2HTML := rst2html.py
+RST2HTML_OPTIONS := --source-link --strict \
+	--stylesheet-path=doc/docutils.css --link-stylesheet
 
 .PHONY: ChangeLog MANIFEST .hg_version check clean dist snapshot
 
@@ -33,13 +38,15 @@ html/index.html: $(PYFILES)
 	epydoc $(PYFILES)
 
 README.html: README
-	rst2html.py $< $@
+	$(RST2HTML) $(RST2HTML_OPTIONS) $< $@
 
 check:
 	for i in $(PYFILES); do \
 		echo ">>> $$i"; \
-		$(PYTHON) ./$$i; \
-	done
+		$(PYTHON_ENV) $(PYTHON) ./$$i; \
+	done; \
+	echo ">>> README"; \
+	$(PYTHON_ENV) $(PYTHON) -c "import doctest, sys; sys.exit(doctest.testfile('README')[0])"
 
 clean:
 	rm -rf .hg_version ChangeLog MANIFEST README.html html \

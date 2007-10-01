@@ -18,7 +18,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-__version__ = "0.2.0"
+__version__ = "0.3.0"
 __date__ = "2007-05-29"
 __author__ = "James Rowe <jnrowe@ukfsn.org>"
 __copyright__ = "Copyright (C) 2007 James Rowe"
@@ -27,7 +27,7 @@ __credits__ = "Kelly Turner"
 __history__ = "See Mercurial repository"
 
 __doc__ += """
-C{earth_distance} is a collection of GPL v2 licensed modules for working with
+C{earth_distance} is a collection of GPL v3 licensed modules for working with
 points on a spherical object.  It allows you to calculate the distance and
 bearings between points, mangle U{xearth
 <http://www.cs.colorado.edu/~tuna/xearth/>}/U{xplanet
@@ -63,10 +63,8 @@ datetime.time(20, 25)
 """ % (__version__, __author__[0:__author__.rfind(" ")],
        __author__[__author__.rfind(" "):], __copyright__, __license__)
 
-import cities, point, trigpoints, utils, weather_stations, xearth
+from earth_distance import (cities, geonames, point, trigpoints, utils, weather_stations, xearth)
 
 if __name__ == '__main__':
-    import doctest
-    import sys
-    sys.exit(doctest.testmod(optionflags=doctest.REPORT_UDIFF)[0])
+    utils.run_tests()
 

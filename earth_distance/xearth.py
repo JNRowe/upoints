@@ -2,12 +2,11 @@
 # vim: set sw=4 sts=4 et tw=80 fileencoding=utf-8:
 #
 """marker_file - Imports xearth-style marker files"""
-# Copyright (C) 2007 James Rowe;
-# All rights reserved.
+# Copyright (C) 2007  James Rowe
 #
-# This program is free software; you can redistribute it and/or modify
+# This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
-# the Free Software Foundation; either version 2 of the License, or
+# the Free Software Foundation, either version 3 of the License, or
 # (at your option) any later version.
 #
 # This program is distributed in the hope that it will be useful,
@@ -16,13 +15,11 @@
 # GNU General Public License for more details.
 #
 # You should have received a copy of the GNU General Public License
-# along with this program; if not, write to the Free Software
-# Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111, USA.
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-import os
-
-import point
+from earth_distance import point
+from earth_distance import utils
 
 class Xearth(point.Point):
     """
@@ -47,7 +44,7 @@ class Xearth(point.Point):
         @type comment: C{string}
         @param comment: Comment for location
         """
-        point.Point.__init__(self, latitude, longitude, format, angle)
+        super(Xearth, self).__init__(latitude, longitude, format, angle)
         self.comment = comment
 
     def __repr__(self):
@@ -60,8 +57,8 @@ class Xearth(point.Point):
         @rtype: C{str}
         @return: String to recreate Xearth object
         """
-        return 'Xearth(%f, %f, "%s")' % (self.latitude, self.longitude,
-                                         self.comment)
+        return 'Xearth(%f, %f, %s)' % (self.latitude, self.longitude,
+                                       repr(self.comment))
 
     def __str__(self, mode="dd"):
         """
@@ -69,13 +66,13 @@ class Xearth(point.Point):
 
         @see: C{point.Point}
 
-        >>> print Xearth(52.015, -0.221)
+        >>> print(Xearth(52.015, -0.221))
         N52.015°; W000.221°
-        >>> print Xearth(52.015, -0.221).__str__(mode="dms")
+        >>> print(Xearth(52.015, -0.221).__str__(mode="dms"))
         52°00'54"N, 000°13'15"W
-        >>> print Xearth(52.015, -0.221).__str__(mode="dm")
+        >>> print(Xearth(52.015, -0.221).__str__(mode="dm"))
         52°00.90'N, 000°13.25'W
-        >>> print Xearth(52.015, -0.221, "James Rowe's house")
+        >>> print(Xearth(52.015, -0.221, "James Rowe's house"))
         James Rowe's house (N52.015°; W000.221°)
 
         @type mode: C{str}
@@ -92,6 +89,8 @@ class Xearth(point.Point):
 
 def import_marker_file(marker_file):
     """
+    Parse xearth data files
+
     C{import_marker_file()} returns a dictionary with keys containing the
     U{xearth <http://www.cs.colorado.edu/~tuna/xearth/>} name, and values
     consisting of a C{point.Point} object and a string containing any comment
@@ -109,22 +108,25 @@ def import_marker_file(marker_file):
     file processed by C{import_marker_file()} will return the following C{dict}
     object::
 
-        'Home': (point.Point(52.015, -0.221, "James Rowe's home"),
-        'Telford': (point.Point(52.6333, -2.5, None)
+        {'Home': (point.Point(52.015, -0.221, "James Rowe's home"),
+         'Telford': (point.Point(52.6333, -2.5, None)}
 
     @note: This function also handles the extended U{xplanet
     <http://xplanet.sourceforge.net/>} marker files whose points can optionally
     contain added xplanet specific keywords for defining colours and fonts.
 
-    >>> import StringIO
-    >>> marker_file = StringIO.StringIO("\\n".join([
+    >>> try:
+    ...     from io import StringIO
+    ... except ImportError:
+    ...     from StringIO import StringIO
+    >>> marker_file = StringIO("\\n".join([
     ...     '# Comment',
     ...     '',
     ...     '52.015     -0.221 "Home" font=11  # James Rowe\\'s home',
     ...     '52.6333    -2.5   "Telford" font=11 color=blue']))
     >>> markers = import_marker_file(marker_file)
     >>> for key, value in sorted(markers.items()):
-    ...     print key, '-', value
+    ...     print("%s - %s" % (key, value))
     Home - James Rowe's home (N52.015°; W000.221°)
     Telford - N52.633°; W002.500°
 
@@ -133,16 +135,7 @@ def import_marker_file(marker_file):
     @rtype: C{dict}
     @return: Named locations with optional comments
     """
-    if hasattr(marker_file, "readlines"):
-        data = marker_file.readlines()
-    elif isinstance(marker_file, list):
-        data = marker_file
-    elif isinstance(marker_file, str):
-        if os.path.isfile(marker_file):
-            data = open(marker_file).readlines()
-    else:
-        raise ValueError("Unable to handle data of type `%s`"
-                         % type(marker_file))
+    data = utils.prepare_read(marker_file)
 
     markers = {}
     for line in data:
@@ -164,7 +157,5 @@ def import_marker_file(marker_file):
     return markers
 
 if __name__ == '__main__':
-    import doctest
-    import sys
-    sys.exit(doctest.testmod(optionflags=doctest.REPORT_UDIFF)[0])
+    utils.run_tests()
 
