@@ -155,6 +155,7 @@ def import_marker_file(marker_file):
     @param marker_file: Trigpoint marker data to read
     @rtype: C{dict}
     @return: Named locations with optional comments
+    @raise ValueError: Invalid value for C{marker_file}
     """
     if hasattr(marker_file, "readlines"):
         data = csv.reader(marker_file)
@@ -168,7 +169,6 @@ def import_marker_file(marker_file):
                          % type(marker_file))
 
     markers = {}
-    marker_file = csv.reader(marker_file)
     for row in data:
         if not len(row) == 6 or row[0] == "F":
             continue
