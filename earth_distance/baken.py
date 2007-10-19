@@ -50,6 +50,11 @@ class Baken(point.Point):
         """
         Initialise a new Baken object
 
+        >>> obj = Baken(*(None, ) * 11)
+        Traceback (most recent call last):
+        ...
+        LookupError: Unable to instantiate baken object, no latitude or locator string
+
         @type latitude: C{float} or coercible to C{float}
         @param latitude: Location's latitude
         @type longitude: C{float} or coercible to C{float}
@@ -80,7 +85,7 @@ class Baken(point.Point):
             super(Baken, self).__init__(*utils.from_grid_locator(locator))
         else:
             raise LookupError("Unable to instantiate baken object, no latitude"
-                              "or locator string.")
+                              " or locator string")
 
         self.antenna = antenna
         self.direction = direction
@@ -185,12 +190,29 @@ def import_baken_file(baken_file):
     ...     'power=25 TX',
     ...     'antenna=2 x Turnstile',
     ...     'height=460',
+    ...     'mode=A1A',
+    ...     '',
+    ...     '[IW1RCT]',
+    ...     'frequency=50.001',
+    ...     'locator=JN44FH',
+    ...     'power=2 TX',
+    ...     'antenna=3 ele Yagi',
+    ...     'direction=90',
     ...     'mode=A1A']))
     >>> locations = import_baken_file(baken_file)
     >>> for key, value in sorted(locations.items()):
     ...     print("%s - %s" % (key, value))
     Abeche, Chad - 14°27'36"N, 020°40'48"E
     GB3BUX - IO93BF (53°13'45"N, 001°52'30"W)
+    IW1RCT - JN44FH (44°18'45"N, 008°27'29"E)
+    >>> no_valid_locations_file = StringIO("\\n".join([
+    ...     '[SV1UY-12]',
+    ...     'frequency=144.625',
+    ...     'locator=TCP/IP',
+    ...     'qth=Athen 1200 ']))
+    >>> locations = import_baken_file(no_valid_locations_file)
+    >>> len(locations)
+    0
 
     @type baken_file: C{file}, C{list} or C{str}
     @param baken_file: Baken data to read
@@ -240,8 +262,4 @@ def import_baken_file(baken_file):
 
         locations[name] = Baken(**elements)
     return locations
-
-if __name__ == '__main__':
-    from earth_distance import utils
-    utils.run_tests()
 

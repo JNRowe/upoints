@@ -2,6 +2,7 @@
 ^dist/
 ^html/
 
+^\.coverage$
 ^\.hg_version$
 \.py[co]$
 

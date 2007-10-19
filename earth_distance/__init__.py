@@ -18,7 +18,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-__version__ = "0.3.0"
+__version__ = "0.4.1"
 __date__ = "2007-05-29"
 __author__ = "James Rowe <jnrowe@ukfsn.org>"
 __copyright__ = "Copyright (C) 2007 James Rowe"
@@ -63,8 +63,6 @@ datetime.time(20, 25)
 """ % (__version__, __author__[0:__author__.rfind(" ")],
        __author__[__author__.rfind(" "):], __copyright__, __license__)
 
-from earth_distance import (cities, geonames, point, trigpoints, utils, weather_stations, xearth)
-
-if __name__ == '__main__':
-    utils.run_tests()
+from earth_distance import (baken, cities, geonames, point, trigpoints, utils,
+                            weather_stations, xearth)
 

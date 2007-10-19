@@ -1,9 +1,7 @@
 #! /usr/bin/python -tt
 # vim: set sw=4 sts=4 et tw=80 fileencoding=utf-8:
 #
-"""
-utils - Support code for earth_distance
-"""
+"""utils - Support code for earth_distance"""
 # Copyright (C) 2007  James Rowe
 #
 # This program is free software: you can redistribute it and/or modify
@@ -70,15 +68,24 @@ LATITUDE_EXTSQUARE = LATITUDE_SUBSQUARE / 10
 class FileFormatError(ValueError):
     """
     Error object for data parsing error
+
+    >>> raise FileFormatError
+    Traceback (most recent call last):
+        ...
+    FileFormatError: Unsupported data format.
+    >>> raise FileFormatError("test site")
+    Traceback (most recent call last):
+        ...
+    FileFormatError: Incorrect data format, if you're using a file downloaded from test site please report this to James Rowe <jnrowe@ukfsn.org>
     """
-    def __init__(self, site):
+    def __init__(self, site=None):
         ValueError.__init__(self)
         self.site = site
     def __str__(self):
         if self.site:
             return ("Incorrect data format, if you're using a file downloaded "
-                    "from %s please report this to %s." % (self.site,
-                                                           __bug_report__))
+                    "from %s please report this to %s" % (self.site,
+                                                          __bug_report__))
         else:
             return "Unsupported data format."
 
@@ -108,6 +115,10 @@ def to_dms(angle, style="dms"):
     (0, -13, -15)
     >>> to_dms(-0.221, style="dm")
     (0, -13.25)
+    >>> to_dms(-0.221, style=None)
+    Traceback (most recent call last):
+        ...
+    ValueError: Unknown style type `None'
 
     @type angle: C{float} or coercible to C{float}
     @param angle: Angle to convert
@@ -206,6 +217,10 @@ def from_iso6709(coordinates):
     (35.360833333333332, 138.72749999999999, 3776.0)
     >>> from_iso6709("+35.658632+139.745411/") # Tokyo Tower
     (35.658631999999997, 139.74541099999999, None)
+    >>> from_iso6709("+35.658632+1/") # Broken
+    Traceback (most recent call last):
+        ...
+    ValueError: Incorrect format for longitude `+1'
 
     @type coordinates: C{str}
     @param coordinates: ISO 6709 coordinates string
@@ -343,6 +358,10 @@ def angle_to_distance(angle, format="metric"):
     '24882'
     >>> "%i" % angle_to_distance(1.0/60, "nautical")
     '1'
+    >>> "%i" % angle_to_distance(10, "baseless")
+    Traceback (most recent call last):
+        ...
+    ValueError: Unknown unit type `baseless'
 
     @type angle: C{float} or coercible to C{float}
     @param angle: Angle in degrees to convert to distance
@@ -441,6 +460,7 @@ def sun_rise_set(latitude, longitude, date, mode="rise", timezone=0,
     datetime.time(7, 58)
     >>> sun_rise_set(52.015, -0.221, datetime.date(1993, 12, 11), "set")
     datetime.time(15, 50)
+    >>> sun_rise_set(89, 0, datetime.date(2007, 12, 21))
 
     @type latitude: C{float} or coercible to C{float}
     @param latitude: Location's latitude
@@ -454,8 +474,9 @@ def sun_rise_set(latitude, longitude, date, mode="rise", timezone=0,
     @param timezone: Offset from UTC in minutes
     @type zenith: C{None} or C{str}
     @param zenith: Calculate rise/set events, or twilight times
-    @rtype: C{datetime.time}
-    @return: The time for the given event in the specified timezone
+    @rtype: C{datetime.time} or C{None}
+    @return: The time for the given event in the specified timezone, or
+        C{None} if the event doesn't occur on the given date
     @raise ValueError: Unknown value for C{mode}
     """
     zenith = ZENITH[zenith]
@@ -621,6 +642,17 @@ def sun_events(latitude, longitude, date, timezone=0, zenith=None):
 def prepare_read(data):
     """
     Prepare various input types for parsing
+
+    >>> try:
+    ...     from io import StringIO
+    ... except ImportError:
+    ...     from StringIO import StringIO
+    >>> test_file = StringIO('This is a test file-type object')
+    >>> prepare_read(test_file)
+    ['This is a test file-type object']
+    >>> test_list = ['This is a test list-type object', 'with two elements']
+    >>> prepare_read(test_list)
+    ['This is a test list-type object', 'with two elements']
 
     @type data: C{file} like object, C{list}, C{str}
     @param data: Data to read
@@ -850,6 +882,10 @@ def dump_xearth_markers(markers, name="identifier"):
     52.066035 -0.281449 "Broom Farm" # 500936, alt 37m
     52.010585 -0.173443 "Bygrave" # 501097, alt 97m
     51.910886 -0.186462 "Sish Lane" # 505392, alt 136m
+    >>> print("\\n".join(dump_xearth_markers(markers, "falseKey")))
+    Traceback (most recent call last):
+        ...
+    ValueError: Unknown name type `falseKey'
 
     >>> from earth_distance.point import Point
     >>> points = {
@@ -888,41 +924,4 @@ def dump_xearth_markers(markers, name="identifier"):
         output.append(line)
     # Return the list sorted on the marker name
     return sorted(output, lambda x, y: cmp(x.split()[2], y.split()[2]))
-
-def run_tests(module=None, exit=True):
-    """
-    Run doctests found in the module
-
-    @type module: C{str}, C{None} or C{tuple}
-    @param module: Modules tests to process
-    @type exit: C{bool}
-    @param exit: If true, exit instead of number of failed tests
-    """
-    import doctest
-    import sys
-
-    doctest_options = {"optionflags": (doctest.REPORT_UDIFF
-                                       + doctest.DONT_ACCEPT_TRUE_FOR_1)}
-
-    passes = 0
-    fails = 0
-    if isinstance(module, str):
-        module = (module, )
-    if module:
-        for entry in module:
-            results = doctest.testmod(m=entry, **doctest_options)
-            passes += results[1] - results[0]
-            fails += results[0]
-    else:
-        results = doctest.testmod(**doctest_options)
-        passes += results[1] - results[0]
-        fails += results[0]
-    print("%i passed, %i failed." % (passes, fails))
-    if exit:
-        sys.exit(fails)
-    else:
-        return fails
-
-if __name__ == '__main__':
-    run_tests()
 

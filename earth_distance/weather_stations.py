@@ -194,6 +194,22 @@ def import_noaa_file(data, index="WMO"):
     AYMD - Madang (94014 - S05.217°; E145.783°)
     AYMO - Manus Island/Momote (S02.062°; E147.424°)
     AYPY - Moresby (94035 - S09.433°; E147.217°)
+    >>> broken_wmo_entries = StringIO("\\n".join([
+    ...     '71;046;CWKM;Komakuk Beach, Y. T.;;Canada;4;69-37N;140-12W;;;13;',
+    ...     '71;899;CWLA;Langara, B. C.;;Canada;4;54-15N;133-08W;;;41;']))
+    >>> stations = import_noaa_file(broken_wmo_entries)
+    >>> for key, value in sorted(stations.items()):
+    ...     print("%s - %s" % (key, value))
+    71046 - Komakuk Beach, Y. T. (CWKM - N69.617°; W140.200°)
+    71899 - Langara, B. C. (CWLA - N54.250°; W133.133°)
+    >>> broken_icao_entries = StringIO("\\n".join([
+    ...     'KCQB;--;---;Chandler, Chandler Municipal Airport;OK;United States;4;35-43-26N;096-49-13W;;;300;;;',
+    ...     'KBRX;--;---;Bordeaux;WY;United States;4;41-56N;104-57W;;;1422']))
+    >>> stations = import_noaa_file(broken_icao_entries, "ICAO")
+    >>> for key, value in sorted(stations.items()):
+    ...     print("%s - %s" % (key, value))
+    KBRX - Bordeaux (N41.933°; W104.950°)
+    KCQB - Chandler, Chandler Municipal Airport (N35.724°; W096.820°)
 
     @type data: C{file}, C{list} or C{str}
     @param data: NOAA station data to read
@@ -258,7 +274,4 @@ def import_noaa_file(data, index="WMO"):
                                        ua_longitude, altitude, ua_altitude,
                                        rbsn)
     return stations
-
-if __name__ == '__main__':
-    utils.run_tests()
 

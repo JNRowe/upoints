@@ -30,7 +30,12 @@ RST2HTML := rst2html.py
 RST2HTML_OPTIONS := --source-link --strict \
 	--stylesheet-path=doc/docutils.css --link-stylesheet
 
-.PHONY: ChangeLog MANIFEST .hg_version check clean dist snapshot
+NOSE := nosetests
+NOSE_OPTIONS := --with-doctest --with-coverage --cover-tests \
+	--cover-inclusive --cover-package=$(PACKAGE_NAME) $(PACKAGE_NAME)
+
+.PHONY: ChangeLog MANIFEST .hg_version check check-nose check-no_nose \
+	check-docs clean dist snapshot
 
 all: html/index.html README.html
 
@@ -40,11 +45,19 @@ html/index.html: $(PYFILES)
 README.html: README
 	$(RST2HTML) $(RST2HTML_OPTIONS) $< $@
 
-check:
+check: check-docs check-nose
+check-nose:
+	echo ">>> nosetests"; \
+	$(NOSE) $(NOSE_OPTIONS); \
+
+check-no_nose: check-docs
 	for i in $(PYFILES); do \
 		echo ">>> $$i"; \
-		$(PYTHON_ENV) $(PYTHON) ./$$i; \
+		module=`echo $$i | sed -e 's,\(.*\)/\(.*\).py,\1.\2,' -e 's,.__init__,,'`; \
+		$(PYTHON_ENV) $(PYTHON) -c "import doctest, sys, $(PACKAGE_NAME); sys.exit(doctest.testmod($$module)[0])"; \
 	done; \
+
+check-docs:
 	echo ">>> README"; \
 	$(PYTHON_ENV) $(PYTHON) -c "import doctest, sys; sys.exit(doctest.testfile('README')[0])"
 

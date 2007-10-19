@@ -1,7 +1,7 @@
 #! /usr/bin/python -tt
 # vim: set sw=4 sts=4 et tw=80 fileencoding=utf-8:
 #
-"""Point - Class for working with locations on Earth"""
+"""point - Class for working with locations on Earth"""
 # Copyright (C) 2007  James Rowe
 #
 # This program is free software: you can redistribute it and/or modify
@@ -58,6 +58,22 @@ class Point(object):
         '50.336'
         >>> "%.3f" % test.longitude
         '-1.053'
+        >>> bad_angle = Point(52.015, -0.221, angle=None)
+        Traceback (most recent call last):
+        ...
+        ValueError: Unknown angle type `None'
+        >>> bad_latitude = Point(-92, -0.221)
+        Traceback (most recent call last):
+        ...
+        ValueError: Invalid latitude value `-92.000000'
+        >>> bad_longitude = Point(52.015, 185)
+        Traceback (most recent call last):
+        ...
+        ValueError: Invalid longitude value `185.000000'
+        >>> bad_format = Point(52.015, -0.221, format=None)
+        Traceback (most recent call last):
+        ...
+        ValueError: Unknown unit type `None'
 
         @type latitude: C{float} or coercible to C{float}, C{tuple} or C{list}
         @param latitude: Location's latitude
@@ -112,8 +128,8 @@ class Point(object):
         @rtype: C{str}
         @return: String to recreate Point object
         """
-        return 'Point(%f, %f, %s, %i)' % (self.latitude, self.longitude,
-                                          repr(self.format), self.timezone)
+        return 'Point(%f, %f, %r, %i)' % (self.latitude, self.longitude,
+                                          self.format, self.timezone)
 
     def __str__(self, mode="dd"):
         """
@@ -497,7 +513,4 @@ class Point(object):
         """
         return utils.sun_events(self.latitude, self.longitude, date,
                                 self.timezone, zenith)
-
-if __name__ == '__main__':
-    utils.run_tests()
 

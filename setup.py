@@ -20,7 +20,7 @@
 
 from distutils.core import setup
 
-import re
+from re import sub
 
 import earth_distance as edist
 
@@ -33,8 +33,7 @@ if version_info < (2, 5, 0, 'final'):
 setup(
     name = "earth_distance",
     version = edist.__version__,
-    description = re.sub("C{([^}]*)}", r"\1", 
-                         edist.__doc__.splitlines()[1]),
+    description = sub("C{([^}]*)}", r"\1", edist.__doc__.splitlines()[1]),
     long_description = """\
 ``earth_distance`` is a collection of `GPL v3`_ licensed modules for working
 with points on a spherical object.  It allows you to calculate the distance and

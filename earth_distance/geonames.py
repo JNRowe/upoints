@@ -244,6 +244,12 @@ def import_geonames_file(data, timezones=None):
     2633441 - Afon Wyre (River Wayrai, River Wyrai, Wyre - N52.317°; W004.167°)
     2633442 - Wyre (Viera - N59.117°; W002.967°)
     2633443 - Wraysbury (Wyrardisbury - N51.450°; W000.550°)
+    >>> broken_file = StringIO("\\n".join([
+    ...     '2633443\\tW\\traysbury\\tWraysbury\\tWyrardisbury\\t51.45\\t-0.55\\tP\\tPPL\\tGB\\t\\tP9\\t\\t\\t\\t0\\t\\t28\\tEurope/London\\t2006-08-21']))
+    >>> broken_locations = import_geonames_file(broken_file)
+    Traceback (most recent call last):
+        ...
+    FileFormatError: Incorrect data format, if you're using a file downloaded from geonames.org please report this to James Rowe <jnrowe@ukfsn.org>
 
     @type data: C{file}, C{list} or C{str}
     @param data: geonames locations data to read
@@ -260,7 +266,7 @@ def import_geonames_file(data, timezones=None):
         timezone = None
         chunk = line.strip().split("	")
         if not len(chunk) == 19:
-            raise utils.FileFormatError("geonames")
+            raise utils.FileFormatError("geonames.org")
         for pos, elem in zip(range(19), chunk):
             if pos in [0, 14, 15, 16]:
                 elem = None if elem == "" else int(elem)
@@ -321,6 +327,17 @@ def import_timezones_file(data):
     Asia/Dubai - (240, 240)
     Asia/Kabul - (270, 270)
     Europe/Andorra - (60, 120)
+    >>> header_file = StringIO("\\n".join([
+    ...     'TimeZoneId\\tGMT offset 1. Jan 2007\\tDST offset 1. Jul 2007']))
+    >>> header_skip_check = import_timezones_file(header_file)
+    >>> print header_skip_check
+    {}
+    >>> broken_file = StringIO("\\n".join([
+    ...     'OnlyTwo\\tfields']))
+    >>> broken_file_check = import_timezones_file(broken_file)
+    Traceback (most recent call last):
+        ...
+    FileFormatError: Incorrect data format, if you're using a file downloaded from geonames.org please report this to James Rowe <jnrowe@ukfsn.org>
 
     @type data: C{file}, C{list} or C{str}
     @param data: geonames timezones data to read
@@ -336,10 +353,7 @@ def import_timezones_file(data):
         if chunk[0] == "TimeZoneId":
             continue
         if not len(chunk) == 3:
-            raise utils.FileFormatError
+            raise utils.FileFormatError("geonames.org")
         timezones[chunk[0]] = tuple([int(float(x) * 60) for x in chunk[1:]])
     return timezones
-
-if __name__ == '__main__':
-    utils.run_tests()
 

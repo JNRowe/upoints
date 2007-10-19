@@ -69,8 +69,8 @@ class Trigpoint(point.Point):
         @rtype: C{str}
         @return: String to recreate Trigpoint object
         """
-        return 'Trigpoint(%f, %f, %f, %s)' % (self.latitude, self.longitude,
-                                              self.altitude, repr(self.name))
+        return 'Trigpoint(%f, %f, %f, %r)' % (self.latitude, self.longitude,
+                                              self.altitude, self.name)
 
     def __str__(self, mode="dms"):
         """
@@ -150,6 +150,25 @@ def import_marker_file(marker_file):
     500936 - Broom Farm (52°03'57"N, 000°16'53"W alt 37m)
     501097 - Bygrave (52°00'38"N, 000°10'24"W alt 97m)
     505392 - Sish Lane (51°54'39"N, 000°11'11"W alt 136m)
+    >>> marker_file.seek(0)
+    >>> markers = import_marker_file(marker_file.readlines())
+    >>> markers = import_marker_file(None)
+    Traceback (most recent call last):
+        ...
+    TypeError: Unable to handle data of type `<type 'NoneType'>'
+    >>> southern_hemisphere = StringIO("\\n".join([
+    ...     'W,1,S48.123123,W000.123123,    12.0,FakeLand']))
+    >>> markers = import_marker_file(southern_hemisphere)
+    >>> print markers[1]
+    FakeLand (48°07'23"S, 000°07'23"W alt 12m)
+    >>> broken_altitude = StringIO("\\n".join([
+    ...     'W,500968,N53.639826,W001.659589,  8888.0,Brown Hill Nm  See The Heights',
+    ...     'W,501414,N51.101043,E001.142599,  8888.0,Cheriton Hill Nm  See Paddlesworth']))
+    >>> markers = import_marker_file(broken_altitude)
+    >>> for key, value in sorted(markers.items()):
+    ...     print("%s - %s" % (key, value))
+    500968 - Brown Hill Nm  See The Heights (53°38'23"N, 001°39'34"W)
+    501414 - Cheriton Hill Nm  See Paddlesworth (51°06'03"N, 001°08'33"E)
 
     @type marker_file: C{file}, C{list} or C{str}
     @param marker_file: Trigpoint marker data to read
@@ -165,8 +184,8 @@ def import_marker_file(marker_file):
         if os.path.isfile(marker_file):
             data = csv.reader(open(marker_file))
     else:
-        raise ValueError("Unable to handle data of type `%s`"
-                         % type(marker_file))
+        raise TypeError("Unable to handle data of type `%s'"
+                        % type(marker_file))
 
     markers = {}
     for row in data:
@@ -188,8 +207,4 @@ def import_marker_file(marker_file):
             altitude = None
         markers[identity] = Trigpoint(latitude, longitude, altitude, name)
     return markers
-
-if __name__ == '__main__':
-    from earth_distance import utils
-    utils.run_tests()
 

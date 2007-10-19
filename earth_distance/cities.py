@@ -127,7 +127,7 @@ class City(trigpoints.Trigpoint):
                 data.append(str(i))
         return "City(" + ", ".join(data) + ")"
 
-    def __str__(self):
+    def __str__(self, mode=None):
         """
         Pretty printed location string
 
@@ -151,6 +151,9 @@ class City(trigpoints.Trigpoint):
         Date        : 19970410
         Entered-By  : M.Dowling@tu-bs.de
 
+        @type mode: C{None}
+        @param mode: Dummy parameter to maintain signature of
+            C{Trigpoint.__str__}
         @rtype: C{str}
         @return: Human readable string representation of C{City} object
         """
@@ -268,6 +271,13 @@ def import_cities_file(data):
     126 - London (51.5;-0.083)
     127 - Luxembourg (49.617;6.117)
     128 - Lyon (45.767;4.867)
+    >>> manual_list = cities_file.read().split("//\\n")
+    >>> cities_file.seek(0)
+    >>> Cities = import_cities_file(cities_file)
+    >>> Cities = import_cities_file(None)
+    Traceback (most recent call last):
+        ...
+    TypeError: Unable to handle data of type `<type 'NoneType'>'
 
     @type data: C{file}, C{list} or C{str}
     @param data: NOAA station data to read
@@ -275,7 +285,7 @@ def import_cities_file(data):
     @return: Places with C{trigpoints.Trigpoint} objects and associated data
     @raise TypeError: Invalid value for data
     """
-    if hasattr(data, "readlines"):
+    if hasattr(data, "read"):
         data = data.read().split("//\n")
     elif isinstance(data, list):
         pass
@@ -283,7 +293,7 @@ def import_cities_file(data):
         if os.path.isfile(data):
             data = open(data).read().split("//\n")
     else:
-        raise TypeError("Unable to handle data of type `%s`" % type(data))
+        raise TypeError("Unable to handle data of type `%s'" % type(data))
 
     entries = {}
     for record in data:
@@ -306,7 +316,4 @@ def import_cities_file(data):
         # reversibility of the import.
         entries[entry[0]] = City(*entry)
     return entries
-
-if __name__ == '__main__':
-    utils.run_tests()
 

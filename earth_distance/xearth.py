@@ -1,7 +1,7 @@
 #! /usr/bin/python -tt
 # vim: set sw=4 sts=4 et tw=80 fileencoding=utf-8:
 #
-"""marker_file - Imports xearth-style marker files"""
+"""xearth - Imports xearth-style marker files"""
 # Copyright (C) 2007  James Rowe
 #
 # This program is free software: you can redistribute it and/or modify
@@ -57,8 +57,8 @@ class Xearth(point.Point):
         @rtype: C{str}
         @return: String to recreate Xearth object
         """
-        return 'Xearth(%f, %f, %s)' % (self.latitude, self.longitude,
-                                       repr(self.comment))
+        return 'Xearth(%f, %f, %r)' % (self.latitude, self.longitude,
+                                       self.comment)
 
     def __str__(self, mode="dd"):
         """
@@ -155,7 +155,4 @@ def import_marker_file(marker_file):
         name = name[1:name.find(name[0], 1)]
         markers[name.strip()] = Xearth(latitude, longitude, comment)
     return markers
-
-if __name__ == '__main__':
-    utils.run_tests()
 
