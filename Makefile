@@ -83,11 +83,12 @@ dist: check ChangeLog MANIFEST .hg_version
 ChangeLog:
 	hg log --no-merges --style changelog >$@
 
-MANIFEST: html/index.html
+MANIFEST: docs
 	hg manifest >$@
 	echo $@ >>$@
 	echo ChangeLog >>$@
 	echo "README.html" >>$@
+	find doc -name \*.html >>$@
 	echo ".hg_version" >>$@
 	find html -not -type d >>$@
 
