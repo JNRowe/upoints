@@ -1,0 +1,169 @@
+@charset "UTF-8";
+
+/*
+ * docutils.css
+ * (C) 2004-2007 James Rowe.
+ *
+ * This style sheet is based, in part, on David Goodger's public domain
+ * html4css1.css style sheet for docutils.
+ *
+ * This style sheet is licensed under the Creative Commons
+ * Attribution-ShareAlike 2.5, for more information check the Creative
+ * Commons website(http://creativecommons.org/licenses/by-sa/2.5/).
+ */
+
+html, body {
+  background-color: rgb(77, 104, 132);
+  color: rgb(0, 0, 0);
+  font-family: "Verdana", "Arial", sans-serif;
+}
+
+div.document, div.footer {
+  background-color: rgb(250, 250, 250);
+  border-bottom: 0.2em solid rgb(0, 0, 0);
+  border-right: 0.2em solid rgb(0, 0, 0);
+  color: rgb(0, 0, 0);
+  margin: 1em 2em;
+  padding: 1em 2em;
+  width: 90%;
+}
+
+blockquote.epigraph {
+  margin: 2em 5em;
+}
+
+dl.docutils dd {
+  margin-bottom: 0.5em;
+}
+
+dl.docutils dt {
+  font-weight: bold;
+}
+
+div.admonition, div.attention, div.caution, div.danger, div.error,
+div.hint, div.important, div.note, div.tip, div.warning, div.sidebar {
+  border: 0.2em solid;
+  margin: 1em;
+  padding: 0.3em;
+}
+
+p.admonition-title {
+  font-family: sans-serif;
+  font-weight: bold;
+}
+
+div.hint, div.note, div.tip {
+  background-color: rgb(187, 255, 187);
+  color: rgb(0, 0, 0);
+}
+
+div.important, div.sidebar {
+  background-color: rgb(255, 255, 187);
+  color: rgb(0, 0, 0);
+}
+
+div.attention, div.caution, div.danger, div.error, div.warning {
+  background-color: rgb(255, 187, 187);
+  color: rgb(0, 0, 0);
+}
+
+div.attention p.admonition-title, div.caution p.admonition-title,
+div.danger p.admonition-title, div.error p.admonition-title,
+div.warning p.admonition-title {
+  background-color: inherit;
+  color: rgb(255, 0, 0);
+}
+
+div.figure {
+  background-color: rgb(241, 241, 241);
+  color: inherit;
+  float: right;
+  padding: 1em;
+}
+
+div.sidebar {
+  clear: right;
+  float: right;
+  width: 20em;
+}
+
+ol.simple, ul.simple {
+  margin-bottom: 1em;
+}
+ol.arabic {
+  list-style: decimal;
+}
+ol.loweralpha {
+  list-style: lower-alpha;
+}
+ol.upperalpha {
+  list-style: upper-alpha;
+}
+ol.lowerroman {
+  list-style: lower-roman;
+}
+ol.upperroman {
+  list-style: upper-roman;
+}
+
+p.attribution {
+  margin-left: 25em;
+  text-align: right;
+}
+
+p.rubric {
+  background-color: inherit;
+  color: rgb(128, 0, 0);
+  font-size: larger;
+  font-weight: bold;
+  text-align: center;
+}
+
+p.sidebar-title {
+  font-family: sans-serif;
+  font-size: larger;
+  font-weight: bold;
+}
+
+p.sidebar-subtitle {
+  font-family: sans-serif;
+  font-weight: bold;
+}
+
+pre.literal-block {
+  background-color: rgb(238, 238, 238);
+  color: rgb(0, 0, 0);
+  margin-left: 2em;
+  margin-right: 2em;
+  overflow: auto;
+}
+
+span.pre {
+  white-space: pre;
+}
+
+acro:hover, abbr:hover {
+  cursor: help;
+}
+
+ins {
+  background-color: rgb(187, 255, 187);
+  color: rgb(0, 0, 0);
+  text-decoration: none;
+}
+
+del {
+  background-color: rgb(255, 187, 187);
+  color: rgb(0, 0, 0);
+}
+
+q {
+  quotes: '\201C' '\201D' '\2018' '\2019';
+}
+q:before {
+  content: "\201C";
+}
+q:after {
+  content: "\201D";
+}
+

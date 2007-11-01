@@ -1,0 +1,127 @@
+Cities and cities.py
+====================
+
+A colleague pointed me to the `GNU miscfiles`_ cities database after
+I posted `geolocation and path cross`_, suggesting that it would be
+a useful database to support.  Being that it includes five hundred
+places around the globe, and I already have the database installed,
+I have to agree.
+
+GNU miscfiles is a package of, well miscellaneous files.  It contains,
+amongst other things a list of world currencies, languages and the file
+we're looking at today ``cities.dat``.
+
+In v1.4.2, the version I have installed, ``cities.dat`` contains 496
+entries.  The file is a simple flat Unicode database, with records
+separated by ``//``, a format that would be as well suited to processing
+with awk_ as it would with Python_.
+
+::
+
+    ID          : 12
+    Type        : City
+    Population  :
+    Size        :
+    Name        : Alblasserwaard
+     Country    : NL
+     Region     :
+    Location    : Earth
+     Longitude  :    4.833
+     Latitude   :   51.867
+     Elevation  :
+    Date        : 19961206
+    Entered-By  : Rob.Hooft@EMBL-Heidelberg.DE
+    //
+    ID          : 13
+    Type        : Pass
+    Population  :
+    Size        :
+    Name        : Albula Pass
+     Country    :
+     Region     :
+    Location    : Earth
+     Longitude  :    9.833
+     Latitude   :   46.583
+     Elevation  :
+    Date        : 19961206
+    Entered-By  : Rob.Hooft@EMBL-Heidelberg.DE
+
+You don't need to hand process the data though, I've added ``cities.py``
+to the earth_distance tarball that takes care of importing the data.
+When you import the entries with ``cities.Cities()`` it returns a
+dictionary of ``City`` objects that are children of the ``Trigpoint``
+objects defined for `Trigpointing and point.py`_
+
+On my Gentoo_ desktop the cities database is installed as
+``/usr/share/misc/cities.dat``, and can be imported as simply as:
+
+::
+
+    import cities
+    Cities = cities.Cities("/usr/share/misc/cities.dat")
+
+And the imported database can be used in a variety of ways:
+
+::
+
+    print len(Cities), "cities"
+    print "Cities larger with more than 8 million people"
+    for city in Cities.values():
+        if city.population > 8000000:
+            print "  ", city.name, "-", city.population
+    print "Mountains"
+    for city in Cities.values():
+        if city.ptype == "Mountain":
+            print "  ", city.name
+
+which will display::
+
+    496 cities
+    Cities larger with more than 8 million people
+      Bombay - 8243405
+      Jakarta - 9200000
+      Moskwa - 8769000
+      Sao Paolo - 10063110
+      Tokyo - 8354615
+      Mexico - 8831079
+    Mountains
+      Aconcagua
+      Popocatepetl
+
+You can recreate the database as a smoke test using the following:
+
+::
+
+    f = open("cities.dat", "w")
+    f.write("\n//\n".join([str(city) for city in Cities.values()]))
+    f.close()
+
+unfortunately the files aren't simply comparable using ``diff`` because
+of some unusual formatting in the original file, but visually scanning
+over the ``diff`` output shows that we have a correct import.
+
+The ``City`` class inherits ``Trigpoint`` which in turn inherits
+``Point``, and therefore has all the same methods they do.  This allows
+you to calculate distances and bearings between the ``City`` objects or
+any other derivative object of the parent classes.  For example, you
+could use the ``dump_xearth_markers`` function from ``trigpoints.py``:
+
+::
+
+    print "\n".join(cities.trigpoints.dump_xearth_markers(Cities, "name"))
+
+Take a look at the epydoc_ generated documentation that is included in
+the tarball to see what can be done.
+
+.. _GNU miscfiles: http://www.gnu.org/directory/miscfiles.html
+.. _awk: http://www.gnu.org/software/gawk/gawk.html
+.. _geolocation and path cross: geolocation_and_pathcross.html
+.. _Mercurial: http://www.selenic.com/mercurial/
+.. _Python: http://www.python.org/
+.. _epydoc: http://epydoc.sourceforge.net/
+.. _Trigpointing and point.py: trigpointing_and_point_py.html
+.. _gentoo: http://www.gentoo.org/
+
+..
+    :vim: set ft=rst ts=2 sw=2 et:
+

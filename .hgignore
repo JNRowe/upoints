@@ -5,7 +5,7 @@
 ^\.coverage$
 ^\.hg_version$
 \.py[co]$
+\.html$
 
 ^ChangeLog$
-^README\.html$
 ^MANIFEST$

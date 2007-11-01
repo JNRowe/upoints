@@ -100,11 +100,11 @@ a minimal testcase, or even better a patch!
 .. _xplanet: http://xplanet.sourceforge.net/
 .. _Python: http://www.python.org/
 .. _epydoc: http://epydoc.sourceforge.net/
-.. _geolocation and path cross: http://www.jnrowe.ukfsn.org/articles/geolocation_and_pathcross.html
-.. _xearth and path cross: http://www.jnrowe.ukfsn.org/articles/xearth_and_pathcross.html
-.. _Trigpointing and point.py: http://www.jnrowe.ukfsn.org/articles/trigpointing_and_point_py.html
-.. _Cities and cities.py: /articles/python_cities.html
-.. _Pythons on a plane: /articles/pythons_on_a_plane.html
+.. _geolocation and path cross: doc/geolocation_and_pathcross.html
+.. _xearth and path cross: doc/xearth_and_pathcross.html
+.. _Trigpointing and point.py: doc/trigpointing_and_point_py.html
+.. _Cities and cities.py: doc/python_cities.html
+.. _Pythons on a plane: doc/pythons_on_a_plane.html
 .. _NOAA: http://weather.noaa.gov/
 .. _mail: jnrowe@ukfsn.org
 

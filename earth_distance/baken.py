@@ -140,126 +140,136 @@ class Baken(point.Point):
             text = "%s (%s)" % (self.locator, text)
         return text
 
-def import_baken_file(baken_file):
+class Bakens(dict):
     """
-    Import baken data files
-
-    C{import_baken_file()} returns a dictionary with keys containing the section
-    title, and values consisting of a C{point.Point} object, and all the
-    associated data from the baken data file.
-
-    It expects data files in the format used by the baken amateur radio package,
-    which is Windows INI style files such as::
-
-        [Abeche, Chad]
-        latitude=14.460000
-        longitude=20.680000
-        height=0.000000
-
-        [GB3BUX]
-        frequency=50.000
-        locator=IO93BF
-        power=25 TX
-        antenna=2 x Turnstile
-        height=460
-        mode=A1A
-
-    The reader uses U{Python <http://www.python.org/>}'s C{ConfigParser} module,
-    so should be reasonably robust against encodings and such.  The above file
-    processed by C{import_baken_file()} will return the following C{dict}
-    object::
-
-        {"Abeche, Chad": (Baken(14.460, 20.680, None, None, None, 0.000, None,
-                                None, None, None, None),
-         "GB3BUX": : (Baken(None, None, "2 x Turnstile", None, 50.000, 460.000,
-                            "IO93BF", "A1A", None, 25, None)}
-
-    >>> try:
-    ...     from io import StringIO
-    ... except ImportError:
-    ...     from StringIO import StringIO
-    >>> baken_file = StringIO("\\n".join([
-    ...     '[Abeche, Chad]',
-    ...     'latitude=14.460000',
-    ...     'longitude=20.680000',
-    ...     'height=0.000000',
-    ...     '',
-    ...     '[GB3BUX]',
-    ...     'frequency=50.000',
-    ...     'locator=IO93BF',
-    ...     'power=25 TX',
-    ...     'antenna=2 x Turnstile',
-    ...     'height=460',
-    ...     'mode=A1A',
-    ...     '',
-    ...     '[IW1RCT]',
-    ...     'frequency=50.001',
-    ...     'locator=JN44FH',
-    ...     'power=2 TX',
-    ...     'antenna=3 ele Yagi',
-    ...     'direction=90',
-    ...     'mode=A1A']))
-    >>> locations = import_baken_file(baken_file)
-    >>> for key, value in sorted(locations.items()):
-    ...     print("%s - %s" % (key, value))
-    Abeche, Chad - 14°27'36"N, 020°40'48"E
-    GB3BUX - IO93BF (53°13'45"N, 001°52'30"W)
-    IW1RCT - JN44FH (44°18'45"N, 008°27'29"E)
-    >>> no_valid_locations_file = StringIO("\\n".join([
-    ...     '[SV1UY-12]',
-    ...     'frequency=144.625',
-    ...     'locator=TCP/IP',
-    ...     'qth=Athen 1200 ']))
-    >>> locations = import_baken_file(no_valid_locations_file)
-    >>> len(locations)
-    0
-
-    @type baken_file: C{file}, C{list} or C{str}
-    @param baken_file: Baken data to read
-    @rtype: C{dict}
-    @return: Named locations with optional comments
+    Class for representing a group of Baken objects
     """
-    data = ConfigParser.ConfigParser()
-    if hasattr(baken_file, "readlines"):
-        data.readfp(baken_file)
-    elif isinstance(baken_file, list):
-        data.read(baken_file)
-    elif isinstance(baken_file, str):
-        if os.path.isfile(baken_file):
-            data.readfp(open(baken_file))
-    else:
-        raise ValueError("Unable to handle data of type `%s`"
-                         % type(baken_file))
-    locations = {}
-    valid_locator = re.compile("[A-Z]{2}[0-9]{2}[A-Z]{2}")
-    for name in data.sections():
-        elements = {}
-        for item in ("latitude", "longitude", "antenna", "direction",
-                     "frequency", "height", "locator", "mode", "operator",
-                     "power", "qth"):
-            if data.has_option(name, item):
-                if item in ("antenna", "locator", "mode", "operator", "power",
-                            "qth"):
-                    elements[item] = data.get(name, item)
-                    if item == "operator":
-                        elements[item] = elements[item].split(",")
-                elif item == "direction":
-                    elements[item] = data.get(name, item).split(",")
-                else:
-                    try:
-                        elements[item] = data.getfloat(name, item)
-                    except ValueError:
-                        # Work around stations with multiple frequencies
-                        # TODO: Maybe it is better to ignore these
+
+    def __init__(self, baken_file=None):
+        """
+        Initialise a new Bakens object
+        """
+        if baken_file:
+            self.import_baken_file(baken_file)
+
+    def import_baken_file(self, baken_file):
+        """
+        Import baken data files
+
+        C{import_baken_file()} returns a dictionary with keys containing the section
+        title, and values consisting of a C{point.Point} object, and all the
+        associated data from the baken data file.
+
+        It expects data files in the format used by the baken amateur radio package,
+        which is Windows INI style files such as::
+
+            [Abeche, Chad]
+            latitude=14.460000
+            longitude=20.680000
+            height=0.000000
+
+            [GB3BUX]
+            frequency=50.000
+            locator=IO93BF
+            power=25 TX
+            antenna=2 x Turnstile
+            height=460
+            mode=A1A
+
+        The reader uses U{Python <http://www.python.org/>}'s C{ConfigParser} module,
+        so should be reasonably robust against encodings and such.  The above file
+        processed by C{import_baken_file()} will return the following C{dict}
+        object::
+
+            {"Abeche, Chad": (Baken(14.460, 20.680, None, None, None, 0.000, None,
+                                    None, None, None, None),
+             "GB3BUX": : (Baken(None, None, "2 x Turnstile", None, 50.000, 460.000,
+                                "IO93BF", "A1A", None, 25, None)}
+
+        >>> try:
+        ...     from io import StringIO
+        ... except ImportError:
+        ...     from StringIO import StringIO
+        >>> baken_file = StringIO("\\n".join([
+        ...     '[Abeche, Chad]',
+        ...     'latitude=14.460000',
+        ...     'longitude=20.680000',
+        ...     'height=0.000000',
+        ...     '',
+        ...     '[GB3BUX]',
+        ...     'frequency=50.000',
+        ...     'locator=IO93BF',
+        ...     'power=25 TX',
+        ...     'antenna=2 x Turnstile',
+        ...     'height=460',
+        ...     'mode=A1A',
+        ...     '',
+        ...     '[IW1RCT]',
+        ...     'frequency=50.001',
+        ...     'locator=JN44FH',
+        ...     'power=2 TX',
+        ...     'antenna=3 ele Yagi',
+        ...     'direction=90',
+        ...     'mode=A1A']))
+        >>> locations = Bakens(baken_file)
+        >>> for key, value in sorted(locations.items()):
+        ...     print("%s - %s" % (key, value))
+        Abeche, Chad - 14°27'36"N, 020°40'48"E
+        GB3BUX - IO93BF (53°13'45"N, 001°52'30"W)
+        IW1RCT - JN44FH (44°18'45"N, 008°27'29"E)
+        >>> no_valid_locations_file = StringIO("\\n".join([
+        ...     '[SV1UY-12]',
+        ...     'frequency=144.625',
+        ...     'locator=TCP/IP',
+        ...     'qth=Athen 1200 ']))
+        >>> locations = Bakens(no_valid_locations_file)
+        >>> len(locations)
+        0
+
+        @type baken_file: C{file}, C{list} or C{str}
+        @param baken_file: Baken data to read
+        @rtype: C{dict}
+        @return: Named locations with optional comments
+        """
+        data = ConfigParser.ConfigParser()
+        if hasattr(baken_file, "readlines"):
+            data.readfp(baken_file)
+        elif isinstance(baken_file, list):
+            data.read(baken_file)
+        elif isinstance(baken_file, str):
+            if os.path.isfile(baken_file):
+                data.readfp(open(baken_file))
+        else:
+            raise ValueError("Unable to handle data of type `%s`"
+                             % type(baken_file))
+        valid_locator = re.compile("[A-Z]{2}[0-9]{2}[A-Z]{2}")
+        for name in data.sections():
+            elements = {}
+            for item in ("latitude", "longitude", "antenna", "direction",
+                         "frequency", "height", "locator", "mode", "operator",
+                         "power", "qth"):
+                if data.has_option(name, item):
+                    if item in ("antenna", "locator", "mode", "operator", "power",
+                                "qth"):
+                        elements[item] = data.get(name, item)
+                        if item == "operator":
+                            elements[item] = elements[item].split(",")
+                    elif item == "direction":
                         elements[item] = data.get(name, item).split(",")
-            else:
-                elements[item] = None
-        # Some locations in the "nodefile" data do not contain any location
-        # information, and are therefore not useful for our purposes.
-        if elements["latitude"] is None \
-           and not valid_locator.match(elements["locator"]):
-            continue
+                    else:
+                        try:
+                            elements[item] = data.getfloat(name, item)
+                        except ValueError:
+                            # Work around stations with multiple frequencies
+                            # TODO: Maybe it is better to ignore these
+                            elements[item] = data.get(name, item).split(",")
+                else:
+                    elements[item] = None
+            # Some locations in the "nodefile" data do not contain any location
+            # information, and are therefore not useful for our purposes.
+            if elements["latitude"] is None \
+               and not valid_locator.match(elements["locator"]):
+                continue
 
-        locations[name] = Baken(**elements)
-    return locations
+            self.__setitem__(name, Baken(**elements))
 

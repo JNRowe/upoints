@@ -27,7 +27,7 @@ PYTHON := python
 PYTHON_ENV := PYTHONPATH=$$PYTHONPATH:$(shell pwd)
 
 RST2HTML := rst2html.py
-RST2HTML_OPTIONS := --source-link --strict \
+RST2HTML_OPTIONS := --source-link --strict --generator \
 	--stylesheet-path=doc/docutils.css --link-stylesheet
 
 NOSE := nosetests
@@ -35,9 +35,15 @@ NOSE_OPTIONS := --with-doctest --with-coverage --cover-tests \
 	--cover-inclusive --cover-package=$(PACKAGE_NAME) $(PACKAGE_NAME)
 
 .PHONY: ChangeLog MANIFEST .hg_version check check-nose check-no_nose \
-	check-docs clean dist snapshot
+	check-docs clean dist docs snapshot
 
-all: html/index.html README.html
+all: docs
+
+DOCS := $(patsubst %.txt, %.html, $(wildcard doc/*.txt))
+docs: html/index.html README.html $(DOCS)
+
+%.html: %.txt
+	$(RST2HTML) $(RST2HTML_OPTIONS) $< $@
 
 html/index.html: $(PYFILES)
 	epydoc $(PYFILES)
@@ -54,7 +60,9 @@ check-no_nose: check-docs
 	for i in $(PYFILES); do \
 		echo ">>> $$i"; \
 		module=`echo $$i | sed -e 's,\(.*\)/\(.*\).py,\1.\2,' -e 's,.__init__,,'`; \
-		$(PYTHON_ENV) $(PYTHON) -c "import doctest, sys, $(PACKAGE_NAME); sys.exit(doctest.testmod($$module)[0])"; \
+		$(PYTHON_ENV) $(PYTHON) -c "import doctest, sys, $(PACKAGE_NAME); "\
+			"sys.exit(doctest.testmod($$module,"\
+			"optionflags=doctest.REPORT_UDIFF)[0])"; \
 	done; \
 
 check-docs:

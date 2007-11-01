@@ -101,110 +101,117 @@ class Trigpoint(point.Point):
         else:
             return text
 
-def import_marker_file(marker_file):
+class Trigpoints(dict):
     """
-    Import trigpoint database files
-
-    C{import_marker_file()} returns a dictionary with keys containing the
-    trigpoint identifier, and values consisting of a C{point.Point} object, the
-    trigpoint altitude and a string containing the name found in the marker
-    file.
-
-    It expects trigpoint marker files in the format provided at
-    U{alltrigs-wgs84.txt http://www.haroldstreet.org.uk/trigpoints.php}, which
-    is the following format::
-
-        H  SOFTWARE NAME & VERSION
-        I  GPSU 4.04,
-        S SymbolSet=0
-        ...
-        W,500936,N52.066035,W000.281449,    37.0,Broom Farm
-        W,501097,N52.010585,W000.173443,    97.0,Bygrave
-        W,505392,N51.910886,W000.186462,   136.0,Sish Lane
-
-    Any line not consisting of 6 comma separated fields will be ignored.  The
-    reader uses U{Python <http://www.python.org/>}'s C{csv} module, so
-    alternative whitespace formatting should have no effect.  The above file
-    processed by C{import_marker_file()} will return the following C{dict}
-    object::
-
-        {500936: (point.Point(52.066035, -0.281449, 37.0, "Broom Farm"),
-         501097: (point.Point(52.010585, -0.173443, 97.0, "Bygrave"),
-         505392: (point.Point(51.910886, -0.186462, 136.0, "Sish Lane")}
-
-    >>> try:
-    ...     from io import StringIO
-    ... except ImportError:
-    ...     from StringIO import StringIO
-    >>> marker_file = StringIO("\\n".join([
-    ...     'H  SOFTWARE NAME & VERSION',
-    ...     'I  GPSU 4.04,',
-    ...     'S SymbolSet=0',
-    ...     '...',
-    ...     'W,500936,N52.066035,W000.281449,    37.0,Broom Farm',
-    ...     'W,501097,N52.010585,W000.173443,    97.0,Bygrave',
-    ...     'W,505392,N51.910886,W000.186462,   136.0,Sish Lane']))
-    >>> markers = import_marker_file(marker_file)
-    >>> for key, value in sorted(markers.items()):
-    ...     print("%s - %s" % (key, value))
-    500936 - Broom Farm (52°03'57"N, 000°16'53"W alt 37m)
-    501097 - Bygrave (52°00'38"N, 000°10'24"W alt 97m)
-    505392 - Sish Lane (51°54'39"N, 000°11'11"W alt 136m)
-    >>> marker_file.seek(0)
-    >>> markers = import_marker_file(marker_file.readlines())
-    >>> markers = import_marker_file(None)
-    Traceback (most recent call last):
-        ...
-    TypeError: Unable to handle data of type `<type 'NoneType'>'
-    >>> southern_hemisphere = StringIO("\\n".join([
-    ...     'W,1,S48.123123,W000.123123,    12.0,FakeLand']))
-    >>> markers = import_marker_file(southern_hemisphere)
-    >>> print markers[1]
-    FakeLand (48°07'23"S, 000°07'23"W alt 12m)
-    >>> broken_altitude = StringIO("\\n".join([
-    ...     'W,500968,N53.639826,W001.659589,  8888.0,Brown Hill Nm  See The Heights',
-    ...     'W,501414,N51.101043,E001.142599,  8888.0,Cheriton Hill Nm  See Paddlesworth']))
-    >>> markers = import_marker_file(broken_altitude)
-    >>> for key, value in sorted(markers.items()):
-    ...     print("%s - %s" % (key, value))
-    500968 - Brown Hill Nm  See The Heights (53°38'23"N, 001°39'34"W)
-    501414 - Cheriton Hill Nm  See Paddlesworth (51°06'03"N, 001°08'33"E)
-
-    @type marker_file: C{file}, C{list} or C{str}
-    @param marker_file: Trigpoint marker data to read
-    @rtype: C{dict}
-    @return: Named locations with optional comments
-    @raise ValueError: Invalid value for C{marker_file}
+    Class for representing a group of Trigpoint objects
     """
-    if hasattr(marker_file, "readlines"):
-        data = csv.reader(marker_file)
-    elif isinstance(marker_file, list):
-        data = csv.reader(marker_file)
-    elif isinstance(marker_file, str):
-        if os.path.isfile(marker_file):
-            data = csv.reader(open(marker_file))
-    else:
-        raise TypeError("Unable to handle data of type `%s'"
-                        % type(marker_file))
 
-    markers = {}
-    for row in data:
-        if not len(row) == 6 or row[0] == "F":
-            continue
-        identity, latitude, longitude, altitude, name = row[1:]
-        identity = int(identity)
-        if latitude[0] == "N":
-            latitude = float(latitude[1:])
+    def __init__(self, marker_file=None):
+        """
+        Initialise a new Trigpoints object
+        """
+        if marker_file:
+            self.import_marker_file(marker_file)
+
+    def import_marker_file(self, marker_file):
+        """
+        Import trigpoint database files
+
+        C{import_marker_file()} returns a dictionary with keys containing the
+        trigpoint identifier, and values consisting of a C{point.Point} object, the
+        trigpoint altitude and a string containing the name found in the marker
+        file.
+
+        It expects trigpoint marker files in the format provided at
+        U{alltrigs-wgs84.txt http://www.haroldstreet.org.uk/trigpoints.php}, which
+        is the following format::
+
+            H  SOFTWARE NAME & VERSION
+            I  GPSU 4.04,
+            S SymbolSet=0
+            ...
+            W,500936,N52.066035,W000.281449,    37.0,Broom Farm
+            W,501097,N52.010585,W000.173443,    97.0,Bygrave
+            W,505392,N51.910886,W000.186462,   136.0,Sish Lane
+
+        Any line not consisting of 6 comma separated fields will be ignored.  The
+        reader uses U{Python <http://www.python.org/>}'s C{csv} module, so
+        alternative whitespace formatting should have no effect.  The above file
+        processed by C{import_marker_file()} will return the following C{dict}
+        object::
+
+            {500936: (point.Point(52.066035, -0.281449, 37.0, "Broom Farm"),
+             501097: (point.Point(52.010585, -0.173443, 97.0, "Bygrave"),
+             505392: (point.Point(51.910886, -0.186462, 136.0, "Sish Lane")}
+
+        >>> try:
+        ...     from io import StringIO
+        ... except ImportError:
+        ...     from StringIO import StringIO
+        >>> marker_file = StringIO("\\n".join([
+        ...     'H  SOFTWARE NAME & VERSION',
+        ...     'I  GPSU 4.04,',
+        ...     'S SymbolSet=0',
+        ...     '...',
+        ...     'W,500936,N52.066035,W000.281449,    37.0,Broom Farm',
+        ...     'W,501097,N52.010585,W000.173443,    97.0,Bygrave',
+        ...     'W,505392,N51.910886,W000.186462,   136.0,Sish Lane']))
+        >>> markers = Trigpoints(marker_file)
+        >>> for key, value in sorted(markers.items()):
+        ...     print("%s - %s" % (key, value))
+        500936 - Broom Farm (52°03'57"N, 000°16'53"W alt 37m)
+        501097 - Bygrave (52°00'38"N, 000°10'24"W alt 97m)
+        505392 - Sish Lane (51°54'39"N, 000°11'11"W alt 136m)
+        >>> marker_file.seek(0)
+        >>> markers = Trigpoints(marker_file.readlines())
+        >>> southern_hemisphere = StringIO("\\n".join([
+        ...     'W,1,S48.123123,W000.123123,    12.0,FakeLand']))
+        >>> markers = Trigpoints(southern_hemisphere)
+        >>> print markers[1]
+        FakeLand (48°07'23"S, 000°07'23"W alt 12m)
+        >>> broken_altitude = StringIO("\\n".join([
+        ...     'W,500968,N53.639826,W001.659589,  8888.0,Brown Hill Nm  See The Heights',
+        ...     'W,501414,N51.101043,E001.142599,  8888.0,Cheriton Hill Nm  See Paddlesworth']))
+        >>> markers = Trigpoints(broken_altitude)
+        >>> for key, value in sorted(markers.items()):
+        ...     print("%s - %s" % (key, value))
+        500968 - Brown Hill Nm  See The Heights (53°38'23"N, 001°39'34"W)
+        501414 - Cheriton Hill Nm  See Paddlesworth (51°06'03"N, 001°08'33"E)
+
+        @type marker_file: C{file}, C{list} or C{str}
+        @param marker_file: Trigpoint marker data to read
+        @rtype: C{dict}
+        @return: Named locations with optional comments
+        @raise ValueError: Invalid value for C{marker_file}
+        """
+        if hasattr(marker_file, "readlines"):
+            data = csv.reader(marker_file)
+        elif isinstance(marker_file, list):
+            data = csv.reader(marker_file)
+        elif isinstance(marker_file, str):
+            if os.path.isfile(marker_file):
+                data = csv.reader(open(marker_file))
         else:
-            latitude = 0 - float(latitude[1:])
-        if longitude[0] == "E":
-            longitude = float(longitude[1:])
-        else:
-            longitude = 0 - float(longitude[1:])
-        altitude = float(altitude)
-        # A value of 8888 denotes unavailable data
-        if altitude == 8888:
-            altitude = None
-        markers[identity] = Trigpoint(latitude, longitude, altitude, name)
-    return markers
+            raise TypeError("Unable to handle data of type `%s'"
+                            % type(marker_file))
+
+        for row in data:
+            if not len(row) == 6 or row[0] == "F":
+                continue
+            identity, latitude, longitude, altitude, name = row[1:]
+            identity = int(identity)
+            if latitude[0] == "N":
+                latitude = float(latitude[1:])
+            else:
+                latitude = 0 - float(latitude[1:])
+            if longitude[0] == "E":
+                longitude = float(longitude[1:])
+            else:
+                longitude = 0 - float(longitude[1:])
+            altitude = float(altitude)
+            # A value of 8888 denotes unavailable data
+            if altitude == 8888:
+                altitude = None
+            self.__setitem__(identity, Trigpoint(latitude, longitude, altitude,
+                                                 name))
 

@@ -87,72 +87,102 @@ class Xearth(point.Point):
         else:
             return text
 
-def import_marker_file(marker_file):
+class Xearths(dict):
     """
-    Parse xearth data files
-
-    C{import_marker_file()} returns a dictionary with keys containing the
-    U{xearth <http://www.cs.colorado.edu/~tuna/xearth/>} name, and values
-    consisting of a C{point.Point} object and a string containing any comment
-    found in the marker file.
-
-    It expects xearth marker files in the following format::
-
-        # Comment
-
-        52.015     -0.221 "Home"          # James Rowe's home
-        52.6333    -2.5   "Telford"
-
-    Any empty line or line starting with a '#' is ignored.  All data lines are
-    whitespace-normalised, so actual layout should have no effect.  The above
-    file processed by C{import_marker_file()} will return the following C{dict}
-    object::
-
-        {'Home': (point.Point(52.015, -0.221, "James Rowe's home"),
-         'Telford': (point.Point(52.6333, -2.5, None)}
-
-    @note: This function also handles the extended U{xplanet
-    <http://xplanet.sourceforge.net/>} marker files whose points can optionally
-    contain added xplanet specific keywords for defining colours and fonts.
-
-    >>> try:
-    ...     from io import StringIO
-    ... except ImportError:
-    ...     from StringIO import StringIO
-    >>> marker_file = StringIO("\\n".join([
-    ...     '# Comment',
-    ...     '',
-    ...     '52.015     -0.221 "Home" font=11  # James Rowe\\'s home',
-    ...     '52.6333    -2.5   "Telford" font=11 color=blue']))
-    >>> markers = import_marker_file(marker_file)
-    >>> for key, value in sorted(markers.items()):
-    ...     print("%s - %s" % (key, value))
-    Home - James Rowe's home (N52.015°; W000.221°)
-    Telford - N52.633°; W002.500°
-
-    @type marker_file: C{file}, C{list} or C{str}
-    @param marker_file: xearth marker data to read
-    @rtype: C{dict}
-    @return: Named locations with optional comments
+    Class for representing a group of Xearth objects
     """
-    data = utils.prepare_read(marker_file)
 
-    markers = {}
-    for line in data:
-        line = line.strip()
-        if line == "" or line.startswith("#"):
-            continue
-        chunk = line.split("#")
-        data = chunk[0]
-        if len(chunk) == 2:
-            comment = chunk[1].strip()
-        else:
-            comment = None
-        # Need maximum split of 2, because name may contain whitespace
-        latitude, longitude, name = data.split(None, 2)
-        name = name.strip()
-        # Find matching start and end quote, and keep only the contents
-        name = name[1:name.find(name[0], 1)]
-        markers[name.strip()] = Xearth(latitude, longitude, comment)
-    return markers
+    def __init__(self, marker_file=None):
+        """
+        Initialise a new Xearths object
+        """
+        if marker_file:
+            self.import_marker_file(marker_file)
+
+    def __str__(self):
+        """
+        Xearth objects rendered for use with xearth/xplanet
+
+        >>> try:
+        ...     from io import StringIO
+        ... except ImportError:
+        ...     from StringIO import StringIO
+        >>> marker_file = StringIO("\\n".join([
+        ...     '# Comment',
+        ...     '',
+        ...     '52.015     -0.221 "Home" font=11  # James Rowe\\'s home',
+        ...     '52.6333    -2.5   "Telford" font=11 color=blue']))
+        >>> markers = Xearths(marker_file)
+        >>> print markers
+        52.015000 -0.221000 "Home"
+        52.633300 -2.500000 "Telford"
+        """
+        return "\n".join(utils.dump_xearth_markers(self, "comment"))
+
+    def import_marker_file(self, marker_file):
+        """
+        Parse xearth data files
+
+        C{import_marker_file()} returns a dictionary with keys containing the
+        U{xearth <http://www.cs.colorado.edu/~tuna/xearth/>} name, and values
+        consisting of a C{point.Point} object and a string containing any comment
+        found in the marker file.
+
+        It expects xearth marker files in the following format::
+
+            # Comment
+
+            52.015     -0.221 "Home"          # James Rowe's home
+            52.6333    -2.5   "Telford"
+
+        Any empty line or line starting with a '#' is ignored.  All data lines are
+        whitespace-normalised, so actual layout should have no effect.  The above
+        file processed by C{import_marker_file()} will return the following C{dict}
+        object::
+
+            {'Home': (point.Point(52.015, -0.221, "James Rowe's home"),
+             'Telford': (point.Point(52.6333, -2.5, None)}
+
+        @note: This function also handles the extended U{xplanet
+        <http://xplanet.sourceforge.net/>} marker files whose points can optionally
+        contain added xplanet specific keywords for defining colours and fonts.
+
+        >>> try:
+        ...     from io import StringIO
+        ... except ImportError:
+        ...     from StringIO import StringIO
+        >>> marker_file = StringIO("\\n".join([
+        ...     '# Comment',
+        ...     '',
+        ...     '52.015     -0.221 "Home" font=11  # James Rowe\\'s home',
+        ...     '52.6333    -2.5   "Telford" font=11 color=blue']))
+        >>> markers = Xearths(marker_file)
+        >>> for key, value in sorted(markers.items()):
+        ...     print("%s - %s" % (key, value))
+        Home - James Rowe's home (N52.015°; W000.221°)
+        Telford - N52.633°; W002.500°
+
+        @type marker_file: C{file}, C{list} or C{str}
+        @param marker_file: xearth marker data to read
+        @rtype: C{dict}
+        @return: Named locations with optional comments
+        """
+        data = utils.prepare_read(marker_file)
+
+        for line in data:
+            line = line.strip()
+            if line == "" or line.startswith("#"):
+                continue
+            chunk = line.split("#")
+            data = chunk[0]
+            if len(chunk) == 2:
+                comment = chunk[1].strip()
+            else:
+                comment = None
+            # Need maximum split of 2, because name may contain whitespace
+            latitude, longitude, name = data.split(None, 2)
+            name = name.strip()
+            # Find matching start and end quote, and keep only the contents
+            name = name[1:name.find(name[0], 1)]
+            self.__setitem__(name.strip(), Xearth(latitude, longitude, comment))
 

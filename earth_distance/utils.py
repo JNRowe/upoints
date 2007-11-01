@@ -915,6 +915,8 @@ def dump_xearth_markers(markers, name="identifier"):
                 line += '"%s" # %s' % (identifier, point.name)
             elif name == "name":
                 line += '"%s" # %s' % (point.name, identifier)
+            elif name == "comment":
+                line += '"%s" # %s' % (identifier, point.comment)
             else:
                 raise ValueError("Unknown name type `%s'" % name)
             if hasattr(point, 'altitude') and point.altitude:
