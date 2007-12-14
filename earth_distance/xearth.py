@@ -18,12 +18,11 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from earth_distance import point
-from earth_distance import utils
+from earth_distance import (point, utils)
 
 class Xearth(point.Point):
     """
-    Class for representing a location from a xearth marker file
+    Class for representing a location from a Xearth marker
 
     @ivar latitude: Location's latitude
     @ivar longitude: Locations's longitude
@@ -35,7 +34,7 @@ class Xearth(point.Point):
     def __init__(self, latitude, longitude, comment=None, format="metric",
                  angle="degrees"):
         """
-        Initialise a new Xearth object
+        Initialise a new C{Xearth} object
 
         @type latitude: C{float} or coercible to C{float}
         @param latitude: Location's latitude
@@ -52,13 +51,13 @@ class Xearth(point.Point):
         Self-documenting string representation
 
         >>> Xearth(52.015, -0.221, "James Rowe's house")
-        Xearth(52.015000, -0.221000, "James Rowe's house")
+        Xearth(52.015, -0.221, "James Rowe's house")
 
         @rtype: C{str}
-        @return: String to recreate Xearth object
+        @return: String to recreate C{Xearth} object
         """
-        return 'Xearth(%f, %f, %r)' % (self.latitude, self.longitude,
-                                       self.comment)
+        data = utils.repr_assist(self.latitude, self.longitude, self.comment)
+        return self.__class__.__name__ + '(' + ", ".join(data) + ')'
 
     def __str__(self, mode="dd"):
         """
@@ -71,14 +70,14 @@ class Xearth(point.Point):
         >>> print(Xearth(52.015, -0.221).__str__(mode="dms"))
         52°00'54"N, 000°13'15"W
         >>> print(Xearth(52.015, -0.221).__str__(mode="dm"))
-        52°00.90'N, 000°13.25'W
+        52°00.90'N, 000°13.26'W
         >>> print(Xearth(52.015, -0.221, "James Rowe's house"))
         James Rowe's house (N52.015°; W000.221°)
 
         @type mode: C{str}
         @param mode: Coordinate formatting system to use
         @rtype: C{str}
-        @return: Human readable string representation of Point object
+        @return: Human readable string representation of C{Xearth} object
         """
         text = super(Xearth, self).__str__(mode)
 
@@ -89,81 +88,68 @@ class Xearth(point.Point):
 
 class Xearths(dict):
     """
-    Class for representing a group of Xearth objects
+    Class for representing a group of C{Xearth} objects
     """
 
     def __init__(self, marker_file=None):
         """
-        Initialise a new Xearths object
+        Initialise a new C{Xearths} object
         """
+        dict.__init__(self)
         if marker_file:
             self.import_marker_file(marker_file)
 
     def __str__(self):
         """
-        Xearth objects rendered for use with xearth/xplanet
+        C{Xearth} objects rendered for use with Xearth/Xplanet
 
-        >>> try:
-        ...     from io import StringIO
-        ... except ImportError:
-        ...     from StringIO import StringIO
-        >>> marker_file = StringIO("\\n".join([
-        ...     '# Comment',
-        ...     '',
-        ...     '52.015     -0.221 "Home" font=11  # James Rowe\\'s home',
-        ...     '52.6333    -2.5   "Telford" font=11 color=blue']))
-        >>> markers = Xearths(marker_file)
+        >>> markers = Xearths(open("xearth"))
         >>> print markers
         52.015000 -0.221000 "Home"
         52.633300 -2.500000 "Telford"
+
+        @rtype: C{str}
+        @return: Xearth/Xplanet marker file formatted output
         """
         return "\n".join(utils.dump_xearth_markers(self, "comment"))
 
     def import_marker_file(self, marker_file):
         """
-        Parse xearth data files
+        Parse Xearth data files
 
         C{import_marker_file()} returns a dictionary with keys containing the
         U{xearth <http://www.cs.colorado.edu/~tuna/xearth/>} name, and values
-        consisting of a C{point.Point} object and a string containing any comment
+        consisting of a C{Xearth} object and a string containing any comment
         found in the marker file.
 
-        It expects xearth marker files in the following format::
+        It expects Xearth marker files in the following format::
 
             # Comment
 
             52.015     -0.221 "Home"          # James Rowe's home
             52.6333    -2.5   "Telford"
 
-        Any empty line or line starting with a '#' is ignored.  All data lines are
-        whitespace-normalised, so actual layout should have no effect.  The above
-        file processed by C{import_marker_file()} will return the following C{dict}
-        object::
+        Any empty line or line starting with a '#' is ignored.  All data lines
+        are whitespace-normalised, so actual layout should have no effect.  The
+        above file processed by C{import_marker_file()} will return the
+        following C{dict} object::
 
-            {'Home': (point.Point(52.015, -0.221, "James Rowe's home"),
-             'Telford': (point.Point(52.6333, -2.5, None)}
+            {'Home': point.Point(52.015, -0.221, "James Rowe's home"),
+             'Telford': point.Point(52.6333, -2.5, None)}
 
         @note: This function also handles the extended U{xplanet
-        <http://xplanet.sourceforge.net/>} marker files whose points can optionally
-        contain added xplanet specific keywords for defining colours and fonts.
+        <http://xplanet.sourceforge.net/>} marker files whose points can
+        optionally contain added xplanet specific keywords for defining colours
+        and fonts.
 
-        >>> try:
-        ...     from io import StringIO
-        ... except ImportError:
-        ...     from StringIO import StringIO
-        >>> marker_file = StringIO("\\n".join([
-        ...     '# Comment',
-        ...     '',
-        ...     '52.015     -0.221 "Home" font=11  # James Rowe\\'s home',
-        ...     '52.6333    -2.5   "Telford" font=11 color=blue']))
-        >>> markers = Xearths(marker_file)
+        >>> markers = Xearths(open("xearth"))
         >>> for key, value in sorted(markers.items()):
         ...     print("%s - %s" % (key, value))
         Home - James Rowe's home (N52.015°; W000.221°)
         Telford - N52.633°; W002.500°
 
         @type marker_file: C{file}, C{list} or C{str}
-        @param marker_file: xearth marker data to read
+        @param marker_file: Xearth marker data to read
         @rtype: C{dict}
         @return: Named locations with optional comments
         """
@@ -184,5 +170,5 @@ class Xearths(dict):
             name = name.strip()
             # Find matching start and end quote, and keep only the contents
             name = name[1:name.find(name[0], 1)]
-            self.__setitem__(name.strip(), Xearth(latitude, longitude, comment))
+            self[name.strip()] = Xearth(latitude, longitude, comment)
 

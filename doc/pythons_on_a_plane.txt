@@ -16,21 +16,21 @@ publish extensive location data for the weather stations they monitor.
 And many thanks to them, because we can use their databases to populate
 our local geolocation databases.
 
-::
+.. code-block:: pycon
 
-    import weather_stations, urllib
-    WMO_stations_database = urllib.urlopen("http://weather.noaa.gov/data/nsd_bbsss.txt")
-    WMO_stations = weather_stations.Stations(WMO_stations_database)
+    >>> from earth_distance import weather_stations
+    >>> WMO_stations_database = urllib.urlopen("http://weather.noaa.gov/data/nsd_bbsss.txt")
+    >>> WMO_stations = weather_stations.Stations(WMO_stations_database)
 
 The above snippet will import the WMO identifier keyed database
 available from the `meteorological station location information page`_.
 They also provide a database keyed with ICAO identifiers, which
 can also be imported:
 
-::
+.. code-block:: pycon
 
-    ICAO_stations_database = urllib.urlopen("http://weather.noaa.gov/data/nsd_cccc.txt")
-    ICAO_stations = weather_stations.Stations(ICAO_stations_database, "ICAO")
+    >>> ICAO_stations_database = urllib.urlopen("http://weather.noaa.gov/data/nsd_cccc.txt")
+    >>> ICAO_stations = weather_stations.Stations(ICAO_stations_database, "ICAO")
 
 The WMO indexed database contains 11548 entries and the
 ICAO keyed database contains 6611 entries as of 2007-05-30.
@@ -42,10 +42,10 @@ Another thing to consider because of the size of the database is whether
 you need to operate on all the entries at once.  Maybe you only want to
 work with entries in the UK:
 
-::
+.. code-block:: pycon
 
-    UK_locations = dict(filter(lambda x: x[1].country == "United Kingdom",
-                               ICAO_stations.items()))
+    >>> UK_locations = dict(filter(lambda x: x[1].country == "United Kingdom",
+    ...                            ICAO_stations.items()))
 
 Let us imagine for a minute that next month you're flying from London
 Luton to our office in Toulouse, then dropping by Birmingham for GUADEC,
@@ -54,11 +54,12 @@ along Great Circles and don't get stuck in holding patterns waiting to
 land then we can calculate the distance for the whole journey quite
 easily.
 
-::
+.. code-block:: pycon
 
-    Europe = dict(filter(lambda x: x[1].WMO == 6, ICAO_stations.items()))
-    del(ICAO_stations)
-    print len(Europe)
+    >>> Europe = dict(filter(lambda x: x[1].wmo == 6, ICAO_stations.items()))
+    >>> del(ICAO_stations)
+    >>> print len(Europe)
+    1130
 
 First we can see that the trip is entirely based in Europe, and
 according to the `station location page`_ all the European stations are
@@ -68,28 +69,25 @@ and if we wished we could release the full database containing 10000
 entries we don't need from memory using code similar to the snippet
 above [#]_.
 
-::
+.. code-block:: pycon
 
-    Trip = [Europe[i] for i in ('EGGW', 'LFBO', 'EGBB', 'EGSS')]
+    >>> Trip = [Europe[i] for i in ('EGGW', 'LFBO', 'EGBB', 'EGSS')]
+    >>> 
+    >>> leg_calc = lambda x, y: (x.distance(y), x.bearing(y))
+    >>> legs = [leg_calc(Trip[i], Trip[i+1]) for i in range(len(Trip) - 1)]
 
-    leg_calc = lambda x, y: (x.distance(y), x.bearing(y))
-    legs = [leg_calc(Trip[i], Trip[i+1]) for i in range(len(Trip) - 1)]
-
-    print len(Trip) - 1, "legs"
-    for i in range(len(Trip) - 1):
-        print "  * %s to %s" % (Trip[i].name, Trip[i+1].name)
-        print "    - %i kilometres on a bearing of %i degrees" % (legs[i][0], legs[i][1])
-    print "For a total of %i kilometres" % sum([i[0] for i in legs])
-
-The above code will generate the following output::
-
+    >>> print len(Trip) - 1, "legs"
     3 legs
+    >>> for i in range(len(Trip) - 1):
+    ...     print "  * %s to %s" % (Trip[i].name, Trip[i+1].name)
+    ...     print "    - %i kilometres on a bearing of %i degrees" % (legs[i][0], legs[i][1])
       * Luton Airport  to Toulouse / Blagnac
         - 924 kilometres on a bearing of 171 degrees
       * Toulouse / Blagnac to Birmingham / Airport
         - 1007 kilometres on a bearing of 347 degrees
       * Birmingham / Airport to Stansted Airport
         - 148 kilometres on a bearing of 114 degrees
+    >>> print "For a total of %i kilometres" % sum([i[0] for i in legs])
     For a total of 2079 kilometres
 
 The ``Station`` class inherits from ``Trigpoint`` and as such you can
@@ -97,14 +95,15 @@ use the functions and methods defined for it with ``Station`` objects.
 You could, for example, create a nice graphical view of your trip with
 xplanet_:
 
-::
+.. code-block:: pycon
 
-    Trip = dict(zip(("2007-06-29", "2007-06-30", "2007-07-12",
-                     "2007-07-14"),
-                    Trip))
-    f = open("trip.txt", "w")
-    f.write("\n".join(weather_stations.trigpoints.dump_xearth_markers(Trip, "name")))
-    f.close()
+    >>> Trip = dict(zip(("2007-06-29", "2007-06-30", "2007-07-12",
+    ...                  "2007-07-14"),
+    ...                 Trip))
+    >>> f = open("trip.txt", "w")
+    >>> from earth_distance import utils
+    >>> f.write("\n".join(utils.dump_xearth_markers(Trip, "name")))
+    >>> f.close()
 
 .. figure:: images/xearth_trip_mini.png
    :alt: Xplanet showing the locations for a small European trip

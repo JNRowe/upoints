@@ -1,0 +1,20 @@
+[Abeche, Chad]
+latitude=14.460000
+longitude=20.680000
+height=0.000000
+
+[GB3BUX]
+frequency=50.000
+locator=IO93BF
+power=25 TX
+antenna=2 x Turnstile
+height=460
+mode=A1A
+
+[IW1RCT]
+frequency=50.001
+locator=JN44FH
+power=2 TX
+antenna=3 ele Yagi
+direction=90
+mode=A1A

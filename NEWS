@@ -1,0 +1,54 @@
+``earth_distance``
+==================
+
+User-visible changes
+--------------------
+
+0.6.0 - 2007-12-14
+------------------
+
+  * Support for importing KML_ data files
+  * Support for importing zoneinfo zone descriptions
+  * Latitude and longitude values are now managed attributes, and can be
+    updated in place(as can Baken Maidenhead locators)
+  * Locations now support a much prettier Unicode output mode
+  * ``edist.py`` a new user script that allows one to manipulate
+    locations in various ways from the command line
+  * Package no longer requires ``make`` for development functions
+  * Tests no longer span network boundaries, and should run on any
+    default Python install once initially seeded
+
+.. _KML: http://code.google.com/apis/kml/documentation/kml_tags_21.html
+
+0.5.0 - 2007-01-01
+------------------
+
+  * All ``Point`` children now have dictionary-based collection objects,
+    named ``<base>s``
+  * Import and export routines of ``Point`` objects have now moved in to
+    their respective collection objects
+
+0.4.0 - 2007-10-02
+------------------
+
+  * Support for baken_ data files in ``baken``
+
+.. _baken: http://www.qsl.net/g4klx/
+
+0.3.0 - 2007-10-01
+------------------
+
+  * Support for geonames_ database exports in ``geonames``
+  * Support for ISO 6709 coordinate strings in ``utils.from_iso6709``
+    and ``utils.to_iso6709``
+  * Support for Maidenhead locator strings in
+    ``utils.from_grid_locator`` and ``utils.to_grid_locator``
+  * Support for creating Xearth_ markers files with any
+    ``Point``-compatible objects using ``utils.dump_xearth_markers``
+
+.. _geonames: http://www.geonames.org/
+.. _Xearth: http://www.cs.colorado.edu/~tuna/xearth/
+
+..
+    :vim: set ft=rst ts=2 sw=2 et:
+

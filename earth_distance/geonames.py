@@ -27,8 +27,7 @@ try:
 except ImportError:
     tz = None
 
-from earth_distance import trigpoints
-from earth_distance import utils
+from earth_distance import (trigpoints, utils)
 
 class Location(trigpoints.Trigpoint):
     """
@@ -59,6 +58,7 @@ class Location(trigpoints.Trigpoint):
     @ivar timezone: The non-DST UTC timezone offset in minutes
     @ivar modified_date: Location's last modification date in the geonames
         databases
+    @cvar __TIMEZONES: C{dateutil.gettz} cache to speed up generation
     """
 
     __slots__ = ('geonameid', 'asciiname', 'alt_names', 'feature_class',
@@ -74,7 +74,7 @@ class Location(trigpoints.Trigpoint):
                  admin1, admin2, admin3, admin4, population, altitude, gtopo30,
                  tzname, modified_date, timezone=None):
         """
-        Initialise a new Location object
+        Initialise a new C{Location} object
 
         @type geonameid: C{int}
         @param geonameid: ID of record in geonames database
@@ -155,24 +155,25 @@ class Location(trigpoints.Trigpoint):
         """
         Self-documenting string representation
 
-        >>> Location(2636782, "Stotfold", "Stotfold", None, 52.0, -0.2166667, "P", "PPL", "GB", None, "F8", None, None, None, 6245, None, 77, "Europe/London", datetime.date(2007, 6, 15), 0)
-        Location(2636782, 'Stotfold', 'Stotfold', None, 52.0, -0.2166667, 'P', 'PPL', 'GB', None, 'F8', None, None, None, 6245, None, 77, 'Europe/London', datetime.date(2007, 6, 15), 0)
+        >>> Location(2636782, "Stotfold", "Stotfold", None, 52.0, -0.2166667,
+        ...          "P", "PPL", "GB", None, "F8", None, None, None, 6245,
+        ...          None, 77, "Europe/London", datetime.date(2007, 6, 15), 0)
+        Location(2636782, 'Stotfold', 'Stotfold', None, 52.0, -0.2166667, 'P',
+                 'PPL', 'GB', None, 'F8', None, None, None, 6245, None, 77,
+                 'Europe/London', datetime.date(2007, 6, 15), 0)
 
         @rtype: C{str}
-        @return: String to recreate Location object
+        @return: String to recreate C{Location} object
         """
-        data = []
-        for i in (self.geonameid, self.name, self.asciiname, self.alt_names,
-                  self.latitude, self.longitude, self.feature_class,
-                  self.feature_code, self.country, self.alt_country,
-                  self.admin1, self.admin2, self.admin3, self.admin4,
-                  self.population, self.altitude, self.gtopo30, self.tzname,
-                  self.modified_date, self.timezone):
-            if isinstance(i, (type(None), str, datetime.date)):
-                data.append(repr(i))
-            else:
-                data.append(str(i))
-        return "Location(" + ", ".join(data) + ")"
+        data = utils.repr_assist(self.geonameid, self.name, self.asciiname,
+                                 self.alt_names,self.latitude, self.longitude,
+                                 self.feature_class, self.feature_code,
+                                 self.country, self.alt_country, self.admin1,
+                                 self.admin2, self.admin3, self.admin4,
+                                 self.population, self.altitude, self.gtopo30,
+                                 self.tzname, self.modified_date,
+                                 self.timezone)
+        return self.__class__.__name__ + '(' + ", ".join(data) + ')'
 
     def __str__(self, mode="dd"):
         """
@@ -180,7 +181,10 @@ class Location(trigpoints.Trigpoint):
 
         @see: C{trigpoints.point.Point}
 
-        >>> Stotfold = Location(2636782, "Stotfold", "Stotfold", None, 52.0, -0.2166667, "P", "PPL", "GB", None, "F8", None, None, None, 6245, None, 77, "Europe/London", datetime.date(2007, 6, 15))
+        >>> Stotfold = Location(2636782, "Stotfold", "Stotfold", None, 52.0,
+        ...                     -0.2166667, "P", "PPL", "GB", None, "F8", None,
+        ...                     None, None, 6245, None, 77, "Europe/London",
+        ...                     datetime.date(2007, 6, 15))
         >>> print(Stotfold)
         Stotfold (N52.000°; W000.217°)
         >>> print(Stotfold.__str__(mode="dms"))
@@ -194,7 +198,7 @@ class Location(trigpoints.Trigpoint):
         @type mode: C{str}
         @param mode: Coordinate formatting system to use
         @rtype: C{str}
-        @return: Human readable string representation of Location object
+        @return: Human readable string representation of C{Location} object
         """
         text = super(Location.__base__, self).__str__(mode)
 
@@ -205,13 +209,14 @@ class Location(trigpoints.Trigpoint):
 
 class Locations(dict):
     """
-    Class for representing a group of Location objects
+    Class for representing a group of C{Location} objects
     """
 
     def __init__(self, data=None, tzfile=None):
         """
-        Initialise a new Locations object
+        Initialise a new C{Locations} object
         """
+        dict.__init__(self)
         if tzfile:
             self.import_timezones_file(tzfile)
         else:
@@ -229,49 +234,52 @@ class Locations(dict):
         object and a large variety of other information available in the data
         exported by U{geonames <http://geonames.org/>}.
 
-        It expects data files in the following format::
+        It expects data files in the following tab separated format::
 
             2633441	Afon Wyre	Afon Wyre	River Wayrai,River Wyrai,Wyre	52.3166667	-4.1666667	H	STM	GB	GB	00				0		-9999	Europe/London	1994-01-13
             2633442	Wyre	Wyre	Viera	59.1166667	-2.9666667	T	ISL	GB	GB	V9				0		1	Europe/London	2004-09-24
             2633443	Wraysbury	Wraysbury	Wyrardisbury	51.45	-0.55	P	PPL	GB		P9				0		28	Europe/London	2006-08-21
 
-        Files containing the data in this format can be downloaded from the geonames
-        site in their U{database export page
+        Files containing the data in this format can be downloaded from the
+        geonames site in their U{database export page
         <http://download.geonames.org/export/dump/>}.
 
         Files downloaded from the geonames site when processed by
         C{import_geonames_file()} will return C{dict} object of the following
         style::
 
-            {2633441: Location(2633441, "Afon Wyre", "Afon Wyre", ['River Wayrai', 'River Wyrai', 'Wyre'], 52.3166667, -4.1666667, "H", "STM", "GB", ['GB'], "00", None, None, None, 0, None, -9999, "Europe/London", datetime.date(1994, 1, 13)),
-            2633442: Location(2633442, "Wyre", "Wyre", ['Viera'], 59.1166667, -2.9666667, "T", "ISL", "GB", ['GB'], "V9", None, None, None, 0, None, 1, "Europe/London", datetime.date(2004, 9, 24)),
-            2633443: Location(2633443, "Wraysbury", "Wraysbury", ['Wyrardisbury'], 51.45, -0.55, "P", "PPL", "GB", None, "P9", None, None, None, 0, None, 28, "Europe/London", datetime.date(2006, 8, 21))}
+            {2633441: Location(2633441, "Afon Wyre", "Afon Wyre",
+                               ['River Wayrai', 'River Wyrai', 'Wyre'],
+                               52.3166667, -4.1666667, "H", "STM", "GB",
+                               ['GB'], "00", None, None, None, 0, None, -9999,
+                               "Europe/London", datetime.date(1994, 1, 13)),
+             2633442: Location(2633442, "Wyre", "Wyre", ['Viera'], 59.1166667,
+                               -2.9666667, "T", "ISL", "GB", ['GB'], "V9",
+                               None, None, None, 0, None, 1, "Europe/London",
+                               datetime.date(2004, 9, 24)),
+             2633443: Location(2633443, "Wraysbury", "Wraysbury",
+                               ['Wyrardisbury'], 51.45, -0.55, "P", "PPL",
+                               "GB", None, "P9", None, None, None, 0, None, 28,
+                               "Europe/London", datetime.date(2006, 8, 21))}
 
-        >>> try:
-        ...     from io import StringIO
-        ... except ImportError:
-        ...     from StringIO import StringIO
-        >>> locations_file = StringIO("\\n".join([
-        ...     '2633441\\tAfon Wyre\\tAfon Wyre\\tRiver Wayrai,River Wyrai,Wyre\\t52.3166667\\t-4.1666667\\tH\\tSTM\\tGB\\tGB\\t00\\t\\t\\t\\t0\\t\\t-9999\\tEurope/London\\t1994-01-13',
-        ...     '2633442\\tWyre\\tWyre\\tViera\\t59.1166667\\t-2.9666667\\tT\\tISL\\tGB\\tGB\\tV9\\t\\t\\t\\t0\\t\\t1\\tEurope/London\\t2004-09-24',
-        ...     '2633443\\tWraysbury\\tWraysbury\\tWyrardisbury\\t51.45\\t-0.55\\tP\\tPPL\\tGB\\t\\tP9\\t\\t\\t\\t0\\t\\t28\\tEurope/London\\t2006-08-21']))
-        >>> locations = Locations(locations_file)
+        >>> locations = Locations(open("geonames"))
         >>> for key, value in sorted(locations.items()):
         ...     print("%s - %s" % (key, value))
-        2633441 - Afon Wyre (River Wayrai, River Wyrai, Wyre - N52.317°; W004.167°)
+        2633441 - Afon Wyre (River Wayrai, River Wyrai, Wyre - N52.317°;
+        W004.167°)
         2633442 - Wyre (Viera - N59.117°; W002.967°)
         2633443 - Wraysbury (Wyrardisbury - N51.450°; W000.550°)
-        >>> broken_file = StringIO("\\n".join([
-        ...     '2633443\\tW\\traysbury\\tWraysbury\\tWyrardisbury\\t51.45\\t-0.55\\tP\\tPPL\\tGB\\t\\tP9\\t\\t\\t\\t0\\t\\t28\\tEurope/London\\t2006-08-21']))
-        >>> broken_locations = Locations(broken_file)
+        >>> broken_locations = Locations(open("broken_geonames"))
         Traceback (most recent call last):
             ...
-        FileFormatError: Incorrect data format, if you're using a file downloaded from geonames.org please report this to James Rowe <jnrowe@ukfsn.org>
+        FileFormatError: Incorrect data format, if you're using a file
+        downloaded from geonames.org please report this to James Rowe
+        <jnrowe@ukfsn.org>
 
         @type data: C{file}, C{list} or C{str}
         @param data: geonames locations data to read
         @rtype: C{dict}
-        @return: geonames identifiers with C{Point} objects and associated data
+        @return: geonames identifiers with C{Location} objects
         @raise FileFormatError: Unknown file format
         """
         data = utils.prepare_read(data)
@@ -297,15 +305,15 @@ class Locations(dict):
                     continue
                 chunk[pos] = elem
             chunk.append(timezone)
-            self.__setitem__(chunk[0], Location(*chunk))
+            self[chunk[0]] = Location(*chunk)
 
     def import_timezones_file(self, data):
         """
         Parse geonames.org timezone exports
 
         C{import_timezone_file()} returns a dictionary with keys containing the
-        timezone identifier, and values consisting of a UTC offset and UTC offset
-        during daylight savings time in minutes.
+        timezone identifier, and values consisting of a UTC offset and UTC
+        offset during daylight savings time in minutes.
 
         It expects data files in the following format::
 
@@ -313,8 +321,8 @@ class Locations(dict):
             Asia/Dubai	4.0	4.0
             Asia/Kabul	4.5	4.5
 
-        Files containing the data in this format can be downloaded from the geonames
-        site in their U{database export page
+        Files containing the data in this format can be downloaded from the
+        geonames site in their U{database export page
         <http://download.geonames.org/export/dump/timeZones.txt>}.
 
         Files downloaded from the geonames site when processed by
@@ -325,31 +333,23 @@ class Locations(dict):
              "Asia/Dubai": (240, 240),
              "Asia/Kabul": (270, 270)}
 
-        >>> try:
-        ...     from io import StringIO
-        ... except ImportError:
-        ...     from StringIO import StringIO
-        >>> timezones_file = StringIO("\\n".join([
-        ...     'Europe/Andorra\\t1.0\\t2.0',
-        ...     'Asia/Dubai\\t4.0\\t4.0',
-        ...     'Asia/Kabul\\t4.5\\t4.5']))
-        >>> timezones = Locations(None, timezones_file).timezones
+        >>> timezones = Locations(None, open("geonames_timezones")).timezones
         >>> for key, value in sorted(timezones.items()):
         ...     print("%s - %s" % (key, value))
         Asia/Dubai - (240, 240)
         Asia/Kabul - (270, 270)
         Europe/Andorra - (60, 120)
-        >>> header_file = StringIO("\\n".join([
-        ...     'TimeZoneId\\tGMT offset 1. Jan 2007\\tDST offset 1. Jul 2007']))
-        >>> header_skip_check = Locations(None, header_file)
+        >>> header_skip_check = Locations(None,
+        ...                               open("geonames_timezones_header"))
         >>> print header_skip_check
         {}
-        >>> broken_file = StringIO("\\n".join([
-        ...     'OnlyTwo\\tfields']))
-        >>> broken_file_check = Locations().import_timezones_file(broken_file).timezones
+        >>> broken_file_check = Locations(None,
+        ...                               open("geonames_timezones_broken"))
         Traceback (most recent call last):
             ...
-        FileFormatError: Incorrect data format, if you're using a file downloaded from geonames.org please report this to James Rowe <jnrowe@ukfsn.org>
+        FileFormatError: Incorrect data format, if you're using a file
+        downloaded from geonames.org please report this to James Rowe
+        <jnrowe@ukfsn.org>
 
         @type data: C{file}, C{list} or C{str}
         @param data: geonames timezones data to read
@@ -364,7 +364,9 @@ class Locations(dict):
             chunk = line.strip().split("	")
             if chunk[0] == "TimeZoneId":
                 continue
-            if not len(chunk) == 3:
+            elif not len(chunk) == 3:
                 raise utils.FileFormatError("geonames.org")
-            self.timezones[chunk[0]] = tuple([int(float(x) * 60) for x in chunk[1:]])
+            else:
+                delta = tuple([int(float(x) * 60) for x in chunk[1:]])
+            self.timezones[chunk[0]] = delta
 

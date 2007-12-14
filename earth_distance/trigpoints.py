@@ -19,9 +19,10 @@
 #
 
 import csv
+import logging
 import os
 
-from earth_distance import point
+from earth_distance import (point, utils)
 
 class Trigpoint(point.Point):
     """
@@ -35,8 +36,8 @@ class Trigpoint(point.Point):
 
     @ivar latitude: Location's latitude
     @ivar longitude: Locations's longitude
-    @ivar name: Location's name
     @ivar altitude: Location's altitude
+    @ivar name: Location's name
     """
 
     __slots__ = ('altitude', 'name')
@@ -44,7 +45,7 @@ class Trigpoint(point.Point):
     def __init__(self, latitude, longitude, altitude, name=None,
                  format="metric", angle="degrees"):
         """
-        Initialise a new Trigpoint object
+        Initialise a new C{Trigpoint} object
 
         @type latitude: C{float} or coercible to C{float}
         @param latitude: Location's latitude
@@ -64,33 +65,32 @@ class Trigpoint(point.Point):
         Self-documenting string representation
 
         >>> Trigpoint(52.010585, -0.173443, 97.0, "Bygrave")
-        Trigpoint(52.010585, -0.173443, 97.000000, 'Bygrave')
+        Trigpoint(52.010585, -0.173443, 97.0, 'Bygrave')
 
         @rtype: C{str}
-        @return: String to recreate Trigpoint object
+        @return: String to recreate C{Trigpoint} object
         """
-        return 'Trigpoint(%f, %f, %f, %r)' % (self.latitude, self.longitude,
-                                              self.altitude, self.name)
+        data = utils.repr_assist(self.latitude, self.longitude, self.altitude,
+                                 self.name)
+        return self.__class__.__name__ + '(' + ", ".join(data) + ')'
 
     def __str__(self, mode="dms"):
         """
         Pretty printed location string
-
-        @see: C{trigpoints.Trigpoint}
 
         >>> print(Trigpoint(52.010585, -0.173443, 97.0))
         52°00'38"N, 000°10'24"W alt 97m
         >>> print(Trigpoint(52.010585, -0.173443, 97.0).__str__(mode="dd"))
         N52.011°; W000.173° alt 97m
         >>> print(Trigpoint(52.010585, -0.173443, 97.0).__str__(mode="dm"))
-        52°00.63'N, 000°10.40'W alt 97m
+        52°00.64'N, 000°10.41'W alt 97m
         >>> print(Trigpoint(52.010585, -0.173443, 97.0, "Bygrave"))
         Bygrave (52°00'38"N, 000°10'24"W alt 97m)
 
         @type mode: C{str}
         @param mode: Coordinate formatting system to use
         @rtype: C{str}
-        @return: Human readable string representation of Point object
+        @return: Human readable string representation of C{Trigpoint} object
         """
         text = super(Trigpoint, self).__str__(mode)
         if self.altitude:
@@ -103,13 +103,14 @@ class Trigpoint(point.Point):
 
 class Trigpoints(dict):
     """
-    Class for representing a group of Trigpoint objects
+    Class for representing a group of C{Trigpoint} objects
     """
 
     def __init__(self, marker_file=None):
         """
-        Initialise a new Trigpoints object
+        Initialise a new C{Trigpoints} object
         """
+        dict.__init__(self)
         if marker_file:
             self.import_marker_file(marker_file)
 
@@ -118,13 +119,11 @@ class Trigpoints(dict):
         Import trigpoint database files
 
         C{import_marker_file()} returns a dictionary with keys containing the
-        trigpoint identifier, and values consisting of a C{point.Point} object, the
-        trigpoint altitude and a string containing the name found in the marker
-        file.
+        trigpoint identifier, and values that are C{Trigpoint} objects.
 
         It expects trigpoint marker files in the format provided at
-        U{alltrigs-wgs84.txt http://www.haroldstreet.org.uk/trigpoints.php}, which
-        is the following format::
+        U{alltrigs-wgs84.txt http://www.haroldstreet.org.uk/trigpoints.php},
+        which is the following format::
 
             H  SOFTWARE NAME & VERSION
             I  GPSU 4.04,
@@ -134,28 +133,17 @@ class Trigpoints(dict):
             W,501097,N52.010585,W000.173443,    97.0,Bygrave
             W,505392,N51.910886,W000.186462,   136.0,Sish Lane
 
-        Any line not consisting of 6 comma separated fields will be ignored.  The
-        reader uses U{Python <http://www.python.org/>}'s C{csv} module, so
+        Any line not consisting of 6 comma separated fields will be ignored.
+        The reader uses U{Python <http://www.python.org/>}'s C{csv} module, so
         alternative whitespace formatting should have no effect.  The above file
         processed by C{import_marker_file()} will return the following C{dict}
         object::
 
-            {500936: (point.Point(52.066035, -0.281449, 37.0, "Broom Farm"),
-             501097: (point.Point(52.010585, -0.173443, 97.0, "Bygrave"),
-             505392: (point.Point(51.910886, -0.186462, 136.0, "Sish Lane")}
+            {500936: point.Point(52.066035, -0.281449, 37.0, "Broom Farm"),
+             501097: point.Point(52.010585, -0.173443, 97.0, "Bygrave"),
+             505392: point.Point(51.910886, -0.186462, 136.0, "Sish Lane")}
 
-        >>> try:
-        ...     from io import StringIO
-        ... except ImportError:
-        ...     from StringIO import StringIO
-        >>> marker_file = StringIO("\\n".join([
-        ...     'H  SOFTWARE NAME & VERSION',
-        ...     'I  GPSU 4.04,',
-        ...     'S SymbolSet=0',
-        ...     '...',
-        ...     'W,500936,N52.066035,W000.281449,    37.0,Broom Farm',
-        ...     'W,501097,N52.010585,W000.173443,    97.0,Bygrave',
-        ...     'W,505392,N51.910886,W000.186462,   136.0,Sish Lane']))
+        >>> marker_file = open("trigpoints")
         >>> markers = Trigpoints(marker_file)
         >>> for key, value in sorted(markers.items()):
         ...     print("%s - %s" % (key, value))
@@ -164,15 +152,10 @@ class Trigpoints(dict):
         505392 - Sish Lane (51°54'39"N, 000°11'11"W alt 136m)
         >>> marker_file.seek(0)
         >>> markers = Trigpoints(marker_file.readlines())
-        >>> southern_hemisphere = StringIO("\\n".join([
-        ...     'W,1,S48.123123,W000.123123,    12.0,FakeLand']))
-        >>> markers = Trigpoints(southern_hemisphere)
+        >>> markers = Trigpoints(open("southern_trigpoints"))
         >>> print markers[1]
         FakeLand (48°07'23"S, 000°07'23"W alt 12m)
-        >>> broken_altitude = StringIO("\\n".join([
-        ...     'W,500968,N53.639826,W001.659589,  8888.0,Brown Hill Nm  See The Heights',
-        ...     'W,501414,N51.101043,E001.142599,  8888.0,Cheriton Hill Nm  See Paddlesworth']))
-        >>> markers = Trigpoints(broken_altitude)
+        >>> markers = Trigpoints(open("broken_trigpoints"))
         >>> for key, value in sorted(markers.items()):
         ...     print("%s - %s" % (key, value))
         500968 - Brown Hill Nm  See The Heights (53°38'23"N, 001°39'34"W)
@@ -181,16 +164,15 @@ class Trigpoints(dict):
         @type marker_file: C{file}, C{list} or C{str}
         @param marker_file: Trigpoint marker data to read
         @rtype: C{dict}
-        @return: Named locations with optional comments
+        @return: Named locations with C{Trigpoint} objects
         @raise ValueError: Invalid value for C{marker_file}
         """
         if hasattr(marker_file, "readlines"):
             data = csv.reader(marker_file)
         elif isinstance(marker_file, list):
             data = csv.reader(marker_file)
-        elif isinstance(marker_file, str):
-            if os.path.isfile(marker_file):
-                data = csv.reader(open(marker_file))
+        elif isinstance(marker_file, basestring):
+            data = csv.reader(open(marker_file))
         else:
             raise TypeError("Unable to handle data of type `%s'"
                             % type(marker_file))
@@ -211,7 +193,8 @@ class Trigpoints(dict):
             altitude = float(altitude)
             # A value of 8888 denotes unavailable data
             if altitude == 8888:
+                logging.debug("Ignoring `8888' value for altitude in `%s' entry"
+                              % row)
                 altitude = None
-            self.__setitem__(identity, Trigpoint(latitude, longitude, altitude,
-                                                 name))
+            self[identity] = Trigpoint(latitude, longitude, altitude, name)
 

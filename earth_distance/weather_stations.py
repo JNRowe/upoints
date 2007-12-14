@@ -18,8 +18,9 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from earth_distance import trigpoints
-from earth_distance import utils
+import logging
+
+from earth_distance import (trigpoints, utils)
 
 class Station(trigpoints.Trigpoint):
     """
@@ -86,22 +87,21 @@ class Station(trigpoints.Trigpoint):
         """
         Self-documenting string representation
 
-        >>> Station('EGLL', 'London / Heathrow Airport', None, 'United Kingdom', 6, 51.4833333333, -0.45, None, None, 24, 0, True)
-        Station('EGLL', 'London / Heathrow Airport', None, 'United Kingdom', 6, 51.4833333333, -0.45, None, None, 24, 0, True)
+        >>> Station('EGLL', 'London / Heathrow Airport', None,
+        ...         'United Kingdom', 6, 51.4833333333, -0.45, None, None, 24,
+        ...         0, True)
+        Station('EGLL', 'London / Heathrow Airport', None, 'United Kingdom', 6,
+                51.4833333333, -0.45, None, None, 24, 0, True)
 
         @rtype: C{str}
-        @return: String to recreate Station object
+        @return: String to recreate C{Station} object
         """
-        data = []
-        for i in (self.alt_id, self.name, self.state, self.country, self.wmo,
-                  self.latitude, self.longitude, self.ua_latitude,
-                  self.ua_longitude, self.altitude, self.ua_altitude,
-                  self.rbsn):
-            if isinstance(i, (type(None), str)):
-                data.append(repr(i))
-            else:
-                data.append(str(i))
-        return "Station(" + ", ".join(data) + ")"
+        data = utils.repr_assist(self.alt_id, self.name, self.state,
+                                 self.country, self.wmo, self.latitude,
+                                 self.longitude, self.ua_latitude,
+                                 self.ua_longitude, self.altitude,
+                                 self.ua_altitude, self.rbsn)
+        return self.__class__.__name__ + '(' + ", ".join(data) + ')'
 
     def __str__(self, mode="dd"):
         """
@@ -109,13 +109,15 @@ class Station(trigpoints.Trigpoint):
 
         @see: C{trigpoints.point.Point}
 
-        >>> Heathrow = Station("EGLL", "London / Heathrow Airport", None, "United Kingdom", 6, 51.048333, -0.450000, None, None, 24, 0, True)
+        >>> Heathrow = Station("EGLL", "London / Heathrow Airport", None,
+        ...                    "United Kingdom", 6, 51.048333, -0.450000, None,
+        ...                    None, 24, 0, True)
         >>> print(Heathrow)
         London / Heathrow Airport (EGLL - N51.048°; W000.450°)
         >>> print(Heathrow.__str__(mode="dms"))
         London / Heathrow Airport (EGLL - 51°02'53"N, 000°27'00"W)
         >>> print(Heathrow.__str__(mode="dm"))
-        London / Heathrow Airport (EGLL - 51°02.88'N, 000°27.00'W)
+        London / Heathrow Airport (EGLL - 51°02.90'N, 000°27.00'W)
         >>> Heathrow.alt_id = None
         >>> print(Heathrow)
         London / Heathrow Airport (N51.048°; W000.450°)
@@ -123,7 +125,7 @@ class Station(trigpoints.Trigpoint):
         @type mode: C{str}
         @param mode: Coordinate formatting system to use
         @rtype: C{str}
-        @return: Human readable string representation of Station object
+        @return: Human readable string representation of C{Station} object
         """
         text = super(Station.__base__, self).__str__(mode)
 
@@ -134,13 +136,14 @@ class Station(trigpoints.Trigpoint):
 
 class Stations(dict):
     """
-    Class for representing a group of Station objects
+    Class for representing a group of C{Station} objects
     """
 
     def __init__(self, data=None, index="WMO"):
         """
-        Initialise a new Stations object
+        Initialise a new C{Stations} object
         """
+        dict.__init__(self)
         if data:
             self.import_noaa_file(data, index)
 
@@ -148,10 +151,10 @@ class Stations(dict):
         """
         Parse NOAA weather station data files
 
-        C{import_noaa_file()} returns a dictionary with keys containing either the
-        WMO or ICAO identifier, and values consisting of a C{trigpoints.Trigpoint}
-        object and a large variety of other information available in the data
-        exported by U{NOAA <http://weather.noaa.gov/>}.
+        C{import_noaa_file()} returns a dictionary with keys containing either
+        the WMO or ICAO identifier, and values that are C{Station} objects that
+        describes the large variety of data exported by U{NOAA
+        <http://weather.noaa.gov/>}.
 
         It expects data files in one of the following formats::
 
@@ -165,59 +168,53 @@ class Stations(dict):
             AYMO;--;---;Manus Island/Momote;;Papua New Guinea;5;02-03-43S;147-25-27E;;;4;;
             AYPY;94;035;Moresby;;Papua New Guinea;5;09-26S;147-13E;09-26S;147-13E;38;49;P
 
-        Files containing the data in this format can be downloaded from NOAA's site
-        in their U{station location page <http://weather.noaa.gov/tg/site.shtml>}.
+        Files containing the data in this format can be downloaded from NOAA's
+        site in their U{station location page
+        <http://weather.noaa.gov/tg/site.shtml>}.
 
         WMO indexed files downloaded from the NOAA site when processed by
-        C{import_noaa_file()} will return C{dict} object of the following style::
+        C{import_noaa_file()} will return C{dict} object of the following
+        style::
 
-            {'00000': ('PABL', 'Buckland, Buckland Airport', 'AK', 'United States', 4, 65.982222. -160.848055, None, None, 7, False),
-             '01001'; ('ENJA', Jan Mayen, None, 'Norway', 6, 70.933333, -7.333333, 70.933333, -7.333333, 10, 9, True),
-             '01002': (None, 'Grahuken', None, 'Norway', 6, 79.783333, 13.533333, None, None, 15, False)}
+            {'00000': Station('PABL', 'Buckland, Buckland Airport', 'AK',
+                              'United States', 4, 65.982222. -160.848055, None,
+                              None, 7, False),
+             '01001'; Station('ENJA', Jan Mayen, None, 'Norway', 6, 70.933333,
+                              -7.333333, 70.933333, -7.333333, 10, 9, True),
+             '01002': Station(None, 'Grahuken', None, 'Norway', 6, 79.783333,
+                              13.533333, None, None, 15, False)}
 
-        And C{dict} objects such as the following will be created when ICAO indexed
-        data files are processed::
+        And C{dict} objects such as the following will be created when ICAO
+        indexed data files are processed::
 
-            {'AYMD': ("94", "014", "Madang", None, "Papua New Guinea", 5, -5.216666, 145.783333, -5.216666, 145.78333333333333, 3, 5, True,
-             'AYMO': (None, None, "Manus Island/Momote", None, "Papua New Guinea", 5, -2.061944, 147.424166, None, None, 4, False,
-             'AYPY': ("94", "035", "Moresby", None, "Papua New Guinea", 5, -9.433333, 147.216667, -9.433333, 147.216667, 38, 49, True}
+            {'AYMD': Station("94", "014", "Madang", None, "Papua New Guinea",
+                             5, -5.216666, 145.783333, -5.216666,
+                             145.78333333333333, 3, 5, True,
+             'AYMO': Station(None, None, "Manus Island/Momote", None,
+                             "Papua New Guinea", 5, -2.061944, 147.424166,
+                             None, None, 4, False,
+             'AYPY': Station("94", "035", "Moresby", None, "Papua New Guinea",
+                             5, -9.433333, 147.216667, -9.433333, 147.216667,
+                             38, 49, True}
 
-        >>> try:
-        ...     from io import StringIO
-        ... except ImportError:
-        ...     from StringIO import StringIO
-        >>> stations_file = StringIO("\\n".join([
-        ...     '00;000;PABL;Buckland, Buckland Airport;AK;United States;4;65-58-56N;161-09-07W;;;7;;',
-        ...     '01;001;ENJA;Jan Mayen;;Norway;6;70-56N;008-40W;70-56N;008-40W;10;9;P',
-        ...     '01;002;----;Grahuken;;Norway;6;79-47N;014-28E;;;;15;']))
-        >>> stations = Stations(stations_file)
+        >>> stations = Stations(open("WMO_stations"))
         >>> for key, value in sorted(stations.items()):
         ...     print("%s - %s" % (key, value))
         00000 - Buckland, Buckland Airport (PABL - N65.982°; W161.152°)
         01001 - Jan Mayen (ENJA - N70.933°; W008.667°)
         01002 - Grahuken (N79.783°; E014.467°)
-        >>> stations_file = StringIO("\\n".join([
-        ...     'AYMD;94;014;Madang;;Papua New Guinea;5;05-13S;145-47E;05-13S;145-47E;3;5;P',
-        ...     'AYMO;--;---;Manus Island/Momote;;Papua New Guinea;5;02-03-43S;147-25-27E;;;4;;',
-        ...     'AYPY;94;035;Moresby;;Papua New Guinea;5;09-26S;147-13E;09-26S;147-13E;38;49;P']))
-        >>> stations = Stations(stations_file, "ICAO")
+        >>> stations = Stations(open("ICAO_stations"), "ICAO")
         >>> for key, value in sorted(stations.items()):
         ...     print("%s - %s" % (key, value))
         AYMD - Madang (94014 - S05.217°; E145.783°)
         AYMO - Manus Island/Momote (S02.062°; E147.424°)
         AYPY - Moresby (94035 - S09.433°; E147.217°)
-        >>> broken_wmo_entries = StringIO("\\n".join([
-        ...     '71;046;CWKM;Komakuk Beach, Y. T.;;Canada;4;69-37N;140-12W;;;13;',
-        ...     '71;899;CWLA;Langara, B. C.;;Canada;4;54-15N;133-08W;;;41;']))
-        >>> stations = Stations(broken_wmo_entries)
+        >>> stations = Stations(open("broken_WMO_stations"))
         >>> for key, value in sorted(stations.items()):
         ...     print("%s - %s" % (key, value))
         71046 - Komakuk Beach, Y. T. (CWKM - N69.617°; W140.200°)
         71899 - Langara, B. C. (CWLA - N54.250°; W133.133°)
-        >>> broken_icao_entries = StringIO("\\n".join([
-        ...     'KCQB;--;---;Chandler, Chandler Municipal Airport;OK;United States;4;35-43-26N;096-49-13W;;;300;;;',
-        ...     'KBRX;--;---;Bordeaux;WY;United States;4;41-56N;104-57W;;;1422']))
-        >>> stations = Stations(broken_icao_entries, "ICAO")
+        >>> stations = Stations(open("broken_ICAO_stations"), "ICAO")
         >>> for key, value in sorted(stations.items()):
         ...     print("%s - %s" % (key, value))
         KBRX - Bordeaux (N41.933°; W104.950°)
@@ -228,7 +225,7 @@ class Stations(dict):
         @type index: C{str}
         @param index: The identifier type used in the file
         @rtype: C{dict}
-        @return: WMO locations with C{Point} objects and associated data
+        @return: WMO locations with C{Station} objects
         @raise FileFormatError: Unknown file format
         """
         data = utils.prepare_read(data)
@@ -238,27 +235,32 @@ class Stations(dict):
             chunk = line.split(";")
             if not len(chunk) == 14:
                 if index == "ICAO":
-                    # Some entries only have 12 or 13 elements, so we assume 13 and
-                    # 14 are None.  Of the entries I've hand checked this assumption
-                    # would be correct.
+                    # Some entries only have 12 or 13 elements, so we assume 13
+                    # and 14 are None.  Of the entries I've hand checked this
+                    # assumption would be correct.
+                    logging.debug("Extending ICAO `%s' entry, because it is "
+                                  "too short to process" % line)
                     chunk.extend(["", ""])
                 elif index == "WMO" and len(chunk) == 13:
                     # A few of the WMO indexed entries are missing their RBSN
-                    # fields, hand checking the entries for 71046 and 71899 shows
-                    # that they are correct if we just assume RBSN is false.
+                    # fields, hand checking the entries for 71046 and 71899
+                    # shows that they are correct if we just assume RBSN is
+                    # false.
+                    logging.debug("Extending WMO `%s' entry, because it is "
+                                  "too short to process" % line)
                     chunk.append("")
                 else:
                     raise utils.FileFormatError("NOAA")
             if index == "WMO":
                 identifier = "".join(chunk[:2])
-                alt_id = chunk[2] if not chunk[2] == "----" else None
+                alt_id = chunk[2]
             elif index == "ICAO":
                 identifier = chunk[0]
                 alt_id = "".join(chunk[1:3])
-                if alt_id == "-----":
-                    alt_id = None
             else:
                 raise ValueError("Unknown format `%s'" % index)
+            if alt_id in ("----", "-----"):
+                alt_id = None
             name = chunk[3]
             state = chunk[4] if not chunk[4] == "" else None
             country = chunk[5]
@@ -268,9 +270,11 @@ class Stations(dict):
                 if i == "":
                     point_data.append(None)
                     continue
-                if ' ' in i:
-                    # Some entries in nsd_cccc.txt are of the format "DD-MM-  N",
-                    # so we just take the spaces to mean 0 seconds.
+                # Some entries in nsd_cccc.txt are of the format "DD-MM-
+                # N", so we just take the spaces to mean 0 seconds.
+                if " " in i:
+                    logging.debug("Fixing unpadded location data in `%s' entry"
+                                  % line)
                     i = i.replace(" ", "0")
                 values = [int(x) for x in i[:-1].split("-")]
                 if i[-1] in ("S", "W"):
@@ -280,9 +284,8 @@ class Stations(dict):
             altitude = int(chunk[11]) if not chunk[11] == "" else None
             ua_altitude = int(chunk[12]) if not chunk[12] == "" else None
             rbsn = False if chunk[13] == "" else True
-            self.__setitem__(identifier,
-                             Station(alt_id, name, state, country, wmo,
-                                     latitude, longitude, ua_latitude,
-                                     ua_longitude, altitude, ua_altitude,
-                                     rbsn))
+            self[identifier] = Station(alt_id, name, state, country, wmo,
+                                       latitude, longitude, ua_latitude,
+                                       ua_longitude, altitude, ua_altitude,
+                                       rbsn)
 

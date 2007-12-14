@@ -66,7 +66,7 @@ question is "would I be likely to travel to Telford for a beer?"  Time
 to brush up on spherical trigonometry basics I guess.
 
 The data is reasonably correct in stating a location of N52.6333°;
-W2.5000° for Telford.  My location, assuming the same datum, is
+W2.5000° for Telford.  My location, assuming the WGS-84 datum, is
 N52.015°; W0.221°.
 
 Calculating the Great-circle distance between the two coordinates is
@@ -80,12 +80,13 @@ to know.
 Too inaccurate?
 ---------------
 
-::
+.. code-block:: pycon
 
-    import earth_distance
-    Home = earth_distance.Point(52.015, -0.221)
-    Telford = earth_distance.Point(52.6333, -2.5000)
-    print "%i kM" % Home.distance(Telford)
+    >>> from earth_distance import point
+    >>> Home = point.Point(52.015, -0.221)
+    >>> Telford = point.Point(52.6333, -2.5000)
+    >>> print "%i kM" % Home.distance(Telford)
+    169 kM
 
 The script above tells us that the distance from my house to Telford is
 approximately 170 kM (just over 100 miles for those so inclined), given
@@ -102,8 +103,8 @@ Lewis, as far North West as the British Isles go, and I haven't seen him
 for a year or so.
 
 There is only one conclusion to draw from this:  Accuracy is in the eye
-of the beerholder.  This conclusion has led me to implement some new
-features in our manual path cross tool, all based around the idea of
+of the beerholder(sorry!).  This conclusion has led me to implement some
+new features in our manual path cross tool, all based around the idea of
 relative proximity.
 
 The "average" location of a person is important when calculating whether
@@ -122,10 +123,11 @@ similar in Python.  Taking Seemant, who lives in Boston, Ma., as an
 example as it is his fault I'm playing with Python and geoip
 ``earth_distance`` can tell us:
 
-::
+.. code-block:: pycon
 
-    Seemant = earth_distance.Point(42, -71)
-    print "%i kM" % Home.distance(Seemant)
+    >>> Seemant = point.Point(42, -71)
+    >>> print "%i kM" % Home.distance(Seemant)
+    5262 kM
 
 We now have to make a decision about the range for the proximity alert
 given that Seemant lives some five thousand kilometres away.  Being that
@@ -150,10 +152,11 @@ allow one to assign weighting automatically.  Continuing the Seemant
 example would mean increasing his range significantly, being
 a BTS and email-only contact.
 
-::
+.. code-block:: pycon
 
-    import math
-    math.sqrt(Home.distance(Seemant))
+    >>> import math
+    >>> math.sqrt(Home.distance(Seemant))
+    72.540008078762554
 
 If we forget about the anomalies, and just take the square root as being
 correct I can populate the relationship for Seemant with a 73 kM limit.
@@ -180,9 +183,10 @@ Having already implemented the basic class and distance method,
 I figured I may as well add bearing calculation too.  It's only 4 lines
 of code, so why not?
 
-::
+.. code-block:: pycon
 
-    print "A heading of %i° will find the beers!" % Home.bearing(Telford)
+    >>> print "A heading of %i° will find the beers!" % Home.bearing(Telford)
+    A heading of 294° will find the beers!
 
 .. [#] By "automatically updating" I mean simply a ping-and-forget
        service that listens for a user ID and location and updates the

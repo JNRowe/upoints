@@ -25,18 +25,15 @@ use an example generated from our system because I don't have permission
 to publish the data but I'll give an example of its usage with a public
 file:
 
-::
+.. code-block:: pycon
 
-    import xearth, urllib
-    earth_markers = urllib.urlopen("http://xplanet.sourceforge.net/Extras/earth-markers-schaumann")
-    markers = xearth.Xearths(earth_markers)
-    print repr(markers['Cairo'])
-    print markers['Warsaw']
-
-will produce the following output::
-
-    Xearth(30.050000, 31.250000, "Egypt")
-    Poland (N52.25°; E21.0°)
+    >>> from earth_distance import xearth
+    >>> earth_markers = urllib.urlopen("http://xplanet.sourceforge.net/Extras/earth-markers-schaumann")
+    >>> markers = xearth.Xearths(earth_markers)
+    >>> print repr(markers['Cairo'])
+    Xearth(30.05, 31.25, 'Egypt')
+    >>> print markers['Warsaw']
+    Poland (N52.250°; E021.000°)
 
 There are plenty of comments in the ``xearth.py`` file, but what you get
 from the ``xearth.Xearths()`` is a dictionary with the location name as
@@ -46,14 +43,11 @@ any associated comments from the source file.
 You can use all the methods, such as ``distance`` and ``bearing``,
 that are defined in the ``point.Point`` class on ``Xearth`` objects.
 
-::
+.. code-block:: pycon
 
-    print "Suva to Tokyo is %i kM" % markers['Suva'].distance(markers['Tokyo'])
-    print "Vienna to Brussels on %i°" % markers['Vienna'].bearing(markers['Brussels'])
-
-produces the output::
-
-    Suva to Tokyo is 7256 kM
+    >>> print "Suva to Tokyo is %i kM" % markers['Suva'].distance(markers['Tokyo'])
+    Suva to Tokyo is 7258 kM
+    >>> print "Vienna to Brussels on %i°" % markers['Vienna'].bearing(markers['Brussels'])
     Vienna to Brussels on 293°
 
 With the original purpose of the marker file export feature being
@@ -61,15 +55,14 @@ finding people local to a customer it would be nice to use ``xearth.py``
 to do the same in a more programmatic way, and of course that is
 possible too.
 
-::
+.. code-block:: pycon
 
-    Customer = xearth.point.Point(52.015, -0.221)
-    for marker in markers:
-         distance = Customer.distance(markers[marker])
-         if distance < 300:
-             print "%i kM - %s, %s" % (distance, marker, markers[marker])
-
-Displays just one result: ``57 kM - London, United Kingdom (N51.5°; W0.17°)``
+    >>> Customer = xearth.point.Point(52.015, -0.221)
+    >>> for marker in markers:
+    ...      distance = Customer.distance(markers[marker])
+    ...      if distance < 300:
+    ...          print "%i kM - %s, %s" % (distance, marker, markers[marker])
+    57 kM - London, United Kingdom (N51.500°; W000.170°)
 
 Imagining for a second the customer lives in my house, the only marker
 within 300 kilometres of me in the city marker file we've imported is

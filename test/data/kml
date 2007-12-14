@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<kml xmlns="http://earth.google.com/kml/2.1">
+    <Document>
+        <Placemark id="Home">
+            <name>Home</name>
+            <Point>
+                <coordinates>-0.221,52.015,60</coordinates>
+            </Point>
+        </Placemark>
+        <Placemark id="Cambridge">
+            <name>Cambridge</name>
+            <Point>
+                <coordinates>0.390,52.167</coordinates>
+            </Point>
+        </Placemark>
+    </Document>
+</kml>

@@ -76,12 +76,28 @@ class FileFormatError(ValueError):
     >>> raise FileFormatError("test site")
     Traceback (most recent call last):
         ...
-    FileFormatError: Incorrect data format, if you're using a file downloaded from test site please report this to James Rowe <jnrowe@ukfsn.org>
+    FileFormatError: Incorrect data format, if you're using a file downloaded
+    from test site please report this to James Rowe <jnrowe@ukfsn.org>
+
+    @ivar site: Remote site name to display in error message
     """
     def __init__(self, site=None):
+        """
+        Initialise a new C{FileFormatError} object
+
+        @type site: C{str}
+        @param site: Remote site name to display in error message
+        """
         ValueError.__init__(self)
         self.site = site
+
     def __str__(self):
+        """
+        Pretty printed error string
+
+        @rtype: C{str}
+        @return: Human readable error string
+        """
         if self.site:
             return ("Incorrect data format, if you're using a file downloaded "
                     "from %s please report this to %s" % (self.site,
@@ -105,16 +121,31 @@ def value_or_empty(value):
     """
     return value if value else ""
 
+def repr_assist(*values):
+    """
+    Helper function to simplify C{__repr__} methods
+
+    @type values: Any
+    @param values: Values to create usable representation for
+    """
+    data = []
+    for i in values:
+        if isinstance(i, (type(None), list, basestring, datetime.date)):
+            data.append(repr(i))
+        else:
+            data.append(str(i))
+    return data
+
 def to_dms(angle, style="dms"):
     """
     Convert decimal angle to degrees, minutes and possibly seconds
 
     >>> to_dms(52.015)
-    (52, 0, 54)
+    (52, 0, 54.0)
     >>> to_dms(-0.221)
-    (0, -13, -15)
+    (0, -13, -15.600000000000023)
     >>> to_dms(-0.221, style="dm")
-    (0, -13.25)
+    (0, -13.26)
     >>> to_dms(-0.221, style=None)
     Traceback (most recent call last):
         ...
@@ -128,14 +159,16 @@ def to_dms(angle, style="dms"):
     @return: Angle converted to degrees, minutes and possibly seconds
     @raise ValueError: Unknown value for C{style}
     """
-    sign = int(angle / abs(angle))
+    sign = 1 if angle >= 0 else -1
     angle = abs(angle) * 3600
     minutes, seconds = divmod(angle, 60)
     degrees, minutes = divmod(minutes, 60)
     if style == "dms":
-        return sign * int(degrees), sign * int(minutes), sign * int(seconds)
+        return tuple([sign * abs(i) for i in int(degrees), int(minutes),
+                                             seconds])
     elif style == "dm":
-        return sign * int(degrees), sign * (int(minutes) + int(seconds) / 60)
+        return tuple([sign * abs(i) for i in int(degrees),
+                                             (minutes + seconds / 60)])
     else:
         raise ValueError("Unknown style type `%s'" % style)
 
@@ -159,7 +192,8 @@ def to_dd(degrees, minutes, seconds=0):
     @rtype: C{float}
     @return: Angle converted to decimal degrees
     """
-    return degrees + minutes / 60 + seconds / 3600
+    sign = -1 if any([i < 0 for i in degrees, minutes, seconds]) else 1
+    return sign * (abs(degrees) + abs(minutes) / 60 + abs(seconds) / 3600)
 
 def from_iso6709(coordinates):
     """
@@ -176,6 +210,8 @@ def from_iso6709(coordinates):
     unfortunately hasn't received widespread support as yet, but hopefully it
     will grow just as the U{simplified ISO 8601 profile
     <http://www.w3.org/2005/Incubator/geo/Wiki/LatitudeLongitudeAltitude>} has.
+
+    @see: C{to_iso6709}
 
     The following tests are from the examples contained in the U{wikipedia
     ISO 6709 page <http://en.wikipedia.org/wiki/ISO_6709>}.
@@ -237,24 +273,27 @@ def from_iso6709(coordinates):
         latitude, longitude, altitude = matches.groups()
     except:
         raise ValueError("Incorrect format for string")
+    sign = 1 if latitude[0] == "+" else -1
     latitude_head = len(latitude.split(".")[0])
     if latitude_head == 3: # ±DD(.D{1,4})?
         latitude = float(latitude)
     elif latitude_head == 5: # ±DDMM(.M{1,4})?
-        latitude = float(latitude[:3]) + (float(latitude[3:]) / 60)
+        latitude = float(latitude[:3]) + (sign * (float(latitude[3:]) / 60))
     elif latitude_head == 7: # ±DDMMSS(.S{1,4})?
-        latitude = float(latitude[:3]) + (float(latitude[3:5]) / 60) \
-                   + (float(latitude[5:]) / 3600)
+        latitude = float(latitude[:3]) + (sign * (float(latitude[3:5]) / 60)) \
+                   + (sign * (float(latitude[5:]) / 3600))
     else:
         raise ValueError("Incorrect format for latitude `%s'" % latitude)
+    sign = 1 if longitude[0] == "+" else -1
     longitude_head = len(longitude.split(".")[0])
     if longitude_head == 4: # ±DDD(.D{1,4})?
         longitude = float(longitude)
     elif longitude_head == 6: # ±DDDMM(.M{1,4})?
-        longitude = float(longitude[:4]) + (float(longitude[4:]) / 60)
+        longitude = float(longitude[:4]) + (sign * (float(longitude[4:]) / 60))
     elif longitude_head == 8: # ±DDDMMSS(.S{1,4})?
-        longitude = float(longitude[:4]) + (float(longitude[4:6]) / 60) \
-                    + (float(longitude[6:]) / 3600)
+        longitude = float(longitude[:4]) \
+                    + (sign * (float(longitude[4:6]) / 60)) \
+                    + (sign * (float(longitude[6:]) / 3600))
     else:
         raise ValueError("Incorrect format for longitude `%s'" % longitude)
     if altitude:
@@ -279,10 +318,11 @@ def to_iso6709(latitude, longitude, altitude=None, format="dd", precision=4):
     '+46+002/'
     >>> to_iso6709(48.866666666666667, 2.3333333333333335, None, "dm") # Paris
     '+4852+00220/'
+    >>> # The following test is skipped, because the example from wikipedia uses
+    >>> # differing precision widths for latitude and longitude. Also, that
+    >>> # degree of formatting flexibility is not seen anywhere else and adds
+    >>> # very little.
     >>> to_iso6709(48.857700000000001, 2.2949999999999999, None) # Eiffel Tower # doctest: +SKIP
-    # This test is skipped, because the example from wikipedia uses differing
-    # precision widths for latitude and longitude. Also, that degree of
-    # formatting flexibility is not seen anywhere else and adds very little.
     '+48.8577+002.295/'
     >>> to_iso6709(27.5916, 86.563999999999993, 8850.0) # Mount Everest
     '+27.5916+086.5640+8850/'
@@ -333,12 +373,23 @@ def to_iso6709(latitude, longitude, altitude=None, format="dd", precision=4):
     elif format == "dd":
         text = "%+0*.*f%+0*.*f" % (precision + 4, precision, latitude,
                                    precision + 5, precision, longitude)
-    elif format == "dm":
-        text = "%+03i%02i" % to_dms(latitude, "dm")
-        text += "%+04i%02i" % to_dms(longitude, "dm")
-    elif format == "dms":
-        text = "%+03i%02i%02i" % to_dms(latitude)
-        text += "%+04i%02i%02i" % to_dms(longitude)
+    elif format in ("dm", "dms"):
+        if format == "dm":
+            latitude_dms = to_dms(latitude, "dm")
+            longitude_dms = to_dms(longitude, "dm")
+        elif format == "dms":
+            latitude_dms = to_dms(latitude)
+            longitude_dms = to_dms(longitude)
+        latitude_sign = "-" if any([i < 0 for i in latitude_dms]) else "+"
+        latitude_dms = tuple([abs(i) for i in latitude_dms])
+        longitude_sign = "-" if any([i < 0 for i in longitude_dms]) else "+"
+        longitude_dms = tuple([abs(i) for i in longitude_dms])
+        if format == "dm":
+            text = "%s%02i%02i" % ((latitude_sign, ) + latitude_dms)
+            text += "%s%03i%02i" % ((longitude_sign, ) + longitude_dms)
+        elif format == "dms":
+            text = "%s%02i%02i%02i" % ((latitude_sign, ) + latitude_dms)
+            text += "%s%03i%02i%02i" % ((longitude_sign, ) + longitude_dms)
     else:
         raise ValueError("Unknown format type `%s'" % format)
     if altitude and int(altitude) == altitude:
@@ -348,9 +399,39 @@ def to_iso6709(latitude, longitude, altitude=None, format="dd", precision=4):
     text += "/"
     return text
 
+def angle_to_name(angle, short=False):
+    """
+    Convert angle in to direction name
+
+    >>> angle_to_name(0)
+    'North'
+    >>> angle_to_name(360)
+    'North'
+    >>> angle_to_name(45)
+    'North-east'
+    >>> angle_to_name(292)
+    'West'
+    >>> angle_to_name(293)
+    'North-west'
+
+    @type angle: C{float} or coercible to C{float}
+    @param angle: Angle in degrees to convert to direction name
+    @type short: C{bool}
+    @param short: Whether to return abbreviated direction string
+    @rtype: C{str}
+    @return: Direction name for C{angle}
+    """
+    direction_names = ['North', 'North-east', 'East', 'South-east', 'South',
+                       'South-west', 'West', 'North-west']
+    string = direction_names[int((angle + 22.5) / 45) % 8]
+    if short:
+        return "".join([i[0].capitalize() for i in string.split("-")])
+    else:
+        return string
+
 def angle_to_distance(angle, format="metric"):
     """
-    Convert angle in to distance along a meridian
+    Convert angle in to distance along a great circle
 
     >>> "%.3f" % angle_to_distance(1)
     '111.212'
@@ -368,7 +449,7 @@ def angle_to_distance(angle, format="metric"):
     @type format: C{str}
     @param format: Unit type to be used for distances
     @rtype: C{float}
-    @return: Distance in kilometres
+    @return: Distance in C{format}
     @raise ValueError: Unknown value for C{format}
     """
     distance = math.radians(angle) * BODY_RADIUS
@@ -384,7 +465,7 @@ def angle_to_distance(angle, format="metric"):
 
 def distance_to_angle(distance, format="metric"):
     """
-    Convert a distance in to an angle along a meridian
+    Convert a distance in to an angle along a great circle
 
     >>> "%.3f" % round(distance_to_angle(111.212))
     '1.000'
@@ -479,6 +560,9 @@ def sun_rise_set(latitude, longitude, date, mode="rise", timezone=0,
         C{None} if the event doesn't occur on the given date
     @raise ValueError: Unknown value for C{mode}
     """
+    if not date:
+        date = datetime.date.today()
+
     zenith = ZENITH[zenith]
 
     # First calculate the day of the year
@@ -643,13 +727,8 @@ def prepare_read(data):
     """
     Prepare various input types for parsing
 
-    >>> try:
-    ...     from io import StringIO
-    ... except ImportError:
-    ...     from StringIO import StringIO
-    >>> test_file = StringIO('This is a test file-type object')
-    >>> prepare_read(test_file)
-    ['This is a test file-type object']
+    >>> prepare_read(open("real_file"))
+    ['This is a test file-type object\\n']
     >>> test_list = ['This is a test list-type object', 'with two elements']
     >>> prepare_read(test_list)
     ['This is a test list-type object', 'with two elements']
@@ -664,7 +743,7 @@ def prepare_read(data):
         data = data.readlines()
     elif isinstance(data, list):
         pass
-    elif isinstance(data, str):
+    elif isinstance(data, basestring):
         data = open(data).readlines()
     else:
         raise ValueError("Unable to handle data of type `%s`" % type(data))
@@ -828,18 +907,18 @@ def to_grid_locator(latitude, longitude, precision="square"):
 
 def dump_xearth_markers(markers, name="identifier"):
     """
-    Generate an xearth compatible marker file
+    Generate an Xearth compatible marker file
 
-    C{dump_xearth_markers()} writes a simple U{xearth
+    C{dump_xearth_markers()} writes a simple U{Xearth
     <http://www.cs.colorado.edu/~tuna/xearth/>} marker file from a dictionary of
     C{trigpoints.Trigpoint} objects.
 
     It expects a dictionary in one of the following formats. For support of
     C{Trigpoint} that is::
 
-        {500936: (Trigpoint(52.066035, -0.281449, 37.0, "Broom Farm"),
-         501097: (Trigpoint(52.010585, -0.173443, 97.0, "Bygrave"),
-         505392: (Trigpoint(51.910886, -0.186462, 136.0, "Sish Lane")}
+        {500936: Trigpoint(52.066035, -0.281449, 37.0, "Broom Farm"),
+         501097: Trigpoint(52.010585, -0.173443, 97.0, "Bygrave"),
+         505392: Trigpoint(51.910886, -0.186462, 136.0, "Sish Lane")}
 
     And generates output of the form::
 
@@ -902,9 +981,9 @@ def dump_xearth_markers(markers, name="identifier"):
     @type markers: C{dict}
     @param markers: Dictionary of identifer keys, with C{Trigpoint} values
     @type name: C{str}
-    @param name: Value to use as xearth display string
+    @param name: Value to use as Xearth display string
     @rtype: C{list}
-    @return: List of strings representing an xearth marker file
+    @return: List of strings representing an Xearth marker file
     @raise ValueError: Unsupported value for C{name}
     """
     output = []

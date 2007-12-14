@@ -1,0 +1,41 @@
+ID          : 126
+Type        : City
+Population  : 6574009
+Size        : 
+Name        : London
+ Country    : UK
+ Region     : England
+Location    : Earth
+ Longitude  : -0.083
+ Latitude   :   51.500
+ Elevation  : 
+Date        : 19961206
+Entered-By  : Rob.Hooft@EMBL-Heidelberg.DE
+//
+ID          : 127
+Type        : City
+Population  : 76130
+Size        : 
+Name        : Luxembourg
+ Country    : LU
+ Region     : 
+Location    : Earth
+ Longitude  :    6.117
+ Latitude   :   49.617
+ Elevation  : 
+Date        : 19961206
+Entered-By  : Rob.Hooft@EMBL-Heidelberg.DE
+//
+ID          : 128
+Type        : City
+Population  : 413095
+Size        : 
+Name        : Lyon
+ Country    : FR
+ Region     : 
+Location    : Earth
+ Longitude  :    4.867
+ Latitude   :   45.767
+ Elevation  : 
+Date        : 19961206
+Entered-By  : Rob.Hooft@EMBL-Heidelberg.DE

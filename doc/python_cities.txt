@@ -55,60 +55,63 @@ objects defined for `Trigpointing and point.py`_
 On my Gentoo_ desktop the cities database is installed as
 ``/usr/share/misc/cities.dat``, and can be imported as simply as:
 
-::
+.. code-block:: pycon
 
-    import cities
-    Cities = cities.Cities("/usr/share/misc/cities.dat")
+    >>> from earth_distance import cities
+    >>> Cities = cities.Cities(open("/usr/share/misc/cities.dat"))
 
 And the imported database can be used in a variety of ways:
 
-::
+.. code-block:: pycon
 
-    print len(Cities), "cities"
-    print "Cities larger with more than 8 million people"
-    for city in Cities.values():
-        if city.population > 8000000:
-            print "  ", city.name, "-", city.population
-    print "Mountains"
-    for city in Cities.values():
-        if city.ptype == "Mountain":
-            print "  ", city.name
-
-which will display::
-
+    >>> print len(Cities), "cities"
     496 cities
+    >>> print "Cities larger with more than 8 million people"
     Cities larger with more than 8 million people
-      Bombay - 8243405
-      Jakarta - 9200000
-      Moskwa - 8769000
-      Sao Paolo - 10063110
-      Tokyo - 8354615
-      Mexico - 8831079
+    >>> for city in Cities.values():
+    ...     if city.population > 8000000:
+    ...         print "  ", city.name, "-", city.population
+       Bombay - 8243405
+       Jakarta - 9200000
+       Moskwa - 8769000
+       Sao Paolo - 10063110
+       Tokyo - 8354615
+       Mexico - 8831079
+    >>> print "Mountains"
     Mountains
-      Aconcagua
-      Popocatepetl
+    >>> for city in Cities.values():
+    ...     if city.ptype == "Mountain":
+    ...         print "  ", city.name
+       Aconcagua
+       Popocatepetl
 
 You can recreate the database as a smoke test using the following:
 
-::
+.. code-block:: pycon
 
-    f = open("cities.dat", "w")
-    f.write("\n//\n".join([str(city) for city in Cities.values()]))
-    f.close()
+    >>> f = open("cities.dat", "w")
+    >>> f.write("\n//\n".join([str(city) for city in Cities.values()]))
+    >>> f.close()
 
 unfortunately the files aren't simply comparable using ``diff`` because
 of some unusual formatting in the original file, but visually scanning
-over the ``diff`` output shows that we have a correct import.
+over the ``diff -w`` output shows that we have a correct export.
 
 The ``City`` class inherits ``Trigpoint`` which in turn inherits
 ``Point``, and therefore has all the same methods they do.  This allows
 you to calculate distances and bearings between the ``City`` objects or
 any other derivative object of the parent classes.  For example, you
-could use the ``dump_xearth_markers`` function from ``trigpoints.py``:
+could use the ``dump_xearth_markers`` function from ``utils.py``:
 
-::
+.. code-block:: pycon
 
-    print "\n".join(cities.trigpoints.dump_xearth_markers(Cities, "name"))
+    >>> from earth_distance.utils import dump_xearth_markers
+    >>> scottish_markers = dict(filter(lambda x: x[1].region == "Scotland",
+    ...                                Cities.items()))
+    >>> print "\n".join(dump_xearth_markers(scottish_markers, "name"))
+    57.150000 -2.083000 "Aberdeen" # 1
+    55.950000 -3.183000 "Edinburgh" # 83
+    55.867000 -4.267000 "Glasgow" # 92
 
 Take a look at the epydoc_ generated documentation that is included in
 the tarball to see what can be done.
