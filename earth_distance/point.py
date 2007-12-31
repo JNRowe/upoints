@@ -101,6 +101,7 @@ class Point(object):
         @raise ValueError: Unknown value for C{format}
         @raise ValueError: Invalid value for C{latitude} or C{longitude}
         """
+        super(Point, self).__init__()
         if angle in ("degrees", "radians"):
             self._angle = angle
         else:

@@ -542,6 +542,10 @@ def sun_rise_set(latitude, longitude, date, mode="rise", timezone=0,
     >>> sun_rise_set(52.015, -0.221, datetime.date(1993, 12, 11), "set")
     datetime.time(15, 50)
     >>> sun_rise_set(89, 0, datetime.date(2007, 12, 21))
+    >>> sun_rise_set(52.015, -0.221, datetime.date(2007, 2, 21))
+    datetime.time(7, 4)
+    >>> sun_rise_set(52.015, -0.221, datetime.date(2007, 1, 21))
+    datetime.time(7, 56)
 
     @type latitude: C{float} or coercible to C{float}
     @param latitude: Location's latitude
@@ -637,6 +641,8 @@ def sun_rise_set(latitude, longitude, date, mode="rise", timezone=0,
         minute = int(60 * (localT % hour))
     if hour < 0:
         hour += 23
+    elif hour > 23:
+        hour = hour % 24
     if minute < 0:
         minute += 60
     return datetime.time(hour, minute)

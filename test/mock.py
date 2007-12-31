@@ -86,7 +86,7 @@ def _get_test_file(filename):
     else:
         if filename in SOURCES:
             raise IOError("`%s' missing.  It can be downloaded from `%s', or "
-                          "alternatively by running the `grab_net_sources'"
+                          "alternatively by running the `grab_net_sources' "
                           "script." % (filename, SOURCES[filename]))
         else:
             raise IOError("Can not open `%s'" % filename)
@@ -142,7 +142,7 @@ class pymetar(ModuleType):
             @param stationCode: Ignored, just for compatibility with
                 C{ReportFetcher} callers
             """
-            pass
+            super(pymetar.ReportFetcher, self).__init__()
 
         def FetchReport(self):
             """
@@ -160,7 +160,7 @@ class pymetar(ModuleType):
                 @param MetarReport: Ignored, just for compatibility with
                     C{FetchReport} callers
                 """
-                pass
+                super(pymetar.ReportParser.ParseReport, self).__init__()
 
             def getTemperatureCelsius(self):
                 """
