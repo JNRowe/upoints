@@ -29,7 +29,7 @@ from distutils.command.sdist import sdist
 from distutils.cmd import Command
 from distutils.core import setup
 from distutils.dep_util import newer
-from distutils.errors import DistutilsModuleError
+from distutils.errors import (DistutilsFileError, DistutilsModuleError)
 from distutils.file_util import write_file
 from distutils.util import execute
 from email.utils import parseaddr
@@ -39,7 +39,7 @@ from subprocess import check_call
 from time import strftime
 
 try:
-    from docutils.core import publish_cmdline, default_description
+    from docutils.core import (publish_cmdline, default_description)
     from docutils import nodes
     from docutils.parsers.rst import directives
     DOCUTILS = True
@@ -139,7 +139,9 @@ class BuildDoc(NoOptsCommand):
             raise DistutilsModuleError("docutils import failed, "
                                        "skipping documentation generation")
         if not PYGMENTS:
-            raise DistutilsModuleError("docutils import failed, "
+            # This could be a warning with conditional support for users, but
+            # how would coloured output be guaranteed in releases?
+            raise DistutilsModuleError("pygments import failed, "
                                        "skipping documentation generation")
 
         pygments_formatter = HtmlFormatter()
@@ -190,7 +192,7 @@ class BuildDoc(NoOptsCommand):
                 execute(write_changelog, ("ChangeLog", ))
             else:
                 cl_time = os.stat("ChangeLog").st_mtime
-                repo = hg.repository(None)
+                repo = hg.repository(None, os.curdir)
                 tip_time = repo.changelog.read(repo.lookup("tip"))[2][0]
                 if tip_time > cl_time:
                     execute(write_changelog, ("ChangeLog", ))
@@ -209,8 +211,16 @@ class HgSdist(sdist):
     def initialize_options(self):
         sdist.initialize_options(self)
         if not MERCURIAL:
-            raise DistutilsModuleError("Mercurial import failed")
-        self.repo = hg.repository(None)
+            raise DistutilsModuleError("Mercurial import failed, "
+                                       "unable to build release")
+        self.repo = hg.repository(None, os.curdir)
+        if filter(lambda i: not i == [], self.repo.status()[:4]):
+            raise DistutilsFileError("Uncommitted changes!")
+        news_format = "%s - %s" % (earth_distance.__version__,
+                                   strftime("%Y-%m-%d"))
+        if not any(filter(lambda s: s.strip() == news_format, open("NEWS"))):
+            print("NEWS entry for `%s' missing" % earth_distance.__version__)
+            sys.exit(1)
 
     def get_file_list(self):
         changeset = self.repo.changectx()
@@ -235,8 +245,33 @@ class HgSdist(sdist):
         """
         Store the current Mercurial changeset in a file
         """
-        repo_id = hg.short((self.repo.lookup("tip")))
+        repo_id = hg.short(self.repo.lookup("tip"))
         write_file(".hg_version", ("%s tip\n" % repo_id, ))
+
+class Snapshot(NoOptsCommand):
+    """
+    Build a daily snapshot tarball
+    """
+    description = gen_desc(__doc__)
+    user_options = []
+
+    def run(self):
+        snapshot_name="earth_distance-%s" % strftime("%Y-%m-%d")
+        snapshot_location="dist/%s" % snapshot_name
+        if os.path.isdir(snapshot_location):
+            execute(shutil.rmtree, (snapshot_location, ))
+        execute(self.generate_tree, (snapshot_location, ))
+        execute(write_changelog, ("%s/ChangeLog" % snapshot_location, ))
+        execute(make_archive, (snapshot_location, "bztar", "dist",
+                               snapshot_name))
+        execute(shutil.rmtree, (snapshot_location, ))
+
+    def generate_tree(self, snapshot_name):
+        """
+        Generate a clean Mercurial clone
+        """
+        check_call(["hg", "archive", snapshot_name])
+        shutil.rmtree("%s/.be" % snapshot_name)
 
 class MyClean(clean):
     """
@@ -254,28 +289,6 @@ class MyClean(clean):
                 + glob("earth_distance/*.pyc"):
                 os.path.exists(file) and os.unlink(file)
             execute(shutil.rmtree, ("html", True))
-
-class Snapshot(NoOptsCommand):
-    """
-    Build a daily snapshot tarball
-    """
-    description = gen_desc(__doc__)
-    user_options = []
-
-    def run(self):
-        snapshot_name="earth_distance-%s" % strftime("%Y-%m-%d")
-        execute(shutil.rmtree, ("dist/%s" % snapshot_name, True))
-        execute(self.generate_tree, ("dist/%s" % snapshot_name, ))
-        execute(write_changelog, ("dist/%s/ChangeLog" % snapshot_name, ))
-        execute(make_archive, ("dist/%s" % snapshot_name, "bztar", "dist",
-                               snapshot_name))
-        execute(shutil.rmtree, ("dist/%s" % snapshot_name, ))
-
-    def generate_tree(self, snapshot_name):
-        """
-        Generate a clean Mercurial clone
-        """
-        check_call(["hg", "archive", snapshot_name])
 
 class MyTest(NoOptsCommand):
     user_options = [
@@ -321,7 +334,7 @@ class TestCode(MyTest):
 
     def run(self):
         for filename in sorted(['edist.py'] + glob("earth_distance/*.py")):
-            print('Testing module file %s' % filename)
+            print('Testing python file %s' % filename)
             module = os.path.splitext(filename)[0].replace("/", ".")
             if module.endswith("__init__"):
                 module = module[:-9]

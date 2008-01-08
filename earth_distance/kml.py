@@ -78,7 +78,7 @@ class Placemark(trigpoints.Trigpoint):
 
     @ivar latitude: Placemark's latitude
     @ivar longitude: Placemark's longitude
-    @ivar altitude: Placemarks's altitude
+    @ivar altitude: Placemark's altitude
     """
 
     __slots__ = ('description', )
@@ -129,13 +129,13 @@ class Placemark(trigpoints.Trigpoint):
         """
         Pretty printed location string
 
-        >>> print Placemark(52, 0, 4)
+        >>> print(Placemark(52, 0, 4))
         52°00'00"N, 000°00'00"E alt 4m
-        >>> print Placemark(52, 0, None)
+        >>> print(Placemark(52, 0, None))
         52°00'00"N, 000°00'00"E
-        >>> print Placemark(52, 0, None, "name", "desc")
+        >>> print(Placemark(52, 0, None, "name", "desc"))
         name (52°00'00"N, 000°00'00"E) [desc]
-        >>> print Placemark(52, 0, 42, "name", "desc")
+        >>> print(Placemark(52, 0, 42, "name", "desc"))
         name (52°00'00"N, 000°00'00"E alt 42m) [desc]
 
         @type mode: C{str}
@@ -275,8 +275,8 @@ class Placemarks(dict):
         elif isinstance(kml_file, basestring):
             data = ET.parse(open(kml_file))
         else:
-            raise ValueError("Unable to handle data of type `%s`"
-                             % type(kml_file))
+            raise TypeError("Unable to handle data of type `%s`"
+                            % type(kml_file))
 
         if kml_version:
             try:

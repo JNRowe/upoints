@@ -18,8 +18,8 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-__version__ = "0.6.0"
-__date__ = "2007-05-29"
+__version__ = "0.7.0"
+__date__ = "2008-01-08"
 __author__ = "James Rowe <jnrowe@ukfsn.org>"
 __copyright__ = "Copyright (C) 2007 James Rowe"
 __license__ = "GNU General Public License Version 3"
@@ -65,6 +65,6 @@ datetime.time(20, 25)
 @license: %s
 """ % ((__version__, ) + parseaddr(__author__) + (__copyright__, __license__))
 
-from earth_distance import (baken, cities, geonames, kml, point, trigpoints,
-                            tzdata, utils, weather_stations, xearth)
+from earth_distance import (baken, cities, geonames, kml, nmea, point,
+                            trigpoints, tzdata, utils, weather_stations, xearth)
 

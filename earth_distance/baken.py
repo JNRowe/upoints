@@ -230,8 +230,8 @@ class Bakens(dict):
         elif isinstance(baken_file, basestring):
             data.readfp(open(baken_file))
         else:
-            raise ValueError("Unable to handle data of type `%s`"
-                             % type(baken_file))
+            raise TypeError("Unable to handle data of type `%s`"
+                            % type(baken_file))
         valid_locator = re.compile("[A-Z]{2}[0-9]{2}[A-Z]{2}")
         for name in data.sections():
             elements = {}

@@ -75,10 +75,10 @@ class Zone(point.Point):
         """
         Pretty printed location string
 
-        >>> print Zone("+513030-0000731", 'GB', "Europe/London")
+        >>> print(Zone("+513030-0000731", 'GB', "Europe/London"))
         Europe/London (GB: 51°30'30"N, 000°07'30"W)
-        >>> print Zone("+0658-15813", "FM", "Pacific/Ponape",
-        ...            ["Ponape (Pohnpei)", ])
+        >>> print(Zone("+0658-15813", "FM", "Pacific/Ponape",
+        ...            ["Ponape (Pohnpei)", ]))
         Pacific/Ponape (FM: 06°58'00"N, 158°13'00"W also Ponape (Pohnpei))
 
         @type mode: C{str}

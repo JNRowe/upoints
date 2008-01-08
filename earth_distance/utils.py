@@ -33,7 +33,7 @@ BODIES = {
     # Terrestrial inner planets
     'Mercury': 2440,
     'Venus': 6052,
-    'Earth': 6372,
+    'Earth': 6367,
     'Mars': 3390,
 
     # Gas giant outer planets
@@ -434,9 +434,9 @@ def angle_to_distance(angle, format="metric"):
     Convert angle in to distance along a great circle
 
     >>> "%.3f" % angle_to_distance(1)
-    '111.212'
+    '111.125'
     >>> "%i" % angle_to_distance(360, "imperial")
-    '24882'
+    '24863'
     >>> "%i" % angle_to_distance(1.0/60, "nautical")
     '1'
     >>> "%i" % angle_to_distance(10, "baseless")
@@ -743,7 +743,7 @@ def prepare_read(data):
     @param data: Data to read
     @rtype: C{list}
     @returns: List suitable for parsing
-    @raise ValueError: Invalid value for data
+    @raise TypeError: Invalid value for data
     """
     if hasattr(data, "readlines"):
         data = data.readlines()
@@ -752,7 +752,7 @@ def prepare_read(data):
     elif isinstance(data, basestring):
         data = open(data).readlines()
     else:
-        raise ValueError("Unable to handle data of type `%s`" % type(data))
+        raise TypeError("Unable to handle data of type `%s`" % type(data))
     return data
 
 def from_grid_locator(locator):

@@ -341,7 +341,7 @@ class Locations(dict):
         Europe/Andorra - (60, 120)
         >>> header_skip_check = Locations(None,
         ...                               open("geonames_timezones_header"))
-        >>> print header_skip_check
+        >>> print(header_skip_check)
         {}
         >>> broken_file_check = Locations(None,
         ...                               open("geonames_timezones_broken"))

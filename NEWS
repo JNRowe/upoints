@@ -6,6 +6,11 @@ User-visible changes
 
 .. contents::
 
+0.7.0 - 2008-01-08
+------------------
+
+  * Support for reading NMEA 0183 formatted data
+
 0.6.0 - 2007-12-14
 ------------------
 

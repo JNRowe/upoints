@@ -31,8 +31,7 @@ class Xearth(point.Point):
 
     __slots__ = ('comment', )
 
-    def __init__(self, latitude, longitude, comment=None, format="metric",
-                 angle="degrees"):
+    def __init__(self, latitude, longitude, comment=None):
         """
         Initialise a new C{Xearth} object
 
@@ -43,7 +42,7 @@ class Xearth(point.Point):
         @type comment: C{string}
         @param comment: Comment for location
         """
-        super(Xearth, self).__init__(latitude, longitude, format, angle)
+        super(Xearth, self).__init__(latitude, longitude)
         self.comment = comment
 
     def __repr__(self):
@@ -104,7 +103,7 @@ class Xearths(dict):
         C{Xearth} objects rendered for use with Xearth/Xplanet
 
         >>> markers = Xearths(open("xearth"))
-        >>> print markers
+        >>> print(markers)
         52.015000 -0.221000 "Home"
         52.633300 -2.500000 "Telford"
 

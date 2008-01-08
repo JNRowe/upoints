@@ -42,8 +42,7 @@ class Trigpoint(point.Point):
 
     __slots__ = ('altitude', 'name')
 
-    def __init__(self, latitude, longitude, altitude, name=None,
-                 format="metric", angle="degrees"):
+    def __init__(self, latitude, longitude, altitude, name=None):
         """
         Initialise a new C{Trigpoint} object
 
@@ -56,7 +55,7 @@ class Trigpoint(point.Point):
         @type name: C{string}
         @param name: Name for location
         """
-        super(Trigpoint, self).__init__(latitude, longitude, format, angle)
+        super(Trigpoint, self).__init__(latitude, longitude)
         self.altitude = altitude
         self.name = name
 
@@ -153,7 +152,7 @@ class Trigpoints(dict):
         >>> marker_file.seek(0)
         >>> markers = Trigpoints(marker_file.readlines())
         >>> markers = Trigpoints(open("southern_trigpoints"))
-        >>> print markers[1]
+        >>> print(markers[1])
         FakeLand (48°07'23"S, 000°07'23"W alt 12m)
         >>> markers = Trigpoints(open("broken_trigpoints"))
         >>> for key, value in sorted(markers.items()):
