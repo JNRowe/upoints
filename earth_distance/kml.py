@@ -103,8 +103,6 @@ class Placemark(trigpoints.Trigpoint):
 
         if altitude:
             self.altitude = float(altitude)
-        else:
-            self.altitude = altitude
         self.description = description
 
     def __repr__(self):

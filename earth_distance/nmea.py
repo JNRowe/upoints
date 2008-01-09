@@ -120,6 +120,135 @@ MODE_INDICATOR = {
     "N": "Invalid",
 }
 
+class LoranPosition(point.Point):
+    """
+    Class for representing a GPS NMEA-formatted Loran-C position
+
+    @ivar latitude: Unit's latitude
+    @ivar longitude: Unit's longitude
+    @ivar time: Time the position was taken
+    @ivar status: GPS status
+    @ivar mode: Type of reading
+    """
+
+    __slots__ = ('time', 'status', 'mode')
+
+    def __init__(self, latitude, longitude, time, status, mode=None):
+        """
+        Initialise a new C{LoranPosition} object
+
+        @type latitude: C{float} or coercible to C{float}
+        @param latitude: Fix's latitude
+        @type longitude: C{float} or coercible to C{float}
+        @param longitude: Fix's longitude
+        @type time: C{datetime.time}
+        @param time: Time the fix was taken
+        @type status: C{bool}
+        @param status: Whether the data is active
+        @type mode: C{str}
+        @param mode: Type of reading
+        """
+        super(LoranPosition, self).__init__(latitude, longitude)
+        self.time = time
+        self.status = status
+        self.mode = mode
+
+    def __repr__(self):
+        """
+        Self-documenting string representation
+
+        >>> LoranPosition(53.1440233333, -3.01542833333,
+        ...               datetime.time(14, 20, 58, 14), True, None)
+        LoranPosition(53.1440233333, -3.01542833333,
+                      datetime.time(14, 20, 58, 14), True, None)
+        >>> LoranPosition(53.1440233333, -3.01542833333,
+        ...               datetime.time(14, 20, 58, 14), True, "A")
+        LoranPosition(53.1440233333, -3.01542833333,
+                      datetime.time(14, 20, 58, 14), True, 'A')
+
+        @rtype: C{str}
+        @return: String to recreate C{LoranPosition} object
+        """
+        data = utils.repr_assist(self.latitude, self.longitude)
+        data.extend([repr(self.time), repr(self.status), repr(self.mode)])
+        return self.__class__.__name__ + '(' + ", ".join(data) + ')'
+
+    def __str__(self, talker="GP"):
+        """
+        Pretty printed position string
+
+        >>> print(LoranPosition(53.1440233333, -3.01542833333,
+        ...                     datetime.time(14, 20, 58), True, None))
+        $GPGLL,5308.6414,N,00300.9257,W,142058.00,A*1F
+        >>> print(LoranPosition(53.1440233333, -3.01542833333,
+        ...                     datetime.time(14, 20, 58), True, "A"))
+        $GPGLL,5308.6414,N,00300.9257,W,142058.00,A,A*72
+
+        @type talker: C{str}
+        @param talker: Talker ID
+        @rtype: C{str}
+        @return: Human readable string representation of C{Position} object
+        """
+        if not len(talker) == 2:
+            raise ValueError("Talker ID must be two characters `%s'" % talker)
+        data = ["%sGLL" % talker]
+        data.extend(nmea_latitude(self.latitude))
+        data.extend(nmea_longitude(self.longitude))
+        data.append("%s.%02i" % (self.time.strftime("%H%M%S"),
+                                self.time.microsecond/1000000))
+        data.append("A" if self.status else "V")
+        if self.mode:
+            data.append(self.mode)
+        data = ",".join(data)
+        return "$%s*%X\r" % (data, calc_checksum(data))
+
+    def mode_string(self):
+        """
+        Return a string version of the reading mode information
+
+        >>> position = LoranPosition(53.1440233333, -3.01542833333,
+        ...                          datetime.time(14, 20, 58), True, None)
+        >>> print(position.mode_string())
+        Unknown
+        >>> position.mode = "A"
+        >>> print(position.mode_string())
+        Autonomous
+
+        @rtype: C{str}
+        @return: Quality information as string
+        """
+        return MODE_INDICATOR.get(self.mode, "Unknown")
+
+    @staticmethod
+    def parse_elements(elements):
+        """
+        Parse position data elements
+
+        >>> LoranPosition.parse_elements(["52.32144", "N", "00300.9257", "W",
+        ...                               "14205914", "A"])
+        LoranPosition(52.0053573333, -3.01542833333, datetime.time(14, 20, 59, 140000), True, None)
+
+        @type elements: C{list}
+        @param elements: Data values for fix
+        @rtype: C{Fix}
+        @return: Fix object representing data
+        """
+        if not len(elements) in (6, 7):
+            raise ValueError("Invalid GLL position data")
+        # Latitude and longitude are checked for validity during Fix
+        # instantiation
+        latitude = parse_latitude(elements[0], elements[1])
+        longitude = parse_longitude(elements[2], elements[3])
+        hour, minute, second = [int(elements[4][i:i+2]) for i in range(0, 6, 2)]
+        usecond = int(elements[4][6:8]) * 10000
+        time = datetime.time(hour, minute, second, usecond)
+        active = True if elements[5] == "A" else False
+        if len(elements) == 7:
+            mode = elements[6]
+        else:
+            mode = None
+        return LoranPosition(latitude, longitude, time, active, mode)
+
 class Position(point.Point):
     """
     Class for representing a GPS NMEA-formatted position
@@ -580,7 +709,7 @@ class Locations(list):
         if gpsdata_file:
             self.import_gpsdata_file(gpsdata_file)
 
-    def import_gpsdata_file(self, gpsdata_file):
+    def import_gpsdata_file(self, gpsdata_file, checksum=True):
         """
         Import GPS NMEA-formatted data files
 
@@ -639,6 +768,8 @@ class Locations(list):
 
         @type gpsdata_file: C{file}, C{list} or C{str}
         @param gpsdata_file: NMEA data to read
+        @type checksum: C{bool}
+        @param checksum: Whether checksums should be tested
         @rtype: C{list}
         @return: Series of locations taken from the data
         """
@@ -648,8 +779,14 @@ class Locations(list):
             "GPGGA": Fix,
             "GPRMC": Position,
             "GPWPL": Waypoint,
+            "GPGLL": LoranPosition,
+            "LCGLL": LoranPosition,
         }
 
+        if not checksum:
+            logger.warning("Disabling the checksum tests should only be used"
+                           "when the device is incapable of emitting the "
+                           "correct values!")
         for line in data:
             # The standard tells us lines should end in \r\n, even though some
             # devices break this, but Python's standard file object solves this
@@ -657,9 +794,13 @@ class Locations(list):
             # opener.
             if not line[1:6] in PARSERS:
                 continue
-            values, checksum = line[1:].split("*")
-            if not calc_checksum(values) == int(checksum, 16):
-                raise ValueError("Sentence has invalid checksum")
+            if checksum:
+                values, checksum = line[1:].split("*")
+                if not calc_checksum(values) == int(checksum, 16):
+                    raise ValueError("Sentence has invalid checksum")
+            else:
+                values = line[1:].split("*")[0]
             elements = values.split(",")
             parser = getattr(PARSERS[elements[0]], "parse_elements")
             self.append(parser(elements[1:]))
+
