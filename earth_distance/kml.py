@@ -2,7 +2,7 @@
 # vim: set sw=4 sts=4 et tw=80 fileencoding=utf-8:
 #
 """kml - Imports KML data files"""
-# Copyright (C) 2007  James Rowe
+# Copyright (C) 2007-2008  James Rowe
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -19,7 +19,6 @@
 #
 
 import logging
-import os
 
 from xml.etree import ElementTree
 
@@ -41,12 +40,12 @@ KML_VERSIONS = {
   "2.0": "http://earth.google.com/kml/2.0",
   "2.1": "http://earth.google.com/kml/2.1",
   "2.2": "http://earth.google.com/kml/2.2",
-}
-# This is the default KML version to output, changing this will cause tests to
-# fail.
-DEF_KML_VERSION = "2.2"
+} #: Supported KML namespace version to URI mapping
 
-def create_elem(tag, attr={}, kml_version=DEF_KML_VERSION, human_namespace=False):
+# Changing this will cause tests to fail.
+DEF_KML_VERSION = "2.2" #: Default KML version to output
+
+def create_elem(tag, attr=None, kml_version=DEF_KML_VERSION, human_namespace=False):
     """
     Create a partial C{ET.Element} wrapper with namespace defined
 
@@ -62,6 +61,8 @@ def create_elem(tag, attr={}, kml_version=DEF_KML_VERSION, human_namespace=False
     @rtype: C{function}
     @return: C{ET.Element} wrapper with predefined namespace
     """
+    if not attr:
+        attr = {}
     try:
         kml_ns = KML_VERSIONS[kml_version]
     except KeyError:
@@ -75,6 +76,8 @@ def create_elem(tag, attr={}, kml_version=DEF_KML_VERSION, human_namespace=False
 class Placemark(trigpoints.Trigpoint):
     """
     Class for representing a Placemark element from KML data files
+
+    @since: 0.6.0
 
     @ivar latitude: Placemark's latitude
     @ivar longitude: Placemark's longitude
@@ -93,10 +96,10 @@ class Placemark(trigpoints.Trigpoint):
         @type longitude: C{float} or coercible to C{float}
         @param longitude: Placemark's longitude
         @type altitude: C{float} or coercible to C{float}
-        @param altitude Placemark's altitude
-        @type name: C{string}
+        @param altitude: Placemark's altitude
+        @type name: C{str}
         @param name: Name for placemark
-        @type description: C{string}
+        @type description: C{str}
         @param description: Placemark's description
         """
         super(Placemark, self).__init__(latitude, longitude, altitude, name)
@@ -198,6 +201,8 @@ class Placemark(trigpoints.Trigpoint):
 class Placemarks(dict):
     """
     Class for representing a group of C{Placemark} objects
+
+    @since: 0.6.0
     """
 
     def __init__(self, kml_file=None):
@@ -212,7 +217,7 @@ class Placemarks(dict):
         """
         Import KML data files
 
-        C{import_KML_file()} returns a dictionary with keys containing the
+        C{import_kml_file()} returns a dictionary with keys containing the
         section title, and values consisting of C{Placemark} objects.
 
         It expects data files in KML format, as specified in U{KML Reference

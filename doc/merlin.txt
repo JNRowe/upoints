@@ -61,11 +61,11 @@ Jodrell Bank site and Pickmere at 11.2 kM.  The ``Point`` object's
 .. code-block:: pycon
 
     >>> "%.3f kM" % MERLIN['Cambridge'].distance(MERLIN['Knocking'])
-    '217.482 kM'
+    '217.312 kM'
     >>> "%.3f kM" % MERLIN['Lovell Telescope'].distance(MERLIN['Pickmere'])
-    '10.330 kM'
+    '10.322 kM'
     >>> "%.3f kM" % MERLIN['Mark II'].distance(MERLIN['Pickmere'])
-    '10.477 kM'
+    '10.469 kM'
 
 .. Note::
    The web page gives the shortest baseline as the distance from

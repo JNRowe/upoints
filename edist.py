@@ -1,8 +1,8 @@
 #! /usr/bin/python -tt
 # vim: set sw=4 sts=4 et tw=80 fileencoding=utf-8:
 #
-"""edist - Simple command line coordinate conversion"""
-# Copyright (C) 2007 James Rowe;
+"""edist - Simple command line coordinate processing"""
+# Copyright (C) 2007-2008  James Rowe;
 # All rights reserved.
 #
 # This program is free software: you can redistribute it and/or modify
@@ -19,19 +19,18 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from __future__ import division
 from email.utils import parseaddr
 
-from earth_distance import (__version__, __date__, __author__, __copyright__,
-                            __license__, __credits__)
+from earth_distance import (__version__, __author__, __copyright__, __license__)
 
-__doc__ += """
+__doc__ += """.
+
 edist operates on one, or more, locations specified in the following format
 "[+-]DD.DD;[+-]DDD.DD".  For example, a location string of "52.015;-0.221" would
 be interpreted as 52.015 degrees North by 0.221 degrees West.  Positive values
 can be specified with a "+" prefix, but it isn't required.
 
-Note that in most shells the locations must be quoted because of the special
+@note: In most shells the locations must be quoted because of the special
 nature of the semicolon.
 
 @version: %s
@@ -46,6 +45,7 @@ __description__ = "\n".join(__doc__[:__doc__.find("@")-2].splitlines()[1:])
 # Replace script name, with optparse's substitution var
 __description__ = __description__.replace("edist", "%prog")
 
+import ConfigParser
 import logging
 import optparse
 import os
@@ -65,6 +65,8 @@ class LocationsError(ValueError):
     Traceback (most recent call last):
         ...
     LocationsError: More than one location is required for distance.
+
+    @since: 0.6.0
 
     @ivar function: Function where error is raised.
     """
@@ -98,6 +100,8 @@ class LocationsError(ValueError):
 class NumberedPoint(point.Point):
     """
     Class for representing locations from command line
+
+    @since: 0.6.0
 
     @ivar number: Location's position on command line
     """
@@ -138,7 +142,7 @@ class NumberedPoint(point.Point):
         @see: C{point.Point.destination}
 
         >>> NumberedPoint(52.015, -0.221, 1).destination(294, 169)
-        NumberedPoint(52.6111880522, -2.50755435332, 1)
+        NumberedPoint(52.6116387502, -2.50937408195, 1)
 
         @type bearing: C{float} or coercible to C{float}
         @param bearing: Bearing from self
@@ -153,10 +157,12 @@ class NumberedPoint(point.Point):
 class NumberedPoints(list):
     """
     Class for representing a group of C{NumberedPoint} objects
+
+    @since: 2008-01-08
     """
 
     def __init__(self, locations=None, format="dd", unistr=True,
-                 verbose=True):
+                 verbose=True, config_locations=None):
         """
         Initialise a new C{NumberedPoints} object
 
@@ -173,10 +179,12 @@ class NumberedPoints(list):
         @param unistr: Whether to output Unicode results
         @type verbose: C{bool}
         @param verbose: Whether to generate verbose output
+        @type config_locations: C{dict}
+        @param config_locations: Locations imported from user's config file
         """
         list.__init__(self)
         if locations:
-            self.import_locations(locations)
+            self.import_locations(locations, config_locations)
         self.format = format
         if unistr:
             self.stringify = lambda p: p.__unicode__(format)
@@ -184,19 +192,29 @@ class NumberedPoints(list):
             self.stringify = lambda p: p.__str__(format)
         self.verbose = verbose
 
-    def import_locations(self, locations):
+    def import_locations(self, locations, config_locations):
         """
         Import locations from arguments
 
         @type locations: C{list} of C{str}
         @param locations: Location identifiers
+        @type config_locations: C{dict}
+        @param config_locations: Locations imported from user's config file
         """
         for number, location in enumerate(locations):
-            try:
-                latitude, longitude = location.split(";")
+            if config_locations and location in config_locations:
+                latitude, longitude = config_locations[location]
                 self.append(NumberedPoint(latitude, longitude, number+1))
-            except ValueError:
-                raise LocationsError(data=(number, location))
+            else:
+                try:
+                    data = utils.parse_location(location)
+                    if data:
+                        latitude, longitude = data
+                    else:
+                        latitude, longitude = utils.from_grid_locator(location)
+                    self.append(NumberedPoint(latitude, longitude, number+1))
+                except ValueError:
+                    raise LocationsError(data=(number, location))
 
     def display(self, locator):
         """
@@ -235,13 +253,17 @@ class NumberedPoints(list):
         >>> locations = NumberedPoints(["52.015;-0.221", "52.168;0.040"])
         >>> locations.distance("km")
         Location 1 to 2 is 24 kilometres
-        Total distance is 24 kilometres
         >>> locations.distance("mile")
         Location 1 to 2 is 15 miles
-        Total distance is 15 miles
         >>> locations.verbose = False
         >>> locations.distance("nautical")
-        13.3094010923
+        13.2989574317
+        >>> locations = NumberedPoints(["52.015;-0.221", "52.168;0.040",
+        ...                             "51.420;-1.500"])
+        >>> locations.distance("km")
+        Location 1 to 2 is 24 kilometres
+        Location 2 to 3 is 134 kilometres
+        Total distance is 159 kilometres
 
         @type unit: C{str}
         @param unit: Distance unit to use for output
@@ -265,7 +287,8 @@ class NumberedPoints(list):
         if self.verbose:
             for number, distance in enumerate(distances):
                 print(leg_msg % (number+1, number+2, distance))
-            print(total_msg % sum(distances))
+            if len(distances) > 1:
+                print(total_msg % sum(distances))
         else:
             print(sum(distances))
 
@@ -348,7 +371,7 @@ class NumberedPoints(list):
 
         >>> locations = NumberedPoints(["52.015;-0.221", "52.168;0.040"])
         >>> locations.destination((42, 240), False)
-        Destination from location 1 is N51.825°; W000.750°
+        Destination from location 1 is N51.825°; W000.751°
         Destination from location 2 is N51.978°; W000.491°
         >>> locations.format = "locator"
         >>> locations.destination((42, 240), "subsquare")
@@ -421,8 +444,14 @@ def process_command_line():
                                    version="%prog v" + __version__,
                                    description=__description__)
 
-    parser.set_defaults(format="dms", locator="subsquare", verbose=True,
+    parser.set_defaults(config_file=os.path.expanduser("~/.edist.conf"),
+                        format="dms", locator="subsquare", verbose=True,
                         units="km")
+
+    parser.add_option("--config-file", action="store",
+                      metavar=os.path.expanduser("~/.edist.conf"),
+                      help="Config file to read custom locations from")
+
     mode_opts = optparse.OptionGroup(parser, "Calculation modes")
     parser.add_option_group(mode_opts)
     mode_opts.add_option("-p", "--print", action="store_true", dest="display",
@@ -493,6 +522,31 @@ def process_command_line():
 
     return modes, options, args
 
+def read_locations(filename):
+    """
+    Pull locations from a user's config file
+
+    @type filename: C{str}
+    @param filename: Config file to parse
+    @rtype: C{dict}
+    @return: List of locations from config file
+    """
+    data = ConfigParser.ConfigParser()
+    try:
+        data.readfp(open(filename))
+    except IOError:
+        raise ValueError("Unable to open file `%s'" % filename)
+
+    locations = {}
+    for name in data.sections():
+        if data.has_option(name, "locator"):
+            latitude, longitude = utils.from_grid_locator(data.get(name, "locator"))
+        else:
+            latitude = data.getfloat(name, "latitude")
+            longitude = data.getfloat(name, "longitude")
+        locations[name] = (latitude, longitude)
+    return locations
+
 def main():
     """
     Main script handler
@@ -515,8 +569,13 @@ def main():
             options.unicode = False
             logging.debug("Setting output to ASCII")
 
+    if os.path.exists(options.config_file):
+        config_locations = read_locations(options.config_file)
+    else:
+        config_locations = None
+
     locations = NumberedPoints(args, options.format, options.unicode,
-                               options.verbose)
+                               options.verbose, config_locations)
 
     if len(modes) > 1:
         logging.warning("Output order for multiple modes is not guaranteed "

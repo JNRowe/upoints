@@ -2,7 +2,7 @@
 # vim: set sw=4 sts=4 et tw=80 fileencoding=utf-8:
 #
 """geonames - Imports geonames.org data files"""
-# Copyright (C) 2007  James Rowe
+# Copyright (C) 2007-2008  James Rowe
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -18,14 +18,12 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from __future__ import division
-
 import datetime
 
 try:
     from dateutil import tz
 except ImportError:
-    tz = None
+    tz = None #: C{dateutil} module reference if available
 
 from earth_distance import (trigpoints, utils)
 
@@ -34,6 +32,8 @@ class Location(trigpoints.Trigpoint):
     Class for representing a location from a geonames.org data file
 
     All country codes are specified with their two letter ISO-3166 country code.
+
+    @since: 0.3.0
 
     @ivar geonameid: ID of record in geonames database
     @ivar name: Name of geographical location
@@ -210,6 +210,8 @@ class Location(trigpoints.Trigpoint):
 class Locations(dict):
     """
     Class for representing a group of C{Location} objects
+
+    @since: 0.5.1
     """
 
     def __init__(self, data=None, tzfile=None):

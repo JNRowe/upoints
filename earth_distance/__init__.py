@@ -2,7 +2,7 @@
 # vim: set sw=4 sts=4 et tw=80 fileencoding=utf-8:
 #
 """earth_distance - Modules for working with points on Earth"""
-# Copyright (C) 2007  James Rowe
+# Copyright (C) 2007-2008  James Rowe
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -18,17 +18,18 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-__version__ = "0.8.0"
-__date__ = "2008-01-09"
+__version__ = "0.9.0"
+__date__ = "2008-01-25"
 __author__ = "James Rowe <jnrowe@ukfsn.org>"
-__copyright__ = "Copyright (C) 2007 James Rowe"
+__copyright__ = "Copyright (C) 2007-2008 James Rowe"
 __license__ = "GNU General Public License Version 3"
 __credits__ = "Kelly Turner"
 __history__ = "See Mercurial repository"
 
 from email.utils import parseaddr
 
-__doc__ += """
+__doc__ += """.
+
 C{earth_distance} is a collection of GPL v3 licensed modules for working with
 points on Earth, or other near spherical objects.  It allows you to calculate
 the distance and bearings between points, mangle U{xearth
@@ -65,6 +66,6 @@ datetime.time(20, 25)
 @license: %s
 """ % ((__version__, ) + parseaddr(__author__) + (__copyright__, __license__))
 
-from earth_distance import (baken, cities, geonames, gpx, kml, nmea, point,
+from earth_distance import (baken, cities, geonames, gpx, kml, nmea, osm, point,
                             trigpoints, tzdata, utils, weather_stations, xearth)
 

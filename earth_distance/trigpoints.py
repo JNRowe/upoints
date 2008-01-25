@@ -2,7 +2,7 @@
 # vim: set sw=4 sts=4 et tw=80 fileencoding=utf-8:
 #
 """trigpoints - Imports trigpoint marker files"""
-# Copyright (C) 2007  James Rowe
+# Copyright (C) 2007-2008  James Rowe
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -20,7 +20,6 @@
 
 import csv
 import logging
-import os
 
 from earth_distance import (point, utils)
 
@@ -33,6 +32,8 @@ class Trigpoint(point.Point):
     example, consider a point at the base of Mount Everest and a point at the
     peak of Mount Everest the actual distance travelled between the two would be
     larger than the reported value calculated at ground level.
+
+    @since: 0.2.0
 
     @ivar latitude: Location's latitude
     @ivar longitude: Locations's longitude
@@ -52,7 +53,7 @@ class Trigpoint(point.Point):
         @param longitude: Location's longitude
         @type altitude: C{float} or coercible to C{float}
         @param altitude: Location's altitude
-        @type name: C{string}
+        @type name: C{str}
         @param name: Name for location
         """
         super(Trigpoint, self).__init__(latitude, longitude)
@@ -103,6 +104,8 @@ class Trigpoint(point.Point):
 class Trigpoints(dict):
     """
     Class for representing a group of C{Trigpoint} objects
+
+    @since: 0.5.1
     """
 
     def __init__(self, marker_file=None):

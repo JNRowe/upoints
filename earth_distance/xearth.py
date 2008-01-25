@@ -2,7 +2,7 @@
 # vim: set sw=4 sts=4 et tw=80 fileencoding=utf-8:
 #
 """xearth - Imports xearth-style marker files"""
-# Copyright (C) 2007  James Rowe
+# Copyright (C) 2007-2008  James Rowe
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -24,6 +24,8 @@ class Xearth(point.Point):
     """
     Class for representing a location from a Xearth marker
 
+    @since: 0.2.0
+
     @ivar latitude: Location's latitude
     @ivar longitude: Locations's longitude
     @ivar comment: Location's comment
@@ -39,7 +41,7 @@ class Xearth(point.Point):
         @param latitude: Location's latitude
         @type longitude: C{float} or coercible to C{float}
         @param longitude: Location's longitude
-        @type comment: C{string}
+        @type comment: C{str}
         @param comment: Comment for location
         """
         super(Xearth, self).__init__(latitude, longitude)
@@ -88,6 +90,8 @@ class Xearth(point.Point):
 class Xearths(dict):
     """
     Class for representing a group of C{Xearth} objects
+
+    @since: 0.5.1
     """
 
     def __init__(self, marker_file=None):

@@ -2,7 +2,7 @@
 # vim: set sw=4 sts=4 et tw=80 fileencoding=utf-8:
 #
 """cities - Imports GNU miscfiles cities data files"""
-# Copyright (C) 2007  James Rowe
+# Copyright (C) 2007-2008  James Rowe
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -19,7 +19,6 @@
 #
 
 import logging
-import os
 import time
 
 from earth_distance import (trigpoints, utils)
@@ -37,11 +36,13 @@ Location    : %s
  Latitude   : %s
  Elevation  : %s
 Date        : %s
-Entered-By  : %s"""
+Entered-By  : %s""" #: GNU miscfiles cities.dat template
 
 class City(trigpoints.Trigpoint):
     """
     Class for representing an entry from the GNU miscfiles cities data file
+
+    @since: 0.2.0
 
     @ivar ptype: Place type
     @ivar population: Place population, if known
@@ -169,6 +170,8 @@ class City(trigpoints.Trigpoint):
 class Cities(dict):
     """
     Class for representing a group of C{City} objects
+
+    @since: 0.5.1
     """
 
     def __init__(self, data=None):

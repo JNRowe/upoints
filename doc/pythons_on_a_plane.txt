@@ -82,13 +82,13 @@ above [#]_.
     ...     print "  * %s to %s" % (Trip[i].name, Trip[i+1].name)
     ...     print "    - %i kilometres on a bearing of %i degrees" % (legs[i][0], legs[i][1])
       * Luton Airport  to Toulouse / Blagnac
-        - 924 kilometres on a bearing of 171 degrees
+        - 923 kilometres on a bearing of 171 degrees
       * Toulouse / Blagnac to Birmingham / Airport
-        - 1007 kilometres on a bearing of 347 degrees
+        - 1006 kilometres on a bearing of 347 degrees
       * Birmingham / Airport to Stansted Airport
         - 148 kilometres on a bearing of 114 degrees
     >>> print "For a total of %i kilometres" % sum([i[0] for i in legs])
-    For a total of 2079 kilometres
+    For a total of 2078 kilometres
 
 The ``Station`` class inherits from ``Trigpoint`` and as such you can
 use the functions and methods defined for it with ``Station`` objects.

@@ -2,7 +2,7 @@
 # vim: set sw=4 sts=4 et tw=80 fileencoding=utf-8:
 #
 """gpx - Imports GPS eXchange format data files"""
-# Copyright (C) 2007  James Rowe
+# Copyright (C) 2007-2008  James Rowe
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -17,6 +17,8 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
+
+import logging
 
 from xml.etree import ElementTree
 
@@ -33,9 +35,9 @@ except ImportError:
 
 from earth_distance import (point, utils)
 
-GPX_NS = "http://www.topografix.com/GPX/1/1"
+GPX_NS = "http://www.topografix.com/GPX/1/1" #: Support GPX namespace URI
 
-def create_elem(tag, attr={}, human_namespace=False):
+def create_elem(tag, attr=None, human_namespace=False):
     """
     Create a partial C{ET.Element} wrapper with namespace defined
 
@@ -49,6 +51,8 @@ def create_elem(tag, attr={}, human_namespace=False):
     @rtype: C{function}
     @return: C{ET.Element} wrapper with predefined namespace
     """
+    if not attr:
+        attr = {}
     if human_namespace:
         ElementTree._namespace_map[GPX_NS] = "gpx"
         return ElementTree.Element("{%s}%s" % (GPX_NS, tag), attr)
@@ -58,6 +62,8 @@ def create_elem(tag, attr={}, human_namespace=False):
 class Waypoint(point.Point):
     """
     Class for representing a Waypoint element from GPX data files
+
+    @since: 2008-01-08
 
     @ivar latitude: Waypoint's latitude
     @ivar longitude: Waypoint's longitude
@@ -75,9 +81,9 @@ class Waypoint(point.Point):
         @param latitude: Waypoints's latitude
         @type longitude: C{float} or coercible to C{float}
         @param longitude: Waypoint's longitude
-        @type name: C{string}
+        @type name: C{str}
         @param name: Name for Waypoint
-        @type description: C{string}
+        @type description: C{str}
         @param description: Waypoint's description
         """
         super(Waypoint, self).__init__(latitude, longitude)
@@ -156,6 +162,8 @@ class Waypoint(point.Point):
 class Waypoints(list):
     """
     Class for representing a group of C{Track}, C{Waypoint} and C{Route} objects
+
+    @since: 2008-01-08
     """
 
     def __init__(self, gpx_file=None):

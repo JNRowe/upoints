@@ -2,7 +2,7 @@
 # vim: set sw=4 sts=4 et tw=80 fileencoding=utf-8:
 #
 """utils - Support code for earth_distance"""
-# Copyright (C) 2007  James Rowe
+# Copyright (C) 2007-2008  James Rowe
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -20,11 +20,13 @@
 
 from __future__ import division
 
-__bug_report__ = "James Rowe <jnrowe@ukfsn.org>"
+__bug_report__ = "James Rowe <jnrowe@ukfsn.org>" #: Address for use in messages
 
 import datetime
 import math
 import re
+
+from operator import add
 
 BODIES = {
     # Body radii in kilometres
@@ -49,21 +51,21 @@ BODIES = {
     'Pluto': 1153,
     'Ceres': 475,
     'Eris': 1200,
-}
+} #: Body radii of various solar system objects
 
-BODY_RADIUS = BODIES['Earth']
-NAUTICAL_MILE = 1.852 #kM
-STATUTE_MILE = 1.609 #kM
+BODY_RADIUS = BODIES['Earth'] #: Default body radius to use for calculations
+NAUTICAL_MILE = 1.852 #: Number of kilometres per nautical mile
+STATUTE_MILE = 1.609 #: Number of kilometres per statute mile
 
 # Maidenhead locator constants
-LONGITUDE_FIELD = 20
-LATITUDE_FIELD = 10
-LONGITUDE_SQUARE = LONGITUDE_FIELD / 10
-LATITUDE_SQUARE = LATITUDE_FIELD / 10
-LONGITUDE_SUBSQUARE = LONGITUDE_SQUARE / 24
-LATITUDE_SUBSQUARE = LATITUDE_SQUARE / 24
-LONGITUDE_EXTSQUARE = LONGITUDE_SUBSQUARE / 10
-LATITUDE_EXTSQUARE = LATITUDE_SUBSQUARE / 10
+LONGITUDE_FIELD = 20 #: Longitude field 1 multiplier
+LATITUDE_FIELD = 10 #: Latitude field 1 multiplier
+LONGITUDE_SQUARE = LONGITUDE_FIELD / 10 #: Longitude field 2 multiplier
+LATITUDE_SQUARE = LATITUDE_FIELD / 10 #: Latitude field 2 multiplier
+LONGITUDE_SUBSQUARE = LONGITUDE_SQUARE / 24 #: Longitude field 3 multiplier
+LATITUDE_SUBSQUARE = LATITUDE_SQUARE / 24 #: Latitude field 3 multiplier
+LONGITUDE_EXTSQUARE = LONGITUDE_SUBSQUARE / 10 #: Longitude field 4 multiplier
+LATITUDE_EXTSQUARE = LATITUDE_SUBSQUARE / 10 #: Latitude field 4 multiplier
 
 class FileFormatError(ValueError):
     """
@@ -78,6 +80,8 @@ class FileFormatError(ValueError):
         ...
     FileFormatError: Incorrect data format, if you're using a file downloaded
     from test site please report this to James Rowe <jnrowe@ukfsn.org>
+
+    @since: 0.3.0
 
     @ivar site: Remote site name to display in error message
     """
@@ -399,7 +403,29 @@ def to_iso6709(latitude, longitude, altitude=None, format="dd", precision=4):
     text += "/"
     return text
 
-def angle_to_name(angle, short=False):
+def __chunk(n):
+    """
+    Generate a tuple of compass direction names
+
+    @type n: C{int}
+    @param n: Compass segment to generate names for
+    @rtype: C{tuple}
+    @return: Direction names for compass segment
+    """
+    names = ("north", "east", "south", "west", "north")
+    if n % 2 == 0:
+        return (names[n].capitalize(),
+                "%s-%s-%s" % (names[n].capitalize(), names[n], names[n+1]),
+                "%s-%s" % (names[n].capitalize(), names[n+1]),
+                "%s-%s-%s" % (names[n+1].capitalize(), names[n], names[n+1]))
+    else:
+        return (names[n].capitalize(),
+                "%s-%s-%s" % (names[n].capitalize(), names[n+1], names[n]),
+                "%s-%s" % (names[n+1].capitalize(), names[n]),
+                "%s-%s-%s" % (names[n+1].capitalize(), names[n+1], names[n]))
+compass_names = reduce(add, map(__chunk, range(4)))
+
+def angle_to_name(angle, segments=8, abbr=False):
     """
     Convert angle in to direction name
 
@@ -413,18 +439,34 @@ def angle_to_name(angle, short=False):
     'West'
     >>> angle_to_name(293)
     'North-west'
+    >>> angle_to_name(0, 4)
+    'North'
+    >>> angle_to_name(360, 16)
+    'North'
+    >>> angle_to_name(45, 4, True)
+    'NE'
+    >>> angle_to_name(292, 16, True)
+    'WNW'
 
     @type angle: C{float} or coercible to C{float}
     @param angle: Angle in degrees to convert to direction name
-    @type short: C{bool}
-    @param short: Whether to return abbreviated direction string
+    @type segments: C{int}
+    @param segments: Number of segments to split compass in to
+    @type abbr: C{bool}
+    @param abbr: Whether to return abbreviated direction string
     @rtype: C{str}
     @return: Direction name for C{angle}
     """
-    direction_names = ['North', 'North-east', 'East', 'South-east', 'South',
-                       'South-west', 'West', 'North-west']
-    string = direction_names[int((angle + 22.5) / 45) % 8]
-    if short:
+    if segments == 4:
+        string = compass_names[int((angle + 45) / 90) % 4 * 2]
+    elif segments == 8:
+        string = compass_names[int((angle + 22.5) / 45) % 8 * 2]
+    elif segments == 16:
+        string = compass_names[int((angle + 11.25) / 22.5) % 16]
+    else:
+        raise ValueError("Segments parameter must be 4, 8 or 16 not `%s'"
+                         % segments)
+    if abbr:
         return "".join([i[0].capitalize() for i in string.split("-")])
     else:
         return string
@@ -512,7 +554,7 @@ ZENITH = {
     "civil": -6,
     "nautical": -12,
     "astronomical": -18,
-}
+} #: Sunrise/-set mappings from name to angle
 
 def sun_rise_set(latitude, longitude, date, mode="rise", timezone=0,
                  zenith=None):
@@ -1011,4 +1053,140 @@ def dump_xearth_markers(markers, name="identifier"):
         output.append(line)
     # Return the list sorted on the marker name
     return sorted(output, lambda x, y: cmp(x.split()[2], y.split()[2]))
+
+def calc_radius(latitude, ellipsoid="WGS84"):
+    """
+    Calculate earth radius for a given latitude
+
+    This function is most useful when dealing with datasets that are very
+    localised and require the accuracy of an ellipsoid model without the
+    complexity of code necessary to actually use one.  The results are meant to
+    be used as a C{BODY_RADIUS} replacement when the simple geocentric value is
+    not good enough.
+
+    The original use for C{calc_radius} is to set a more accurate radius value
+    for use with trigpointing databases that are keyed on the OSGB36 datum, but
+    it has been expanded to cover other ellipsoids.
+
+    >>> calc_radius(52.015)
+    6375.1660253118571
+    >>> calc_radius(0)
+    6335.4387009096872
+    >>> calc_radius(90)
+    6399.5939421215426
+    >>> calc_radius(52.015, "FAI sphere")
+    6371.0
+    >>> calc_radius(0, "Airy (1830)")
+    6335.0221785420217
+    >>> calc_radius(90, "International")
+    6399.9365538714392
+
+    @type latitude: C{float}
+    @param latitude: Latitude to calculate earth radius for
+    @type ellipsoid: C{tuple} of C{float}s
+    @param ellipsoid: Ellipsoid model to use for calculation
+    @rtype: C{float}
+    @return: Approximated Earth radius at the given latitude
+    """
+
+    ELLIPSOIDS = {
+        "Airy (1830)": (6377.563, 6356.257), # Ordnance Survey default
+        "Bessel": (6377.397, 6356.079),
+        "Clarke (1880)": (6378.249145, 6356.51486955),
+        "FAI sphere": (6371, 6371), # Idealised
+        "GRS-67": (6378.160, 6356.775),
+        "International": (6378.388, 6356.912),
+        "Krasovsky": (6378.245, 6356.863),
+        "NAD27": (6378.206, 6356.584),
+        "WGS66": (6378.145, 6356.758),
+        "WGS72": (6378.135, 6356.751),
+        "WGS84": (6378.137, 6356.752), # GPS default
+    }
+
+    # Equatorial radius, polar radius
+    major, minor = ELLIPSOIDS[ellipsoid]
+    # eccentricity of the ellipsoid
+    eccentricity = 1 - (minor**2 / major**2)
+
+    sl = math.sin(math.radians(latitude))
+    return (major * (1 - eccentricity)) / (1 - eccentricity * sl**2) ** 1.5
+
+def parse_location(location):
+    """
+    Parse latitude and longitude from string location
+
+    >>> "%.3f;%.3f" % parse_location("52.015;-0.221")
+    '52.015;-0.221'
+    >>> "%.3f;%.3f" % parse_location("52.015,-0.221")
+    '52.015;-0.221'
+    >>> "%.3f;%.3f" % parse_location("52.015 -0.221")
+    '52.015;-0.221'
+    >>> "%.3f;%.3f" % parse_location("52.015N 0.221W")
+    '52.015;-0.221'
+    >>> "%.3f;%.3f" % parse_location("52.015 N 0.221 W")
+    '52.015;-0.221'
+    >>> "%.3f;%.3f" % parse_location("52d00m54s N 0d13m15s W")
+    '52.015;-0.221'
+    >>> "%.3f;%.3f" % parse_location("52d0m54s N 000d13m15s W")
+    '52.015;-0.221'
+    >>> "%.3f;%.3f" % parse_location('''52d0'54" N 000d13'15" W''')
+    '52.015;-0.221'
+
+    @type location: C{str}
+    @param location: String to parse
+    @rtype: C{tuple} of C{float}s
+    @return: Latitude and longitude of location
+    """
+    def split_dms(text, hemisphere):
+        """
+        Split degrees, minutes and seconds string
+
+        @type text: C{str}
+        @param text: Text to split
+        @rtype: C{float}
+        @return: Decimal degrees
+        """
+        out = []
+        sect = []
+        for i in text:
+            if i.isdigit():
+                sect.append(i)
+            else:
+                out.append(sect)
+                sect = []
+        d, m, s = [float("".join(i)) for i in out]
+        if hemisphere in "SW":
+            d, m, s = [-1 * i for i in d, m, s]
+        return to_dd(d, m, s)
+
+    for sep in ";, ":
+        chunks = location.split(sep)
+        if len(chunks) == 2:
+            if chunks[0][-1] == "N":
+                latitude = float(chunks[0][:-1])
+            elif chunks[0][-1] == "S":
+                latitude = -1 * float(chunks[0][:-1])
+            else:
+                latitude = float(chunks[0])
+            if chunks[1][-1] == "E":
+                longitude = float(chunks[1][:-1])
+            elif chunks[1][-1] == "W":
+                longitude = -1 * float(chunks[1][:-1])
+            else:
+                longitude = float(chunks[1])
+            return latitude, longitude
+        elif len(chunks) == 4:
+            if chunks[0][-1] in ("s", '"'):
+                latitude = split_dms(chunks[0], chunks[1])
+            else:
+                latitude = float(chunks[0])
+                if chunks[1] == "S":
+                    latitude = -1 * latitude
+            if chunks[2][-1] in ("s", '"'):
+                longitude = split_dms(chunks[2], chunks[3])
+            else:
+                longitude = float(chunks[2])
+                if chunks[3] == "W":
+                    longitude = -1 * longitude
+            return latitude, longitude
 

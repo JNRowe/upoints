@@ -2,7 +2,7 @@
 # vim: set sw=4 sts=4 et tw=80 fileencoding=utf-8:
 #
 """nmea - Imports GPS NMEA-formatted data files"""
-# Copyright (C) 2007  James Rowe
+# Copyright (C) 2007-2008  James Rowe
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -21,6 +21,8 @@
 import datetime
 import logging
 
+from operator import xor
+
 from earth_distance import (point, utils)
 
 def calc_checksum(sentence):
@@ -37,7 +39,7 @@ def calc_checksum(sentence):
         sentence = sentence[1:]
     if "*" in sentence:
         sentence = sentence.split("*")[0]
-    return reduce(lambda x, y: x^y, [ord(i) for i in sentence])
+    return reduce(xor, [ord(i) for i in sentence])
 
 def nmea_latitude(latitude):
     """
@@ -118,11 +120,13 @@ MODE_INDICATOR = {
     "M": "Manual",
     "S": "Simulated",
     "N": "Invalid",
-}
+} #: NMEA's mapping of code to reading type
 
 class LoranPosition(point.Point):
     """
     Class for representing a GPS NMEA-formatted Loran-C position
+
+    @since: 2008-01-08
 
     @ivar latitude: Unit's latitude
     @ivar longitude: Unit's longitude
@@ -252,6 +256,8 @@ class LoranPosition(point.Point):
 class Position(point.Point):
     """
     Class for representing a GPS NMEA-formatted position
+
+    @since: 2008-01-08
 
     @ivar time: Time the position was taken
     @ivar status: GPS status
@@ -415,6 +421,8 @@ class Position(point.Point):
 class Fix(point.Point):
     """
     Class for representing a GPS NMEA-formatted system fix
+
+    @since: 2008-01-08
 
     @ivar time: Time the fix was taken
     @ivar latitude: Fix's latitude
@@ -618,6 +626,8 @@ class Waypoint(point.Point):
     """
     Class for representing a NMEA-formatted waypoint
 
+    @since: 2008-01-08
+
     @ivar latitude: Waypoint's latitude
     @ivar longitude: Waypoint's longitude
     @ivar name: Waypoint's name
@@ -633,7 +643,7 @@ class Waypoint(point.Point):
         @param latitude: Waypoint's latitude
         @type longitude: C{float} or coercible to C{float}
         @param longitude: Waypoint's longitude
-        @type name: C{string}
+        @type name: C{str}
         @param name: Comment for waypoint
         """
         super(Waypoint, self).__init__(latitude, longitude)
@@ -699,6 +709,8 @@ class Waypoint(point.Point):
 class Locations(list):
     """
     Class for representing a group of GPS location objects
+
+    @since: 2008-01-08
     """
 
     def __init__(self, gpsdata_file=None):

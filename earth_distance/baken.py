@@ -2,7 +2,7 @@
 # vim: set sw=4 sts=4 et tw=80 fileencoding=utf-8:
 #
 """baken - Imports baken data files"""
-# Copyright (C) 2007  James Rowe
+# Copyright (C) 2007-2008  James Rowe
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -20,7 +20,6 @@
 
 import ConfigParser
 import logging
-import os
 import re
 
 from earth_distance import (point, utils)
@@ -28,6 +27,8 @@ from earth_distance import (point, utils)
 class Baken(point.Point):
     """
     Class for representing location from baken data files
+
+    @since: 0.4.0
 
     @ivar latitude: Location's latitude
     @ivar longitude: Locations's longitude
@@ -164,6 +165,8 @@ class Baken(point.Point):
 class Bakens(dict):
     """
     Class for representing a group of C{Baken} objects
+
+    @since: 0.5.1
     """
 
     def __init__(self, baken_file=None):

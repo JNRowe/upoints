@@ -2,7 +2,7 @@
 # vim: set sw=4 sts=4 et tw=80 fileencoding=utf-8:
 #
 """tzdata - Imports timezone data files from UNIX zoneinfo"""
-# Copyright (C) 2007  James Rowe
+# Copyright (C) 2007-2008  James Rowe
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -23,6 +23,8 @@ from earth_distance import (point, utils)
 class Zone(point.Point):
     """
     Class for representing timezone descriptions from zoneinfo data
+
+    @since: 0.6.0
 
     @ivar latitude: Location's latitude
     @ivar longitude: Locations's longitude
@@ -96,6 +98,8 @@ class Zone(point.Point):
 class Zones(dict):
     """
     Class for representing a group of C{Zone} objects
+
+    @since: 0.6.0
     """
 
     def __init__(self, zone_file=None):

@@ -2,7 +2,7 @@
 # vim: set sw=4 sts=4 et tw=80 fileencoding=utf-8:
 #
 """point - Class for working with locations on Earth"""
-# Copyright (C) 2007  James Rowe
+# Copyright (C) 2007-2008  James Rowe
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -39,6 +39,8 @@ def _manage_location(attr):
 class Point(object):
     """
     Simple class for representing a location on a sphere
+
+    @since: 0.2.0
 
     @ivar format: Type of distance units to be used
     @ivar latitude: Location's latitude
@@ -398,13 +400,13 @@ class Point(object):
 
         >>> to_loc = Point(33.9400, -118.4000)
         >>> "%i kM" % Point(36.1200, -86.6700).distance(to_loc)
-        '2886 kM'
+        '2884 kM'
         >>> "%i mi" % Point(36.1200, -86.6700, "imperial").distance(to_loc)
-        '1794 mi'
+        '1792 mi'
         >>> "%i nmi" % Point(36.1200, -86.6700, "nautical").distance(to_loc)
-        '1558 nmi'
+        '1557 nmi'
         >>> "%i kM" % Point(36.1200, -86.6700).distance(to_loc, method="sloc")
-        '2886 kM'
+        '2884 kM'
 
         @type other: C{Point} instance
         @param other: Location to calculate distance to
@@ -492,6 +494,34 @@ class Point(object):
         else:
             raise ValueError("Unknown format type `%s'" % format)
 
+    def midpoint(self, other):
+        """
+        Calculate the midpoint from self to other
+
+        @see: C{bearing}
+
+        >>> Point(52.015, -0.221).midpoint(Point(52.6333, -2.5))
+        Point(52.3296314054, -1.35253686056, 'metric', 0)
+        >>> Point(36.1200, -86.6700).midpoint(Point(33.9400, -118.4000))
+        Point(36.082394919, -102.752173705, 'metric', 0)
+
+        @type other: C{Point} instance
+        @param other: Location to calculate midpoint to
+        @rtype: C{Point} instance
+        @return: Great circle midpoint from self to other
+        """
+        longitude_difference = other.rad_longitude - self.rad_longitude
+        y = math.sin(longitude_difference) * math.cos(other.rad_latitude)
+        x = math.cos(other.rad_latitude) * math.cos(longitude_difference)
+        latitude = math.atan2(math.sin(self.rad_latitude)
+                              + math.sin(other.rad_latitude),
+                              math.sqrt((math.cos(self.rad_latitude) + x)**2
+                                        + y**2))
+        longitude = self.rad_longitude \
+                    + math.atan2(y, math.cos(self.rad_latitude) + x)
+
+        return Point(latitude, longitude, angle="radians")
+
     def final_bearing(self, other, format="numeric"):
         """
         Calculate the final bearing from self to other
@@ -533,15 +563,15 @@ class Point(object):
         Calculate the destination from self given bearing and distance
 
         >>> Point(52.015, -0.221).destination(294, 169)
-        Point(52.6111880522, -2.50755435332, 'metric', 0)
+        Point(52.6116387502, -2.50937408195, 'metric', 0)
         >>> Home = Point(52.015, -0.221, "imperial")
         >>> Home.destination(294, 169 / utils.STATUTE_MILE)
-        Point(52.6111880522, -2.50755435332, 'metric', 0)
+        Point(52.6116387502, -2.50937408195, 'metric', 0)
         >>> Home = Point(52.015, -0.221, "nautical")
         >>> Home.destination(294, 169 / utils.NAUTICAL_MILE)
-        Point(52.6111880522, -2.50755435332, 'metric', 0)
+        Point(52.6116387502, -2.50937408195, 'metric', 0)
         >>> Point(36.1200, -86.6700).destination(274, 2885)
-        Point(33.6923552824, -118.303506743, 'metric', 0)
+        Point(33.6872799138, -118.327218421, 'metric', 0)
 
         @type bearing: C{float} or coercible to C{float}
         @param bearing: Bearing from self
@@ -654,4 +684,22 @@ class Point(object):
         """
         return utils.sun_events(self.latitude, self.longitude, date,
                                 self.timezone, zenith)
+
+    # Inverse and forward are the common functions expected by people that are
+    # familiar with geodesics.
+    def inverse(self, other):
+        """
+        Calculate the inverse geodesic from self to other
+
+        >>> "%i, %i" % Point(52.015, -0.221).inverse(Point(52.6333, -2.5))
+        '294, 169'
+
+        @type other: C{Point} instance
+        @param other: Location to calculate inverse geodesic to
+        @rtype: C{tuple} of C{floats}
+        @return: Bearing and distance from self to other
+        """
+        return (self.bearing(other), self.distance(other))
+    # Forward geodesic function maps directly to destination method
+    forward = destination
 

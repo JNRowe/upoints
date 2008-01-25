@@ -6,6 +6,13 @@ User-visible changes
 
 .. contents::
 
+0.9.0 - 2008-01-25
+------------------
+
+  * Support for reading OpenStreetMap exports
+  * Support for reading configuration file in ``edist.py`` for enable
+    simple named location support.
+
 0.8.0 - 2008-01-09
 ------------------
 

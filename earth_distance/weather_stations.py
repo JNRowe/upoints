@@ -2,7 +2,7 @@
 # vim: set sw=4 sts=4 et tw=80 fileencoding=utf-8:
 #
 """weather_stations - Imports weather station data files"""
-# Copyright (C) 2007  James Rowe
+# Copyright (C) 2007-2008  James Rowe
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -25,6 +25,8 @@ from earth_distance import (trigpoints, utils)
 class Station(trigpoints.Trigpoint):
     """
     Class for representing a weather station from a NOAA data file
+
+    @since: 0.2.0
 
     @ivar alt_id: Alternate location identifier(either ICAO or WMO)
     @ivar name: Station's name
@@ -137,6 +139,8 @@ class Station(trigpoints.Trigpoint):
 class Stations(dict):
     """
     Class for representing a group of C{Station} objects
+
+    @since: 0.5.1
     """
 
     def __init__(self, data=None, index="WMO"):

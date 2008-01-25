@@ -127,7 +127,7 @@ example as it is his fault I'm playing with Python and geoip
 
     >>> Seemant = point.Point(42, -71)
     >>> print "%i kM" % Home.distance(Seemant)
-    5262 kM
+    5257 kM
 
 We now have to make a decision about the range for the proximity alert
 given that Seemant lives some five thousand kilometres away.  Being that
@@ -156,7 +156,7 @@ a BTS and email-only contact.
 
     >>> import math
     >>> math.sqrt(Home.distance(Seemant))
-    72.540008078762554
+    72.511542038315213
 
 If we forget about the anomalies, and just take the square root as being
 correct I can populate the relationship for Seemant with a 73 kM limit.
