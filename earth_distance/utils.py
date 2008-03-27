@@ -23,6 +23,7 @@ from __future__ import division
 __bug_report__ = "James Rowe <jnrowe@ukfsn.org>" #: Address for use in messages
 
 import datetime
+import inspect
 import math
 import re
 
@@ -81,26 +82,29 @@ class FileFormatError(ValueError):
     FileFormatError: Incorrect data format, if you're using a file downloaded
     from test site please report this to James Rowe <jnrowe@ukfsn.org>
 
-    @since: 0.3.0
+    :since: 0.3.0
 
-    @ivar site: Remote site name to display in error message
+    :Ivariables:
+        site
+            Remote site name to display in error message
     """
     def __init__(self, site=None):
         """
-        Initialise a new C{FileFormatError} object
+        Initialise a new `FileFormatError` object
 
-        @type site: C{str}
-        @param site: Remote site name to display in error message
+        :Parameters:
+            site : `str`
+                Remote site name to display in error message
         """
-        ValueError.__init__(self)
+        super(FileFormatError, self).__init__()
         self.site = site
 
     def __str__(self):
         """
         Pretty printed error string
 
-        @rtype: C{str}
-        @return: Human readable error string
+        :rtype: `str`
+        :return: Human readable error string
         """
         if self.site:
             return ("Incorrect data format, if you're using a file downloaded "
@@ -109,36 +113,56 @@ class FileFormatError(ValueError):
         else:
             return "Unsupported data format."
 
+#{ Implementation utilities
+
 def value_or_empty(value):
     """
-    Return an empty string for display when value is C{None}
+    Return an empty string for display when value is `None`
 
     >>> value_or_empty(None)
     ''
     >>> value_or_empty("test")
     'test'
 
-    @type value: C{None}, C{str} or coercible to C{str}
-    @param value: Value to prepare for display
-    @rtype: C{str}
-    @return: String representation of C{value}
+    :Parameters:
+        value : `None`, `str` or coercible to `str`
+            Value to prepare for display
+    :rtype: `str`
+    :return: String representation of `value`
     """
     return value if value else ""
 
-def repr_assist(*values):
+def repr_assist(obj, remap={}):
     """
-    Helper function to simplify C{__repr__} methods
+    Helper function to simplify `__repr__` methods
 
-    @type values: Any
-    @param values: Values to create usable representation for
+    :Parameters:
+        obj : Any
+            Object to pull arg values for
+        remap : `dict`
+            Arg pairs to remap before output
     """
     data = []
-    for i in values:
-        if isinstance(i, (type(None), list, basestring, datetime.date)):
-            data.append(repr(i))
+    for arg in inspect.getargspec(getattr(obj.__class__, '__init__'))[0]:
+        if arg == "self":
+            continue
+        elif arg in remap:
+            value = remap[arg]
         else:
-            data.append(str(i))
-    return data
+            try:
+                value = getattr(obj, arg)
+            except AttributeError:
+                value = getattr(obj, "_%s" % arg)
+        if isinstance(value, (type(None), list, basestring, datetime.date,
+                              datetime.time)):
+            data.append(repr(value))
+        else:
+            data.append(str(value))
+    return obj.__class__.__name__ + '(' + ", ".join(data) + ')'
+
+#}
+
+#{ Angle conversion utilities
 
 def to_dms(angle, style="dms"):
     """
@@ -155,13 +179,14 @@ def to_dms(angle, style="dms"):
         ...
     ValueError: Unknown style type `None'
 
-    @type angle: C{float} or coercible to C{float}
-    @param angle: Angle to convert
-    @type style: C{str}
-    @param style: Return fractional or whole minutes values
-    @rtype: C{tuple} of C{int}s for values
-    @return: Angle converted to degrees, minutes and possibly seconds
-    @raise ValueError: Unknown value for C{style}
+    :Parameters:
+        angle : `float` or coercible to `float`
+            Angle to convert
+        style : `str`
+            Return fractional or whole minutes values
+    :rtype: `tuple` of `int` objects for values
+    :return: Angle converted to degrees, minutes and possibly seconds
+    :raise ValueError: Unknown value for `style`
     """
     sign = 1 if angle >= 0 else -1
     angle = abs(angle) * 3600
@@ -187,17 +212,22 @@ def to_dd(degrees, minutes, seconds=0):
     >>> "%.3f" % to_dd(0, -13.25)
     '-0.221'
 
-    @type degrees: C{float} or coercible to C{float}
-    @param degrees: Number of degrees
-    @type minutes: C{float} or coercible to C{float}
-    @param minutes: Number of minutes
-    @type seconds: C{float} or coercible to C{float}
-    @param seconds: Number of seconds
-    @rtype: C{float}
-    @return: Angle converted to decimal degrees
+    :Parameters:
+        degrees : `float` or coercible to `float`
+            Number of degrees
+        minutes : `float` or coercible to `float`
+            Number of minutes
+        seconds : `float` or coercible to `float`
+            Number of seconds
+    :rtype: `float`
+    :return: Angle converted to decimal degrees
     """
     sign = -1 if any([i < 0 for i in degrees, minutes, seconds]) else 1
     return sign * (abs(degrees) + abs(minutes) / 60 + abs(seconds) / 3600)
+
+#}
+
+#{ Coordinate conversion utilities
 
 def from_iso6709(coordinates):
     """
@@ -208,17 +238,18 @@ def from_iso6709(coordinates):
     Unfortunately, the standard is rather convoluted and this implementation is
     incomplete, but it does support most of the common formats in the wild.
 
-    The W3C has a simplified profile for ISO 6709 in U{Latitude, Longitude and
+    The W3C has a simplified profile for ISO 6709 in `Latitude, Longitude and
     Altitude format for geospatial information
-    <http://www.w3.org/2005/Incubator/geo/Wiki/LatitudeLongitudeAltitude>}.  It
-    unfortunately hasn't received widespread support as yet, but hopefully it
-    will grow just as the U{simplified ISO 8601 profile
-    <http://www.w3.org/2005/Incubator/geo/Wiki/LatitudeLongitudeAltitude>} has.
+    <http://www.w3.org/2005/Incubator/geo/Wiki/LatitudeLongitudeAltitude>`__.
+    It unfortunately hasn't received widespread support as yet, but hopefully it
+    will grow just as the `simplified ISO 8601 profile
+    <http://www.w3.org/2005/Incubator/geo/Wiki/LatitudeLongitudeAltitude>`__
+    has.
 
-    @see: C{to_iso6709}
+    :see: `to_iso6709`
 
-    The following tests are from the examples contained in the U{wikipedia
-    ISO 6709 page <http://en.wikipedia.org/wiki/ISO_6709>}.
+    The following tests are from the examples contained in the `wikipedia
+    ISO 6709 page <http://en.wikipedia.org/wiki/ISO_6709>`__.
 
     >>> from_iso6709("+00-025/") # Atlantic Ocean
     (0.0, -25.0, None)
@@ -243,9 +274,10 @@ def from_iso6709(coordinates):
     >>> from_iso6709("+40.6894-074.0447/") # Statue of Liberty
     (40.689399999999999, -74.044700000000006, None)
 
-    The following tests are from the U{Latitude, Longitude and Altitude format
+    The following tests are from the `Latitude, Longitude and Altitude format
     for geospatial information
-    <http://www.w3.org/2005/Incubator/geo/Wiki/LatitudeLongitudeAltitude>} page.
+    <http://www.w3.org/2005/Incubator/geo/Wiki/LatitudeLongitudeAltitude>`__
+    page.
 
     >>> from_iso6709("+27.5916+086.5640+8850/") # Mount Everest
     (27.5916, 86.563999999999993, 8850.0)
@@ -262,14 +294,15 @@ def from_iso6709(coordinates):
         ...
     ValueError: Incorrect format for longitude `+1'
 
-    @type coordinates: C{str}
-    @param coordinates: ISO 6709 coordinates string
-    @rtype: C{tuple}
-    @return: A tuple consisting of latitude and longitude in degrees, along with
+    :Parameters:
+        coordinates : `str`
+            ISO 6709 coordinates string
+    :rtype: `tuple`
+    :return: A tuple consisting of latitude and longitude in degrees, along with
         the elevation in metres
-    @raise ValueError: Input string is not ISO 6709 compliant
-    @raise ValueError: Invalid value for latitude
-    @raise ValueError: Invalid value for longitude
+    :raise ValueError: Input string is not ISO 6709 compliant
+    :raise ValueError: Invalid value for latitude
+    :raise ValueError: Invalid value for longitude
     """
     matches = re.match(r'^([-+][\d\.]+)([-+][\d\.]+)([+-][\d\.]+)?/$',
                        coordinates)
@@ -311,10 +344,10 @@ def to_iso6709(latitude, longitude, altitude=None, format="dd", precision=4):
     This function will produce ISO 6709-1983(E) "Standard representation of
     latitude, longitude and altitude for geographic point locations" elements.
 
-    @see: C{from_iso6709}
+    :see: `from_iso6709`
 
-    The following tests are from the examples contained in the U{wikipedia
-    ISO 6709 page <http://en.wikipedia.org/wiki/ISO_6709>}.
+    The following tests are from the examples contained in the `wikipedia ISO
+    6709 page <http://en.wikipedia.org/wiki/ISO_6709>`__.
 
     >>> to_iso6709(0.0, -25.0, None, "d") # Atlantic Ocean
     '+00-025/'
@@ -343,9 +376,10 @@ def to_iso6709(latitude, longitude, altitude=None, format="dd", precision=4):
     >>> to_iso6709(40.689399999999999, -74.044700000000006, None) # Statue of Liberty
     '+40.6894-074.0447/'
 
-    The following tests are from the U{Latitude, Longitude and Altitude format
+    The following tests are from the `Latitude, Longitude and Altitude format
     for geospatial information
-    <http://www.w3.org/2005/Incubator/geo/Wiki/LatitudeLongitudeAltitude>} page.
+    <http://www.w3.org/2005/Incubator/geo/Wiki/LatitudeLongitudeAltitude>`__
+    page.
 
     >>> to_iso6709(27.5916, 86.563999999999993, 8850.0) # Mount Everest
     '+27.5916+086.5640+8850/'
@@ -358,25 +392,27 @@ def to_iso6709(latitude, longitude, altitude=None, format="dd", precision=4):
     >>> to_iso6709(35.658631999999997, 139.74541099999999, None, precision=6) # Tokyo Tower
     '+35.658632+139.745411/'
 
-    @type latitude: C{float} or coercible to C{float}
-    @param latitude: Location's latitude
-    @type longitude: C{float} or coercible to C{float}
-    @param longitude: Location's longitude
-    @type altitude: C{float} or coercible to C{float}
-    @param altitude: Location's altitude
-    @type format: C{str}
-    @param format: Format type for string
-    @type precision: C{int}
-    @param precision: Latitude/longitude precision
-    @rtype: C{str}
-    @return: ISO 6709 coordinates string
-    @raise ValueError: Unknown value for C{format}
+    :Parameters:
+        latitude : `float` or coercible to `float`
+            Location's latitude
+        longitude : `float` or coercible to `float`
+            Location's longitude
+        altitude : `float` or coercible to `float`
+            Location's altitude
+        format : `str`
+            Format type for string
+        precision : `int`
+            Latitude/longitude precision
+    :rtype: `str`
+    :return: ISO 6709 coordinates string
+    :raise ValueError: Unknown value for `format`
     """
+    text = []
     if format == "d":
-        text = "%+03i%+04i" % (latitude, longitude)
+        text.append("%+03i%+04i" % (latitude, longitude))
     elif format == "dd":
-        text = "%+0*.*f%+0*.*f" % (precision + 4, precision, latitude,
-                                   precision + 5, precision, longitude)
+        text.append("%+0*.*f%+0*.*f" % (precision + 4, precision, latitude,
+                                        precision + 5, precision, longitude))
     elif format in ("dm", "dms"):
         if format == "dm":
             latitude_dms = to_dms(latitude, "dm")
@@ -389,41 +425,48 @@ def to_iso6709(latitude, longitude, altitude=None, format="dd", precision=4):
         longitude_sign = "-" if any([i < 0 for i in longitude_dms]) else "+"
         longitude_dms = tuple([abs(i) for i in longitude_dms])
         if format == "dm":
-            text = "%s%02i%02i" % ((latitude_sign, ) + latitude_dms)
-            text += "%s%03i%02i" % ((longitude_sign, ) + longitude_dms)
+            text.append("%s%02i%02i" % ((latitude_sign, ) + latitude_dms))
+            text.append("%s%03i%02i" % ((longitude_sign, ) + longitude_dms))
         elif format == "dms":
-            text = "%s%02i%02i%02i" % ((latitude_sign, ) + latitude_dms)
-            text += "%s%03i%02i%02i" % ((longitude_sign, ) + longitude_dms)
+            text.append("%s%02i%02i%02i" % ((latitude_sign, ) + latitude_dms))
+            text.append("%s%03i%02i%02i" % ((longitude_sign, ) + longitude_dms))
     else:
         raise ValueError("Unknown format type `%s'" % format)
     if altitude and int(altitude) == altitude:
-        text += "%+i" % altitude
+        text.append("%+i" % altitude)
     elif altitude:
-        text += "%+.3f" % altitude
-    text += "/"
-    return text
+        text.append("%+.3f" % altitude)
+    text.append("/")
+    return "".join(text)
 
-def __chunk(n):
+#}
+
+def __chunk(segment):
     """
     Generate a tuple of compass direction names
 
-    @type n: C{int}
-    @param n: Compass segment to generate names for
-    @rtype: C{tuple}
-    @return: Direction names for compass segment
+    :Parameters:
+        segment : `int`
+            Compass segment to generate names for
+    :rtype: `tuple`
+    :return: Direction names for compass segment
     """
     names = ("north", "east", "south", "west", "north")
-    if n % 2 == 0:
-        return (names[n].capitalize(),
-                "%s-%s-%s" % (names[n].capitalize(), names[n], names[n+1]),
-                "%s-%s" % (names[n].capitalize(), names[n+1]),
-                "%s-%s-%s" % (names[n+1].capitalize(), names[n], names[n+1]))
+    if segment % 2 == 0:
+        return (names[segment].capitalize(),
+                "%s-%s-%s" % (names[segment].capitalize(), names[segment],
+                              names[segment+1]),
+                "%s-%s" % (names[segment].capitalize(), names[segment+1]),
+                "%s-%s-%s" % (names[segment+1].capitalize(), names[segment],
+                              names[segment+1]))
     else:
-        return (names[n].capitalize(),
-                "%s-%s-%s" % (names[n].capitalize(), names[n+1], names[n]),
-                "%s-%s" % (names[n+1].capitalize(), names[n]),
-                "%s-%s-%s" % (names[n+1].capitalize(), names[n+1], names[n]))
-compass_names = reduce(add, map(__chunk, range(4)))
+        return (names[segment].capitalize(),
+                "%s-%s-%s" % (names[segment].capitalize(), names[segment+1],
+                              names[segment]),
+                "%s-%s" % (names[segment+1].capitalize(), names[segment]),
+                "%s-%s-%s" % (names[segment+1].capitalize(), names[segment+1],
+                              names[segment]))
+COMPASS_NAMES = reduce(add, map(__chunk, range(4)))
 
 def angle_to_name(angle, segments=8, abbr=False):
     """
@@ -448,26 +491,27 @@ def angle_to_name(angle, segments=8, abbr=False):
     >>> angle_to_name(292, 16, True)
     'WNW'
 
-    @type angle: C{float} or coercible to C{float}
-    @param angle: Angle in degrees to convert to direction name
-    @type segments: C{int}
-    @param segments: Number of segments to split compass in to
-    @type abbr: C{bool}
-    @param abbr: Whether to return abbreviated direction string
-    @rtype: C{str}
-    @return: Direction name for C{angle}
+    :Parameters:
+        angle : `float` or coercible to `float`
+            Angle in degrees to convert to direction name
+        segments : `int`
+            Number of segments to split compass in to
+        abbr : `bool`
+            Whether to return abbreviated direction string
+    :rtype: `str`
+    :return: Direction name for `angle`
     """
     if segments == 4:
-        string = compass_names[int((angle + 45) / 90) % 4 * 2]
+        string = COMPASS_NAMES[int((angle + 45) / 90) % 4 * 2]
     elif segments == 8:
-        string = compass_names[int((angle + 22.5) / 45) % 8 * 2]
+        string = COMPASS_NAMES[int((angle + 22.5) / 45) % 8 * 2]
     elif segments == 16:
-        string = compass_names[int((angle + 11.25) / 22.5) % 16]
+        string = COMPASS_NAMES[int((angle + 11.25) / 22.5) % 16]
     else:
         raise ValueError("Segments parameter must be 4, 8 or 16 not `%s'"
                          % segments)
     if abbr:
-        return "".join([i[0].capitalize() for i in string.split("-")])
+        return "".join(i[0].capitalize() for i in string.split("-"))
     else:
         return string
 
@@ -486,13 +530,14 @@ def angle_to_distance(angle, format="metric"):
         ...
     ValueError: Unknown unit type `baseless'
 
-    @type angle: C{float} or coercible to C{float}
-    @param angle: Angle in degrees to convert to distance
-    @type format: C{str}
-    @param format: Unit type to be used for distances
-    @rtype: C{float}
-    @return: Distance in C{format}
-    @raise ValueError: Unknown value for C{format}
+    :Parameters:
+        angle : `float` or coercible to `float`
+            Angle in degrees to convert to distance
+        format : `str`
+            Unit type to be used for distances
+    :rtype: `float`
+    :return: Distance in `format`
+    :raise ValueError: Unknown value for `format`
     """
     distance = math.radians(angle) * BODY_RADIUS
 
@@ -516,13 +561,14 @@ def distance_to_angle(distance, format="metric"):
     >>> "%i" % round(distance_to_angle(60, "nautical"))
     '1'
 
-    @type distance: C{float} or coercible to C{float}
-    @param distance: Distance to convert to degrees
-    @type format: C{str}
-    @param format: Unit type to be used for distances
-    @rtype: C{float}
-    @return: Angle in degrees
-    @raise ValueError: Unknown value for C{format}
+    :Parameters:
+        distance : `float` or coercible to `float`
+            Distance to convert to degrees
+        format : `str`
+            Unit type to be used for distances
+    :rtype: `float`
+    :return: Angle in degrees
+    :raise ValueError: Unknown value for `format`
     """
 
     if format == "metric":
@@ -535,6 +581,8 @@ def distance_to_angle(distance, format="metric"):
         raise ValueError("Unknown unit type `%s'" % format)
 
     return math.degrees(distance / BODY_RADIUS)
+
+#{ Solar event utilities
 
 ZENITH = {
     # All values are specified in degrees!
@@ -589,22 +637,23 @@ def sun_rise_set(latitude, longitude, date, mode="rise", timezone=0,
     >>> sun_rise_set(52.015, -0.221, datetime.date(2007, 1, 21))
     datetime.time(7, 56)
 
-    @type latitude: C{float} or coercible to C{float}
-    @param latitude: Location's latitude
-    @type longitude: C{float} or coercible to C{float}
-    @param longitude: Location's longitude
-    @type date: C{datetime.date}
-    @param date: Calculate rise or set for given date
-    @type mode: C{str}
-    @param mode: Which time to calculate
-    @type timezone: C{int}
-    @param timezone: Offset from UTC in minutes
-    @type zenith: C{None} or C{str}
-    @param zenith: Calculate rise/set events, or twilight times
-    @rtype: C{datetime.time} or C{None}
-    @return: The time for the given event in the specified timezone, or
-        C{None} if the event doesn't occur on the given date
-    @raise ValueError: Unknown value for C{mode}
+    :Parameters:
+        latitude : `float` or coercible to `float`
+            Location's latitude
+        longitude : `float` or coercible to `float`
+            Location's longitude
+        date : ``datetime.date``
+            Calculate rise or set for given date
+        mode : `str`
+            Which time to calculate
+        timezone : `int`
+            Offset from UTC in minutes
+        zenith : `None` or `str`
+            Calculate rise/set events, or twilight times
+    :rtype: ``datetime.time`` or `None`
+    :return: The time for the given event in the specified timezone, or
+        `None` if the event doesn't occur on the given date
+    :raise ValueError: Unknown value for `mode`
     """
     if not date:
         date = datetime.date.today()
@@ -755,21 +804,24 @@ def sun_events(latitude, longitude, date, timezone=0, zenith=None):
     ...            zenith="astronomical") # TIA
     (datetime.time(17, 35), datetime.time(11, 49))
 
-    @type latitude: C{float} or coercible to C{float}
-    @param latitude: Location's latitude
-    @type longitude: C{float} or coercible to C{float}
-    @param longitude: Location's longitude
-    @type date: C{datetime.date}
-    @param date: Calculate rise or set for given date
-    @type timezone: C{int}
-    @param timezone: Offset from UTC in minutes
-    @type zenith: C{None} or C{str}
-    @param zenith: Calculate rise/set events, or twilight times
-    @rtype: C{tuple} of C{datetime.time}
-    @return: The time for the given events in the specified timezone
+    :Parameters:
+        latitude : `float` or coercible to `float`
+            Location's latitude
+        longitude : `float` or coercible to `float`
+            Location's longitude
+        date : ``datetime.date``
+            Calculate rise or set for given date
+        timezone : `int`
+            Offset from UTC in minutes
+        zenith : `None` or `str`
+            Calculate rise/set events, or twilight times
+    :rtype: `tuple` of ``datetime.time``
+    :return: The time for the given events in the specified timezone
     """
     return (sun_rise_set(latitude, longitude, date, "rise", timezone, zenith),
             sun_rise_set(latitude, longitude, date, "set", timezone, zenith))
+
+#}
 
 def prepare_read(data):
     """
@@ -781,11 +833,12 @@ def prepare_read(data):
     >>> prepare_read(test_list)
     ['This is a test list-type object', 'with two elements']
 
-    @type data: C{file} like object, C{list}, C{str}
-    @param data: Data to read
-    @rtype: C{list}
-    @returns: List suitable for parsing
-    @raise TypeError: Invalid value for data
+    :Parameters:
+        data : `file` like object, `list`, `str`
+            Data to read
+    :rtype: `list`
+    :return: List suitable for parsing
+    :raise TypeError: Invalid value for data
     """
     if hasattr(data, "readlines"):
         data = data.readlines()
@@ -808,12 +861,13 @@ def from_grid_locator(locator):
     >>> "%.3f, %.3f" % from_grid_locator("IO92")
     '52.021, -1.958'
 
-    @type locator: C{str}
-    @param locator: Maidenhead locator string
-    @rtype: C{tuple} of C{float}s
-    @return: Geodesic latitude and longitude values
-    @raise ValueError: Incorrect grid locator length
-    @raise ValueError: Invalid values in locator string
+    :Parameters:
+        locator : `str`
+            Maidenhead locator string
+    :rtype: `tuple` of `float` objects
+    :return: Geodesic latitude and longitude values
+    :raise ValueError: Incorrect grid locator length
+    :raise ValueError: Invalid values in locator string
     """
     if not len(locator) in (4, 6, 8):
         raise ValueError("Locator must be 4, 6 or 8 characters long `%s'"
@@ -895,16 +949,17 @@ def to_grid_locator(latitude, longitude, precision="square"):
     >>> to_grid_locator(52.021, -1.958)
     'IO92'
 
-    @type latitude: C{float}
-    @param latitude: Position's latitude
-    @type longitude: C{float}
-    @param longitude: Position's longitude
-    @type precision: C{str}
-    @param precision: Precision with which generate locator string
-    @rtype: C{str}
-    @return: Maidenhead locator for latitude and longitude
-    @raise ValueError: Invalid precision identifier
-    @raise ValueError: Invalid latitude or longitude value
+    :Parameters:
+        latitude : `float`
+            Position's latitude
+        longitude : `float`
+            Position's longitude
+        precision : `str`
+            Precision with which generate locator string
+    :rtype: `str`
+    :return: Maidenhead locator for latitude and longitude
+    :raise ValueError: Invalid precision identifier
+    :raise ValueError: Invalid latitude or longitude value
     """
     if not precision in ("square", "subsquare", "extsquare"):
         raise ValueError("Unsupported precision value `%s'" % precision)
@@ -957,12 +1012,12 @@ def dump_xearth_markers(markers, name="identifier"):
     """
     Generate an Xearth compatible marker file
 
-    C{dump_xearth_markers()} writes a simple U{Xearth
-    <http://www.cs.colorado.edu/~tuna/xearth/>} marker file from a dictionary of
-    C{trigpoints.Trigpoint} objects.
+    `dump_xearth_markers()` writes a simple `Xearth
+    <http://www.cs.colorado.edu/~tuna/xearth/>`__ marker file from a dictionary
+    of `trigpoints.Trigpoint` objects.
 
     It expects a dictionary in one of the following formats. For support of
-    C{Trigpoint} that is::
+    `Trigpoint` that is::
 
         {500936: Trigpoint(52.066035, -0.281449, 37.0, "Broom Farm"),
          501097: Trigpoint(52.010585, -0.173443, 97.0, "Bygrave"),
@@ -974,7 +1029,7 @@ def dump_xearth_markers(markers, name="identifier"):
         52.010585 -0.173443 "501097" # Bygrave, alt 97m
         51.910886 -0.186462 "205392" # Sish Lane, alt 136m
 
-    Or similar to the following if the C{name} parameter is set to C{name}::
+    Or similar to the following if the `name` parameter is set to `name`::
 
         52.066035 -0.281449 "Broom Farm" # 500936 alt 37m
         52.010585 -0.173443 "Bygrave" # 501097 alt 97m
@@ -992,8 +1047,8 @@ def dump_xearth_markers(markers, name="identifier"):
         52.010585 -0.173443 "Bygrave"
         51.910886 -0.186462 "Sish Lane"
 
-    @note: U{xplanet <http://xplanet.sourceforge.net/>} also supports xearth
-    marker files, and as such can use the output from this function.
+    :note: `xplanet <http://xplanet.sourceforge.net/>`__ also supports xearth
+        marker files, and as such can use the output from this function.
 
     >>> from earth_distance.trigpoints import Trigpoint
     >>> markers = {
@@ -1025,34 +1080,36 @@ def dump_xearth_markers(markers, name="identifier"):
     52.010585 -0.173443 "Bygrave"
     51.910886 -0.186462 "Sish Lane"
 
-    @see: C{import_marker_file}
-    @type markers: C{dict}
-    @param markers: Dictionary of identifer keys, with C{Trigpoint} values
-    @type name: C{str}
-    @param name: Value to use as Xearth display string
-    @rtype: C{list}
-    @return: List of strings representing an Xearth marker file
-    @raise ValueError: Unsupported value for C{name}
+    :see: `earth_distance.xearth.Xearths.import_marker_file`
+
+    :Parameters:
+        markers : `dict`
+            Dictionary of identifer keys, with `Trigpoint` values
+        name : `str`
+            Value to use as Xearth display string
+    :rtype: `list`
+    :return: List of strings representing an Xearth marker file
+    :raise ValueError: Unsupported value for `name`
     """
     output = []
     for identifier, point in markers.items():
-        line = "%f %f " % (point.latitude, point.longitude)
+        line = ["%f %f " % (point.latitude, point.longitude), ]
         if hasattr(point, 'name') and point.name:
             if name == "identifier":
-                line += '"%s" # %s' % (identifier, point.name)
+                line.append('"%s" # %s' % (identifier, point.name))
             elif name == "name":
-                line += '"%s" # %s' % (point.name, identifier)
+                line.append('"%s" # %s' % (point.name, identifier))
             elif name == "comment":
-                line += '"%s" # %s' % (identifier, point.comment)
+                line.append('"%s" # %s' % (identifier, point.comment))
             else:
                 raise ValueError("Unknown name type `%s'" % name)
             if hasattr(point, 'altitude') and point.altitude:
-                line += ", alt %im" % point.altitude
+                line.append(", alt %im" % point.altitude)
         else:
-            line += '"%s"' % identifier
-        output.append(line)
+            line.append('"%s"' % identifier)
+        output.append("".join(line))
     # Return the list sorted on the marker name
-    return sorted(output, lambda x, y: cmp(x.split()[2], y.split()[2]))
+    return sorted(output, key=lambda x: x.split()[2])
 
 def calc_radius(latitude, ellipsoid="WGS84"):
     """
@@ -1061,10 +1118,10 @@ def calc_radius(latitude, ellipsoid="WGS84"):
     This function is most useful when dealing with datasets that are very
     localised and require the accuracy of an ellipsoid model without the
     complexity of code necessary to actually use one.  The results are meant to
-    be used as a C{BODY_RADIUS} replacement when the simple geocentric value is
+    be used as a `BODY_RADIUS` replacement when the simple geocentric value is
     not good enough.
 
-    The original use for C{calc_radius} is to set a more accurate radius value
+    The original use for `calc_radius` is to set a more accurate radius value
     for use with trigpointing databases that are keyed on the OSGB36 datum, but
     it has been expanded to cover other ellipsoids.
 
@@ -1081,15 +1138,16 @@ def calc_radius(latitude, ellipsoid="WGS84"):
     >>> calc_radius(90, "International")
     6399.9365538714392
 
-    @type latitude: C{float}
-    @param latitude: Latitude to calculate earth radius for
-    @type ellipsoid: C{tuple} of C{float}s
-    @param ellipsoid: Ellipsoid model to use for calculation
-    @rtype: C{float}
-    @return: Approximated Earth radius at the given latitude
+    :Parameters:
+        latitude : `float`
+            Latitude to calculate earth radius for
+        ellipsoid : `tuple` of `float` objects
+            Ellipsoid model to use for calculation
+    :rtype: `float`
+    :return: Approximated Earth radius at the given latitude
     """
 
-    ELLIPSOIDS = {
+    ellipsoids = {
         "Airy (1830)": (6377.563, 6356.257), # Ordnance Survey default
         "Bessel": (6377.397, 6356.079),
         "Clarke (1880)": (6378.249145, 6356.51486955),
@@ -1104,7 +1162,7 @@ def calc_radius(latitude, ellipsoid="WGS84"):
     }
 
     # Equatorial radius, polar radius
-    major, minor = ELLIPSOIDS[ellipsoid]
+    major, minor = ellipsoids[ellipsoid]
     # eccentricity of the ellipsoid
     eccentricity = 1 - (minor**2 / major**2)
 
@@ -1132,19 +1190,21 @@ def parse_location(location):
     >>> "%.3f;%.3f" % parse_location('''52d0'54" N 000d13'15" W''')
     '52.015;-0.221'
 
-    @type location: C{str}
-    @param location: String to parse
-    @rtype: C{tuple} of C{float}s
-    @return: Latitude and longitude of location
+    :Parameters:
+        location : `str`
+            String to parse
+    :rtype: `tuple` of `float` objects
+    :return: Latitude and longitude of location
     """
     def split_dms(text, hemisphere):
         """
         Split degrees, minutes and seconds string
 
-        @type text: C{str}
-        @param text: Text to split
-        @rtype: C{float}
-        @return: Decimal degrees
+        :Parameters:
+            text : `str`
+                Text to split
+        :rtype: `float`
+        :return: Decimal degrees
         """
         out = []
         sect = []
@@ -1154,10 +1214,11 @@ def parse_location(location):
             else:
                 out.append(sect)
                 sect = []
-        d, m, s = [float("".join(i)) for i in out]
+        degrees, minutes, seconds = [float("".join(i)) for i in out]
         if hemisphere in "SW":
-            d, m, s = [-1 * i for i in d, m, s]
-        return to_dd(d, m, s)
+            degrees, minutes, seconds = map(lambda x: -1 * x,
+                                            (degrees, minutes, seconds))
+        return to_dd(degrees, minutes, seconds)
 
     for sep in ";, ":
         chunks = location.split(sep)

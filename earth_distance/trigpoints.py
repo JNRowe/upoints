@@ -27,52 +27,47 @@ class Trigpoint(point.Point):
     """
     Class for representing a location from a trigpoint marker file
 
-    @warning: Although this class stores and presents the representation of
-    altitude it doesn't take it in to account when making calculations.  For
-    example, consider a point at the base of Mount Everest and a point at the
-    peak of Mount Everest the actual distance travelled between the two would be
-    larger than the reported value calculated at ground level.
+    :warning: Although this class stores and presents the representation of
+        altitude it doesn't take it in to account when making calculations.  For
+        example, consider a point at the base of Mount Everest and a point at
+        the peak of Mount Everest the actual distance travelled between the two
+        would be larger than the reported value calculated at ground level.
 
-    @since: 0.2.0
+    :since: 0.2.0
 
-    @ivar latitude: Location's latitude
-    @ivar longitude: Locations's longitude
-    @ivar altitude: Location's altitude
-    @ivar name: Location's name
+    :Ivariables:
+        latitude
+            Location's latitude
+        longitude
+            Locations's longitude
+        altitude
+            Location's altitude
+        name
+            Location's name
     """
 
     __slots__ = ('altitude', 'name')
 
     def __init__(self, latitude, longitude, altitude, name=None):
         """
-        Initialise a new C{Trigpoint} object
-
-        @type latitude: C{float} or coercible to C{float}
-        @param latitude: Location's latitude
-        @type longitude: C{float} or coercible to C{float}
-        @param longitude: Location's longitude
-        @type altitude: C{float} or coercible to C{float}
-        @param altitude: Location's altitude
-        @type name: C{str}
-        @param name: Name for location
-        """
-        super(Trigpoint, self).__init__(latitude, longitude)
-        self.altitude = altitude
-        self.name = name
-
-    def __repr__(self):
-        """
-        Self-documenting string representation
+        Initialise a new `Trigpoint` object
 
         >>> Trigpoint(52.010585, -0.173443, 97.0, "Bygrave")
         Trigpoint(52.010585, -0.173443, 97.0, 'Bygrave')
 
-        @rtype: C{str}
-        @return: String to recreate C{Trigpoint} object
+        :Parameters:
+            latitude : `float` or coercible to `float`
+                Location's latitude
+            longitude : `float` or coercible to `float`
+                Location's longitude
+            altitude : `float` or coercible to `float`
+                Location's altitude
+            name : `str`
+                Name for location
         """
-        data = utils.repr_assist(self.latitude, self.longitude, self.altitude,
-                                 self.name)
-        return self.__class__.__name__ + '(' + ", ".join(data) + ')'
+        super(Trigpoint, self).__init__(latitude, longitude)
+        self.altitude = altitude
+        self.name = name
 
     def __str__(self, mode="dms"):
         """
@@ -87,32 +82,34 @@ class Trigpoint(point.Point):
         >>> print(Trigpoint(52.010585, -0.173443, 97.0, "Bygrave"))
         Bygrave (52°00'38"N, 000°10'24"W alt 97m)
 
-        @type mode: C{str}
-        @param mode: Coordinate formatting system to use
-        @rtype: C{str}
-        @return: Human readable string representation of C{Trigpoint} object
+        :Parameters:
+            mode : `str`
+                Coordinate formatting system to use
+        :rtype: `str`
+        :return: Human readable string representation of `Trigpoint` object
         """
-        text = super(Trigpoint, self).__str__(mode)
+        location = [super(Trigpoint, self).__str__(mode), ]
         if self.altitude:
-            text += " alt %im" % self.altitude
+            location.append("alt %im" % self.altitude)
 
         if self.name:
-            return "%s (%s)" % (self.name, text)
+            return "%s (%s)" % (self.name, " ".join(location))
         else:
-            return text
+            return " ".join(location)
+
 
 class Trigpoints(dict):
     """
-    Class for representing a group of C{Trigpoint} objects
+    Class for representing a group of `Trigpoint` objects
 
-    @since: 0.5.1
+    :since: 0.5.1
     """
 
     def __init__(self, marker_file=None):
         """
-        Initialise a new C{Trigpoints} object
+        Initialise a new `Trigpoints` object
         """
-        dict.__init__(self)
+        super(Trigpoints, self).__init__()
         if marker_file:
             self.import_marker_file(marker_file)
 
@@ -120,11 +117,11 @@ class Trigpoints(dict):
         """
         Import trigpoint database files
 
-        C{import_marker_file()} returns a dictionary with keys containing the
-        trigpoint identifier, and values that are C{Trigpoint} objects.
+        `import_marker_file()` returns a dictionary with keys containing the
+        trigpoint identifier, and values that are `Trigpoint` objects.
 
         It expects trigpoint marker files in the format provided at
-        U{alltrigs-wgs84.txt http://www.haroldstreet.org.uk/trigpoints.php},
+        `alltrigs-wgs84.txt <http://www.haroldstreet.org.uk/trigpoints.php>`__,
         which is the following format::
 
             H  SOFTWARE NAME & VERSION
@@ -136,9 +133,9 @@ class Trigpoints(dict):
             W,505392,N51.910886,W000.186462,   136.0,Sish Lane
 
         Any line not consisting of 6 comma separated fields will be ignored.
-        The reader uses U{Python <http://www.python.org/>}'s C{csv} module, so
+        The reader uses `Python <http://www.python.org/>`__'s `csv` module, so
         alternative whitespace formatting should have no effect.  The above file
-        processed by C{import_marker_file()} will return the following C{dict}
+        processed by `import_marker_file()` will return the following `dict`
         object::
 
             {500936: point.Point(52.066035, -0.281449, 37.0, "Broom Farm"),
@@ -163,11 +160,12 @@ class Trigpoints(dict):
         500968 - Brown Hill Nm  See The Heights (53°38'23"N, 001°39'34"W)
         501414 - Cheriton Hill Nm  See Paddlesworth (51°06'03"N, 001°08'33"E)
 
-        @type marker_file: C{file}, C{list} or C{str}
-        @param marker_file: Trigpoint marker data to read
-        @rtype: C{dict}
-        @return: Named locations with C{Trigpoint} objects
-        @raise ValueError: Invalid value for C{marker_file}
+        :Parameters:
+            marker_file : `file`, `list` or `str`
+                Trigpoint marker data to read
+        :rtype: `dict`
+        :return: Named locations with `Trigpoint` objects
+        :raise ValueError: Invalid value for `marker_file`
         """
         if hasattr(marker_file, "readlines"):
             data = csv.reader(marker_file)

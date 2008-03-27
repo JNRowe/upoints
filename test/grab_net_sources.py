@@ -29,15 +29,16 @@ __license__ = "GNU General Public License Version 3"
 __credits__ = ""
 __history__ = "See Mercurial repository"
 
+from email.utils import parseaddr
+
 __doc__ += """
 
-@version: %s
-@author: U{%s%s}
-@copyright: %s
-@status: WIP
-@license: %s
-""" % (__version__, __author__[0:__author__.rfind(" ")],
-       __author__[__author__.rfind(" "):], __copyright__, __license__)
+:version: %s
+:author: `%s <mailto:%s>`__
+:copyright: %s
+:status: WIP
+:license: %s
+""" % ((__version__, ) + parseaddr(__author__) + (__copyright__, __license__))
 
 import os
 import sys
@@ -54,15 +55,24 @@ SOURCES = [
 
 data_file = lambda name: os.path.join(os.path.dirname(__file__), "data",
                                       os.path.basename(urlparse(name).path))
-if __name__ == '__main__':
-    if len(sys.argv) == 2 and sys.argv[1] in ("-f" or "--force"):
-        FORCE = True
+def main(argv=None):
+    """
+    Main script handler
+
+    :Parameters:
+        argv : `list`
+            Command line arguments
+    """
+    if not argv:
+        argv = sys.argv
+    if len(argv) == 2 and argv[1] in ("-f" or "--force"):
+        force = True
     else:
-        FORCE = False
+        force = False
     cached = 0
     for resource in SOURCES:
         filename = data_file(resource)
-        if not FORCE and os.path.exists(filename):
+        if not force and os.path.exists(filename):
             print("`%s' already downloaded." % resource)
             cached += 1
         else:
@@ -70,3 +80,7 @@ if __name__ == '__main__':
             urllib.urlretrieve(resource, filename)
     if cached > 1:
         print("You can force download with the `-f' option to this script.")
+
+if __name__ == '__main__':
+    main(sys.argv)
+

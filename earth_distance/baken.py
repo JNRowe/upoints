@@ -28,19 +28,31 @@ class Baken(point.Point):
     """
     Class for representing location from baken data files
 
-    @since: 0.4.0
+    :since: 0.4.0
 
-    @ivar latitude: Location's latitude
-    @ivar longitude: Locations's longitude
-    @ivar antenna: Location's antenna type
-    @ivar direction: Antenna's direction
-    @ivar frequency: Transmitter's frequency
-    @ivar height: Antenna's height
-    @ivar locator: Location's locator string
-    @ivar mode: Transmitter's mode
-    @ivar operator: Transmitter's operator
-    @ivar power: Transmitter's power
-    @ivar qth: Location's qth
+    :Ivariables:
+        latitude
+            Location's latitude
+        longitude
+            Locations's longitude
+        antenna
+            Location's antenna type
+        direction
+            Antenna's direction
+        frequency
+            Transmitter's frequency
+        height
+            Antenna's height
+        locator
+            Location's locator string
+        mode
+            Transmitter's mode
+        operator
+            Transmitter's operator
+        power
+            Transmitter's power
+        qth
+            Location's qth
     """
 
     __slots__ = ('antenna', 'direction', 'frequency', 'height', '_locator',
@@ -50,37 +62,45 @@ class Baken(point.Point):
                  frequency=None, height=None, locator=None, mode=None,
                  operator=None, power=None, qth=None):
         """
-        Initialise a new C{Baken} object
+        Initialise a new `Baken` object
 
+        >>> Baken(14.460, 20.680, None, None, None, 0.000, None, None, None,
+        ...       None, None)
+        Baken(14.46, 20.68, None, None, None, 0.0, None, None, None, None, None)
+        >>> Baken(None, None, "2 x Turnstile", None, 50.000, 460.000, "IO93BF",
+        ...       "A1A", None, 25, None)
+        Baken(53.2291666667, -1.875, '2 x Turnstile', None, 50.0, 460.0,
+              'IO93BF', 'A1A', None, 25, None)
         >>> obj = Baken(None, None)
         Traceback (most recent call last):
         ...
         LookupError: Unable to instantiate baken object, no latitude or
         locator string
 
-        @type latitude: C{float} or coercible to C{float}
-        @param latitude: Location's latitude
-        @type longitude: C{float} or coercible to C{float}
-        @param longitude: Location's longitude
-        @type antenna: C{str}
-        @param antenna: Location's antenna type
-        @type direction: C{tuple} of C{int}
-        @param direction: Antenna's direction
-        @type frequency: C{float}
-        @param frequency: Transmitter's frequency
-        @type height: C{float}
-        @param height: Antenna's height
-        @type locator: C{str}
-        @param locator: Location's Maidenhead locator string
-        @type mode: C{str}
-        @param mode: Transmitter's mode
-        @type operator: C{tuple} of C{str}
-        @param operator: Transmitter's operator
-        @type power: C{float}
-        @param power: Transmitter's power
-        @type qth: C{str}
-        @param qth: Location's qth
-        @raise LookupError: No position data to use
+        :Parameters:
+            latitude : `float` or coercible to `float`
+                Location's latitude
+            longitude : `float` or coercible to `float`
+                Location's longitude
+            antenna : `str`
+                Location's antenna type
+            direction : `tuple` of `int`
+                Antenna's direction
+            frequency : `float`
+                Transmitter's frequency
+            height : `float`
+                Antenna's height
+            locator : `str`
+                Location's Maidenhead locator string
+            mode : `str`
+                Transmitter's mode
+            operator : `tuple` of `str`
+                Transmitter's operator
+            power : `float`
+                Transmitter's power
+            qth : `str`
+                Location's qth
+        :raise LookupError: No position data to use
         """
         if not latitude is None:
             super(Baken, self).__init__(latitude, longitude)
@@ -112,34 +132,14 @@ class Baken(point.Point):
         Baken(44.3125, 8.45833333333, '2 x Turnstile', None, 50.0, 460.0,
               'JN44FH', 'A1A', None, 25, None)
 
-        @type value: C{str}
-        @param value: New Maidenhead locator string
+        :Parameters:
+            value : `str`
+                New Maidenhead locator string
         """
         self._locator = value
         self._latitude, self._longitude = utils.from_grid_locator(value)
     locator = property(lambda self: self._locator,
                        lambda self, value: self._set_locator(value))
-
-    def __repr__(self):
-        """
-        Self-documenting string representation
-
-        >>> Baken(14.460, 20.680, None, None, None, 0.000, None, None, None,
-        ...       None, None)
-        Baken(14.46, 20.68, None, None, None, 0.0, None, None, None, None, None)
-        >>> Baken(None, None, "2 x Turnstile", None, 50.000, 460.000, "IO93BF",
-        ...       "A1A", None, 25, None)
-        Baken(53.2291666667, -1.875, '2 x Turnstile', None, 50.0, 460.0,
-              'IO93BF', 'A1A', None, 25, None)
-
-        @rtype: C{str}
-        @return: String to recreate C{Baken} object
-        """
-        data = utils.repr_assist(self.latitude, self.longitude, self.antenna,
-                                 self.direction, self.frequency, self.height,
-                                 self.locator, self.mode, self.operator,
-                                 self.power, self.qth)
-        return self.__class__.__name__ + '(' + ", ".join(data) + ')'
 
     def __str__(self, mode="dms"):
         """
@@ -152,28 +152,30 @@ class Baken(point.Point):
         ...             "IO93BF", "A1A", None, 25, None))
         IO93BF (53°13'45"N, 001°52'30"W)
 
-        @type mode: C{str}
-        @param mode: Coordinate formatting system to use
-        @rtype: C{str}
-        @return: Human readable string representation of C{Baken} object
+        :Parameters:
+            mode : `str`
+                Coordinate formatting system to use
+        :rtype: `str`
+        :return: Human readable string representation of `Baken` object
         """
         text = super(Baken, self).__str__(mode)
         if self._locator:
             text = "%s (%s)" % (self._locator, text)
         return text
 
+
 class Bakens(dict):
     """
-    Class for representing a group of C{Baken} objects
+    Class for representing a group of `Baken` objects
 
-    @since: 0.5.1
+    :since: 0.5.1
     """
 
     def __init__(self, baken_file=None):
         """
-        Initialise a new C{Bakens} object
+        Initialise a new `Bakens` object
         """
-        dict.__init__(self)
+        super(Bakens, self).__init__()
         if baken_file:
             self.import_baken_file(baken_file)
 
@@ -181,8 +183,8 @@ class Bakens(dict):
         """
         Import baken data files
 
-        C{import_baken_file()} returns a dictionary with keys containing the
-        section title, and values consisting of a collection C{Baken} objects.
+        `import_baken_file()` returns a dictionary with keys containing the
+        section title, and values consisting of a collection `Baken` objects.
 
         It expects data files in the format used by the baken amateur radio
         package, which is Windows INI style files such as::
@@ -200,10 +202,10 @@ class Bakens(dict):
             height=460
             mode=A1A
 
-        The reader uses U{Python <http://www.python.org/>}'s C{ConfigParser}
+        The reader uses `Python <http://www.python.org/>`__'s `ConfigParser`
         module, so should be reasonably robust against encodings and such.  The
-        above file processed by C{import_baken_file()} will return the following
-        C{dict} object::
+        above file processed by `import_baken_file()` will return the following
+        `dict` object::
 
             {"Abeche, Chad": Baken(14.460, 20.680, None, None, None, 0.000,
                                    None, None, None, None, None),
@@ -220,10 +222,11 @@ class Bakens(dict):
         >>> len(locations)
         0
 
-        @type baken_file: C{file}, C{list} or C{str}
-        @param baken_file: Baken data to read
-        @rtype: C{dict}
-        @return: Named locations and their associated values
+        :Parameters:
+            baken_file : `file`, `list` or `str`
+                Baken data to read
+        :rtype: `dict`
+        :return: Named locations and their associated values
         """
         data = ConfigParser.ConfigParser()
         if hasattr(baken_file, "readlines"):

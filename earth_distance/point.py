@@ -28,10 +28,11 @@ def _manage_location(attr):
     """
     Build managed property interface
 
-    @type attr: C{str}
-    @param attr: Property's name
-    @rtype: C{property}
-    @return: Managed property interface
+    :Parameters:
+        attr : `str`
+            Property's name
+    :rtype: `property`
+    :return: Managed property interface
     """
     return property(lambda self: getattr(self, "_%s" % attr),
                     lambda self, value: self._set_location(attr, value))
@@ -40,14 +41,21 @@ class Point(object):
     """
     Simple class for representing a location on a sphere
 
-    @since: 0.2.0
+    :since: 0.2.0
 
-    @ivar format: Type of distance units to be used
-    @ivar latitude: Location's latitude
-    @ivar longitude: Locations's longitude
-    @ivar rad_latitude: Location's latitude in radians
-    @ivar rad_longitude: Location's longitude in radians
-    @ivar timezone: Location's offset from UTC in minutes
+    :Ivariables:
+        format
+            Type of distance units to be used
+        latitude
+            Location's latitude
+        longitude
+            Locations's longitude
+        rad_latitude
+            Location's latitude in radians
+        rad_longitude
+            Location's longitude in radians
+        timezone
+            Location's offset from UTC in minutes
     """
 
     __slots__ = ('format', '_latitude', '_longitude', '_rad_latitude',
@@ -56,7 +64,7 @@ class Point(object):
     def __init__(self, latitude, longitude, format="metric",
                  angle="degrees", timezone=0):
         """
-        Initialise a new C{Point} object
+        Initialise a new `Point` object
 
         >>> Home = Point(52.015, -0.221)
         >>> Home = Point(52.015, -0.221, timezone=60) # BST
@@ -89,19 +97,20 @@ class Point(object):
         ...
         ValueError: Unknown unit type `None'
 
-        @type latitude: C{float} or coercible to C{float}, C{tuple} or C{list}
-        @param latitude: Location's latitude
-        @type longitude: C{float} or coercible to C{float}, C{tuple} or C{list}
-        @param longitude: Location's longitude
-        @type angle: C{str}
-        @param angle: Type for specified angles
-        @type format: C{str}
-        @param format: Unit type to be used for distances
-        @type timezone: C{int}
-        @param timezone: Offset from UTC in minutes
-        @raise ValueError: Unknown value for C{angle}
-        @raise ValueError: Unknown value for C{format}
-        @raise ValueError: Invalid value for C{latitude} or C{longitude}
+        :Parameters:
+            latitude : `float` or coercible to `float`, `tuple` or `list`
+                Location's latitude
+            longitude : `float` or coercible to `float`, `tuple` or `list`
+                Location's longitude
+            angle : `str`
+                Type for specified angles
+            format : `str`
+                Unit type to be used for distances
+            timezone : `int`
+                Offset from UTC in minutes
+        :raise ValueError: Unknown value for `angle`
+        :raise ValueError: Unknown value for `format`
+        :raise ValueError: Invalid value for `latitude` or `longitude`
         """
         super(Point, self).__init__()
         if angle in ("degrees", "radians"):
@@ -145,7 +154,7 @@ class Point(object):
     @property
     def __dict__(self):
         """
-        Emulate C{__dict__} class attribute for class using C{__slots__}
+        Emulate `__dict__` class attribute for class
 
         >>> Home = Point(52.015, -0.221)
         >>> sorted(Home.__dict__.items())
@@ -162,38 +171,33 @@ class Point(object):
         >>> sorted(a.__dict__.items())
         [('TEST', 'tested'), ('_angle', 'degrees'),
          ('_latitude', 52.015000000000001), ('_longitude', -0.221),
-         ('_rad_latitude', 0.90783301042485054), 
+         ('_rad_latitude', 0.90783301042485054),
          ('_rad_longitude', -0.0038571776469074684), ('format', 'metric'),
          ('timezone', 0)]
 
-        @rtype: C{dict}
-        @return: Object attributes, as would be provided by a class that didn't
-            set C{__slots__}
+        :rtype: `dict`
+        :return: Object attributes, as would be provided by a class that didn't
+            set ``__slots__``
         """
-        slots = ()
+        slots = []
         cls = self.__class__
         # Build a tuple of __slots__ from all parent classes
-        while not cls == object:
-            slots += cls.__slots__
+        while not cls is object:
+            slots.extend(cls.__slots__)
             cls = cls.__base__
-        dict = {}
-        for item in slots:
-            dict[item] = getattr(self, item)
-        return dict
-  
+        return dict([(item, getattr(self, item)) for item in slots])
+
     def __repr__(self):
         """
         Self-documenting string representation
 
         >>> Point(52.015, -0.221)
-        Point(52.015, -0.221, 'metric', 0)
+        Point(52.015, -0.221, 'metric', 'degrees', 0)
 
-        @rtype: C{str}
-        @return: String to recreate C{Point} object
+        :rtype: `str`
+        :return: String to recreate `Point` object
         """
-        data = utils.repr_assist(self.latitude, self.longitude, self.format,
-                                 self.timezone)
-        return self.__class__.__name__ + '(' + ", ".join(data) + ')'
+        return utils.repr_assist(self, {"angle": "degrees"})
 
     def __str__(self, mode="dd"):
         """
@@ -210,42 +214,44 @@ class Point(object):
         >>> print(Point(52.015, -0.221).__str__(mode="locator"))
         IO92
 
-        @type mode: C{str}
-        @param mode: Coordinate formatting system to use
-        @rtype: C{str}
-        @return: Human readable string representation of C{Point} object
-        @raise ValueError: Unknown value for C{mode}
+        :Parameters:
+            mode : `str`
+                Coordinate formatting system to use
+        :rtype: `str`
+        :return: Human readable string representation of `Point` object
+        :raise ValueError: Unknown value for `mode`
         """
+        text = []
         if mode == "dd":
-            text = "S" if self.latitude < 0 else "N"
-            text += "%06.3f°; " % abs(self.latitude)
-            text += "W" if self.longitude < 0 else "E"
-            text += "%07.3f°" % abs(self.longitude)
+            text.append("S" if self.latitude < 0 else "N")
+            text.append("%06.3f°; " % abs(self.latitude))
+            text.append("W" if self.longitude < 0 else "E")
+            text.append("%07.3f°" % abs(self.longitude))
         elif mode in ("dm", "dms"):
             latitude_dms = utils.to_dms(self.latitude)
             longitude_dms = utils.to_dms(self.longitude)
             if mode == "dms":
-                text = '''%02i°%02i'%02i"''' % \
-                       tuple([abs(i) for i in latitude_dms])
+                text.append('''%02i°%02i'%02i"'''
+                            % tuple(map(abs, latitude_dms)))
             else:
-                text = "%02i°%05.2f'" % (abs(latitude_dms[0]),
-                                         abs(latitude_dms[1] +
-                                             (latitude_dms[2] / 60)))
-            text += "S" if self.latitude < 0 else "N"
+                text.append("%02i°%05.2f'" % (abs(latitude_dms[0]),
+                                              abs(latitude_dms[1] +
+                                                  (latitude_dms[2] / 60))))
+            text.append("S" if self.latitude < 0 else "N")
             if mode == "dms":
-                text += ''', %03i°%02i'%02i"''' % \
-                        tuple([abs(i) for i in longitude_dms])
+                text.append(''', %03i°%02i'%02i"'''
+                            % tuple(map(abs, longitude_dms)))
             else:
-                text += ", %03i°%05.2f'" % (abs(longitude_dms[0]),
-                                            abs(longitude_dms[1] +
-                                                (longitude_dms[2] / 60)))
-            text += "W" if self.longitude < 0 else "E"
+                text.append(", %03i°%05.2f'" % (abs(longitude_dms[0]),
+                                                abs(longitude_dms[1] +
+                                                    (longitude_dms[2] / 60))))
+            text.append("W" if self.longitude < 0 else "E")
         elif mode == "locator":
-            text = self.to_grid_locator()
+            text.append(self.to_grid_locator())
         else:
             raise ValueError("Unknown mode type `%s'" % mode)
 
-        return text
+        return "".join(text)
 
     def __unicode__(self, mode="dd"):
         """
@@ -262,41 +268,43 @@ class Point(object):
         >>> print(Point(52.015, -0.221).__unicode__(mode="locator"))
         IO92
 
-        @type mode: C{str}
-        @param mode: Coordinate formatting system to use
-        @rtype: C{str}
-        @return: Human readable Unicode representation of C{Point} object
-        @raise ValueError: Unknown value for C{mode}
+        :Parameters:
+            mode : `str`
+                Coordinate formatting system to use
+        :rtype: `str`
+        :return: Human readable Unicode representation of `Point` object
+        :raise ValueError: Unknown value for `mode`
         """
+        text = []
         if mode in ("dd", "locator"):
-            text = self.__str__(mode=mode)
+            text.append(self.__str__(mode=mode))
         elif mode in ("dm", "dms"):
             latitude_dms = utils.to_dms(self.latitude)
             longitude_dms = utils.to_dms(self.longitude)
             if mode == "dms":
-                text = '''%02i°%02i′%02i″''' % \
-                       tuple([abs(i) for i in latitude_dms])
+                text.append('''%02i°%02i′%02i″'''
+                            % tuple(map(abs, latitude_dms)))
             else:
-                text = "%02i°%05.2f′" % (abs(latitude_dms[0]),
-                                         abs(latitude_dms[1] +
-                                             (latitude_dms[2] / 60)))
-            text += "S" if self.latitude < 0 else "N"
+                text.append("%02i°%05.2f′" % (abs(latitude_dms[0]),
+                                              abs(latitude_dms[1] +
+                                                  (latitude_dms[2] / 60))))
+            text.append("S" if self.latitude < 0 else "N")
             if mode == "dms":
-                text += ''', %03i°%02i′%02i″''' % \
-                        tuple([abs(i) for i in longitude_dms])
+                text.append(''', %03i°%02i′%02i″'''
+                            % tuple(map(abs, longitude_dms)))
             else:
-                text += ", %03i°%05.2f′" % (abs(longitude_dms[0]),
-                                            abs(longitude_dms[1] +
-                                                (longitude_dms[2] / 60)))
-            text += "W" if self.longitude < 0 else "E"
+                text.append(", %03i°%05.2f′" % (abs(longitude_dms[0]),
+                                                abs(longitude_dms[1] +
+                                                    (longitude_dms[2] / 60))))
+            text.append("W" if self.longitude < 0 else "E")
         else:
             raise ValueError("Unknown mode type `%s'" % mode)
 
-        return text
+        return "".join(text)
 
     def __eq__(self, other, accuracy=None):
         """
-        Compare C{Point} objects for equality with optional accuracy amount
+        Compare `Point` objects for equality with optional accuracy amount
 
         >>> Point(52.015, -0.221) == Point(52.015, -0.221)
         True
@@ -307,22 +315,23 @@ class Point(object):
         >>> Point(52.015, -0.221).__eq__(Point(52.6333, -2.5), 170)
         True
 
-        @type other: C{Point} instance
-        @param other: Object to test for equality against
-        @type accuracy: C{float} or C{None}
-        @param accuracy: Objects are considered equal if within C{accuracy}
-                         C{format} units of each other
-        @rtype: C{bool}
-        @return: True if objects are equal
+        :Parameters:
+            other : `Point` instance
+                Object to test for equality against
+            accuracy : `float` or `None`
+                Objects are considered equal if within `accuracy`
+                `format` units of each other
+        :rtype: `bool`
+        :return: True if objects are equal
         """
-        if accuracy == None:
+        if accuracy is None:
             return hash(self) == hash(other)
         else:
             return self.distance(other) < accuracy
 
     def __ne__(self, other, accuracy=None):
         """
-        Compare C{Point} objects for inequality with optional accuracy amount
+        Compare `Point` objects for inequality with optional accuracy amount
 
         >>> Point(52.015, -0.221) != Point(52.015, -0.221)
         False
@@ -333,13 +342,14 @@ class Point(object):
         >>> Point(52.015, -0.221).__ne__(Point(52.6333, -2.5), 170)
         False
 
-        @type other: C{Point} instance
-        @param other: Object to test for inequality against
-        @type accuracy: C{float} or C{None}
-        @param accuracy: Objects are considered equal if within C{accuracy}
-                         C{format} units
-        @rtype: C{bool}
-        @return: True if objects are not equal
+        :Parameters:
+            other : `Point` instance
+                Object to test for inequality against
+            accuracy : `float` or `None`
+                Objects are considered equal if within `accuracy`
+                         `format` units
+        :rtype: `bool`
+        :return: True if objects are not equal
         """
         return not self.__eq__(other, accuracy)
 
@@ -347,16 +357,16 @@ class Point(object):
         """
         Produce an object hash for equality checks
 
-        This method returns the hash of the return value from the C{__str__}
+        This method returns the hash of the return value from the `__str__`
         method.  It guarantees equality for objects that have the same latitude
         and longitude.
 
-        @see: C{__str__}
+        :see: `__str__`
 
-        @rtype: C{int}
-        @return: Hash of string representation
+        :rtype: `int`
+        :return: Hash of string representation
         """
-        return hash(self.__str__())
+        return hash(repr(self))
 
     def to_grid_locator(self, precision="square"):
         """
@@ -370,10 +380,11 @@ class Point(object):
         >>> Home.to_grid_locator()
         'IO92'
 
-        @type precision: C{str}
-        @param precision: Precision with which generate locator string
-        @rtype: C{str}
-        @return: Maidenhead locator for latitude and longitude
+        :Parameters:
+            precision : `str`
+                Precision with which generate locator string
+        :rtype: `str`
+        :return: Maidenhead locator for latitude and longitude
         """
         return utils.to_grid_locator(self.latitude, self.longitude, precision)
 
@@ -393,8 +404,8 @@ class Point(object):
         ValueError: Unknown method type `Invalid'
 
         As a smoke test this check uses the example from Wikipedia's
-        U{Great-circle distance entry
-        <http://en.wikipedia.org/wiki/Great-circle_distance>} of Nashville
+        `Great-circle distance entry
+        <http://en.wikipedia.org/wiki/Great-circle_distance>`__ of Nashville
         International Airport to Los Angeles International Airport, and is
         correct to within 2 kilometres of the calculation there.
 
@@ -408,13 +419,14 @@ class Point(object):
         >>> "%i kM" % Point(36.1200, -86.6700).distance(to_loc, method="sloc")
         '2884 kM'
 
-        @type other: C{Point} instance
-        @param other: Location to calculate distance to
-        @type method: C{str}
-        @param method: Method used to calculate distance
-        @rtype: C{float}
-        @return: Distance between self and other in C{self.format} type units
-        @raise ValueError: Unknown value for C{method}
+        :Parameters:
+            other : `Point` instance
+                Location to calculate distance to
+            method : `str`
+                Method used to calculate distance
+        :rtype: `float`
+        :return: Distance between self and other in `self.format` type units
+        :raise ValueError: Unknown value for `method`
         """
         longitude_difference = other.rad_longitude - self.rad_longitude
         latitude_difference = other.rad_latitude - self.rad_latitude
@@ -447,12 +459,13 @@ class Point(object):
         """
         Calculate the initial bearing from self to other
 
-        @note: Applying common plane Euclidean trigonometry to bearing
-        calculations suggests to us that the bearing between point A to point
-        B is equal to the inverse of the bearing from Point B to Point A,
-        whereas spherical trigonometry is much more fun.  If the C{bearing}
-        method doesn't make sense to you when calculating return bearings there
-        are plenty of resources on the web that explain spherical geometry.
+        :note: Applying common plane Euclidean trigonometry to bearing
+            calculations suggests to us that the bearing between point A to
+            point B is equal to the inverse of the bearing from Point B to Point
+            A, whereas spherical trigonometry is much more fun.  If the
+            `bearing` method doesn't make sense to you when calculating return
+            bearings there are plenty of resources on the web that explain
+            spherical geometry.
 
         >>> "%i" % Point(52.015, -0.221).bearing(Point(52.6333, -2.5))
         '294'
@@ -468,14 +481,15 @@ class Point(object):
         ...                               format="string")
         'North-west'
 
-        @type other: C{Point} instance
-        @param other: Location to calculate bearing to
-        @type format: C{str}
-        @param format: Format of the bearing string to return
-        @rtype: C{float}
-        @return: Initial bearing from self to other in degrees
-        @raise ValueError: Unknown value for C{format}
-        @todo: Add Rhumb line calculation
+        :Parameters:
+            other : `Point` instance
+                Location to calculate bearing to
+            format : `str`
+                Format of the bearing string to return
+        :rtype: `float`
+        :return: Initial bearing from self to other in degrees
+        :raise ValueError: Unknown value for `format`
+        :todo: Add Rhumb line calculation
         """
 
         longitude_difference = other.rad_longitude - self.rad_longitude
@@ -498,17 +512,18 @@ class Point(object):
         """
         Calculate the midpoint from self to other
 
-        @see: C{bearing}
+        :see: `bearing`
 
         >>> Point(52.015, -0.221).midpoint(Point(52.6333, -2.5))
-        Point(52.3296314054, -1.35253686056, 'metric', 0)
+        Point(52.3296314054, -1.35253686056, 'metric', 'degrees', 0)
         >>> Point(36.1200, -86.6700).midpoint(Point(33.9400, -118.4000))
-        Point(36.082394919, -102.752173705, 'metric', 0)
+        Point(36.082394919, -102.752173705, 'metric', 'degrees', 0)
 
-        @type other: C{Point} instance
-        @param other: Location to calculate midpoint to
-        @rtype: C{Point} instance
-        @return: Great circle midpoint from self to other
+        :Parameters:
+            other : `Point` instance
+                Location to calculate midpoint to
+        :rtype: `Point` instance
+        :return: Great circle midpoint from self to other
         """
         longitude_difference = other.rad_longitude - self.rad_longitude
         y = math.sin(longitude_difference) * math.cos(other.rad_latitude)
@@ -526,7 +541,7 @@ class Point(object):
         """
         Calculate the final bearing from self to other
 
-        @see: C{bearing}
+        :see: `bearing`
 
         >>> "%i" % Point(52.015, -0.221).final_bearing(Point(52.6333, -2.5))
         '293'
@@ -542,13 +557,14 @@ class Point(object):
         ...                               format="string")
         'North-west'
 
-        @type other: C{Point} instance
-        @param other: Location to calculate final bearing to
-        @type format: C{str}
-        @param format: Format of the bearing string to return
-        @rtype: C{float}
-        @return: Final bearing from self to other in degrees
-        @raise ValueError: Unknown value for C{format}
+        :Parameters:
+            other : `Point` instance
+                Location to calculate final bearing to
+            format : `str`
+                Format of the bearing string to return
+        :rtype: `float`
+        :return: Final bearing from self to other in degrees
+        :raise ValueError: Unknown value for `format`
         """
         final_bearing = (other.bearing(self) + 180) % 360
         if format == "numeric":
@@ -563,22 +579,23 @@ class Point(object):
         Calculate the destination from self given bearing and distance
 
         >>> Point(52.015, -0.221).destination(294, 169)
-        Point(52.6116387502, -2.50937408195, 'metric', 0)
+        Point(52.6116387502, -2.50937408195, 'metric', 'degrees', 0)
         >>> Home = Point(52.015, -0.221, "imperial")
         >>> Home.destination(294, 169 / utils.STATUTE_MILE)
-        Point(52.6116387502, -2.50937408195, 'metric', 0)
+        Point(52.6116387502, -2.50937408195, 'metric', 'degrees', 0)
         >>> Home = Point(52.015, -0.221, "nautical")
         >>> Home.destination(294, 169 / utils.NAUTICAL_MILE)
-        Point(52.6116387502, -2.50937408195, 'metric', 0)
+        Point(52.6116387502, -2.50937408195, 'metric', 'degrees', 0)
         >>> Point(36.1200, -86.6700).destination(274, 2885)
-        Point(33.6872799138, -118.327218421, 'metric', 0)
+        Point(33.6872799138, -118.327218421, 'metric', 'degrees', 0)
 
-        @type bearing: C{float} or coercible to C{float}
-        @param bearing: Bearing from self
-        @type distance: C{float} or coercible to C{float}
-        @param distance: Distance from self in C{self.format} type units
-        @rtype: C{Point}
-        @return: Location after travelling C{distance} along C{bearing}
+        :Parameters:
+            bearing : `float` or coercible to `float`
+                Bearing from self
+            distance : `float` or coercible to `float`
+                Distance from self in `self.format` type units
+        :rtype: `Point`
+        :return: Location after travelling `distance` along `bearing`
         """
         bearing = math.radians(bearing)
 
@@ -602,13 +619,13 @@ class Point(object):
                                     math.sin(self.rad_latitude) *
                                     math.sin(dest_latitude))
 
-        return Point(math.degrees(dest_latitude), math.degrees(dest_longitude))
+        return Point(dest_latitude, dest_longitude, angle="radians")
 
     def sunrise(self, date=None, zenith=None):
         """
-        Calculate the sunrise time for a C{Point} object
+        Calculate the sunrise time for a `Point` object
 
-        @see: C{utils.sun_rise_set}
+        :see: `utils.sun_rise_set`
 
         >>> import datetime
         >>> date = datetime.date(2007, 6, 15)
@@ -621,21 +638,22 @@ class Point(object):
         >>> Point(33.9400, -118.4000).sunrise(date)
         datetime.time(12, 41)
 
-        @type date: C{datetime.date}
-        @param date: Calculate rise or set for given date
-        @type zenith: C{None} or C{str}
-        @param zenith: Calculate rise/set events, or twilight times
-        @rtype: C{datetime.datetime}
-        @return: The time for the given event in the specified timezone
+        :Parameters:
+            date : ``datetime.date``
+                Calculate rise or set for given date
+            zenith : `None` or `str`
+                Calculate rise/set events, or twilight times
+        :rtype: ``datetime.datetime``
+        :return: The time for the given event in the specified timezone
         """
         return utils.sun_rise_set(self.latitude, self.longitude, date, "rise",
                                   self.timezone, zenith)
 
     def sunset(self, date=None, zenith=None):
         """
-        Calculate the sunset time for a C{[Point} object
+        Calculate the sunset time for a `Point` object
 
-        @see: C{utils.sun_rise_set}
+        :see: `utils.sun_rise_set`
 
         >>> import datetime
         >>> date = datetime.date(2007, 6, 15)
@@ -648,21 +666,22 @@ class Point(object):
         >>> Point(33.9400, -118.4000).sunset(date)
         datetime.time(3, 6)
 
-        @type date: C{datetime.date}
-        @param date: Calculate rise or set for given date
-        @type zenith: C{None} or C{str}
-        @param zenith: Calculate rise/set events, or twilight times
-        @rtype: C{datetime.datetime}
-        @return: The time for the given event in the specified timezone
+        :Parameters:
+            date : ``datetime.date``
+                Calculate rise or set for given date
+            zenith : `None` or `str`
+                Calculate rise/set events, or twilight times
+        :rtype: ``datetime.datetime``
+        :return: The time for the given event in the specified timezone
         """
         return utils.sun_rise_set(self.latitude, self.longitude, date, "set",
                                   self.timezone, zenith)
 
     def sun_events(self, date=None, zenith=None):
         """
-        Calculate the sunrise time for a C{Point} object
+        Calculate the sunrise time for a `Point` object
 
-        @see: C{utils.sun_rise_set}
+        :see: `utils.sun_rise_set`
 
         >>> import datetime
         >>> date = datetime.date(2007, 6, 15)
@@ -675,12 +694,13 @@ class Point(object):
         >>> Point(33.9400, -118.4000).sun_events(date)
         (datetime.time(12, 41), datetime.time(3, 6))
 
-        @type date: C{datetime.date}
-        @param date: Calculate rise or set for given date
-        @type zenith: C{None} or C{str}
-        @param zenith: Calculate rise/set events, or twilight times
-        @rtype: C{tuple} of C{datetime.datetime}
-        @return: The time for the given events in the specified timezone
+        :Parameters:
+            date : ``datetime.date``
+                Calculate rise or set for given date
+            zenith : `None` or `str`
+                Calculate rise/set events, or twilight times
+        :rtype: `tuple` of ``datetime.datetime``
+        :return: The time for the given events in the specified timezone
         """
         return utils.sun_events(self.latitude, self.longitude, date,
                                 self.timezone, zenith)
@@ -694,10 +714,11 @@ class Point(object):
         >>> "%i, %i" % Point(52.015, -0.221).inverse(Point(52.6333, -2.5))
         '294, 169'
 
-        @type other: C{Point} instance
-        @param other: Location to calculate inverse geodesic to
-        @rtype: C{tuple} of C{floats}
-        @return: Bearing and distance from self to other
+        :Parameters:
+            other : `Point` instance
+                Location to calculate inverse geodesic to
+        :rtype: `tuple` of `float` objects
+        :return: Bearing and distance from self to other
         """
         return (self.bearing(other), self.distance(other))
     # Forward geodesic function maps directly to destination method

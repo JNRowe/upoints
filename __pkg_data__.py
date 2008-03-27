@@ -24,24 +24,23 @@ from re import sub
 
 try:
     import Image
-    IMAGE = True #: True if C{Image} module is available
+    IMAGE = True #: True if `Image` module is available
 except ImportError:
     IMAGE = False
 
 import earth_distance
-module = earth_distance
+MODULE = earth_distance
 
 import edist
-scripts = [edist, ]
+SCRIPTS = [edist, ]
 
-description = sub("C{([^}]*)}", r"\1",
-                  earth_distance.__doc__.splitlines()[0][:-1])
-long_description = """\
+DESCRIPTION = earth_distance.__doc__.splitlines()[0][:-1]
+LONG_DESCRIPTION = """\
 ``earth_distance`` is a collection of `GPL v3`_ licensed modules for working
 with points on Earth, or other near spherical objects.  It allows you to
-calculate the distance and bearings between points, mangle xearth_/xplanet_
-data files, work with online UK trigpoint databases, NOAA_'s weather station
-database and other such location databases.
+calculate the distance and bearings between points, mangle xearth_/xplanet_ data
+files, work with online UK trigpoint databases, NOAA_'s weather station database
+and other such location databases.
 
 .. _GPL v3: http://www.gnu.org/licenses/
 .. _xearth: http://www.cs.colorado.edu/~tuna/xearth/
@@ -49,9 +48,9 @@ database and other such location databases.
 .. _NOAA: http://weather.noaa.gov/
 """
 
-keywords = ['navigation', 'xearth', 'trigpointing', 'cities', 'baken',
+KEYWORDS = ['navigation', 'xearth', 'trigpointing', 'cities', 'baken',
             'weather', 'geonames', 'openstreetmap', 'nmea', 'gpx']
-classifiers = [
+CLASSIFIERS = [
     'Development Status :: 4 - Beta',
     'Environment :: Console',
     'Environment :: Other Environment',
@@ -68,11 +67,11 @@ classifiers = [
     'Topic :: Text Processing :: Filters',
 ]
 
-test_extraglobs = ["pymetar", ]
+TEST_EXTRAGLOBS = ["pymetar", ]
 
 def BuildDoc_run(dry_run, force):
     """
-    Non-standard C{setup.BuildDoc} commands
+    Non-standard `setup.BuildDoc` commands
     """
     if not IMAGE:
         raise DistutilsModuleError("Image(python-imaging) import failed, "
@@ -88,3 +87,4 @@ def BuildDoc_run(dry_run, force):
             im = Image.open(original)
             im.thumbnail((256, 192))
             im.save(thumb)
+

@@ -47,19 +47,20 @@ DEF_KML_VERSION = "2.2" #: Default KML version to output
 
 def create_elem(tag, attr=None, kml_version=DEF_KML_VERSION, human_namespace=False):
     """
-    Create a partial C{ET.Element} wrapper with namespace defined
+    Create a partial ``ET.Element`` wrapper with namespace defined
 
-    @type tag: C{str}
-    @param tag: Tag name
-    @type attr: C{dict}
-    @param attr: Default attributes for tag
-    @type kml_version: C{str}
-    @param kml_version: KML version to use
-    @type human_namespace: C{bool}
-    @param human_namespace: Whether to generate output using human readable
-        namespace prefixes
-    @rtype: C{function}
-    @return: C{ET.Element} wrapper with predefined namespace
+    :Parameters:
+        tag : `str`
+            Tag name
+        attr : `dict`
+            Default attributes for tag
+        kml_version : `str`
+            KML version to use
+        human_namespace : `bool`
+            Whether to generate output using human readable
+            namespace prefixes
+    :rtype: ``function``
+    :return: ``ET.Element`` wrapper with predefined namespace
     """
     if not attr:
         attr = {}
@@ -77,11 +78,15 @@ class Placemark(trigpoints.Trigpoint):
     """
     Class for representing a Placemark element from KML data files
 
-    @since: 0.6.0
+    :since: 0.6.0
 
-    @ivar latitude: Placemark's latitude
-    @ivar longitude: Placemark's longitude
-    @ivar altitude: Placemark's altitude
+    :Ivariables:
+        latitude
+            Placemark's latitude
+        longitude
+            Placemark's longitude
+        altitude
+            Placemark's altitude
     """
 
     __slots__ = ('description', )
@@ -89,28 +94,7 @@ class Placemark(trigpoints.Trigpoint):
     def __init__(self, latitude, longitude, altitude=None, name=None,
                  description=None):
         """
-        Initialise a new C{Placemark} object
-
-        @type latitude: C{float} or coercible to C{float}
-        @param latitude: Placemarks's latitude
-        @type longitude: C{float} or coercible to C{float}
-        @param longitude: Placemark's longitude
-        @type altitude: C{float} or coercible to C{float}
-        @param altitude: Placemark's altitude
-        @type name: C{str}
-        @param name: Name for placemark
-        @type description: C{str}
-        @param description: Placemark's description
-        """
-        super(Placemark, self).__init__(latitude, longitude, altitude, name)
-
-        if altitude:
-            self.altitude = float(altitude)
-        self.description = description
-
-    def __repr__(self):
-        """
-        Self-documenting string representation
+        Initialise a new `Placemark` object
 
         >>> Placemark(52, 0, 4)
         Placemark(52.0, 0.0, 4.0, None, None)
@@ -119,12 +103,23 @@ class Placemark(trigpoints.Trigpoint):
         >>> Placemark(52, 0, None, "name", "desc")
         Placemark(52.0, 0.0, None, 'name', 'desc')
 
-        @rtype: C{str}
-        @return: String to recreate C{Placemark} object
+        :Parameters:
+            latitude : `float` or coercible to `float`
+                Placemarks's latitude
+            longitude : `float` or coercible to `float`
+                Placemark's longitude
+            altitude : `float` or coercible to `float`
+                Placemark's altitude
+            name : `str`
+                Name for placemark
+            description : `str`
+                Placemark's description
         """
-        data = utils.repr_assist(self.latitude, self.longitude, self.altitude,
-                                 self.name, self.description)
-        return self.__class__.__name__ + '(' + ", ".join(data) + ')'
+        super(Placemark, self).__init__(latitude, longitude, altitude, name)
+
+        if altitude:
+            self.altitude = float(altitude)
+        self.description = description
 
     def __str__(self, mode="dms"):
         """
@@ -139,15 +134,17 @@ class Placemark(trigpoints.Trigpoint):
         >>> print(Placemark(52, 0, 42, "name", "desc"))
         name (52°00'00"N, 000°00'00"E alt 42m) [desc]
 
-        @type mode: C{str}
-        @param mode: Coordinate formatting system to use
-        @rtype: C{str}
-        @return: Human readable string representation of C{Placemark} object
+        :Parameters:
+            mode : `str`
+                Coordinate formatting system to use
+        :rtype: `str`
+        :return: Human readable string representation of `Placemark` object
         """
-        text = super(Placemark, self).__str__(mode)
+        location = super(Placemark, self).__str__(mode)
         if self.description:
-            text += " [%s]" % self.description
-        return text
+            return "%s [%s]" % (location, self.description)
+        else:
+            return location
 
     def tokml(self, kml_version=DEF_KML_VERSION, human_namespace=False):
         """
@@ -162,13 +159,14 @@ class Placemark(trigpoints.Trigpoint):
         >>> ET.tostring(Placemark(52, 0, 4, "Cambridge", "in the UK").tokml())
         '<ns0:Placemark id="Cambridge" xmlns:ns0="http://earth.google.com/kml/2.2"><ns0:name>Cambridge</ns0:name><ns0:description>in the UK</ns0:description><ns0:Point><ns0:coordinates>0.0,52.0,4</ns0:coordinates></ns0:Point></ns0:Placemark>'
 
-        @type kml_version: C{str}
-        @param kml_version: KML version to generate
-        @type human_namespace: C{bool}
-        @param human_namespace: Whether to generate output using human readable
-            namespace prefixes
-        @rtype: C{ET.Element}
-        @return: KML Placemark element
+        :Parameters:
+            kml_version : `str`
+                KML version to generate
+            human_namespace : `bool`
+                Whether to generate output using human readable
+                namespace prefixes
+        :rtype: ``ET.Element``
+        :return: KML Placemark element
         """
         element = lambda tag, attr={}: create_elem(tag, attr, kml_version,
                                                    human_namespace)
@@ -182,12 +180,14 @@ class Placemark(trigpoints.Trigpoint):
             desctag.text = self.description
         point = element("Point")
         coords = element("coordinates")
-        coords.text = "%s,%s" % (self.longitude, self.latitude)
+
+        data = [str(self.longitude), str(self.latitude)]
         if self.altitude:
             if int(self.altitude) == self.altitude:
-                coords.text += ",%i" % self.altitude
+                data.append("%i" % self.altitude)
             else:
-                coords.text += ",%s" % self.altitude
+                data.append(str(self.altitude))
+        coords.text = ",".join(data)
 
         if self.name:
             placemark.append(nametag)
@@ -198,18 +198,19 @@ class Placemark(trigpoints.Trigpoint):
 
         return placemark
 
+
 class Placemarks(dict):
     """
-    Class for representing a group of C{Placemark} objects
+    Class for representing a group of `Placemark` objects
 
-    @since: 0.6.0
+    :since: 0.6.0
     """
 
     def __init__(self, kml_file=None):
         """
-        Initialise a new C{Placemarks} object
+        Initialise a new `Placemarks` object
         """
-        dict.__init__(self)
+        super(Placemarks, self).__init__()
         if kml_file:
             self.import_kml_file(kml_file)
 
@@ -217,12 +218,12 @@ class Placemarks(dict):
         """
         Import KML data files
 
-        C{import_kml_file()} returns a dictionary with keys containing the
-        section title, and values consisting of C{Placemark} objects.
+        `import_kml_file()` returns a dictionary with keys containing the
+        section title, and values consisting of `Placemark` objects.
 
-        It expects data files in KML format, as specified in U{KML Reference
-        <http://code.google.com/apis/kml/documentation/kml_tags_21.html>}, which
-        is XML such as::
+        It expects data files in KML format, as specified in `KML Reference
+        <http://code.google.com/apis/kml/documentation/kml_tags_21.html>`__,
+        which is XML such as::
 
             <?xml version="1.0" encoding="utf-8"?>
             <kml xmlns="http://earth.google.com/kml/2.1">
@@ -242,9 +243,9 @@ class Placemarks(dict):
                 </Document>
             </kml>
 
-        The reader uses U{Python <http://www.python.org/>}'s C{ElementTree}
+        The reader uses `Python <http://www.python.org/>`__'s `ElementTree`
         module, so should be very fast when importing data.  The above file
-        processed by C{import_kml_file()} will return the following C{dict}
+        processed by `import_kml_file()` will return the following `dict`
         object::
 
             {"Home": Placemark(52.015, -0.221, 60),
@@ -252,24 +253,24 @@ class Placemarks(dict):
 
         >>> locations = Placemarks(open("kml"))
         >>> for value in sorted(locations.values(),
-        ...                     lambda x,y: cmp(x.name.lower(),
-        ...                                     y.name.lower())):
+        ...                     key=lambda x: x.name.lower()):
         ...     print(value)
         Cambridge (52°10'01"N, 000°23'24"E)
         Home (52°00'54"N, 000°13'15"W alt 60m)
 
-        The C{kml_version} parameter allows the caller to specify the specific
+        The `kml_version` parameter allows the caller to specify the specific
         KML version that should be processed, this allows the caller to process
         inputs which contain entries in more than one namespace without
         duplicates resulting from entries in being specified with different
         namespaces.
 
-        @type kml_file: C{file}, C{list} or C{str}
-        @param kml_file: KML data to read
-        @type kml_version: C{str}
-        @param kml_version: Specific KML version entities to import
-        @rtype: C{dict}
-        @return: Named locations with optional comments
+        :Parameters:
+            kml_file : `file`, `list` or `str`
+                KML data to read
+            kml_version : `str`
+                Specific KML version entities to import
+        :rtype: `dict`
+        :return: Named locations with optional comments
         """
         if hasattr(kml_file, "readlines"):
             data = ET.parse(kml_file)
@@ -319,7 +320,7 @@ class Placemarks(dict):
     def export_kml_file(self, kml_version=DEF_KML_VERSION,
                         human_namespace=False):
         """
-        Generate KML element tree from C{Placemarks}
+        Generate KML element tree from `Placemarks`
 
         >>> from sys import stdout
         >>> locations = Placemarks(open("kml"))
@@ -330,13 +331,14 @@ class Placemarks(dict):
         >>> xml.write(stdout)
         <ns0:kml xmlns:ns0="http://earth.google.com/kml/2.0"><ns0:Document><ns0:Placemark id="Home"><ns0:name>Home</ns0:name><ns0:Point><ns0:coordinates>-0.221,52.015,60</ns0:coordinates></ns0:Point></ns0:Placemark><ns0:Placemark id="Cambridge"><ns0:name>Cambridge</ns0:name><ns0:Point><ns0:coordinates>0.39,52.167</ns0:coordinates></ns0:Point></ns0:Placemark></ns0:Document></ns0:kml>
 
-        @type kml_version: C{str}
-        @param kml_version: KML version to generate
-        @type human_namespace: C{bool}
-        @param human_namespace: Whether to generate output using human readable
-            namespace prefixes
-        @rtype: C{ET.ElementTree}
-        @return: KML element tree depicting C{Placemarks}
+        :Parameters:
+            kml_version : `str`
+                KML version to generate
+            human_namespace : `bool`
+                Whether to generate output using human readable
+                namespace prefixes
+        :rtype: ``ET.ElementTree``
+        :return: KML element tree depicting `Placemarks`
         """
         element = lambda tag, attr={}: create_elem(tag, attr, kml_version,
                                                    human_namespace)
@@ -347,3 +349,4 @@ class Placemarks(dict):
         kml.append(doc)
 
         return ET.ElementTree(kml)
+

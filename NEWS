@@ -6,22 +6,36 @@ User-visible changes
 
 .. contents::
 
+0.10.0 - 2008-03-27
+-------------------
+
+  * Support for reading and writing `GPX v1.0`_ files
+  * Support for GPX ``trkpt`` elements
+
+.. _GPX v1.0: http://www.topografix.com/GPX/1/0
+
 0.9.0 - 2008-01-25
 ------------------
 
-  * Support for reading OpenStreetMap exports
+  * Support for reading OpenStreetMap_ exports
   * Support for reading configuration file in ``edist.py`` for enable
     simple named location support.
+
+.. _OpenStreetMap: http://wiki.openstreetmap.org/
 
 0.8.0 - 2008-01-09
 ------------------
 
-  * Support for reading GPS eXchange format
+  * Support for reading `GPS eXchange`_ format
+
+.. _GPS eXchange: http://www.topografix.com/GPX/
 
 0.7.0 - 2008-01-08
 ------------------
 
-  * Support for reading NMEA 0183 formatted data
+  * Support for reading `NMEA 0183`_ formatted data
+
+.. _NMEA 0183: http://www.nmea.org/pub/0183/
 
 0.6.0 - 2007-12-14
 ------------------

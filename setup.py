@@ -38,27 +38,27 @@ from subprocess import check_call
 from time import strftime
 
 try:
-    from docutils.core import (publish_cmdline, default_description)
+    from docutils.core import publish_cmdline
     from docutils import nodes
     from docutils.parsers.rst import directives
-    DOCUTILS = True #: True if C{docutils} module is available
+    DOCUTILS = True #: True if ``docutils`` module is available
 except ImportError:
     DOCUTILS = False
 try:
     from pygments import highlight
     from pygments.lexers import get_lexer_by_name
     from pygments.formatters import HtmlFormatter
-    PYGMENTS = True #: True if C{pygments} module is available
+    PYGMENTS = True #: True if ``pygments`` module is available
 except ImportError:
     PYGMENTS = False
 try:
     from epydoc import cli
-    EPYDOC = True #: True if C{epydoc} module is available
+    EPYDOC = True #: True if ``epydoc`` module is available
 except ImportError:
     EPYDOC = False
 try:
     from mercurial import hg
-    MERCURIAL = True #: True if C{mercurial} module is available
+    MERCURIAL = True #: True if ``mercurial`` module is available
 except ImportError:
     MERCURIAL = False
 
@@ -66,18 +66,20 @@ import __pkg_data__
 import test
 
 BASE_URL = "http://www.jnrowe.ukfsn.org/" #: Base URL for links
-PROJECT_URL = "%sprojects/%s.html" % (BASE_URL, __pkg_data__.module.__name__)
+PROJECT_URL = "%sprojects/%s.html" % (BASE_URL, __pkg_data__.MODULE.__name__)
 
-from sys import version_info
-if version_info < (2, 5, 0, 'final'):
+if sys.version_info < (2, 5, 0, 'final'):
     raise SystemError("Requires Python v2.5+")
+
+#{ Generated data file functions
 
 def write_changelog(filename):
     """
     Generate a ChangeLog from Mercurial repo
 
-    @type filename: C{str}
-    @param filename: Filename to write ChangeLog to
+    :Parameters:
+        filename : `str`
+            Filename to write ChangeLog to
     """
     if os.path.isdir(".hg"):
         check_call(["hg", "log", "--exclude", ".be/", "--no-merges",
@@ -91,28 +93,35 @@ def write_manifest(files):
     """
     Generate a MANIFEST file
 
-    @type files: C{list}
-    @param files: Filenames to include in MANIFEST
+    :Parameters:
+        files : `list`
+            Filenames to include in MANIFEST
     """
-    f = open("MANIFEST", "w")
-    f.write("\n".join(sorted(files)) + "\n")
-    f.close()
+    manifest = open("MANIFEST", "w")
+    manifest.write("\n".join(sorted(files)) + "\n")
+    manifest.close()
+
+#}
+
+#{ Implementation utilities
 
 def gen_desc(doc):
     """
     Pull simple description from docstring
 
-    @type doc: C{str}
-    @param doc: Docstring to manipulate
-    @rtype: C{str}
-    @return: description string suitable for C{Command} class's description
+    :Parameters:
+        doc : `str`
+            Docstring to manipulate
+    :rtype: str
+    :return: Description string suitable for ``Command`` class's description
     """
     desc = doc.splitlines()[1].lstrip()
     return desc[0].lower() + desc[1:]
 
+
 class NoOptsCommand(Command):
     """
-    Abstract class for simple distutils command implementation 
+    Abstract class for simple ``distutils`` command implementation
     """
     def initialize_options(self):
         """
@@ -126,18 +135,23 @@ class NoOptsCommand(Command):
         """
         pass
 
+#}
+
+
 class BuildDoc(NoOptsCommand):
     """
     Build project documentation
 
-    @ivar force: Force documentation generation
+    :Ivariables:
+        force
+            Force documentation generation
     """
     description = gen_desc(__doc__)
     user_options = [
         ('force', 'f',
          "Force documentation generation"),
-    ] #: C{BuildDoc}'s option mapping
-    boolean_options = ['force'] #: C{BuildDoc}'s boolean options
+    ] #: `BuildDoc`'s option mapping
+    boolean_options = ['force'] #: `BuildDoc` class' boolean options
 
     def initialize_options(self):
         """
@@ -163,10 +177,14 @@ class BuildDoc(NoOptsCommand):
         def pygments_directive(name, arguments, options, content, lineno,
                                content_offset, block_text, state,
                                state_machine):
+            """
+            Code colourising directive for ``docutils``
+            """
             try:
                 lexer = get_lexer_by_name(arguments[0])
             except ValueError:
-                # no lexer found - use the text one instead of an exception
+                # no lexer found - use the text one instead of raising an
+                # exception
                 lexer = get_lexer_by_name('text')
             parsed = highlight(u'\n'.join(content), lexer, pygments_formatter)
             return [nodes.raw('', parsed, format='html')]
@@ -189,14 +207,17 @@ class BuildDoc(NoOptsCommand):
         if not EPYDOC:
             raise DistutilsModuleError("epydoc import failed, "
                                        "skipping API documentation generation")
-        files = glob("%s/*.py" % __pkg_data__.module.__name__)
-        files.extend([os.path.basename(i.__file__) for i in __pkg_data__.scripts])
-        if self.force or any(newer(file, "html/index.html") for file in files):
+        files = glob("%s/*.py" % __pkg_data__.MODULE.__name__)
+        files.extend(["%s.py" % i.__name__ for i in __pkg_data__.SCRIPTS])
+        if self.force \
+            or any(newer(filename, "html/index.html") for filename in files):
             print("Building API documentation")
             if not self.dry_run:
                 saved_args = sys.argv[1:]
-                sys.argv[1:] = ["--name", __pkg_data__.module.__name__, "--url",
-                                PROJECT_URL] \
+                sys.argv[1:] = ["--name", __pkg_data__.MODULE.__name__,
+                                "--url", PROJECT_URL,
+                                "--docformat", "restructuredtext",
+                                "--no-sourcecode", "--graph=all"] \
                                + files
                 cli.cli()
                 sys.argv[1:] = saved_args
@@ -218,12 +239,18 @@ class BuildDoc(NoOptsCommand):
         if hasattr(__pkg_data__, "BuildDoc_run"):
             __pkg_data__.BuildDoc_run(self.dry_run, self.force)
 
+
+#{ Distribution utilities
+
 class HgSdist(sdist):
     """
     Create a source distribution tarball
 
-    @see: C{sdist}
-    @ivar repo: Mercurial repository object
+    :see: `sdist`
+
+    :Ivariables:
+        repo
+            Mercurial repository object
     """
     description = gen_desc(__doc__)
 
@@ -236,17 +263,18 @@ class HgSdist(sdist):
             raise DistutilsModuleError("Mercurial import failed, "
                                        "unable to build release")
         self.repo = hg.repository(None, os.curdir)
-        if filter(lambda i: not i == [], self.repo.status()[:4]):
+        if filter(lambda i: not i, self.repo.status()[:4]):
             raise DistutilsFileError("Uncommitted changes!")
-        news_format = "%s - %s" % (__pkg_data__.module.__version__,
+        news_format = "%s - %s" % (__pkg_data__.MODULE.__version__,
                                    strftime("%Y-%m-%d"))
         if not any(filter(lambda s: s.strip() == news_format, open("NEWS"))):
-            print("NEWS entry for `%s' missing" % __pkg_data__.module.__version__)
+            print("NEWS entry for `%s' missing"
+                  % __pkg_data__.MODULE.__version__)
             sys.exit(1)
 
     def get_file_list(self):
         """
-        Generate file MANIFEST contents from Mercurial tree
+        Generate MANIFEST file contents from Mercurial tree
         """
         changeset = self.repo.changectx()
         # Include all but Bugs Everywhere data from repo in tarballs
@@ -255,9 +283,9 @@ class HgSdist(sdist):
         manifest_files.extend([".hg_version", "ChangeLog"])
         manifest_files.extend(glob("*.html"))
         manifest_files.extend(glob("doc/*.html"))
-        for path, dir, filenames in os.walk("html"):
-            for file in filenames:
-                manifest_files.append(os.path.join(path, file))
+        for path, directory, filenames in os.walk("html"):
+            for filename in filenames:
+                manifest_files.append(os.path.join(path, filename))
         execute(write_manifest, [manifest_files], "writing MANIFEST")
         sdist.get_file_list(self)
 
@@ -276,6 +304,7 @@ class HgSdist(sdist):
         repo_id = hg.short(self.repo.lookup("tip"))
         write_file(".hg_version", ("%s tip\n" % repo_id, ))
 
+
 class Snapshot(NoOptsCommand):
     """
     Build a daily snapshot tarball
@@ -287,9 +316,9 @@ class Snapshot(NoOptsCommand):
         """
         Prepare and create tarball
         """
-        snapshot_name="%s-%s" % (__pkg_data__.module.__name__,
-                                 strftime("%Y-%m-%d"))
-        snapshot_location="dist/%s" % snapshot_name
+        snapshot_name = "%s-%s" % (__pkg_data__.MODULE.__name__,
+                                   strftime("%Y-%m-%d"))
+        snapshot_location = "dist/%s" % snapshot_name
         if os.path.isdir(snapshot_location):
             execute(shutil.rmtree, (snapshot_location, ))
         execute(self.generate_tree, (snapshot_location, ))
@@ -298,18 +327,22 @@ class Snapshot(NoOptsCommand):
                                snapshot_name))
         execute(shutil.rmtree, (snapshot_location, ))
 
-    def generate_tree(self, snapshot_name):
+    @staticmethod
+    def generate_tree(snapshot_name):
         """
         Generate a clean Mercurial clone
         """
         check_call(["hg", "archive", snapshot_name])
         shutil.rmtree("%s/.be" % snapshot_name)
 
+#}
+
+
 class MyClean(clean):
     """
     Clean built and temporary files
 
-    @see: C{clean}
+    :see: `clean`
     """
     description = gen_desc(__doc__)
 
@@ -319,13 +352,17 @@ class MyClean(clean):
         """
         clean.run(self)
         if self.all:
-            for file in [".hg_version", "ChangeLog", "MANIFEST"] \
+            for filename in [".hg_version", "ChangeLog", "MANIFEST"] \
                 + glob("*.html") + glob("doc/*.html") \
-                + glob("%s/*.pyc" % __pkg_data__.module.__name__):
-                os.path.exists(file) and os.unlink(file)
+                + glob("%s/*.pyc" % __pkg_data__.MODULE.__name__):
+                if os.path.exists(filename):
+                    os.unlink(filename)
             execute(shutil.rmtree, ("html", True))
         if hasattr(__pkg_data__, "MyClean_run"):
             __pkg_data__.MyClean_run(self.dry_run, self.force)
+
+
+#{ Testing utilities
 
 class MyTest(NoOptsCommand):
     """
@@ -348,15 +385,16 @@ class MyTest(NoOptsCommand):
             "os": test.mock.os,
             "urllib": test.mock.urllib,
         } #: Mock objects to include for test framework
-        if hasattr(__pkg_data__, "test_extraglobs"):
-            for value in __pkg_data__.test_extraglobs:
+        if hasattr(__pkg_data__, "TEST_EXTRAGLOBS"):
+            for value in __pkg_data__.TEST_EXTRAGLOBS:
                 self.extraglobs[value] = getattr(test.mock, value)
+
 
 class TestDoc(MyTest):
     """
     Test documentation's code examples
 
-    @see: C{MyTest}
+    :see: `MyTest`
     """
     description = gen_desc(__doc__)
 
@@ -366,19 +404,20 @@ class TestDoc(MyTest):
         """
         for filename in sorted(['README'] + glob("doc/*.txt")):
             print('Testing documentation file %s' % filename)
-            fails, tests = doctest.testfile(filename,
-                                            optionflags=self.doctest_opts,
-                                            extraglobs=self.extraglobs)
+            fails = doctest.testfile(filename,
+                                     optionflags=self.doctest_opts,
+                                     extraglobs=self.extraglobs)[0]
             if self.exit_on_fail and not fails == 0:
                 sys.exit(1)
         if hasattr(__pkg_data__, "TestDoc_run"):
             __pkg_data__.TestDoc_run(self.dry_run, self.force)
 
+
 class TestCode(MyTest):
     """
-    Test script and module's doctest examples
+    Test script and module's ``doctest`` examples
 
-    @see: C{MyTest}
+    :see: `MyTest`
     """
     description = gen_desc(__doc__)
 
@@ -386,8 +425,9 @@ class TestCode(MyTest):
         """
         Run the source's docstring code examples
         """
-        files = glob("%s/*.py" % __pkg_data__.module.__name__)
-        files.extend([os.path.basename(i.__file__) for i in __pkg_data__.scripts])
+        files = glob("%s/*.py" % __pkg_data__.MODULE.__name__)
+        files.extend([os.path.basename(i.__file__)
+                      for i in __pkg_data__.SCRIPTS])
         for filename in sorted(files):
             print('Testing python file %s' % filename)
             module = os.path.splitext(filename)[0].replace("/", ".")
@@ -401,25 +441,27 @@ class TestCode(MyTest):
         if hasattr(__pkg_data__, "TestCode_run"):
             __pkg_data__.TestCode_run(self.dry_run, self.force)
 
+#}
+
 if __name__ == "__main__":
     setup(
-        name = __pkg_data__.module.__name__,
-        version = __pkg_data__.module.__version__,
-        description = __pkg_data__.description,
-        long_description = __pkg_data__.long_description,
-        author = parseaddr(__pkg_data__.module.__author__)[0],
-        author_email = parseaddr(__pkg_data__.module.__author__)[1],
-        url = PROJECT_URL,
-        download_url = "%sdata/%s-%s.tar.bz2" \
-            % (BASE_URL, __pkg_data__.module.__name__,
-               __pkg_data__.module.__version__),
-        packages = [__pkg_data__.module.__name__],
-        scripts = [os.path.basename(i.__file__) for i in __pkg_data__.scripts],
-        license = __pkg_data__.module.__license__,
-        keywords = __pkg_data__.keywords,
-        classifiers = __pkg_data__.classifiers,
-        options = {'sdist': {'formats': 'bztar'}},
-        cmdclass = {
+        name=__pkg_data__.MODULE.__name__,
+        version=__pkg_data__.MODULE.__version__,
+        description=__pkg_data__.DESCRIPTION,
+        long_description=__pkg_data__.LONG_DESCRIPTION,
+        author=parseaddr(__pkg_data__.MODULE.__author__)[0],
+        author_email=parseaddr(__pkg_data__.MODULE.__author__)[1],
+        url=PROJECT_URL,
+        download_url="%sdata/%s-%s.tar.bz2" \
+            % (BASE_URL, __pkg_data__.MODULE.__name__,
+               __pkg_data__.MODULE.__version__),
+        packages=[__pkg_data__.MODULE.__name__],
+        scripts=[os.path.basename(i.__file__) for i in __pkg_data__.SCRIPTS],
+        license=__pkg_data__.MODULE.__license__,
+        keywords=__pkg_data__.KEYWORDS,
+        classifiers=__pkg_data__.CLASSIFIERS,
+        options={'sdist': {'formats': 'bztar'}},
+        cmdclass={
             'build_doc': BuildDoc, 'clean': MyClean, 'sdist': HgSdist,
             'snapshot': Snapshot, 'test_doc': TestDoc, 'test_code': TestCode,
         },

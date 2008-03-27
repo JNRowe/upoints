@@ -23,7 +23,7 @@ import datetime
 try:
     from dateutil import tz
 except ImportError:
-    tz = None #: C{dateutil} module reference if available
+    tz = None #: ``dateutil`` module reference if available
 
 from earth_distance import (trigpoints, utils)
 
@@ -33,32 +33,53 @@ class Location(trigpoints.Trigpoint):
 
     All country codes are specified with their two letter ISO-3166 country code.
 
-    @since: 0.3.0
+    :since: 0.3.0
 
-    @ivar geonameid: ID of record in geonames database
-    @ivar name: Name of geographical location
-    @ivar asciiname: Name of geographical location in ASCII encoding
-    @ivar alt_names: Alternate names for the location
-    @ivar latitude: Location's latitude
-    @ivar longitude: Location's longitude
-    @ivar feature_class: Location's type
-    @ivar feature_code: Location's code
-    @ivar country: Location's country
-    @ivar alt_country: Alternate country codes for location
-    @ivar admin1: FIPS code (subject to change to ISO code), ISO code for the US
-        and CH
-    @ivar admin2: Code for the second administrative division, a county in the
-        US
-    @ivar admin3: Code for third level administrative division
-    @ivar admin4: Code for fourth level administrative division
-    @ivar population: Location's population, if applicable
-    @ivar altitude: Location's elevation
-    @ivar gtopo30: Average elevation of 900 square metre region, if available
-    @ivar tzname: The timezone identifier using POSIX timezone names
-    @ivar timezone: The non-DST UTC timezone offset in minutes
-    @ivar modified_date: Location's last modification date in the geonames
-        databases
-    @cvar __TIMEZONES: C{dateutil.gettz} cache to speed up generation
+    :Ivariables:
+        geonameid
+            ID of record in geonames database
+        name
+            Name of geographical location
+        asciiname
+            Name of geographical location in ASCII encoding
+        alt_names
+            Alternate names for the location
+        latitude
+            Location's latitude
+        longitude
+            Location's longitude
+        feature_class
+            Location's type
+        feature_code
+            Location's code
+        country
+            Location's country
+        alt_country
+            Alternate country codes for location
+        admin1
+            FIPS code (subject to change to ISO code), ISO code for the US and
+            CH
+        admin2
+            Code for the second administrative division, a county in the US
+        admin3
+            Code for third level administrative division
+        admin4
+            Code for fourth level administrative division
+        population
+            Location's population, if applicable
+        altitude
+            Location's elevation
+        gtopo30
+            Average elevation of 900 square metre region, if available
+        tzname
+            The timezone identifier using POSIX timezone names
+        timezone
+            The non-DST UTC timezone offset in minutes
+        modified_date
+            Location's last modification date in the geonames databases
+    :Cvariables:
+        __TIMEZONES
+            ``dateutil.gettz`` cache to speed up generation
     """
 
     __slots__ = ('geonameid', 'asciiname', 'alt_names', 'feature_class',
@@ -74,51 +95,60 @@ class Location(trigpoints.Trigpoint):
                  admin1, admin2, admin3, admin4, population, altitude, gtopo30,
                  tzname, modified_date, timezone=None):
         """
-        Initialise a new C{Location} object
+        Initialise a new `Location` object
 
-        @type geonameid: C{int}
-        @param geonameid: ID of record in geonames database
-        @type name: Unicode C{str}
-        @param name: Name of geographical location
-        @type asciiname: C{str}
-        @param asciiname: Name of geographical location in ASCII encoding
-        @type alt_names: C{list} of Unicode C{str}
-        @param alt_names: Alternate names for the location
-        @type latitude: C{float}
-        @param latitude: Location's latitude
-        @type longitude: C{float}
-        @param longitude: Location's longitude
-        @type feature_class: C{str}
-        @param feature_class: Location's type
-        @type feature_code: C{str}
-        @param feature_code: Location's code
-        @type country: C{str}
-        @param country: Location's country
-        @type alt_country: C{str}
-        @param alt_country: Alternate country codes for location
-        @type admin1: C{str}
-        @param admin1: FIPS code (subject to change to ISO code), ISO code for
-            the US and CH
-        @type admin2: C{str}
-        @param admin2: Code for the second administrative division, a county in
-            the US
-        @param admin3: Code for third level administrative division
-        @type admin4: C{str}
-        @param admin4: Code for fourth level administrative division
-        @type population: C{int}
-        @param population: Location's population, if applicable
-        @type altitude: C{int}
-        @param altitude: Location's elevation
-        @type gtopo30: C{int}
-        @param gtopo30: Average elevation of 900 square metre region, if
-            available
-        @type tzname: C{str}
-        @param tzname: The timezone identifier using POSIX timezone names
-        @type modified_date: C{datetime.date}
-        @param modified_date: Location's last modification date in the geonames
-            databases
-        @type timezone: C{int}
-        @param timezone: The non-DST timezone offset from UTC in minutes
+        >>> Location(2636782, "Stotfold", "Stotfold", None, 52.0, -0.2166667,
+        ...          "P", "PPL", "GB", None, "F8", None, None, None, 6245,
+        ...          None, 77, "Europe/London", datetime.date(2007, 6, 15), 0)
+        Location(2636782, 'Stotfold', 'Stotfold', None, 52.0, -0.2166667, 'P',
+                 'PPL', 'GB', None, 'F8', None, None, None, 6245, None, 77,
+                 'Europe/London', datetime.date(2007, 6, 15), 0)
+
+        :Parameters:
+            geonameid : `int`
+                ID of record in geonames database
+            name : Unicode `str`
+                Name of geographical location
+            asciiname : `str`
+                Name of geographical location in ASCII encoding
+            alt_names : `list` of Unicode `str`
+                Alternate names for the location
+            latitude : `float`
+                Location's latitude
+            longitude : `float`
+                Location's longitude
+            feature_class : `str`
+                Location's type
+            feature_code : `str`
+                Location's code
+            country : `str`
+                Location's country
+            alt_country : `str`
+                Alternate country codes for location
+            admin1 : `str`
+                FIPS code (subject to change to ISO code), ISO code for
+                the US and CH
+            admin2 : `str`
+                Code for the second administrative division, a county in
+                the US
+            admin3 : `str`
+                Code for third level administrative division
+            admin4 : `str`
+                Code for fourth level administrative division
+            population : `int`
+                Location's population, if applicable
+            altitude : `int`
+                Location's elevation
+            gtopo30 : `int`
+                Average elevation of 900 square metre region, if
+                available
+            tzname : `str`
+                The timezone identifier using POSIX timezone names
+            modified_date : ``datetime.date``
+                Location's last modification date in the geonames
+                databases
+            timezone : `int`
+                The non-DST timezone offset from UTC in minutes
         """
         super(Location, self).__init__(latitude, longitude, altitude, name)
         self.geonameid = geonameid
@@ -151,35 +181,11 @@ class Location(trigpoints.Trigpoint):
         else:
             self.timezone = None
 
-    def __repr__(self):
-        """
-        Self-documenting string representation
-
-        >>> Location(2636782, "Stotfold", "Stotfold", None, 52.0, -0.2166667,
-        ...          "P", "PPL", "GB", None, "F8", None, None, None, 6245,
-        ...          None, 77, "Europe/London", datetime.date(2007, 6, 15), 0)
-        Location(2636782, 'Stotfold', 'Stotfold', None, 52.0, -0.2166667, 'P',
-                 'PPL', 'GB', None, 'F8', None, None, None, 6245, None, 77,
-                 'Europe/London', datetime.date(2007, 6, 15), 0)
-
-        @rtype: C{str}
-        @return: String to recreate C{Location} object
-        """
-        data = utils.repr_assist(self.geonameid, self.name, self.asciiname,
-                                 self.alt_names,self.latitude, self.longitude,
-                                 self.feature_class, self.feature_code,
-                                 self.country, self.alt_country, self.admin1,
-                                 self.admin2, self.admin3, self.admin4,
-                                 self.population, self.altitude, self.gtopo30,
-                                 self.tzname, self.modified_date,
-                                 self.timezone)
-        return self.__class__.__name__ + '(' + ", ".join(data) + ')'
-
     def __str__(self, mode="dd"):
         """
         Pretty printed location string
 
-        @see: C{trigpoints.point.Point}
+        :see: `trigpoints.point.Point`
 
         >>> Stotfold = Location(2636782, "Stotfold", "Stotfold", None, 52.0,
         ...                     -0.2166667, "P", "PPL", "GB", None, "F8", None,
@@ -195,10 +201,11 @@ class Location(trigpoints.Trigpoint):
         >>> print(Stotfold)
         Stotfold (Home, Target - N52.000°; W000.217°)
 
-        @type mode: C{str}
-        @param mode: Coordinate formatting system to use
-        @rtype: C{str}
-        @return: Human readable string representation of C{Location} object
+        :Parameters:
+            mode : `str`
+                Coordinate formatting system to use
+        :rtype: `str`
+        :return: Human readable string representation of `Location` object
         """
         text = super(Location.__base__, self).__str__(mode)
 
@@ -207,18 +214,19 @@ class Location(trigpoints.Trigpoint):
         else:
             return "%s (%s)" % (self.name, text)
 
-class Locations(dict):
-    """
-    Class for representing a group of C{Location} objects
 
-    @since: 0.5.1
+class Locations(list):
+    """
+    Class for representing a group of `Location` objects
+
+    :since: 0.5.1
     """
 
     def __init__(self, data=None, tzfile=None):
         """
-        Initialise a new C{Locations} object
+        Initialise a new `Locations` object
         """
-        dict.__init__(self)
+        super(Locations, self).__init__()
         if tzfile:
             self.import_timezones_file(tzfile)
         else:
@@ -231,10 +239,9 @@ class Locations(dict):
         """
         Parse geonames.org country database exports
 
-        C{import_geonames_file()} returns a dictionary with keys containing the
-        geonames identifier, and values consisting of a C{trigpoints.Trigpoint}
-        object and a large variety of other information available in the data
-        exported by U{geonames <http://geonames.org/>}.
+        `import_geonames_file()` returns a list of `trigpoints.Trigpoint`
+        objects generated from the data exported by `geonames
+        <http://geonames.org/>`__.
 
         It expects data files in the following tab separated format::
 
@@ -243,30 +250,30 @@ class Locations(dict):
             2633443	Wraysbury	Wraysbury	Wyrardisbury	51.45	-0.55	P	PPL	GB		P9				0		28	Europe/London	2006-08-21
 
         Files containing the data in this format can be downloaded from the
-        geonames site in their U{database export page
-        <http://download.geonames.org/export/dump/>}.
+        geonames site in their `database export page
+        <http://download.geonames.org/export/dump/>`__.
 
         Files downloaded from the geonames site when processed by
-        C{import_geonames_file()} will return C{dict} object of the following
+        `import_geonames_file()` will return `list` objects of the following
         style::
 
-            {2633441: Location(2633441, "Afon Wyre", "Afon Wyre",
-                               ['River Wayrai', 'River Wyrai', 'Wyre'],
-                               52.3166667, -4.1666667, "H", "STM", "GB",
-                               ['GB'], "00", None, None, None, 0, None, -9999,
-                               "Europe/London", datetime.date(1994, 1, 13)),
-             2633442: Location(2633442, "Wyre", "Wyre", ['Viera'], 59.1166667,
-                               -2.9666667, "T", "ISL", "GB", ['GB'], "V9",
-                               None, None, None, 0, None, 1, "Europe/London",
-                               datetime.date(2004, 9, 24)),
-             2633443: Location(2633443, "Wraysbury", "Wraysbury",
-                               ['Wyrardisbury'], 51.45, -0.55, "P", "PPL",
-                               "GB", None, "P9", None, None, None, 0, None, 28,
-                               "Europe/London", datetime.date(2006, 8, 21))}
+            [Location(2633441, "Afon Wyre", "Afon Wyre",
+                      ['River Wayrai', 'River Wyrai', 'Wyre'],
+                      52.3166667, -4.1666667, "H", "STM", "GB", ['GB'], "00",
+                      None, None, None, 0, None, -9999, "Europe/London",
+                      datetime.date(1994, 1, 13)),
+             Location(2633442, "Wyre", "Wyre", ['Viera'], 59.1166667,
+                      -2.9666667, "T", "ISL", "GB", ['GB'], "V9", None, None,
+                      None, 0, None, 1, "Europe/London",
+                      datetime.date(2004, 9, 24)),
+             Location(2633443, "Wraysbury", "Wraysbury", ['Wyrardisbury'],
+                      51.45, -0.55, "P", "PPL", "GB", None, "P9", None, None,
+                      None, 0, None, 28, "Europe/London",
+                      datetime.date(2006, 8, 21))]
 
         >>> locations = Locations(open("geonames"))
-        >>> for key, value in sorted(locations.items()):
-        ...     print("%s - %s" % (key, value))
+        >>> for location in sorted(locations):
+        ...     print("%i - %s" % (location.geonameid, location))
         2633441 - Afon Wyre (River Wayrai, River Wyrai, Wyre - N52.317°;
         W004.167°)
         2633442 - Wyre (Viera - N59.117°; W002.967°)
@@ -278,11 +285,12 @@ class Locations(dict):
         downloaded from geonames.org please report this to James Rowe
         <jnrowe@ukfsn.org>
 
-        @type data: C{file}, C{list} or C{str}
-        @param data: geonames locations data to read
-        @rtype: C{dict}
-        @return: geonames identifiers with C{Location} objects
-        @raise FileFormatError: Unknown file format
+        :Parameters:
+            data : `file`, `list` or `str`
+                geonames locations data to read
+        :rtype: `dict`
+        :return: geonames identifiers with `Location` objects
+        :raise FileFormatError: Unknown file format
         """
         data = utils.prepare_read(data)
         for line in data:
@@ -290,30 +298,30 @@ class Locations(dict):
             chunk = line.strip().split("	")
             if not len(chunk) == 19:
                 raise utils.FileFormatError("geonames.org")
-            for pos, elem in zip(range(19), chunk):
+            for pos, elem in enumerate(chunk):
                 if pos in [0, 14, 15, 16]:
-                    elem = None if elem == "" else int(elem)
+                    elem = None if not elem else int(elem)
                 elif pos in [4, 5]:
-                    elem = None if elem == "" else float(elem)
+                    elem = None if not elem else float(elem)
                 elif pos in [3, 9]:
-                    elem = None if elem == "" else elem.split(",")
-                elif pos == 17 and not elem == "" and self.timezones:
+                    elem = None if not elem else elem.split(",")
+                elif pos == 17 and elem and self.timezones:
                     timezone = self.timezones[elem][0]
                 elif pos == 18:
-                    elem = datetime.date(*[int(i) for i in elem.split("-")])
-                elif elem == "":
+                    elem = datetime.date(*map(int, elem.split("-")))
+                elif not elem:
                     elem = None
                 else:
                     continue
                 chunk[pos] = elem
             chunk.append(timezone)
-            self[chunk[0]] = Location(*chunk)
+            self.append(Location(*chunk))
 
     def import_timezones_file(self, data):
         """
         Parse geonames.org timezone exports
 
-        C{import_timezone_file()} returns a dictionary with keys containing the
+        `import_timezones_file()` returns a dictionary with keys containing the
         timezone identifier, and values consisting of a UTC offset and UTC
         offset during daylight savings time in minutes.
 
@@ -324,11 +332,11 @@ class Locations(dict):
             Asia/Kabul	4.5	4.5
 
         Files containing the data in this format can be downloaded from the
-        geonames site in their U{database export page
-        <http://download.geonames.org/export/dump/timeZones.txt>}.
+        geonames site in their `database export page
+        <http://download.geonames.org/export/dump/timeZones.txt>`__.
 
         Files downloaded from the geonames site when processed by
-        C{import_timezones_file()} will return C{dict} object of the following
+        `import_timezones_file()` will return `dict` object of the following
         style::
 
             {"Europe/Andorra": (60, 120),
@@ -344,7 +352,7 @@ class Locations(dict):
         >>> header_skip_check = Locations(None,
         ...                               open("geonames_timezones_header"))
         >>> print(header_skip_check)
-        {}
+        []
         >>> broken_file_check = Locations(None,
         ...                               open("geonames_timezones_broken"))
         Traceback (most recent call last):
@@ -353,11 +361,12 @@ class Locations(dict):
         downloaded from geonames.org please report this to James Rowe
         <jnrowe@ukfsn.org>
 
-        @type data: C{file}, C{list} or C{str}
-        @param data: geonames timezones data to read
-        @rtype: C{dict}
-        @return: geonames timezone identifiers with their UTC offsets
-        @raise FileFormatError: Unknown file format
+        :Parameters:
+            data : `file`, `list` or `str`
+                geonames timezones data to read
+        :rtype: `list`
+        :return: geonames timezone identifiers with their UTC offsets
+        :raise FileFormatError: Unknown file format
         """
         data = utils.prepare_read(data)
 

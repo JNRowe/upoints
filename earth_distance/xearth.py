@@ -24,47 +24,42 @@ class Xearth(point.Point):
     """
     Class for representing a location from a Xearth marker
 
-    @since: 0.2.0
+    :since: 0.2.0
 
-    @ivar latitude: Location's latitude
-    @ivar longitude: Locations's longitude
-    @ivar comment: Location's comment
+    :Ivariables:
+        latitude
+            Location's latitude
+        longitude
+            Locations's longitude
+        comment
+            Location's comment
     """
 
     __slots__ = ('comment', )
 
     def __init__(self, latitude, longitude, comment=None):
         """
-        Initialise a new C{Xearth} object
-
-        @type latitude: C{float} or coercible to C{float}
-        @param latitude: Location's latitude
-        @type longitude: C{float} or coercible to C{float}
-        @param longitude: Location's longitude
-        @type comment: C{str}
-        @param comment: Comment for location
-        """
-        super(Xearth, self).__init__(latitude, longitude)
-        self.comment = comment
-
-    def __repr__(self):
-        """
-        Self-documenting string representation
+        Initialise a new `Xearth` object
 
         >>> Xearth(52.015, -0.221, "James Rowe's house")
         Xearth(52.015, -0.221, "James Rowe's house")
 
-        @rtype: C{str}
-        @return: String to recreate C{Xearth} object
+        :Parameters:
+            latitude : `float` or coercible to `float`
+                Location's latitude
+            longitude : `float` or coercible to `float`
+                Location's longitude
+            comment : `str`
+                Comment for location
         """
-        data = utils.repr_assist(self.latitude, self.longitude, self.comment)
-        return self.__class__.__name__ + '(' + ", ".join(data) + ')'
+        super(Xearth, self).__init__(latitude, longitude)
+        self.comment = comment
 
     def __str__(self, mode="dd"):
         """
         Pretty printed location string
 
-        @see: C{point.Point}
+        :see: `point.Point`
 
         >>> print(Xearth(52.015, -0.221))
         N52.015°; W000.221°
@@ -75,10 +70,11 @@ class Xearth(point.Point):
         >>> print(Xearth(52.015, -0.221, "James Rowe's house"))
         James Rowe's house (N52.015°; W000.221°)
 
-        @type mode: C{str}
-        @param mode: Coordinate formatting system to use
-        @rtype: C{str}
-        @return: Human readable string representation of C{Xearth} object
+        :Parameters:
+            mode : `str`
+                Coordinate formatting system to use
+        :rtype: `str`
+        :return: Human readable string representation of `Xearth` object
         """
         text = super(Xearth, self).__str__(mode)
 
@@ -87,32 +83,33 @@ class Xearth(point.Point):
         else:
             return text
 
+
 class Xearths(dict):
     """
-    Class for representing a group of C{Xearth} objects
+    Class for representing a group of `Xearth` objects
 
-    @since: 0.5.1
+    :since: 0.5.1
     """
 
     def __init__(self, marker_file=None):
         """
-        Initialise a new C{Xearths} object
+        Initialise a new `Xearths` object
         """
-        dict.__init__(self)
+        super(Xearths, self).__init__()
         if marker_file:
             self.import_marker_file(marker_file)
 
     def __str__(self):
         """
-        C{Xearth} objects rendered for use with Xearth/Xplanet
+        `Xearth` objects rendered for use with Xearth/Xplanet
 
         >>> markers = Xearths(open("xearth"))
         >>> print(markers)
         52.015000 -0.221000 "Home"
         52.633300 -2.500000 "Telford"
 
-        @rtype: C{str}
-        @return: Xearth/Xplanet marker file formatted output
+        :rtype: `str`
+        :return: Xearth/Xplanet marker file formatted output
         """
         return "\n".join(utils.dump_xearth_markers(self, "comment"))
 
@@ -120,9 +117,9 @@ class Xearths(dict):
         """
         Parse Xearth data files
 
-        C{import_marker_file()} returns a dictionary with keys containing the
-        U{xearth <http://www.cs.colorado.edu/~tuna/xearth/>} name, and values
-        consisting of a C{Xearth} object and a string containing any comment
+        `import_marker_file()` returns a dictionary with keys containing the
+        `xearth <http://www.cs.colorado.edu/~tuna/xearth/>`__ name, and values
+        consisting of a `Xearth` object and a string containing any comment
         found in the marker file.
 
         It expects Xearth marker files in the following format::
@@ -134,16 +131,16 @@ class Xearths(dict):
 
         Any empty line or line starting with a '#' is ignored.  All data lines
         are whitespace-normalised, so actual layout should have no effect.  The
-        above file processed by C{import_marker_file()} will return the
-        following C{dict} object::
+        above file processed by `import_marker_file()` will return the
+        following `dict` object::
 
             {'Home': point.Point(52.015, -0.221, "James Rowe's home"),
              'Telford': point.Point(52.6333, -2.5, None)}
 
-        @note: This function also handles the extended U{xplanet
-        <http://xplanet.sourceforge.net/>} marker files whose points can
-        optionally contain added xplanet specific keywords for defining colours
-        and fonts.
+        :note: This function also handles the extended `xplanet
+            <http://xplanet.sourceforge.net/>`__ marker files whose points can
+            optionally contain added xplanet specific keywords for defining
+            colours and fonts.
 
         >>> markers = Xearths(open("xearth"))
         >>> for key, value in sorted(markers.items()):
@@ -151,23 +148,21 @@ class Xearths(dict):
         Home - James Rowe's home (N52.015°; W000.221°)
         Telford - N52.633°; W002.500°
 
-        @type marker_file: C{file}, C{list} or C{str}
-        @param marker_file: Xearth marker data to read
-        @rtype: C{dict}
-        @return: Named locations with optional comments
+        :Parameters:
+            marker_file : `file`, `list` or `str`
+                Xearth marker data to read
+        :rtype: `dict`
+        :return: Named locations with optional comments
         """
         data = utils.prepare_read(marker_file)
 
         for line in data:
             line = line.strip()
-            if line == "" or line.startswith("#"):
+            if not line or line.startswith("#"):
                 continue
             chunk = line.split("#")
             data = chunk[0]
-            if len(chunk) == 2:
-                comment = chunk[1].strip()
-            else:
-                comment = None
+            comment = chunk[1].strip() if len(chunk) == 2 else None
             # Need maximum split of 2, because name may contain whitespace
             latitude, longitude, name = data.split(None, 2)
             name = name.strip()

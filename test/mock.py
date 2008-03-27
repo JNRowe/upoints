@@ -1,4 +1,4 @@
-#! /usr/bin/python -tt
+#
 # vim: set sw=4 sts=4 et tw=80 fileencoding=utf-8:
 #
 """
@@ -29,15 +29,16 @@ __license__ = "GNU General Public License Version 3"
 __credits__ = ""
 __history__ = "See Mercurial repository"
 
+from email.utils import parseaddr
+
 __doc__ += """
 
-@version: %s
-@author: U{%s%s}
-@copyright: %s
-@status: WIP
-@license: %s
-""" % (__version__, __author__[0:__author__.rfind(" ")],
-       __author__[__author__.rfind(" "):], __copyright__, __license__)
+:version: %s
+:author: `%s <mailto:%s>`__
+:copyright: %s
+:status: WIP
+:license: %s
+""" % ((__version__, ) + parseaddr(__author__) + (__copyright__, __license__))
 
 import __builtin__
 import os
@@ -50,19 +51,20 @@ except ImportError:
 
 from types import ModuleType
 
-import grab_net_sources
+from test import grab_net_sources
 SOURCES = dict([(os.path.basename(i), i) for i in grab_net_sources.SOURCES])
 
 BASEDIR = os.path.dirname(__file__)
 
 def isfile(path):
     """
-    Mock C{isfile} to check existance of test files
+    Mock `isfile` to check existence of test files
 
-    @type path: C{str}
-    @param path: File to check for existance
-    @rtype: C{bool}
-    @return: True if file exists, False otherwise
+    :Parameters:
+        path : `str`
+            File to check for existence
+    :rtype: `bool`
+    :return: `True` if file exists, `False` otherwise
     """
     filename = os.path.basename(path)
     try:
@@ -75,11 +77,12 @@ def _get_test_file(filename):
     """
     Open a test data file
 
-    @type filename: C{str}
-    @param filename: Basename of the test data to open
-    @rtype: C{file}
-    @return: Test data
-    @raise IOError: When the file can't be opened for reading
+    :Parameters:
+        filename : `str`
+            Basename of the test data to open
+    :rtype: `file`
+    :return: Test data
+    :raise IOError: When the file can't be opened for reading
     """
     if isfile(filename):
         return __builtin__.open(os.path.join(BASEDIR, "data", filename))
@@ -93,16 +96,17 @@ def _get_test_file(filename):
 
 def open(filename, mode="rb"):
     """
-    Mock C{open} function to open test data files
+    Mock `open` function to open test data files
 
-    @type filename: C{str}
-    @param filename: File to simulate, basename is used as local file name
-    @type mode: C{str}
-    @param mode: Valid C{file} mode string
-    @rtype: C{file}
-    @return: File object opened from test data directory, or C{StringIO.StringIO}
+    :Parameters:
+        filename : `str`
+            File to simulate, basename is used as local file name
+        mode : `str`
+            Valid `file` mode string
+    :rtype: `file`
+    :return: File object opened from test data directory, or ``StringIO.StringIO``
         object if a writable file is expected
-    @raise NotImplementedError: When attempting to use an unhandled file mode
+    :raise NotImplementedError: When attempting to use an unhandled file mode
     """
     if "r" in mode:
         return _get_test_file(os.path.basename(filename))
@@ -113,72 +117,79 @@ def open(filename, mode="rb"):
 
 def urlopen(url, data=None, proxies=None):
     """
-    Mock C{urlopen} to open test data files
+    Mock `urlopen` to open test data files
 
-    @type url: C{str}
-    @param url: URL to simulate, basename is used as local file name
-    @type data: any
-    @param data: Ignored, just for compatibility with C{urlopen} callers
-    @type proxies: any
-    @param proxies: Ignored, just for compatibility with C{urlopen} callers
-    @rtype: C{file}
-    @return: File object from test data directory
+    :Parameters:
+        url : `str`
+            URL to simulate, basename is used as local file name
+        data : any
+            Ignored, just for compatibility with `urlopen` callers
+        proxies : any
+            Ignored, just for compatibility with `urlopen` callers
+    :rtype: `file`
+    :return: File object from test data directory
     """
     return _get_test_file(os.path.basename(url))
 urllib.urlopen = urlopen
 
 class pymetar(ModuleType):
     """
-    Mock C{pymetar} infrastructure for tests
+    Mock `pymetar` infrastructure for tests
 
-    @since: 0.6.0
+    :since: 0.6.0
 
-    @see: U{pymetar <http://www.schwarzvogel.de/software-pymetar.shtml>}
+    :see: `pymetar <http://www.schwarzvogel.de/software-pymetar.shtml>`__
     """
     class ReportFetcher(object):
         def __init__(self, StationCode=None):
             """
-            Mock C{ReportFetcher} initialisation for tests
+            Mock `ReportFetcher` initialisation for tests
 
-            @type stationCode: any
-            @param stationCode: Ignored, just for compatibility with
-                C{ReportFetcher} callers
+            :Parameters:
+                StationCode : any
+                    Ignored, just for compatibility with `ReportFetcher`
+                    callers
             """
             super(pymetar.ReportFetcher, self).__init__()
 
-        def FetchReport(self):
+        @staticmethod
+        def FetchReport():
             """
-            Mock C{FetchReport} function to pass tests
+            Mock ``FetchReport`` function to pass tests
             """
             pass
+
 
     class ReportParser(object):
         class ParseReport(object):
             def __init__(self, MetarReport=None):
                 """
-                Mock C{ParseReport} object to return test data
+                Mock ``ParseReport`` object to return test data
 
-                @type MetarReport: any
-                @param MetarReport: Ignored, just for compatibility with
-                    C{FetchReport} callers
+                :Parameters:
+                    MetarReport : any
+                        Ignored, just for compatibility with ``FetchReport``
+                        callers
                 """
                 super(pymetar.ReportParser.ParseReport, self).__init__()
 
-            def getTemperatureCelsius(self):
+            @staticmethod
+            def getTemperatureCelsius():
                 """
-                Mock C{getTemperatureCelsius}
+                Mock `getTemperatureCelsius`
 
-                @rtype: C{float}
-                @return: Sample temperature data for tests
+                :rtype: `float`
+                :return: Sample temperature data for tests
                 """
                 return 10.3
 
-            def getISOTime(self):
+            @staticmethod
+            def getISOTime():
                 """
-                Mock C{getISOTime}
+                Mock `getISOTime`
 
-                @rtype: C{str}
-                @return: Sample ISO time string
+                :rtype: `str`
+                :return: Sample ISO time string
                 """
                 return "2007-11-28 19:20:00Z"
 

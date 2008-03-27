@@ -35,65 +35,66 @@ except ImportError:
 
 from earth_distance import (point, utils)
 
-GPX_NS = "http://www.topografix.com/GPX/1/1" #: Support GPX namespace URI
+# Supported GPX versions
+GPX_VERSIONS = {
+  "1.0": "http://www.topografix.com/GPX/1/0",
+  "1.1": "http://www.topografix.com/GPX/1/1",
+} #: Supported GPX namespace version to URI mapping
 
-def create_elem(tag, attr=None, human_namespace=False):
+# Changing this will cause tests to fail.
+DEF_GPX_VERSION = "1.1" #: Default GPX version to output
+
+def create_elem(tag, attr=None, gpx_version=DEF_GPX_VERSION, human_namespace=False):
     """
-    Create a partial C{ET.Element} wrapper with namespace defined
+    Create a partial ``ET.Element`` wrapper with namespace defined
 
-    @type tag: C{str}
-    @param tag: Tag name
-    @type attr: C{dict}
-    @param attr: Default attributes for tag
-    @type human_namespace: C{bool}
-    @param human_namespace: Whether to generate output using human readable
-        namespace prefixes
-    @rtype: C{function}
-    @return: C{ET.Element} wrapper with predefined namespace
+    :Parameters:
+        tag : `str`
+            Tag name
+        attr : `dict`
+            Default attributes for tag
+        gpx_version : `str`
+            GPX version to use
+        human_namespace : `bool`
+            Whether to generate output using human readable
+            namespace prefixes
+    :rtype: ``function``
+    :return: ``ET.Element`` wrapper with predefined namespace
     """
     if not attr:
         attr = {}
+    try:
+        gpx_ns = GPX_VERSIONS[gpx_version]
+    except KeyError:
+        raise KeyError("Unknown GPX version `%s'" % gpx_version)
     if human_namespace:
-        ElementTree._namespace_map[GPX_NS] = "gpx"
-        return ElementTree.Element("{%s}%s" % (GPX_NS, tag), attr)
+        ElementTree._namespace_map[gpx_ns] = "gpx"
+        return ElementTree.Element("{%s}%s" % (gpx_ns, tag), attr)
     else:
-        return ET.Element("{%s}%s" % (GPX_NS, tag), attr)
+        return ET.Element("{%s}%s" % (gpx_ns, tag), attr)
 
 class Waypoint(point.Point):
     """
-    Class for representing a Waypoint element from GPX data files
+    Class for representing a waypoint element from GPX data files
 
-    @since: 2008-01-08
+    :since: 0.8.0
 
-    @ivar latitude: Waypoint's latitude
-    @ivar longitude: Waypoint's longitude
-    @ivar name: Waypoint's name
-    @ivar description: Waypoint's description
+    :Ivariables:
+        latitude
+            Waypoint's latitude
+        longitude
+            Waypoint's longitude
+        name
+            Waypoint's name
+        description
+            Waypoint's description
     """
 
     __slots__ = ('name', 'description', )
 
     def __init__(self, latitude, longitude, name=None, description=None):
         """
-        Initialise a new C{Waypoint} object
-
-        @type latitude: C{float} or coercible to C{float}
-        @param latitude: Waypoints's latitude
-        @type longitude: C{float} or coercible to C{float}
-        @param longitude: Waypoint's longitude
-        @type name: C{str}
-        @param name: Name for Waypoint
-        @type description: C{str}
-        @param description: Waypoint's description
-        """
-        super(Waypoint, self).__init__(latitude, longitude)
-
-        self.name = name
-        self.description = description
-
-    def __repr__(self):
-        """
-        Self-documenting string representation
+        Initialise a new `Waypoint` object
 
         >>> Waypoint(52, 0)
         Waypoint(52.0, 0.0, None, None)
@@ -102,12 +103,20 @@ class Waypoint(point.Point):
         >>> Waypoint(52, 0, "name", "desc")
         Waypoint(52.0, 0.0, 'name', 'desc')
 
-        @rtype: C{str}
-        @return: String to recreate C{Waypoint} object
+        :Parameters:
+            latitude : `float` or coercible to `float`
+                Waypoints's latitude
+            longitude : `float` or coercible to `float`
+                Waypoint's longitude
+            name : `str`
+                Name for Waypoint
+            description : `str`
+                Waypoint's description
         """
-        data = utils.repr_assist(self.latitude, self.longitude, self.name,
-                                 self.description)
-        return self.__class__.__name__ + '(' + ", ".join(data) + ')'
+        super(Waypoint, self).__init__(latitude, longitude)
+
+        self.name = name
+        self.description = description
 
     def __str__(self, mode="dms"):
         """
@@ -118,21 +127,24 @@ class Waypoint(point.Point):
         >>> print(Waypoint(52, 0, "name", "desc"))
         name (52°00'00"N, 000°00'00"E) [desc]
 
-        @type mode: C{str}
-        @param mode: Coordinate formatting system to use
-        @rtype: C{str}
-        @return: Human readable string representation of C{Waypoint} object
+        :Parameters:
+            mode : `str`
+                Coordinate formatting system to use
+        :rtype: `str`
+        :return: Human readable string representation of `Waypoint` object
         """
-        text = super(Waypoint, self).__str__(mode)
+        location = super(Waypoint, self).__str__(mode)
         if self.name:
-            text = "%s (%s)" % (self.name, text)
+            text = ["%s (%s)" % (self.name, location), ]
+        else:
+            text = [location, ]
         if self.description:
-            text += " [%s]" % self.description
-        return text
+            text.append("[%s]" % self.description)
+        return " ".join(text)
 
-    def togpx(self, human_namespace=False):
+    def togpx(self, gpx_version=DEF_GPX_VERSION, human_namespace=False):
         """
-        Generate a GPX Waypoint element subtree
+        Generate a GPX waypoint element subtree
 
         >>> ET.tostring(Waypoint(52, 0).togpx())
         '<ns0:wpt lat="52.0" lon="0.0" xmlns:ns0="http://www.topografix.com/GPX/1/1" />'
@@ -141,47 +153,52 @@ class Waypoint(point.Point):
         >>> ET.tostring(Waypoint(52, 0, "Cambridge", "in the UK").togpx())
         '<ns0:wpt lat="52.0" lon="0.0" xmlns:ns0="http://www.topografix.com/GPX/1/1"><ns0:name>Cambridge</ns0:name><ns0:desc>in the UK</ns0:desc></ns0:wpt>'
 
-        @type human_namespace: C{bool}
-        @param human_namespace: Whether to generate output using human readable
-            namespace prefixes
-        @rtype: C{ET.Element}
-        @return: GPX Waypoint element
+        :Parameters:
+            gpx_version : `str`
+                GPX version to generate
+            human_namespace : `bool`
+                Whether to generate output using human readable
+                namespace prefixes
+        :rtype: ``ET.Element``
+        :return: GPX waypoint element
         """
         Waypoint = create_elem("wpt", {"lat": str(self.latitude),
-                                          "lon": str(self.longitude)})
+                                       "lon": str(self.longitude)},
+                               gpx_version, human_namespace)
         if self.name:
-            nametag = create_elem("name")
+            nametag = create_elem("name", None, gpx_version, human_namespace)
             nametag.text = self.name
             Waypoint.append(nametag)
         if self.description:
-            desctag = create_elem("desc")
+            desctag = create_elem("desc", None, gpx_version, human_namespace)
             desctag.text = self.description
             Waypoint.append(desctag)
         return Waypoint
 
+
 class Waypoints(list):
     """
-    Class for representing a group of C{Track}, C{Waypoint} and C{Route} objects
+    Class for representing a group of `Waypoint` objects
 
-    @since: 2008-01-08
+    :since: 0.8.0
     """
 
     def __init__(self, gpx_file=None):
         """
-        Initialise a new C{Gpx} object
+        Initialise a new `Waypoints` object
         """
-        list.__init__(self)
+        super(Waypoints, self).__init__()
         if gpx_file:
             self.import_gpx_file(gpx_file)
 
-    def import_gpx_file(self, gpx_file):
+    def import_gpx_file(self, gpx_file, gpx_version=None):
         """
         Import GPX data files
 
-        C{import_GPX_file()} returns a list with C{Waypoint}s.
+        `import_gpx_file()` returns a list with `Waypoint` objects.
 
-        It expects data files in GPX format, as specified in U{GPX 1.1 Schema
-        Documentation <http://www.topografix.com/GPX/1/1/>}, which is XML such
+        It expects data files in GPX format, as specified in `GPX 1.1 Schema
+        Documentation <http://www.topografix.com/GPX/1/1/>`__, which is XML such
         as::
 
             <?xml version="1.0" encoding="utf-8" standalone="no"?>
@@ -200,9 +217,9 @@ class Waypoints(list):
               </wpt>
             </gpx>
 
-        The reader uses U{Python <http://www.python.org/>}'s C{ElementTree}
+        The reader uses `Python <http://www.python.org/>`__'s `ElementTree`
         module, so should be very fast when importing data.  The above file
-        processed by C{import_gpx_file()} will return the following C{dict}
+        processed by `import_gpx_file()` will return the following `list`
         object::
 
             [Waypoint(52.015, -0.221, "Home", "My place"),
@@ -210,16 +227,18 @@ class Waypoints(list):
 
         >>> waypoints = Waypoints(open("gpx"))
         >>> for value in sorted(waypoints,
-        ...                     lambda x,y: cmp(x.name.lower(),
-        ...                                     y.name.lower())):
+        ...                     key=lambda x: x.name.lower()):
         ...     print(value)
         Home (52°00'54"N, 000°13'15"W) [My place]
         MSR (52°10'01"N, 000°23'24"E) [Microsoft Research, Cambridge]
 
-        @type gpx_file: C{file}, C{list} or C{str}
-        @param gpx_file: GPX data to read
-        @rtype: C{list}
-        @return: Locations with optional comments
+        :Parameters:
+            gpx_file : `file`, `list` or `str`
+                GPX data to read
+            gpx_version : `str`
+                Specific GPX version entities to import
+        :rtype: `list`
+        :return: Locations with optional comments
         """
         if hasattr(gpx_file, "readlines"):
             data = ET.parse(gpx_file)
@@ -231,36 +250,289 @@ class Waypoints(list):
             raise TypeError("Unable to handle data of type `%s`"
                             % type(gpx_file))
 
-        gpx_elem = lambda name: ET.QName(GPX_NS, name).text
-        waypoint_elem = "//" + gpx_elem("wpt")
-        name_elem = gpx_elem("name")
-        desc_elem = gpx_elem("desc")
+        if gpx_version:
+            try:
+                accepted_gpx = {gpx_version: GPX_VERSIONS[gpx_version]}
+            except KeyError:
+                raise KeyError("Unknown GPX version `%s'" % gpx_version)
+        else:
+            accepted_gpx = GPX_VERSIONS
 
-        for waypoint in data.findall(waypoint_elem):
-            latitude = waypoint.get("lat")
-            longitude = waypoint.get("lon")
-            name = waypoint.findtext(name_elem)
-            description = waypoint.findtext(desc_elem)
-            self.append(Waypoint(latitude, longitude, name, description))
+        for version, namespace in accepted_gpx.items():
+            logging.info("Searching for GPX v%s entries" % version)
 
-    def export_gpx_file(self, human_namespace=False):
+            gpx_elem = lambda name: ET.QName(namespace, name).text
+            waypoint_elem = "//" + gpx_elem("wpt")
+            name_elem = gpx_elem("name")
+            desc_elem = gpx_elem("desc")
+
+            for waypoint in data.findall(waypoint_elem):
+                latitude = waypoint.get("lat")
+                longitude = waypoint.get("lon")
+                name = waypoint.findtext(name_elem)
+                description = waypoint.findtext(desc_elem)
+                self.append(Waypoint(latitude, longitude, name, description))
+
+    def export_gpx_file(self, gpx_version=DEF_GPX_VERSION,
+                        human_namespace=False):
         """
-        Generate GPX element tree from C{Waypoints}
+        Generate GPX element tree from `Waypoints` object
 
         >>> from sys import stdout
         >>> locations = Waypoints(open("gpx"))
         >>> xml = locations.export_gpx_file()
         >>> xml.write(stdout)
         <ns0:gpx xmlns:ns0="http://www.topografix.com/GPX/1/1"><ns0:wpt lat="52.015" lon="-0.221"><ns0:name>Home</ns0:name><ns0:desc>My place</ns0:desc></ns0:wpt><ns0:wpt lat="52.167" lon="0.39"><ns0:name>MSR</ns0:name><ns0:desc>Microsoft Research, Cambridge</ns0:desc></ns0:wpt></ns0:gpx>
-        
-        @type human_namespace: C{bool}
-        @param human_namespace: Whether to generate output using human readable
-            namespace prefixes
-        @rtype: C{ET.ElementTree}
-        @return: GPX element tree depicting C{Waypoint}s
+
+        :Parameters:
+            gpx_version : `str`
+                GPX version to generate
+            human_namespace : `bool`
+                Whether to generate output using human readable
+                namespace prefixes
+        :rtype: ``ET.ElementTree``
+        :return: GPX element tree depicting `Waypoints` object
         """
-        gpx = create_elem('gpx')
+        gpx = create_elem('gpx', None, gpx_version, human_namespace)
         for place in self:
-            gpx.append(place.togpx(human_namespace))
+            gpx.append(place.togpx(gpx_version, human_namespace))
 
         return ET.ElementTree(gpx)
+
+class Trackpoint(point.Point):
+    """
+    Class for representing a waypoint element from GPX data files
+
+    :since: 0.10.0
+
+    :Ivariables:
+        latitude
+            Trackpoint's latitude
+        longitude
+            Trackpoint's longitude
+        name
+            Trackpoint's name
+        description
+            Trackpoint's description
+    """
+
+    __slots__ = ('name', 'description', )
+
+    def __init__(self, latitude, longitude, name=None, description=None):
+        """
+        Initialise a new `Trackpoint` object
+
+        >>> Trackpoint(52, 0)
+        Trackpoint(52.0, 0.0, None, None)
+        >>> Trackpoint(52, 0, None)
+        Trackpoint(52.0, 0.0, None, None)
+        >>> Trackpoint(52, 0, "name", "desc")
+        Trackpoint(52.0, 0.0, 'name', 'desc')
+
+        :Parameters:
+            latitude : `float` or coercible to `float`
+                Trackpoints's latitude
+            longitude : `float` or coercible to `float`
+                Trackpoint's longitude
+            name : `str`
+                Name for Trackpoint
+            description : `str`
+                Trackpoint's description
+        """
+        super(Trackpoint, self).__init__(latitude, longitude)
+
+        self.name = name
+        self.description = description
+
+    def __str__(self, mode="dms"):
+        """
+        Pretty printed location string
+
+        >>> print(Trackpoint(52, 0))
+        52°00'00"N, 000°00'00"E
+        >>> print(Trackpoint(52, 0, "name", "desc"))
+        name (52°00'00"N, 000°00'00"E) [desc]
+
+        :Parameters:
+            mode : `str`
+                Coordinate formatting system to use
+        :rtype: `str`
+        :return: Human readable string representation of `Trackpoint` object
+        """
+        location = super(Trackpoint, self).__str__(mode)
+        if self.name:
+            text = ["%s (%s)" % (self.name, location), ]
+        else:
+            text = [location, ]
+        if self.description:
+            text.append("[%s]" % self.description)
+        return " ".join(text)
+
+    def togpx(self, gpx_version=DEF_GPX_VERSION, human_namespace=False):
+        """
+        Generate a GPX trackpoint element subtree
+
+        >>> ET.tostring(Trackpoint(52, 0).togpx())
+        '<ns0:trkpt lat="52.0" lon="0.0" xmlns:ns0="http://www.topografix.com/GPX/1/1" />'
+        >>> ET.tostring(Trackpoint(52, 0, "Cambridge").togpx())
+        '<ns0:trkpt lat="52.0" lon="0.0" xmlns:ns0="http://www.topografix.com/GPX/1/1"><ns0:name>Cambridge</ns0:name></ns0:trkpt>'
+        >>> ET.tostring(Trackpoint(52, 0, "Cambridge", "in the UK").togpx())
+        '<ns0:trkpt lat="52.0" lon="0.0" xmlns:ns0="http://www.topografix.com/GPX/1/1"><ns0:name>Cambridge</ns0:name><ns0:desc>in the UK</ns0:desc></ns0:trkpt>'
+
+        :Parameters:
+            gpx_version : `str`
+                GPX version to generate
+            human_namespace : `bool`
+                Whether to generate output using human readable
+                namespace prefixes
+        :rtype: ``ET.Element``
+        :return: GPX trackpoint element
+        """
+        Trackpoint = create_elem("trkpt", {"lat": str(self.latitude),
+                                           "lon": str(self.longitude)},
+                                 gpx_version, human_namespace)
+        if self.name:
+            nametag = create_elem("name", None, gpx_version, human_namespace)
+            nametag.text = self.name
+            Trackpoint.append(nametag)
+        if self.description:
+            desctag = create_elem("desc", None, gpx_version, human_namespace)
+            desctag.text = self.description
+            Trackpoint.append(desctag)
+        return Trackpoint
+
+
+class Trackpoints(list):
+    """
+    Class for representing a group of `Trackpoint` objects
+
+    :since: 0.10.0
+    """
+
+    def __init__(self, gpx_file=None):
+        """
+        Initialise a new `Trackpoints` object
+        """
+        super(Trackpoints, self).__init__()
+        if gpx_file:
+            self.import_gpx_file(gpx_file)
+
+    def import_gpx_file(self, gpx_file, gpx_version=None):
+        """
+        Import GPX data files
+
+        `import_gpx_file()` returns a series of lists representing track
+        segments with `Trackpoint` objects as contents.
+
+        It expects data files in GPX format, as specified in `GPX 1.1 Schema
+        Documentation <http://www.topografix.com/GPX/1/1/>`__, which is XML such
+        as::
+
+            <?xml version="1.0" encoding="utf-8" standalone="no"?>
+            <gpx version="1.1" creator="PocketGPSWorld.com"
+            xmlns="http://www.topografix.com/GPX/1/1"
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd">
+              <trk>
+                <trkseg>
+                  <trkpt lat="52.015" lon="-0.221">
+                    <name>Home</name>
+                    <desc>My place</desc>
+                  </trkpt>
+                  <trkpt lat="52.167" lon="0.390">
+                    <name>MSR</name>
+                    <desc>Microsoft Research, Cambridge</desc>
+                  </trkpt>
+                </trkseg>
+              </trk>
+            </gpx>
+
+        The reader uses `Python <http://www.python.org/>`__'s `ElementTree`
+        module, so should be very fast when importing data.  The above file
+        processed by `import_gpx_file()` will return the following `list`
+        object::
+
+            [[Trackpoint(52.015, -0.221, "Home", "My place"),
+              Trackpoint(52.167, 0.390, "MSR", "Microsoft Research, Cambridge")], ]
+
+        >>> trackpoints = Trackpoints(open("gpx_tracks"))
+        >>> for value in sorted(trackpoints[0],
+        ...                     key=lambda x: x.name.lower()):
+        ...     print(value)
+        Home (52°00'54"N, 000°13'15"W) [My place]
+        MSR (52°10'01"N, 000°23'24"E) [Microsoft Research, Cambridge]
+
+        :Parameters:
+            gpx_file : `file`, `list` or `str`
+                GPX data to read
+            gpx_version : `str`
+                Specific GPX version entities to import
+        :rtype: `list`
+        :return: Locations with optional comments
+        """
+        if hasattr(gpx_file, "readlines"):
+            data = ET.parse(gpx_file)
+        elif isinstance(gpx_file, list):
+            data = ET.fromstring("".join(gpx_file))
+        elif isinstance(gpx_file, basestring):
+            data = ET.parse(open(gpx_file))
+        else:
+            raise TypeError("Unable to handle data of type `%s`"
+                            % type(gpx_file))
+
+        if gpx_version:
+            try:
+                accepted_gpx = {gpx_version: GPX_VERSIONS[gpx_version]}
+            except KeyError:
+                raise KeyError("Unknown GPX version `%s'" % gpx_version)
+        else:
+            accepted_gpx = GPX_VERSIONS
+
+        for version, namespace in accepted_gpx.items():
+            logging.info("Searching for GPX v%s entries" % version)
+
+            gpx_elem = lambda name: ET.QName(namespace, name).text
+            segment_elem = "//" + gpx_elem("trkseg")
+            trackpoint_elem = gpx_elem("trkpt")
+            name_elem = gpx_elem("name")
+            desc_elem = gpx_elem("desc")
+
+            for segment in data.findall(segment_elem):
+                points = []
+                for trackpoint in segment.findall(trackpoint_elem):
+                    latitude = trackpoint.get("lat")
+                    longitude = trackpoint.get("lon")
+                    name = trackpoint.findtext(name_elem)
+                    description = trackpoint.findtext(desc_elem)
+                    points.append(Trackpoint(latitude, longitude, name, description))
+                self.append(points)
+
+    def export_gpx_file(self, gpx_version=DEF_GPX_VERSION,
+                        human_namespace=False):
+        """
+        Generate GPX element tree from `Trackpoints`
+
+        >>> from sys import stdout
+        >>> locations = Trackpoints(open("gpx_tracks"))
+        >>> xml = locations.export_gpx_file()
+        >>> xml.write(stdout)
+        <ns0:gpx xmlns:ns0="http://www.topografix.com/GPX/1/1"><ns0:trkseg><ns0:trkpt lat="52.015" lon="-0.221"><ns0:name>Home</ns0:name><ns0:desc>My place</ns0:desc></ns0:trkpt><ns0:trkpt lat="52.167" lon="0.39"><ns0:name>MSR</ns0:name><ns0:desc>Microsoft Research, Cambridge</ns0:desc></ns0:trkpt></ns0:trkseg></ns0:gpx>
+
+        :Parameters:
+            gpx_version : `str`
+                GPX version to generate
+            human_namespace : `bool`
+                Whether to generate output using human readable
+                namespace prefixes
+        :rtype: ``ET.ElementTree``
+        :return: GPX element tree depicting `Trackpoint` objects
+        """
+        gpx = create_elem('gpx', None, gpx_version, human_namespace)
+        for segment in self:
+            chunk = create_elem('trkseg', None, gpx_version, human_namespace)
+            gpx.append(chunk)
+            for place in segment:
+                chunk.append(place.togpx(gpx_version, human_namespace))
+
+        return ET.ElementTree(gpx)
+

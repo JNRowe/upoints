@@ -26,24 +26,33 @@ from earth_distance import (__version__, __author__, __copyright__, __license__)
 __doc__ += """.
 
 edist operates on one, or more, locations specified in the following format
-"[+-]DD.DD;[+-]DDD.DD".  For example, a location string of "52.015;-0.221" would
-be interpreted as 52.015 degrees North by 0.221 degrees West.  Positive values
-can be specified with a "+" prefix, but it isn't required.
+``[+-]DD.DD;[+-]DDD.DD``.  For example, a location string of ``52.015;-0.221``
+would be interpreted as 52.015 degrees North by 0.221 degrees West.  Positive
+values can be specified with a ``+`` prefix, but it isn't required.
 
-@note: In most shells the locations must be quoted because of the special
-nature of the semicolon.
+For example::
 
-@version: %s
-@author: U{%s <mailto:%s>}
-@copyright: %s
-@status: WIP
-@license: %s
+    $ ./edist.py --sunrise --sunset --ascii '52.015;-0.221'
+    $ ./edist.py --destination 20@45 -- '-52.015;0.221'
+
+In the second example the locations are separated by '--', which stops
+processing options and allows you to specify locations beginning with
+a hyphen(such as anywhere in the Southern hemisphere).
+
+:note: In most shells the locations must be quoted because of the special
+    nature of the semicolon.
+
+:version: %s
+:author: `%s <mailto:%s>`__
+:copyright: %s
+:status: WIP
+:license: %s
 """ % ((__version__, ) + parseaddr(__author__) + (__copyright__, __license__))
 
-# Scrub the main header, and epydoc footer
-__description__ = "\n".join(__doc__[:__doc__.find("@")-2].splitlines()[1:])
-# Replace script name, with optparse's substitution var
-__description__ = __description__.replace("edist", "%prog")
+# Pull the first paragraph from the docstring
+USAGE = __doc__[:__doc__.find('\n\n', 100)].splitlines()[2:]
+# Replace script name with optparse's substitution var, and rebuild string
+USAGE = "\n".join(USAGE).replace("edist", "%prog")
 
 import ConfigParser
 import logging
@@ -65,21 +74,28 @@ class LocationsError(ValueError):
     Traceback (most recent call last):
         ...
     LocationsError: More than one location is required for distance.
+    >>> raise LocationsError(data=(4, "52;None"))
+    Traceback (most recent call last):
+        ...
+    LocationsError: Location parsing failure in location 4 `52;None'.
 
-    @since: 0.6.0
+    :since: 0.6.0
 
-    @ivar function: Function where error is raised.
+    :Ivariables:
+        function
+            Function where error is raised.
     """
     def __init__(self, function=None, data=None):
         """
-        Initialise a new C{LocationsError} object
+        Initialise a new `LocationsError` object
 
-        @type function: C{str}
-        @param function: Function where error is raised
-        @type data: C{tuple}
-        @param data: Location number and data
+        :Parameters:
+            function : `str`
+                Function where error is raised
+            data : `tuple`
+                Location number and data
         """
-        ValueError.__init__(self)
+        super(LocationsError, self).__init__()
         self.function = function
         self.data = data
 
@@ -87,8 +103,8 @@ class LocationsError(ValueError):
         """
         Pretty printed error string
 
-        @rtype: C{str}
-        @return: Human readable error string
+        :rtype: `str`
+        :return: Human readable error string
         """
         if self.function:
             return "More than one location is required for %s." % self.function
@@ -97,114 +113,133 @@ class LocationsError(ValueError):
         else:
             return "Invalid location data."
 
+
 class NumberedPoint(point.Point):
     """
     Class for representing locations from command line
 
-    @since: 0.6.0
+    :since: 0.6.0
 
-    @ivar number: Location's position on command line
+    :Ivariables:
+        name
+            A name for location, or its position on the command line
     """
 
-    __slots__ = ("number", )
+    __slots__ = ("name")
 
-    def __init__(self, latitude, longitude, number):
+    def __init__(self, latitude, longitude, name):
         """
-        Initialise a new C{NumberedPoint} object
-
-        @type latitude: C{float} or coercible to C{float}
-        @param latitude: Location's latitude
-        @type longitude: C{float} or coercible to C{float}
-        @param longitude: Location's longitude
-        @type number: C{int}
-        @param number: Location's position
-        """
-        super(NumberedPoint, self).__init__(latitude, longitude)
-        self.number = number
-
-    def __repr__(self):
-        """
-        Self-documenting string representation
+        Initialise a new `NumberedPoint` object
 
         >>> NumberedPoint(52.015, -0.221, 4)
         NumberedPoint(52.015, -0.221, 4)
+        >>> NumberedPoint(52.015, -0.221, "Home")
+        NumberedPoint(52.015, -0.221, 'Home')
 
-        @rtype: C{str}
-        @return: String to recreate C{NumberedPoint} object
+        :Parameters:
+            latitude : `float` or coercible to `float`
+                Location's latitude
+            longitude : `float` or coercible to `float`
+                Location's longitude
+            name : `str`
+                Location's name or command line position
         """
-        data = utils.repr_assist(self.latitude, self.longitude, self.number)
-        return self.__class__.__name__ + '(' + ", ".join(data) + ')'
+        super(NumberedPoint, self).__init__(latitude, longitude)
+
+        self.name = name
 
     def destination(self, bearing, distance):
         """
         Calculate the destination from self given bearing and distance
 
-        @see: C{point.Point.destination}
+        :see: `point.Point.destination`
 
         >>> NumberedPoint(52.015, -0.221, 1).destination(294, 169)
-        NumberedPoint(52.6116387502, -2.50937408195, 1)
+        Point(52.6116387502, -2.50937408195, 'metric', 'degrees', 0)
 
-        @type bearing: C{float} or coercible to C{float}
-        @param bearing: Bearing from self
-        @type distance: C{float} or coercible to C{float}
-        @param distance: Distance from self in C{self.format} type units
-        @rtype: C{Point}
-        @return: Location after travelling C{distance} along C{bearing}
+        :Parameters:
+            bearing : `float` or coercible to `float`
+                Bearing from self
+            distance : `float` or coercible to `float`
+                Distance from self in `self.format` type units
+        :rtype: `Point`
+        :return: Location after travelling `distance` along `bearing`
         """
         dest = super(NumberedPoint, self).destination(bearing, distance)
-        return NumberedPoint(dest.latitude, dest.longitude, self.number)
+        return point.Point(dest.latitude, dest.longitude)
+
 
 class NumberedPoints(list):
     """
-    Class for representing a group of C{NumberedPoint} objects
+    Class for representing a group of `NumberedPoint` objects
 
-    @since: 2008-01-08
+    :since: 2008-01-08
     """
 
     def __init__(self, locations=None, format="dd", unistr=True,
                  verbose=True, config_locations=None):
         """
-        Initialise a new C{NumberedPoints} object
+        Initialise a new `NumberedPoints` object
 
-        >>> locations = ["0;0"] * 4
-        >>> NumberedPoints(locations)
-        [NumberedPoint(0.0, 0.0, 1), NumberedPoint(0.0, 0.0, 2),
-         NumberedPoint(0.0, 0.0, 3), NumberedPoint(0.0, 0.0, 4)]
-
-        @type locations: C{list} of C{str}
-        @param locations: Location identifiers
-        @type format: C{str}
-        @param format: Coordinate formatting system to use
-        @type unistr: C{bool}
-        @param unistr: Whether to output Unicode results
-        @type verbose: C{bool}
-        @param verbose: Whether to generate verbose output
-        @type config_locations: C{dict}
-        @param config_locations: Locations imported from user's config file
+        :Parameters:
+            locations : `list` of `str` objects
+                Location identifiers
+            format : `str`
+                Coordinate formatting system to use
+            unistr : `bool`
+                Whether to output Unicode results
+            verbose : `bool`
+                Whether to generate verbose output
+            config_locations : `dict`
+                Locations imported from user's config file
         """
-        list.__init__(self)
+        super(NumberedPoints, self).__init__()
         if locations:
             self.import_locations(locations, config_locations)
         self.format = format
+        self._unistr = unistr
         if unistr:
             self.stringify = lambda p: p.__unicode__(format)
         else:
             self.stringify = lambda p: p.__str__(format)
         self.verbose = verbose
+        self._config_locations = config_locations
+
+    def __repr__(self):
+        """
+        Self-documenting string representation
+
+        >>> locations = ["0;0"] * 4
+        >>> NumberedPoints(locations)
+        NumberedPoints([NumberedPoint(0.0, 0.0, 1), NumberedPoint(0.0, 0.0, 2),
+                        NumberedPoint(0.0, 0.0, 3), NumberedPoint(0.0, 0.0, 4)],
+                       'dd', True, True, None)
+
+        :rtype: `str`
+        :return: String to recreate `NumberedPoints` object
+        """
+        return utils.repr_assist(self, {"locations": self[:]})
 
     def import_locations(self, locations, config_locations):
         """
         Import locations from arguments
 
-        @type locations: C{list} of C{str}
-        @param locations: Location identifiers
-        @type config_locations: C{dict}
-        @param config_locations: Locations imported from user's config file
+        >>> NumberedPoints(["0;0", "Home", "0;0"],
+        ...                config_locations={"Home": (52.015, -0.221)})
+        NumberedPoints([NumberedPoint(0.0, 0.0, 1), NumberedPoint(52.015, -0.221, 'Home'),
+                        NumberedPoint(0.0, 0.0, 3)],
+                       'dd', True, True, {'Home': (52.015000000000001, -0.221)})
+
+        :Parameters:
+            locations : `list` of `str`
+                Location identifiers
+            config_locations : `dict`
+                Locations imported from user's config file
         """
         for number, location in enumerate(locations):
             if config_locations and location in config_locations:
                 latitude, longitude = config_locations[location]
-                self.append(NumberedPoint(latitude, longitude, number+1))
+                self.append(NumberedPoint(latitude, longitude, location))
             else:
                 try:
                     data = utils.parse_location(location)
@@ -220,21 +255,23 @@ class NumberedPoints(list):
         """
         Pretty print locations
 
-        >>> locations = NumberedPoints(["52.015;-0.221", "52.168;0.040"])
+        >>> locations = NumberedPoints(["Home", "52.168;0.040"],
+        ...                            config_locations={"Home": (52.015, -0.221)})
         >>> locations.display(None)
-        Location 1 is N52.015°; W000.221°
+        Location Home is N52.015°; W000.221°
         Location 2 is N52.168°; E000.040°
         >>> locations.format = "locator"
         >>> locations.display("extsquare")
-        Location 1 is IO92va33
+        Location Home is IO92va33
         Location 2 is JO02ae40
         >>> locations.verbose = False
         >>> locations.display("extsquare")
         IO92va33
         JO02ae40
 
-        @type locator: C{str}
-        @param locator: Accuracy of Maidenhead locator output
+        :Parameters:
+            locator : `str`
+                Accuracy of Maidenhead locator output
         """
         for location in self:
             if self.format == "locator":
@@ -242,7 +279,7 @@ class NumberedPoints(list):
             else:
                 output = self.stringify(location)
             if self.verbose:
-                print("Location %i is %s" % (location.number, output))
+                print("Location %s is %s" % (location.name, output))
             else:
                 print(output)
 
@@ -265,30 +302,33 @@ class NumberedPoints(list):
         Location 2 to 3 is 134 kilometres
         Total distance is 159 kilometres
 
-        @type unit: C{str}
-        @param unit: Distance unit to use for output
+        :Parameters:
+            unit : `str`
+                Distance unit to use for output
         """
         if len(self) == 1:
             raise LocationsError("distance")
         distances = [self[i].distance(self[i+1]) for i in range(len(self)-1)]
-        leg_msg = "Location %i to %i is %i "
-        total_msg = "Total distance is %i "
+        leg_msg = ["Location %s to %s is %i", ]
+        total_msg = ["Total distance is %i", ]
         if unit == "mile":
             distances = [i / utils.STATUTE_MILE for i in distances]
-            leg_msg += "miles"
-            total_msg += "miles"
+            leg_msg.append("miles")
+            total_msg.append("miles")
         elif unit == "nautical":
             distances = [i / utils.NAUTICAL_MILE for i in distances]
-            leg_msg += "nautical miles"
-            total_msg += "nautical miles"
+            leg_msg.append("nautical miles")
+            total_msg.append("nautical miles")
         else:
-            leg_msg += "kilometres"
-            total_msg += "kilometres"
+            leg_msg.append("kilometres")
+            total_msg.append("kilometres")
         if self.verbose:
             for number, distance in enumerate(distances):
-                print(leg_msg % (number+1, number+2, distance))
+                print(" ".join(leg_msg) % (self[number].name,
+                                           self[number+1].name,
+                                           distance))
             if len(distances) > 1:
-                print(total_msg % sum(distances))
+                print(" ".join(total_msg) % sum(distances))
         else:
             print(sum(distances))
 
@@ -312,26 +352,28 @@ class NumberedPoints(list):
         >>> locations.bearing("final_bearing", True)
         North-east
 
-        @type mode: C{str}
-        @param mode: Type of bearing to calculate
-        @type string: C{bool}
-        @param string: Use named directions
+        :Parameters:
+            mode : `str`
+                Type of bearing to calculate
+            string : `bool`
+                Use named directions
         """
         if len(self) == 1:
             raise LocationsError(mode)
         bearing_calc = lambda x: getattr(self[x], mode)(self[x+1])
-        bearings = [bearing_calc(i) for i in range(len(self)-1)]
+        bearings = map(bearing_calc, range(len(self)-1))
         if string:
-            bearings = [utils.angle_to_name(bearing) for bearing in bearings]
+            bearings = map(utils.angle_to_name, bearings)
         else:
             bearings = ["%i°" % bearing for bearing in bearings]
         if mode == "bearing":
-            verbose_fmt = "Location %i to %i is %s"
+            verbose_fmt = "Location %s to %s is %s"
         else:
-            verbose_fmt = "Final bearing from location %i to %i is %s"
+            verbose_fmt = "Final bearing from location %s to %s is %s"
         for number, bearing in enumerate(bearings):
             if self.verbose:
-                print(verbose_fmt % (number+1, number+2, bearing))
+                print(verbose_fmt % (self[number].name, self[number+1].name,
+                                     bearing))
             else:
                 print(bearing)
 
@@ -341,15 +383,16 @@ class NumberedPoints(list):
 
         >>> locations = NumberedPoints(["52.015;-0.221", "52.168;0.040"])
         >>> locations.range(20)
-        Location 2 is not within 20 kilometres of location 3
+        Location 2 is not within 20 kilometres of location 1
         >>> locations.range(30)
-        Location 2 is within 30 kilometres of location 3
+        Location 2 is within 30 kilometres of location 1
         >>> locations.verbose = False
         >>> locations.range(30)
         True
 
-        @type distance: C{float}
-        @param distance: Distance to test location is within
+        :Parameters:
+            distance : `float`
+                Distance to test location is within
         """
         if len(self) == 1:
             raise LocationsError("range")
@@ -357,11 +400,11 @@ class NumberedPoints(list):
         for location in self[1:]:
             in_range = test_location.__eq__(location, distance)
             if self.verbose:
-                text = "Location %i is "
+                text = ["Location %s is", ]
                 if not in_range:
-                    text += "not "
-                text += "within %i kilometres of location %s"
-                print(text % (location.number, distance, location.number+1))
+                    text.append("not")
+                text.append("within %i kilometres of location %s")
+                print(" ".join(text) % (location.name, distance, self[0].name))
             else:
                 print(in_range)
 
@@ -382,21 +425,21 @@ class NumberedPoints(list):
         IO91ot97
         IO91sx14
 
-        @type options: C{tuple}
-        @param options: Distance and bearing
-        @type locator: C{str}
-        @param locator: Accuracy of Maidenhead locator output
+        :Parameters:
+            options : `tuple`
+                Distance and bearing
+            locator : `str`
+                Accuracy of Maidenhead locator output
         """
         distance, bearing = options
         dest_calc = lambda location: location.destination(bearing, distance)
-        for location in [dest_calc(location) for location in self]:
+        for location, destination in [(i, dest_calc(i)) for i in self]:
             if self.format == "locator":
-                output = location.to_grid_locator(locator)
+                output = destination.to_grid_locator(locator)
             else:
-                output = self.stringify(location)
+                output = self.stringify(destination)
             if self.verbose:
-                print("Destination from location %i is %s" % (location.number,
-                                                              output))
+                print("Destination from location %s is %s" % (location.name, output))
             else:
                 print(output)
 
@@ -412,17 +455,22 @@ class NumberedPoints(list):
         Sunset at ... in location 1
         Sunset at ... in location 2
 
-        @type mode: C{str}
-        @param mode: Sun event to display
+        :Parameters:
+            mode : `str`
+                Sun event to display
         """
         mode_str = mode.capitalize()
         for location in self:
             time = getattr(location, mode)()
             if self.verbose:
-                print("%s at %s UTC in location %i" % (mode_str, time,
-                                                       location.number))
+                if time:
+                    print("%s at %s UTC in location %s" % (mode_str, time, location.name))
+                else:
+                    print("The sun doesn't %s at location %s on this date"
+                          % (mode_str[3:], location.name))
             else:
                 print(time)
+
 
 def process_command_line():
     """
@@ -437,12 +485,12 @@ def process_command_line():
     >>> modes, args
     (['distance', 'bearing'], ['52.015;-0.221', '52.168;0.040'])
 
-    @rtype: C{tuple} of C{list}, C{dict} and C{list}
-    @return: Modes, options, list of locations as C{str} objects
+    :rtype: `tuple` of `list`, `dict` and `list`
+    :return: Modes, options, list of locations as `str` objects
     """
     parser = optparse.OptionParser(usage="%prog [options...] <location>...",
                                    version="%prog v" + __version__,
-                                   description=__description__)
+                                   description=USAGE)
 
     parser.set_defaults(config_file=os.path.expanduser("~/.edist.conf"),
                         format="dms", locator="subsquare", verbose=True,
@@ -526,21 +574,23 @@ def read_locations(filename):
     """
     Pull locations from a user's config file
 
-    @type filename: C{str}
-    @param filename: Config file to parse
-    @rtype: C{dict}
-    @return: List of locations from config file
+    :Parameters:
+        filename : `str`
+            Config file to parse
+    :rtype: `dict`
+    :return: List of locations from config file
     """
     data = ConfigParser.ConfigParser()
-    try:
-        data.readfp(open(filename))
-    except IOError:
-        raise ValueError("Unable to open file `%s'" % filename)
+    data.read(filename)
+    if not data.sections():
+        logging.debug("Config file `%s' is empty" % filename)
+        return {}
 
     locations = {}
     for name in data.sections():
         if data.has_option(name, "locator"):
-            latitude, longitude = utils.from_grid_locator(data.get(name, "locator"))
+            latitude, longitude = utils.from_grid_locator(data.get(name,
+                                                                   "locator"))
         else:
             latitude = data.getfloat(name, "latitude")
             longitude = data.getfloat(name, "longitude")
@@ -551,8 +601,8 @@ def main():
     """
     Main script handler
 
-    @rtype: C{int}
-    @return: 0 for success, >1 error code
+    :rtype: `int`
+    :return: 0 for success, >1 error code
     """
 
     logging.basicConfig(format='%(asctime)s %(levelname)s:%(message)s',
@@ -569,10 +619,7 @@ def main():
             options.unicode = False
             logging.debug("Setting output to ASCII")
 
-    if os.path.exists(options.config_file):
-        config_locations = read_locations(options.config_file)
-    else:
-        config_locations = None
+    config_locations = read_locations(options.config_file)
 
     locations = NumberedPoints(args, options.format, options.unicode,
                                options.verbose, config_locations)
@@ -584,15 +631,15 @@ def main():
     for mode in modes:
         if mode == "display":
             locations.display(options.locator)
-        if mode == "distance":
+        elif mode == "distance":
             locations.distance(options.units)
-        if mode in ("bearing", "final_bearing"):
+        elif mode in ("bearing", "final_bearing"):
             locations.bearing(mode, options.string)
-        if mode == "range":
+        elif mode == "range":
             locations.range(options.range)
-        if mode == "destination":
+        elif mode == "destination":
             locations.destination(options.destination, options.locator)
-        if mode in ("sunrise", "sunset"):
+        elif mode in ("sunrise", "sunset"):
             locations.sun_events(mode)
 
 if __name__ == '__main__':

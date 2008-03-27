@@ -26,20 +26,33 @@ class Station(trigpoints.Trigpoint):
     """
     Class for representing a weather station from a NOAA data file
 
-    @since: 0.2.0
+    :since: 0.2.0
 
-    @ivar alt_id: Alternate location identifier(either ICAO or WMO)
-    @ivar name: Station's name
-    @ivar state: State name, if station is in the US
-    @ivar country: Country name
-    @ivar wmo: WMO region code
-    @ivar latitude: Station's latitude
-    @ivar longitude: Station's longitude
-    @ivar ua_latitude: Station's upper air latitude
-    @ivar ua_longitude: Station's upper air longitude
-    @ivar altitude: Station's elevation
-    @ivar ua_altitude: Station's upper air elevation
-    @ivar rbsn: True if station belongs to RSBN
+    :Ivariables:
+        alt_id
+            Alternate location identifier(either ICAO or WMO)
+        name
+            Station's name
+        state
+            State name, if station is in the US
+        country
+            Country name
+        wmo
+            WMO region code
+        latitude
+            Station's latitude
+        longitude
+            Station's longitude
+        ua_latitude
+            Station's upper air latitude
+        ua_longitude
+            Station's upper air longitude
+        altitude
+            Station's elevation
+        ua_altitude
+            Station's upper air elevation
+        rbsn
+            True if station belongs to RSBN
     """
 
     __slots__ = ('alt_id', 'state', 'country', 'wmo', 'ua_latitude',
@@ -48,32 +61,39 @@ class Station(trigpoints.Trigpoint):
     def __init__(self, alt_id, name, state, country, wmo, latitude, longitude,
                  ua_latitude, ua_longitude, altitude, ua_altitude, rbsn):
         """
-        Initialise a new C{Station} object
+        Initialise a new `Station` object
 
-        @type alt_id: C{str} or C{None}
-        @param alt_id: Alternate location identifier
-        @type name: C{str}
-        @param name: Station's name
-        @type state: C{str} or C{None}
-        @param state: State name, if station is in the US
-        @type country: C{str}
-        @param country: Country name
-        @type wmo: C{int}
-        @param wmo: WMO region code
-        @type latitude: C{float}
-        @param latitude: Station's latitude
-        @type longitude: C{float}
-        @param longitude: Station's longitude
-        @type ua_latitude: C{float} or C{None}
-        @param ua_latitude: Station's upper air latitude
-        @type ua_longitude: C{float} or C{None}
-        @param ua_longitude: Station's upper air longitude
-        @type altitude: C{int} or C{None}
-        @param altitude: Station's elevation
-        @type ua_altitude: C{int} or C{None}
-        @param ua_altitude: Station's upper air elevation
-        @type rbsn: C{bool}
-        @param rbsn: True if station belongs to RSBN
+        >>> Station('EGLL', 'London / Heathrow Airport', None,
+        ...         'United Kingdom', 6, 51.4833333333, -0.45, None, None, 24,
+        ...         0, True)
+        Station('EGLL', 'London / Heathrow Airport', None, 'United Kingdom', 6,
+                51.4833333333, -0.45, None, None, 24, 0, True)
+
+        :Parameters:
+            alt_id : `str` or `None`
+                Alternate location identifier
+            name : `str`
+                Station's name
+            state : `str` or `None`
+                State name, if station is in the US
+            country : `str`
+                Country name
+            wmo : `int`
+                WMO region code
+            latitude : `float`
+                Station's latitude
+            longitude : `float`
+                Station's longitude
+            ua_latitude : `float` or `None`
+                Station's upper air latitude
+            ua_longitude : `float` or `None`
+                Station's upper air longitude
+            altitude : `int` or `None`
+                Station's elevation
+            ua_altitude : `int` or `None`
+                Station's upper air elevation
+            rbsn : `bool`
+                True if station belongs to RSBN
         """
         super(Station, self).__init__(latitude, longitude, altitude, name)
         self.alt_id = alt_id
@@ -85,31 +105,11 @@ class Station(trigpoints.Trigpoint):
         self.ua_altitude = ua_altitude
         self.rbsn = rbsn
 
-    def __repr__(self):
-        """
-        Self-documenting string representation
-
-        >>> Station('EGLL', 'London / Heathrow Airport', None,
-        ...         'United Kingdom', 6, 51.4833333333, -0.45, None, None, 24,
-        ...         0, True)
-        Station('EGLL', 'London / Heathrow Airport', None, 'United Kingdom', 6,
-                51.4833333333, -0.45, None, None, 24, 0, True)
-
-        @rtype: C{str}
-        @return: String to recreate C{Station} object
-        """
-        data = utils.repr_assist(self.alt_id, self.name, self.state,
-                                 self.country, self.wmo, self.latitude,
-                                 self.longitude, self.ua_latitude,
-                                 self.ua_longitude, self.altitude,
-                                 self.ua_altitude, self.rbsn)
-        return self.__class__.__name__ + '(' + ", ".join(data) + ')'
-
     def __str__(self, mode="dd"):
         """
         Pretty printed location string
 
-        @see: C{trigpoints.point.Point}
+        :see: `trigpoints.point.Point`
 
         >>> Heathrow = Station("EGLL", "London / Heathrow Airport", None,
         ...                    "United Kingdom", 6, 51.048333, -0.450000, None,
@@ -124,10 +124,11 @@ class Station(trigpoints.Trigpoint):
         >>> print(Heathrow)
         London / Heathrow Airport (N51.048°; W000.450°)
 
-        @type mode: C{str}
-        @param mode: Coordinate formatting system to use
-        @rtype: C{str}
-        @return: Human readable string representation of C{Station} object
+        :Parameters:
+            mode : `str`
+                Coordinate formatting system to use
+        :rtype: `str`
+        :return: Human readable string representation of `Station` object
         """
         text = super(Station.__base__, self).__str__(mode)
 
@@ -136,18 +137,19 @@ class Station(trigpoints.Trigpoint):
         else:
             return "%s (%s)" % (self.name, text)
 
+
 class Stations(dict):
     """
-    Class for representing a group of C{Station} objects
+    Class for representing a group of `Station` objects
 
-    @since: 0.5.1
+    :since: 0.5.1
     """
 
     def __init__(self, data=None, index="WMO"):
         """
-        Initialise a new C{Stations} object
+        Initialise a new `Stations` object
         """
-        dict.__init__(self)
+        super(Stations, self).__init__()
         if data:
             self.import_noaa_file(data, index)
 
@@ -155,10 +157,10 @@ class Stations(dict):
         """
         Parse NOAA weather station data files
 
-        C{import_noaa_file()} returns a dictionary with keys containing either
-        the WMO or ICAO identifier, and values that are C{Station} objects that
-        describes the large variety of data exported by U{NOAA
-        <http://weather.noaa.gov/>}.
+        `import_noaa_file()` returns a dictionary with keys containing either
+        the WMO or ICAO identifier, and values that are `Station` objects that
+        describes the large variety of data exported by `NOAA
+        <http://weather.noaa.gov/>`__.
 
         It expects data files in one of the following formats::
 
@@ -173,11 +175,11 @@ class Stations(dict):
             AYPY;94;035;Moresby;;Papua New Guinea;5;09-26S;147-13E;09-26S;147-13E;38;49;P
 
         Files containing the data in this format can be downloaded from NOAA's
-        site in their U{station location page
-        <http://weather.noaa.gov/tg/site.shtml>}.
+        site in their `station location page
+        <http://weather.noaa.gov/tg/site.shtml>`__.
 
         WMO indexed files downloaded from the NOAA site when processed by
-        C{import_noaa_file()} will return C{dict} object of the following
+        `import_noaa_file()` will return `dict` object of the following
         style::
 
             {'00000': Station('PABL', 'Buckland, Buckland Airport', 'AK',
@@ -188,7 +190,7 @@ class Stations(dict):
              '01002': Station(None, 'Grahuken', None, 'Norway', 6, 79.783333,
                               13.533333, None, None, 15, False)}
 
-        And C{dict} objects such as the following will be created when ICAO
+        And `dict` objects such as the following will be created when ICAO
         indexed data files are processed::
 
             {'AYMD': Station("94", "014", "Madang", None, "Papua New Guinea",
@@ -224,13 +226,14 @@ class Stations(dict):
         KBRX - Bordeaux (N41.933°; W104.950°)
         KCQB - Chandler, Chandler Municipal Airport (N35.724°; W096.820°)
 
-        @type data: C{file}, C{list} or C{str}
-        @param data: NOAA station data to read
-        @type index: C{str}
-        @param index: The identifier type used in the file
-        @rtype: C{dict}
-        @return: WMO locations with C{Station} objects
-        @raise FileFormatError: Unknown file format
+        :Parameters:
+            data : `file`, `list` or `str`
+                NOAA station data to read
+            index : `str`
+                The identifier type used in the file
+        :rtype: `dict`
+        :return: WMO locations with `Station` objects
+        :raise FileFormatError: Unknown file format
         """
         data = utils.prepare_read(data)
 
@@ -266,12 +269,12 @@ class Stations(dict):
             if alt_id in ("----", "-----"):
                 alt_id = None
             name = chunk[3]
-            state = chunk[4] if not chunk[4] == "" else None
+            state = chunk[4] if chunk[4] else None
             country = chunk[5]
-            wmo = int(chunk[6]) if not chunk[6] == "" else None
+            wmo = int(chunk[6]) if chunk[6] else None
             point_data = []
             for i in chunk[7:11]:
-                if i == "":
+                if not i:
                     point_data.append(None)
                     continue
                 # Some entries in nsd_cccc.txt are of the format "DD-MM-
@@ -280,14 +283,14 @@ class Stations(dict):
                     logging.debug("Fixing unpadded location data in `%s' entry"
                                   % line)
                     i = i.replace(" ", "0")
-                values = [int(x) for x in i[:-1].split("-")]
+                values = map(int, i[:-1].split("-"))
                 if i[-1] in ("S", "W"):
                     values = [-i for i in values]
                 point_data.append(trigpoints.point.utils.to_dd(*values))
             latitude, longitude, ua_latitude, ua_longitude = point_data
-            altitude = int(chunk[11]) if not chunk[11] == "" else None
-            ua_altitude = int(chunk[12]) if not chunk[12] == "" else None
-            rbsn = False if chunk[13] == "" else True
+            altitude = int(chunk[11]) if chunk[11] else None
+            ua_altitude = int(chunk[12]) if chunk[12] else None
+            rbsn = False if not chunk[13] else True
             self[identifier] = Station(alt_id, name, state, country, wmo,
                                        latitude, longitude, ua_latitude,
                                        ua_longitude, altitude, ua_altitude,
