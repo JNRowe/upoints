@@ -1,4 +1,4 @@
-#! /usr/bin/python -tt
+#
 # vim: set sw=4 sts=4 et tw=80 fileencoding=utf-8:
 #
 """xearth - Imports xearth-style marker files"""
@@ -18,11 +18,10 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from earth_distance import (point, utils)
+from upoints import (point, utils)
 
 class Xearth(point.Point):
-    """
-    Class for representing a location from a Xearth marker
+    """Class for representing a location from a Xearth marker
 
     :since: 0.2.0
 
@@ -33,13 +32,13 @@ class Xearth(point.Point):
             Locations's longitude
         comment
             Location's comment
+
     """
 
     __slots__ = ('comment', )
 
     def __init__(self, latitude, longitude, comment=None):
-        """
-        Initialise a new `Xearth` object
+        """Initialise a new `Xearth` object
 
         >>> Xearth(52.015, -0.221, "James Rowe's house")
         Xearth(52.015, -0.221, "James Rowe's house")
@@ -51,13 +50,13 @@ class Xearth(point.Point):
                 Location's longitude
             comment : `str`
                 Comment for location
+
         """
         super(Xearth, self).__init__(latitude, longitude)
         self.comment = comment
 
     def __str__(self, mode="dd"):
-        """
-        Pretty printed location string
+        """Pretty printed location string
 
         :see: `point.Point`
 
@@ -75,6 +74,7 @@ class Xearth(point.Point):
                 Coordinate formatting system to use
         :rtype: `str`
         :return: Human readable string representation of `Xearth` object
+
         """
         text = super(Xearth, self).__str__(mode)
 
@@ -84,24 +84,21 @@ class Xearth(point.Point):
             return text
 
 
-class Xearths(dict):
-    """
-    Class for representing a group of `Xearth` objects
+class Xearths(point.KeyedPoints):
+    """Class for representing a group of `Xearth` objects
 
     :since: 0.5.1
+
     """
 
     def __init__(self, marker_file=None):
-        """
-        Initialise a new `Xearths` object
-        """
+        """Initialise a new `Xearths` object"""
         super(Xearths, self).__init__()
         if marker_file:
-            self.import_marker_file(marker_file)
+            self.import_locations(marker_file)
 
     def __str__(self):
-        """
-        `Xearth` objects rendered for use with Xearth/Xplanet
+        """`Xearth` objects rendered for use with Xearth/Xplanet
 
         >>> markers = Xearths(open("xearth"))
         >>> print(markers)
@@ -110,14 +107,14 @@ class Xearths(dict):
 
         :rtype: `str`
         :return: Xearth/Xplanet marker file formatted output
+
         """
         return "\n".join(utils.dump_xearth_markers(self, "comment"))
 
-    def import_marker_file(self, marker_file):
-        """
-        Parse Xearth data files
+    def import_locations(self, marker_file):
+        """Parse Xearth data files
 
-        `import_marker_file()` returns a dictionary with keys containing the
+        `import_locations()` returns a dictionary with keys containing the
         `xearth <http://www.cs.colorado.edu/~tuna/xearth/>`__ name, and values
         consisting of a `Xearth` object and a string containing any comment
         found in the marker file.
@@ -131,7 +128,7 @@ class Xearths(dict):
 
         Any empty line or line starting with a '#' is ignored.  All data lines
         are whitespace-normalised, so actual layout should have no effect.  The
-        above file processed by `import_marker_file()` will return the
+        above file processed by `import_locations()` will return the
         following `dict` object::
 
             {'Home': point.Point(52.015, -0.221, "James Rowe's home"),
@@ -153,6 +150,7 @@ class Xearths(dict):
                 Xearth marker data to read
         :rtype: `dict`
         :return: Named locations with optional comments
+
         """
         data = utils.prepare_read(marker_file)
 

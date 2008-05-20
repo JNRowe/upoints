@@ -1,4 +1,4 @@
-#! /usr/bin/python -tt
+#
 # vim: set sw=4 sts=4 et tw=80 fileencoding=utf-8:
 #
 """nmea - Imports GPS NMEA-formatted data files"""
@@ -23,7 +23,7 @@ import logging
 
 from operator import xor
 
-from earth_distance import (point, utils)
+from upoints import (point, utils)
 
 def calc_checksum(sentence):
     """
@@ -547,8 +547,7 @@ class Fix(point.Point):
         data.append("%.1f" % self.dilution)
         data.append("%.1f" % self.altitude)
         data.append("M")
-        data.append("-" if self.geoid_delta is False
-                    else "%.1f" % self.geoid_delta)
+        data.append("-" if not self.geoid_delta else "%.1f" % self.geoid_delta)
         data.append("M")
         data.append("%.1f" % self.dgps_delta if self.dgps_delta else "")
         data.append("%04i" % self.dgps_station if self.dgps_station else "")
@@ -665,7 +664,7 @@ class Waypoint(point.Point):
         """
         Pretty printed location string
 
-        >>> print Waypoint(52.015, -0.221, "Home")
+        >>> print(Waypoint(52.015, -0.221, "Home"))
         $GPWPL,5200.9000,N,00013.2600,W,HOME*5E
 
         :rtype: `str`
@@ -707,7 +706,7 @@ class Waypoint(point.Point):
         return Waypoint(latitude, longitude, name)
 
 
-class Locations(list):
+class Locations(point.Points):
     """
     Class for representing a group of GPS location objects
 
@@ -720,13 +719,13 @@ class Locations(list):
         """
         super(Locations, self).__init__()
         if gpsdata_file:
-            self.import_gpsdata_file(gpsdata_file)
+            self.import_locations(gpsdata_file)
 
-    def import_gpsdata_file(self, gpsdata_file, checksum=True):
+    def import_locations(self, gpsdata_file, checksum=True):
         """
         Import GPS NMEA-formatted data files
 
-        `import_gpsdata_file()` returns a list of `Fix` objects representing
+        `import_locations()` returns a list of `Fix` objects representing
         the fix sentences found in the GPS data.
 
         It expects data files in NMEA 0183 format, as specified in `the
@@ -748,9 +747,9 @@ class Locations(list):
 
         The reader only imports the GGA, or GPS fix, sentences currently but
         future versions will probably support tracks and waypoints.  Other than
-        that the data is out of scope for ``earth_distance``.
+        that the data is out of scope for ``upoints``.
 
-        The above file when processed by `import_gpsdata_file()` will return
+        The above file when processed by `import_locations()` will return
         the following `list` object::
 
             [Fix(datetime.time(14, 20, 58), 53.1440233333, -3.01542833333, 1, 4,
@@ -789,7 +788,7 @@ class Locations(list):
         """
         data = utils.prepare_read(gpsdata_file)
 
-        PARSERS = {
+        parsers = {
             "GPGGA": Fix,
             "GPRMC": Position,
             "GPWPL": Waypoint,
@@ -798,7 +797,7 @@ class Locations(list):
         }
 
         if not checksum:
-            logger.warning("Disabling the checksum tests should only be used"
+            logging.warning("Disabling the checksum tests should only be used"
                            "when the device is incapable of emitting the "
                            "correct values!")
         for line in data:
@@ -806,7 +805,7 @@ class Locations(list):
             # devices break this, but Python's standard file object solves this
             # for us anyway.  However, be careful if you implement your own
             # opener.
-            if not line[1:6] in PARSERS:
+            if not line[1:6] in parsers:
                 continue
             if checksum:
                 values, checksum = line[1:].split("*")
@@ -815,6 +814,6 @@ class Locations(list):
             else:
                 values = line[1:].split("*")[0]
             elements = values.split(",")
-            parser = getattr(PARSERS[elements[0]], "parse_elements")
+            parser = getattr(parsers[elements[0]], "parse_elements")
             self.append(parser(elements[1:]))
 

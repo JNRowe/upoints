@@ -1,7 +1,7 @@
-#! /usr/bin/python -tt
+#
 # vim: set sw=4 sts=4 et tw=80 fileencoding=utf-8:
 #
-"""earth_distance - Modules for working with points on Earth"""
+"""upoints - Modules for working with points on Earth"""
 # Copyright (C) 2007-2008  James Rowe
 #
 # This program is free software: you can redistribute it and/or modify
@@ -18,32 +18,32 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-__version__ = "0.10.0"
-__date__ = "2008-03-27"
+__version__ = "0.11.0"
+__date__ = "2008-05-20"
 __author__ = "James Rowe <jnrowe@ukfsn.org>"
 __copyright__ = "Copyright (C) 2007-2008 James Rowe"
 __license__ = "GNU General Public License Version 3"
-__credits__ = "Kelly Turner"
+__credits__ = "Cédric Dufour, Kelly Turner, Simon Woods"
 __history__ = "See Mercurial repository"
 
 from email.utils import parseaddr
 
 __doc__ += """.
 
-``earth_distance`` is a collection of `GPL v3`_ licensed modules for working
-with points on Earth, or other near spherical objects.  It allows you to
-calculate the distance and bearings between points, mangle xearth_/xplanet_ data
-files, work with online UK trigpoint databases, NOAA_'s weather station
-database and other such location databases.
+``upoints`` is a collection of `GPL v3`_ licensed modules for working with
+points on Earth, or other near spherical objects.  It allows you to calculate
+the distance and bearings between points, mangle xearth_/xplanet_ data files,
+work with online UK trigpoint databases, NOAA_'s weather station database and
+other such location databases.
 
 .. _GPL v3: http://www.gnu.org/licenses/
 .. _xearth: http://www.cs.colorado.edu/~tuna/xearth/
 .. _xplanet: http://xplanet.sourceforge.net/
 .. _NOAA: http://weather.noaa.gov/
 
-The `earth_distance.point` module is the simplest interface available, and is
-mainly useful as a naïve object for simple calculation and subclassing for
-specific usage.  An example of how to use it follows:
+The `upoints.point` module is the simplest interface available, and is mainly
+useful as a naïve object for simple calculation and subclassing for specific
+usage.  An example of how to use it follows:
 
 >>> Home = point.Point(52.015, -0.221)
 >>> Telford = point.Point(52.6333, -2.5000)
@@ -68,6 +68,6 @@ datetime.time(20, 25)
 :license: %s
 """ % ((__version__, ) + parseaddr(__author__) + (__copyright__, __license__))
 
-from earth_distance import (baken, cities, geonames, gpx, kml, nmea, osm, point,
-                            trigpoints, tzdata, utils, weather_stations, xearth)
+from upoints import (baken, cellid, cities, geonames, gpx, kml, nmea, osm,
+                     point, trigpoints, tzdata, utils, weather_stations, xearth)
 

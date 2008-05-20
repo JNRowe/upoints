@@ -1,4 +1,4 @@
-#! /usr/bin/python -tt
+#
 # vim: set sw=4 sts=4 et tw=80 fileencoding=utf-8:
 #
 """test - Support code and data for test suite"""
@@ -17,6 +17,25 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
+
+__version__ = "0.1.0"
+__date__ = "2007-11-29"
+__author__ = "James Rowe <jnrowe@ukfsn.org>"
+__copyright__ = "Copyright (C) 2007-2008 James Rowe"
+__license__ = "GNU General Public License Version 3"
+__credits__ = ""
+__history__ = "See Mercurial repository"
+
+from email.utils import parseaddr
+
+__doc__ += """
+
+:version: %s
+:author: `%s <mailto:%s>`__
+:copyright: %s
+:status: WIP
+:license: %s
+""" % ((__version__, ) + parseaddr(__author__) + (__copyright__, __license__))
 
 from test import mock
 

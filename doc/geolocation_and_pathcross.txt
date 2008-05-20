@@ -71,21 +71,20 @@ N52.015°; W0.221°.
 
 Calculating the Great-circle distance between the two coordinates is
 relatively easy.  I've hacked together a really simple Python module
-called ``earth_distance`` that allows you to calculate the distance
-between two points on Earth(or any other approximately spherical body
-with a few minor changes).  It offers the Law of Cosines and haversine
-methods for calculating the distance, because they're the two I happen
-to know.
+called ``upoints`` that allows you to calculate the distance between two
+points on Earth(or any other approximately spherical body with a few
+minor changes).  It offers the Law of Cosines and haversine methods for
+calculating the distance, because they're the two I happen to know.
 
 Too inaccurate?
 ---------------
 
 .. code-block:: pycon
 
-    >>> from earth_distance import point
+    >>> from upoints import point
     >>> Home = point.Point(52.015, -0.221)
     >>> Telford = point.Point(52.6333, -2.5000)
-    >>> print "%i kM" % Home.distance(Telford)
+    >>> print("%i kM" % Home.distance(Telford))
     169 kM
 
 The script above tells us that the distance from my house to Telford is
@@ -118,15 +117,14 @@ Your proximity alert
 --------------------
 
 I've hacked support for relative proximities in to our Haskell tool, but
-``earth_distance`` could be used as the basis to implement something
-similar in Python.  Taking Seemant, who lives in Boston, Ma., as an
-example as it is his fault I'm playing with Python and geoip
-``earth_distance`` can tell us:
+``upoints`` could be used as the basis to implement something similar in
+Python.  Taking Seemant, who lives in Boston, Ma., as an example as it
+is his fault I'm playing with Python and geoip ``upoints`` can tell us:
 
 .. code-block:: pycon
 
     >>> Seemant = point.Point(42, -71)
-    >>> print "%i kM" % Home.distance(Seemant)
+    >>> print("%i kM" % Home.distance(Seemant))
     5257 kM
 
 We now have to make a decision about the range for the proximity alert
@@ -173,8 +171,8 @@ claiming those owed beers the answer is to publish your schedule in
 valid hCalendar, and publish a hCard containing your home location so
 you get the correct range allowance.
 
-If you think of any good uses for ``earth_distance``, drop me a mail.
-Cool new uses with attached patches are even better!
+If you think of any good uses for ``upoints``, drop me a mail.  Cool new
+uses with attached patches are even better!
 
 Bonus
 -----
@@ -185,7 +183,7 @@ of code, so why not?
 
 .. code-block:: pycon
 
-    >>> print "A heading of %i° will find the beers!" % Home.bearing(Telford)
+    >>> print("A heading of %i° will find the beers!" % Home.bearing(Telford))
     A heading of 294° will find the beers!
 
 .. [#] By "automatically updating" I mean simply a ping-and-forget

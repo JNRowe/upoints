@@ -6,10 +6,10 @@ Introduction
 
 MERLIN_, the Multi-Element Radio Linked Interferometer Network, radio
 telescope array that is spread throughout central England and Wales.
-The interesting aspect of MERLIN for our uses is high-quality,
-minimally diverse location identifiers are available publicly.  They
-make a reasonably useful test case for ``earth_distance`` objects across
-small geographic distances.
+The interesting aspect of MERLIN for our uses is high-quality, minimally
+diverse location identifiers are available publicly.  They make
+a reasonably useful test case for ``upoints`` objects across small
+geographic distances.
 
 According to the official MERLIN documentation the locations of
 the array elements are:
@@ -32,17 +32,17 @@ the array elements are:
 | Pickmere         | 53°16′44.42″N               | 002°26′41.98″W               |
 +------------------+-----------------------------+------------------------------+
 
-Using ``earth_distance``'s ``Point`` objects
---------------------------------------------
+Using ``upoints``'s ``Point`` objects
+-------------------------------------
 
 We can create a Python dictionary containing the locations of the array
 very simply:
 
 .. code-block:: pycon
 
-    >>> from earth_distance.point import Point
-    >>> from earth_distance import utils
-    >>> MERLIN = {
+    >>> from upoints.point import (Point, KeyedPoints)
+    >>> from upoints import utils
+    >>> MERLIN = KeyedPoints({
     ...     'Cambridge': Point((52, 10, 6.48), (0, 2, 23.25)),
     ...     'Darnhall': Point((53, 8, 38.4), (-2, -32, -45.57)),
     ...     'Defford': Point((52, 5, 27.61), (-2, -8, -9.62)),
@@ -50,7 +50,7 @@ very simply:
     ...     'Lovell Telescope': Point((53, 14, 10.5), (-2, -18, -25.74)),
     ...     'Mark II': Point((53, 13, 51.62), (-2, -18, -34.16)),
     ...     'Pickmere': Point((53, 16, 44.42), (-2, -26, -41.98)),
-    ... }
+    ... })
 
 As a simple smoke test the MERLIN website contains a `location
 page`_ which states the longest baseline in the array is Cambridge to
@@ -95,10 +95,10 @@ create a similar image with xplanet_ or xearth_:
 The map on the website contains a few more locations presumably to help
 the viewer with orientation, but the image below is useful as a good
 approximation.  And, of course, the locations could be supplemented
-either by hand, or by using one of the other ``earth_distance``
-supported databases.
+either by hand, or by using one of the other ``upoints`` supported
+databases.
 
-.. image:: images/merlin_xearth.png
+.. image:: http://www.jnrowe.ukfsn.org/graphics/merlin_xearth.png
    :alt: xearth displaying array locations
    :width: 256
    :height: 256
@@ -116,15 +116,12 @@ calculated very easily:
 .. code-block:: pycon
 
     >>> import datetime
-    >>> for name, point in sorted(MERLIN.items()):
-    ...     rise, set = point.sun_events(datetime.date(2007, 9, 20))
+    >>> for name, rise in MERLIN.sunrise(datetime.date(2007, 9, 20)):
     ...     if rise > datetime.time(5, 45): continue
     ...     print(name)
     ...     print("     - sunrise @ %s UTC" % rise.strftime("%H:%M"))
-    ...     print("     -  sunset @ %s UTC" % set.strftime("%H:%M"))
     Cambridge
          - sunrise @ 05:41 UTC
-         -  sunset @ 18:04 UTC
 
 This simple code snippet shows us that we should set up our equipment at
 the Cambridge site, which lucky for me is only a short trip up the road:
@@ -139,13 +136,13 @@ Comparisons with other ``Point``-type objects
 ---------------------------------------------
 
 In our contrived example above we may wish to travel only if the weather
-will be warm enough that we're unlikely to freeze to death(that
-risk is only acceptable for a full eclipse), and we can use the other
-``earth_distance`` tools to find closest weather station quite easily:
+will be warm enough that we're unlikely to freeze to death(that risk is
+only acceptable for a full eclipse), and we can use the other
+``upoints`` tools to find closest weather station quite easily:
 
 .. code-block:: pycon
 
-    >>> from earth_distance import weather_stations
+    >>> from upoints import weather_stations
     >>> ICAO_stations_database = urllib.urlopen("http://weather.noaa.gov/data/nsd_cccc.txt")
     >>> ICAO_stations = weather_stations.Stations(ICAO_stations_database, "ICAO")
     >>> calc_distance = lambda (name, location): MERLIN['Cambridge'].distance(location)

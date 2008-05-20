@@ -1,4 +1,4 @@
-#! /usr/bin/python -tt
+#
 # vim: set sw=4 sts=4 et tw=80 fileencoding=utf-8:
 #
 """tzdata - Imports timezone data files from UNIX zoneinfo"""
@@ -18,11 +18,12 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from earth_distance import (point, utils)
+from itertools import ifilter
+
+from upoints import (point, utils)
 
 class Zone(point.Point):
-    """
-    Class for representing timezone descriptions from zoneinfo data
+    """Class for representing timezone descriptions from zoneinfo data
 
     :since: 0.6.0
 
@@ -37,13 +38,13 @@ class Zone(point.Point):
             Location's zone name as used in zoneinfo database
         comments
             Location comments
+
     """
 
     __slots__ = ('country', 'zone', 'comments')
 
     def __init__(self, location, country, zone, comments=None):
-        """
-        Initialise a new `Zone` object
+        """Initialise a new `Zone` object
 
         >>> Zone("+513030-0000731", 'GB', "Europe/London")
         Zone('+513030-0000730', 'GB', 'Europe/London', None)
@@ -57,6 +58,7 @@ class Zone(point.Point):
                 Location's zone name as used in zoneinfo databse
             comments : `list`
                 Location's alternate names
+
         """
         latitude, longitude = utils.from_iso6709(location + "/")[:2]
         super(Zone, self).__init__(latitude, longitude)
@@ -66,22 +68,21 @@ class Zone(point.Point):
         self.comments = comments
 
     def __repr__(self):
-        """
-        Self-documenting string representation
+        """Self-documenting string representation
 
         >>> Zone("+513030-0000731", 'GB', "Europe/London")
         Zone('+513030-0000730', 'GB', 'Europe/London', None)
 
         :rtype: `str`
         :return: String to recreate `Zone` object
+
         """
         location = utils.to_iso6709(self.latitude, self.longitude,
                                     format="dms")[:-1]
         return utils.repr_assist(self, {"location": location})
 
     def __str__(self, mode="dms"):
-        """
-        Pretty printed location string
+        """Pretty printed location string
 
         >>> print(Zone("+513030-0000731", 'GB', "Europe/London"))
         Europe/London (GB: 51°30'30"N, 000°07'30"W)
@@ -94,6 +95,7 @@ class Zone(point.Point):
                 Coordinate formatting system to use
         :rtype: `str`
         :return: Human readable string representation of `Zone` object
+
         """
         text = ["%s (%s: %s" % (self.zone, self.country,
                                 super(Zone, self).__str__(mode)), ]
@@ -103,26 +105,23 @@ class Zone(point.Point):
         return "".join(text)
 
 
-class Zones(list):
-    """
-    Class for representing a group of `Zone` objects
+class Zones(point.Points):
+    """Class for representing a group of `Zone` objects
 
     :since: 0.6.0
+
     """
 
     def __init__(self, zone_file=None):
-        """
-        Initialise a new Zones object
-        """
+        """Initialise a new Zones object"""
         super(Zones, self).__init__()
         if zone_file:
-            self.import_zone_file(zone_file)
+            self.import_locations(zone_file)
 
-    def import_zone_file(self, data):
-        """
-        Parse zoneinfo zone description data files
+    def import_locations(self, zone_file):
+        """Parse zoneinfo zone description data files
 
-        `import_zone_file()` returns a list of `Zone` objects.
+        `import_locations()` returns a list of `Zone` objects.
 
         It expects data files in one of the following formats::
 
@@ -134,7 +133,7 @@ class Zones(list):
         that is normally found in ``/usr/share/zoneinfo`` on UNIX-like systems, or
         from the `standard distribution site <ftp://elsie.nci.nih.gov/pub/>`__.
 
-        When processed by `import_zone_file()` a `list` object of the
+        When processed by `import_locations()` a `list` object of the
         following style will be returned::
 
             [Zone(None, None, "AN", "America/Curacao", None),
@@ -152,28 +151,24 @@ class Zones(list):
         Ross Island)
 
         :Parameters:
-            data : `file`, `list` or `str`
+            zone_file : `file`, `list` or `str`
                 zone.tab data to read
         :rtype: `list`
         :return: Locations as `Zone` objects
         :raise FileFormatError: Unknown file format
-        """
-        data = utils.prepare_read(data)
 
-        for line in data:
-            if line.startswith("#"):
-                continue
-            line = line.strip()
-            chunk = line.split("	")
-            if not len(chunk) in (3, 4):
-                raise utils.FileFormatError("ftp://elsie.nci.nih.gov/pub/")
-            country, location, zone = chunk[:3]
-            comments = chunk[3].split(", ") if len(chunk) == 4 else None
-            self.append(Zone(location, country, zone, comments))
+        """
+        field_names = ("country", "location", "zone", "comments")
+
+        data = utils.prepare_csv_read(zone_file, field_names, delimiter=r"	")
+
+        for row in ifilter(lambda x: not x['country'].startswith("#"), data):
+            if row['comments']:
+                row['comments'] = row['comments'].split(", ")
+            self.append(Zone(**row))
 
     def dump_zone_file(self):
-        """
-        Generate a zoneinfo compatible zone description table
+        """Generate a zoneinfo compatible zone description table
 
         >>> zones = Zones(open("timezones"))
         >>> Zones.dump_zone_file(zones)
@@ -183,8 +178,8 @@ class Zones(list):
 
         :rtype: `list`
         :return: zoneinfo descriptions
-        """
 
+        """
         data = []
         for zone in sorted(self, key=lambda x: x.country):
             text = ["%s	%s	%s"

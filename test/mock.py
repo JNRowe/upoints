@@ -1,9 +1,7 @@
 #
 # vim: set sw=4 sts=4 et tw=80 fileencoding=utf-8:
 #
-"""
-mock - Mock objects for doctest code snippets
-"""
+"""mock - Mock objects for doctest code snippets"""
 # Copyright (C) 2007-2008  James Rowe;
 # All rights reserved.
 #
@@ -20,25 +18,6 @@ mock - Mock objects for doctest code snippets
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
-
-__version__ = "0.1.0"
-__date__ = "2007-11-21"
-__author__ = "James Rowe <jnrowe@ukfsn.org>"
-__copyright__ = "Copyright (C) 2007-2008 James Rowe"
-__license__ = "GNU General Public License Version 3"
-__credits__ = ""
-__history__ = "See Mercurial repository"
-
-from email.utils import parseaddr
-
-__doc__ += """
-
-:version: %s
-:author: `%s <mailto:%s>`__
-:copyright: %s
-:status: WIP
-:license: %s
-""" % ((__version__, ) + parseaddr(__author__) + (__copyright__, __license__))
 
 import __builtin__
 import os
@@ -57,14 +36,14 @@ SOURCES = dict([(os.path.basename(i), i) for i in grab_net_sources.SOURCES])
 BASEDIR = os.path.dirname(__file__)
 
 def isfile(path):
-    """
-    Mock `isfile` to check existence of test files
+    """Mock `isfile` to check existence of test files
 
     :Parameters:
         path : `str`
             File to check for existence
     :rtype: `bool`
     :return: `True` if file exists, `False` otherwise
+
     """
     filename = os.path.basename(path)
     try:
@@ -74,8 +53,7 @@ def isfile(path):
     return True
 
 def _get_test_file(filename):
-    """
-    Open a test data file
+    """Open a test data file
 
     :Parameters:
         filename : `str`
@@ -83,6 +61,7 @@ def _get_test_file(filename):
     :rtype: `file`
     :return: Test data
     :raise IOError: When the file can't be opened for reading
+
     """
     if isfile(filename):
         return __builtin__.open(os.path.join(BASEDIR, "data", filename))
@@ -95,8 +74,7 @@ def _get_test_file(filename):
             raise IOError("Can not open `%s'" % filename)
 
 def open(filename, mode="rb"):
-    """
-    Mock `open` function to open test data files
+    """Mock `open` function to open test data files
 
     :Parameters:
         filename : `str`
@@ -107,6 +85,7 @@ def open(filename, mode="rb"):
     :return: File object opened from test data directory, or ``StringIO.StringIO``
         object if a writable file is expected
     :raise NotImplementedError: When attempting to use an unhandled file mode
+
     """
     if "r" in mode:
         return _get_test_file(os.path.basename(filename))
@@ -116,8 +95,7 @@ def open(filename, mode="rb"):
         raise NotImplementedError
 
 def urlopen(url, data=None, proxies=None):
-    """
-    Mock `urlopen` to open test data files
+    """Mock `urlopen` to open test data files
 
     :Parameters:
         url : `str`
@@ -128,68 +106,67 @@ def urlopen(url, data=None, proxies=None):
             Ignored, just for compatibility with `urlopen` callers
     :rtype: `file`
     :return: File object from test data directory
+
     """
     return _get_test_file(os.path.basename(url))
 urllib.urlopen = urlopen
 
 class pymetar(ModuleType):
-    """
-    Mock `pymetar` infrastructure for tests
+    """Mock `pymetar` infrastructure for tests
 
     :since: 0.6.0
 
     :see: `pymetar <http://www.schwarzvogel.de/software-pymetar.shtml>`__
+
     """
     class ReportFetcher(object):
         def __init__(self, StationCode=None):
-            """
-            Mock `ReportFetcher` initialisation for tests
+            """Mock `ReportFetcher` initialisation for tests
 
             :Parameters:
                 StationCode : any
                     Ignored, just for compatibility with `ReportFetcher`
                     callers
+
             """
             super(pymetar.ReportFetcher, self).__init__()
 
         @staticmethod
         def FetchReport():
-            """
-            Mock ``FetchReport`` function to pass tests
-            """
+            """Mock ``FetchReport`` function to pass tests"""
             pass
 
 
     class ReportParser(object):
         class ParseReport(object):
             def __init__(self, MetarReport=None):
-                """
-                Mock ``ParseReport`` object to return test data
+                """Mock ``ParseReport`` object to return test data
 
                 :Parameters:
                     MetarReport : any
                         Ignored, just for compatibility with ``FetchReport``
                         callers
+
                 """
                 super(pymetar.ReportParser.ParseReport, self).__init__()
 
             @staticmethod
             def getTemperatureCelsius():
-                """
-                Mock `getTemperatureCelsius`
+                """Mock `getTemperatureCelsius`
 
                 :rtype: `float`
                 :return: Sample temperature data for tests
+
                 """
                 return 10.3
 
             @staticmethod
             def getISOTime():
-                """
-                Mock `getISOTime`
+                """Mock `getISOTime`
 
                 :rtype: `str`
                 :return: Sample ISO time string
+
                 """
                 return "2007-11-28 19:20:00Z"
 

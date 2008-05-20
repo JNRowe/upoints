@@ -1,4 +1,4 @@
-#! /usr/bin/python -tt
+#
 # vim: set sw=4 sts=4 et tw=80 fileencoding=utf-8:
 #
 """kml - Imports KML data files"""
@@ -19,21 +19,22 @@
 #
 
 import logging
+import sys
 
+from functools import partial
 from xml.etree import ElementTree
 
 try:
     from xml.etree import cElementTree as ET
 except ImportError:
-    ET = ElementTree
-    logging.info("cElementTree is unavailable XML processing will be much"
-                 "slower with ElementTree")
-    logging.warning("You have the fast cElementTree module available, if you "
-                    "choose to use the human readable namespace prefixes "
-                    "element generation will use the much slower ElementTree "
-                    "code.  Slowdown can be in excess of five times.")
+    try:
+        from lxml import etree as ET
+    except ImportError:
+        ET = ElementTree
+        logging.info("cElementTree is unavailable XML processing will be much"
+                     "slower with ElementTree")
 
-from earth_distance import (trigpoints, utils)
+from upoints import (point, trigpoints, utils)
 
 # Supported KML versions
 KML_VERSIONS = {
@@ -45,9 +46,9 @@ KML_VERSIONS = {
 # Changing this will cause tests to fail.
 DEF_KML_VERSION = "2.2" #: Default KML version to output
 
-def create_elem(tag, attr=None, kml_version=DEF_KML_VERSION, human_namespace=False):
-    """
-    Create a partial ``ET.Element`` wrapper with namespace defined
+def create_elem(tag, attr=None, kml_version=DEF_KML_VERSION,
+                human_namespace=False):
+    """Create a partial ``ET.Element`` wrapper with namespace defined
 
     :Parameters:
         tag : `str`
@@ -61,7 +62,14 @@ def create_elem(tag, attr=None, kml_version=DEF_KML_VERSION, human_namespace=Fal
             namespace prefixes
     :rtype: ``function``
     :return: ``ET.Element`` wrapper with predefined namespace
+
     """
+    if human_namespace and "xml.etree.cElementTree" in sys.modules:
+        logging.warning("You have the fast cElementTree module available, if "
+                        "you choose to use the human readable namespace "
+                        "prefixes in XML output element generation will use "
+                        "the much slower ElementTree code.  Slowdown can be in "
+                        "excess of five times.")
     if not attr:
         attr = {}
     try:
@@ -75,8 +83,7 @@ def create_elem(tag, attr=None, kml_version=DEF_KML_VERSION, human_namespace=Fal
         return ET.Element("{%s}%s" % (kml_ns, tag), attr)
 
 class Placemark(trigpoints.Trigpoint):
-    """
-    Class for representing a Placemark element from KML data files
+    """Class for representing a Placemark element from KML data files
 
     :since: 0.6.0
 
@@ -87,14 +94,14 @@ class Placemark(trigpoints.Trigpoint):
             Placemark's longitude
         altitude
             Placemark's altitude
+
     """
 
     __slots__ = ('description', )
 
     def __init__(self, latitude, longitude, altitude=None, name=None,
                  description=None):
-        """
-        Initialise a new `Placemark` object
+        """Initialise a new `Placemark` object
 
         >>> Placemark(52, 0, 4)
         Placemark(52.0, 0.0, 4.0, None, None)
@@ -114,6 +121,7 @@ class Placemark(trigpoints.Trigpoint):
                 Name for placemark
             description : `str`
                 Placemark's description
+
         """
         super(Placemark, self).__init__(latitude, longitude, altitude, name)
 
@@ -122,8 +130,7 @@ class Placemark(trigpoints.Trigpoint):
         self.description = description
 
     def __str__(self, mode="dms"):
-        """
-        Pretty printed location string
+        """Pretty printed location string
 
         >>> print(Placemark(52, 0, 4))
         52°00'00"N, 000°00'00"E alt 4m
@@ -139,6 +146,7 @@ class Placemark(trigpoints.Trigpoint):
                 Coordinate formatting system to use
         :rtype: `str`
         :return: Human readable string representation of `Placemark` object
+
         """
         location = super(Placemark, self).__str__(mode)
         if self.description:
@@ -147,8 +155,7 @@ class Placemark(trigpoints.Trigpoint):
             return location
 
     def tokml(self, kml_version=DEF_KML_VERSION, human_namespace=False):
-        """
-        Generate a KML Placemark element subtree
+        """Generate a KML Placemark element subtree
 
         >>> ET.tostring(Placemark(52, 0, 4).tokml())
         '<ns0:Placemark xmlns:ns0="http://earth.google.com/kml/2.2"><ns0:Point><ns0:coordinates>0.0,52.0,4</ns0:coordinates></ns0:Point></ns0:Placemark>'
@@ -167,9 +174,10 @@ class Placemark(trigpoints.Trigpoint):
                 namespace prefixes
         :rtype: ``ET.Element``
         :return: KML Placemark element
+
         """
-        element = lambda tag, attr={}: create_elem(tag, attr, kml_version,
-                                                   human_namespace)
+        element = partial(create_elem, kml_version=kml_version,
+                          human_namespace=human_namespace)
         placemark = element("Placemark")
         if self.name:
             placemark.set("id", self.name)
@@ -178,7 +186,7 @@ class Placemark(trigpoints.Trigpoint):
         if self.description:
             desctag = element("description")
             desctag.text = self.description
-        point = element("Point")
+        tpoint = element("Point")
         coords = element("coordinates")
 
         data = [str(self.longitude), str(self.latitude)]
@@ -193,32 +201,29 @@ class Placemark(trigpoints.Trigpoint):
             placemark.append(nametag)
         if self.description:
             placemark.append(desctag)
-        placemark.append(point)
-        point.append(coords)
+        placemark.append(tpoint)
+        tpoint.append(coords)
 
         return placemark
 
 
-class Placemarks(dict):
-    """
-    Class for representing a group of `Placemark` objects
+class Placemarks(point.KeyedPoints):
+    """Class for representing a group of `Placemark` objects
 
     :since: 0.6.0
+
     """
 
     def __init__(self, kml_file=None):
-        """
-        Initialise a new `Placemarks` object
-        """
+        """Initialise a new `Placemarks` object"""
         super(Placemarks, self).__init__()
         if kml_file:
-            self.import_kml_file(kml_file)
+            self.import_locations(kml_file)
 
-    def import_kml_file(self, kml_file, kml_version=None):
-        """
-        Import KML data files
+    def import_locations(self, kml_file, kml_version=None):
+        """Import KML data files
 
-        `import_kml_file()` returns a dictionary with keys containing the
+        `import_locations()` returns a dictionary with keys containing the
         section title, and values consisting of `Placemark` objects.
 
         It expects data files in KML format, as specified in `KML Reference
@@ -245,7 +250,7 @@ class Placemarks(dict):
 
         The reader uses `Python <http://www.python.org/>`__'s `ElementTree`
         module, so should be very fast when importing data.  The above file
-        processed by `import_kml_file()` will return the following `dict`
+        processed by `import_locations()` will return the following `dict`
         object::
 
             {"Home": Placemark(52.015, -0.221, 60),
@@ -271,16 +276,9 @@ class Placemarks(dict):
                 Specific KML version entities to import
         :rtype: `dict`
         :return: Named locations with optional comments
+
         """
-        if hasattr(kml_file, "readlines"):
-            data = ET.parse(kml_file)
-        elif isinstance(kml_file, list):
-            data = ET.fromstring("".join(kml_file))
-        elif isinstance(kml_file, basestring):
-            data = ET.parse(open(kml_file))
-        else:
-            raise TypeError("Unable to handle data of type `%s`"
-                            % type(kml_file))
+        data = utils.prepare_xml_read(kml_file)
 
         if kml_version:
             try:
@@ -319,8 +317,7 @@ class Placemarks(dict):
 
     def export_kml_file(self, kml_version=DEF_KML_VERSION,
                         human_namespace=False):
-        """
-        Generate KML element tree from `Placemarks`
+        """Generate KML element tree from `Placemarks`
 
         >>> from sys import stdout
         >>> locations = Placemarks(open("kml"))
@@ -339,12 +336,13 @@ class Placemarks(dict):
                 namespace prefixes
         :rtype: ``ET.ElementTree``
         :return: KML element tree depicting `Placemarks`
+
         """
-        element = lambda tag, attr={}: create_elem(tag, attr, kml_version,
-                                                   human_namespace)
+        element = partial(create_elem, kml_version=kml_version,
+                          human_namespace=human_namespace)
         kml = element('kml')
         doc = element('Document')
-        for name, place in self.items():
+        for place in self.values():
             doc.append(place.tokml(kml_version, human_namespace))
         kml.append(doc)
 

@@ -2,7 +2,7 @@ Pythons on a plane
 ==================
 
 In what is probably the final spin-off from `geolocation and path
-cross`_ we'll be using the earth_distance modules to work with airport
+cross`_ we'll be using the upoints modules to work with airport
 locations.  This can be useful if you'd like to calculate how far you've
 travelled in a certain period, or just as a large database for
 calculating rough distances between other places using the closest
@@ -18,7 +18,7 @@ our local geolocation databases.
 
 .. code-block:: pycon
 
-    >>> from earth_distance import weather_stations
+    >>> from upoints import (point, weather_stations)
     >>> WMO_stations_database = urllib.urlopen("http://weather.noaa.gov/data/nsd_bbsss.txt")
     >>> WMO_stations = weather_stations.Stations(WMO_stations_database)
 
@@ -58,7 +58,7 @@ easily.
 
     >>> Europe = dict(filter(lambda x: x[1].wmo == 6, ICAO_stations.items()))
     >>> del(ICAO_stations)
-    >>> print len(Europe)
+    >>> print(len(Europe))
     1130
 
 First we can see that the trip is entirely based in Europe, and
@@ -71,23 +71,21 @@ above [#]_.
 
 .. code-block:: pycon
 
-    >>> Trip = [Europe[i] for i in ('EGGW', 'LFBO', 'EGBB', 'EGSS')]
-    >>> 
-    >>> leg_calc = lambda x, y: (x.distance(y), x.bearing(y))
-    >>> legs = [leg_calc(Trip[i], Trip[i+1]) for i in range(len(Trip) - 1)]
+    >>> Trip = point.Points([Europe[i] for i in ('EGGW', 'LFBO', 'EGBB', 'EGSS')])
+    >>> legs = Trip.inverse()
 
-    >>> print len(Trip) - 1, "legs"
+    >>> print("%i legs" % (len(Trip) - 1))
     3 legs
     >>> for i in range(len(Trip) - 1):
-    ...     print "  * %s to %s" % (Trip[i].name, Trip[i+1].name)
-    ...     print "    - %i kilometres on a bearing of %i degrees" % (legs[i][0], legs[i][1])
+    ...     print("  * %s to %s" % (Trip[i].name, Trip[i+1].name))
+    ...     print("    - %i kilometres on a bearing of %i degrees" % (legs[i][1], legs[i][0]))
       * Luton Airport  to Toulouse / Blagnac
         - 923 kilometres on a bearing of 171 degrees
       * Toulouse / Blagnac to Birmingham / Airport
         - 1006 kilometres on a bearing of 347 degrees
       * Birmingham / Airport to Stansted Airport
         - 148 kilometres on a bearing of 114 degrees
-    >>> print "For a total of %i kilometres" % sum([i[0] for i in legs])
+    >>> print("For a total of %i kilometres" % sum([i[1] for i in legs]))
     For a total of 2078 kilometres
 
 The ``Station`` class inherits from ``Trigpoint`` and as such you can
@@ -101,15 +99,15 @@ xplanet_:
     ...                  "2007-07-14"),
     ...                 Trip))
     >>> f = open("trip.txt", "w")
-    >>> from earth_distance import utils
+    >>> from upoints import utils
     >>> f.write("\n".join(utils.dump_xearth_markers(Trip, "name")))
     >>> f.close()
 
-.. figure:: images/xearth_trip_mini.png
+.. figure:: http://www.jnrowe.ukfsn.org/graphics/xearth_trip_mini.png
    :alt: Xplanet showing the locations for a small European trip
    :width: 256
    :height: 192
-   :target: images/xearth_trip.png
+   :target: http://www.jnrowe.ukfsn.org/graphics/xearth_trip.png
 
 The code above will create a file named ``trip.txt`` that can be used
 with xplanet or xearth_.  It actually produces a reasonably accurate,
@@ -123,18 +121,17 @@ requires a dictionary of ``Trigpoint``-style objects you could
 apply ``filter()`` and ``map()`` expressions to the objects to generate
 your own lables for the markers.
 
-.. figure:: images/xplanet_trip_date_mini.png
+.. figure:: http://www.jnrowe.ukfsn.org/graphics/xplanet_trip_date_mini.png
    :alt: Xplanet showing the location points and dates for a trip
    :width: 256
    :height: 192
-   :target: images/xplanet_trip_date.png
+   :target: http://www.jnrowe.ukfsn.org/graphics/xplanet_trip_date.png
 
-There is a wealth of epydoc_ generated HTML output in the
-tarball, including documentation and usage examples.  If you still have
-any questions after reading the documentation, drop me a mail_ and I'll
-do my best to answer your questions.  Also, I'd love to hear from you
-if come up with any clever uses for for the modules in
-``earth_distance``.
+There is a wealth of epydoc_ generated HTML output in the tarball,
+including documentation and usage examples.  If you still have any
+questions after reading the documentation, drop me a mail_ and I'll do
+my best to answer your questions.  Also, I'd love to hear from you if
+come up with any clever uses for for the modules in ``upoints``.
 
 .. [#] I've personally taken to creating and using ``cPickle`` dumps of
        the database, where each WMO region is stored in

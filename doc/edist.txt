@@ -131,7 +131,7 @@ Written by `James Rowe <mailto:jnrowe@ukfsn.org>`__
 RESOURCES
 ---------
 
-Home page: http://www.jnrowe.ukfsn.org/projects/earth_distance.html
+Home page: http://www.jnrowe.ukfsn.org/projects/upoints.html
 
 COPYING
 -------

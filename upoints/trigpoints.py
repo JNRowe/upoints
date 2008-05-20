@@ -1,4 +1,4 @@
-#! /usr/bin/python -tt
+#
 # vim: set sw=4 sts=4 et tw=80 fileencoding=utf-8:
 #
 """trigpoints - Imports trigpoint marker files"""
@@ -18,10 +18,10 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-import csv
-import logging
+from functools import partial
+from itertools import ifilter
 
-from earth_distance import (point, utils)
+from upoints import (point, utils)
 
 class Trigpoint(point.Point):
     """
@@ -44,16 +44,18 @@ class Trigpoint(point.Point):
             Location's altitude
         name
             Location's name
+        identity
+            Database identifier, if known
     """
 
-    __slots__ = ('altitude', 'name')
+    __slots__ = ('altitude', 'name', 'identity')
 
-    def __init__(self, latitude, longitude, altitude, name=None):
+    def __init__(self, latitude, longitude, altitude, name=None, identity=None):
         """
         Initialise a new `Trigpoint` object
 
         >>> Trigpoint(52.010585, -0.173443, 97.0, "Bygrave")
-        Trigpoint(52.010585, -0.173443, 97.0, 'Bygrave')
+        Trigpoint(52.010585, -0.173443, 97.0, 'Bygrave', None)
 
         :Parameters:
             latitude : `float` or coercible to `float`
@@ -64,10 +66,13 @@ class Trigpoint(point.Point):
                 Location's altitude
             name : `str`
                 Name for location
+            identity : `int`
+                Database identifier, if known
         """
         super(Trigpoint, self).__init__(latitude, longitude)
         self.altitude = altitude
         self.name = name
+        self.identity = identity
 
     def __str__(self, mode="dms"):
         """
@@ -98,7 +103,7 @@ class Trigpoint(point.Point):
             return " ".join(location)
 
 
-class Trigpoints(dict):
+class Trigpoints(point.KeyedPoints):
     """
     Class for representing a group of `Trigpoint` objects
 
@@ -111,13 +116,13 @@ class Trigpoints(dict):
         """
         super(Trigpoints, self).__init__()
         if marker_file:
-            self.import_marker_file(marker_file)
+            self.import_locations(marker_file)
 
-    def import_marker_file(self, marker_file):
+    def import_locations(self, marker_file):
         """
         Import trigpoint database files
 
-        `import_marker_file()` returns a dictionary with keys containing the
+        `import_locations()` returns a dictionary with keys containing the
         trigpoint identifier, and values that are `Trigpoint` objects.
 
         It expects trigpoint marker files in the format provided at
@@ -135,7 +140,7 @@ class Trigpoints(dict):
         Any line not consisting of 6 comma separated fields will be ignored.
         The reader uses `Python <http://www.python.org/>`__'s `csv` module, so
         alternative whitespace formatting should have no effect.  The above file
-        processed by `import_marker_file()` will return the following `dict`
+        processed by `import_locations()` will return the following `dict`
         object::
 
             {500936: point.Point(52.066035, -0.281449, 37.0, "Broom Farm"),
@@ -167,34 +172,27 @@ class Trigpoints(dict):
         :return: Named locations with `Trigpoint` objects
         :raise ValueError: Invalid value for `marker_file`
         """
-        if hasattr(marker_file, "readlines"):
-            data = csv.reader(marker_file)
-        elif isinstance(marker_file, list):
-            data = csv.reader(marker_file)
-        elif isinstance(marker_file, basestring):
-            data = csv.reader(open(marker_file))
-        else:
-            raise TypeError("Unable to handle data of type `%s'"
-                            % type(marker_file))
+        field_names = ("tag", "identity", "latitude", "longitude", "altitude",
+                       "name")
+        pos_parse = lambda x, s: float(s[1:]) if s[0] == x else 0 - float(s[1:])
+        latitude_parse = partial(pos_parse, "N")
+        longitude_parse = partial(pos_parse, "E")
+        # A value of 8888.0 denotes unavailable data
+        altitude_parse = lambda s: None if s.strip() == "8888.0" else float(s)
+        field_parsers = (str, int, latitude_parse, longitude_parse,
+                         altitude_parse, str)
 
-        for row in data:
-            if not len(row) == 6 or row[0] == "F":
-                continue
-            identity, latitude, longitude, altitude, name = row[1:]
-            identity = int(identity)
-            if latitude[0] == "N":
-                latitude = float(latitude[1:])
-            else:
-                latitude = 0 - float(latitude[1:])
-            if longitude[0] == "E":
-                longitude = float(longitude[1:])
-            else:
-                longitude = 0 - float(longitude[1:])
-            altitude = float(altitude)
-            # A value of 8888 denotes unavailable data
-            if altitude == 8888:
-                logging.debug("Ignoring `8888' value for altitude in `%s' entry"
-                              % row)
-                altitude = None
-            self[identity] = Trigpoint(latitude, longitude, altitude, name)
+        data = utils.prepare_csv_read(marker_file, field_names)
+
+        for row in ifilter(lambda x: x['tag'] == "W", data):
+            for name, parser in zip(field_names, field_parsers):
+                row[name] = parser(row[name])
+            del row['tag']
+            try:
+                self[row['identity']] = Trigpoint(**row)
+            except TypeError:
+                # Workaround formatting error in 506514 entry that contains
+                # spurious comma
+                del row[None]
+                self[row['identity']] = Trigpoint(**row)
 

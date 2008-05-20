@@ -1,6 +1,7 @@
 ^build/
 ^dist/
 ^html/
+^upoints\.egg-info/
 
 ^\.coverage$
 ^\.hg_version$
@@ -12,6 +13,7 @@
 
 # test data files
 ^test/data/alltrigs-wgs84\.txt$
+^test/data/cells\.txt$
 ^test/data/cities\.dat$
 ^test/data/earth-markers-schaumann$
 ^test/data/nsd_(bbsss|cccc)\.txt$

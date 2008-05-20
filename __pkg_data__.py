@@ -1,4 +1,4 @@
-#! /usr/bin/python -tt
+#
 # vim: set sw=4 sts=4 et tw=80 fileencoding=utf-8:
 #
 """Per-package configuration data"""
@@ -18,35 +18,16 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from distutils.dep_util import newer
-from distutils.errors import DistutilsModuleError
-from re import sub
+import sys
 
-try:
-    import Image
-    IMAGE = True #: True if `Image` module is available
-except ImportError:
-    IMAGE = False
-
-import earth_distance
-MODULE = earth_distance
+import upoints
+MODULE = upoints
 
 import edist
 SCRIPTS = [edist, ]
 
-DESCRIPTION = earth_distance.__doc__.splitlines()[0][:-1]
-LONG_DESCRIPTION = """\
-``earth_distance`` is a collection of `GPL v3`_ licensed modules for working
-with points on Earth, or other near spherical objects.  It allows you to
-calculate the distance and bearings between points, mangle xearth_/xplanet_ data
-files, work with online UK trigpoint databases, NOAA_'s weather station database
-and other such location databases.
-
-.. _GPL v3: http://www.gnu.org/licenses/
-.. _xearth: http://www.cs.colorado.edu/~tuna/xearth/
-.. _xplanet: http://xplanet.sourceforge.net/
-.. _NOAA: http://weather.noaa.gov/
-"""
+DESCRIPTION = upoints.__doc__.splitlines()[0][:-1]
+LONG_DESCRIPTION = "\n\n".join(upoints.__doc__.split("\n\n")[1:3])
 
 KEYWORDS = ['navigation', 'xearth', 'trigpointing', 'cities', 'baken',
             'weather', 'geonames', 'openstreetmap', 'nmea', 'gpx']
@@ -67,24 +48,17 @@ CLASSIFIERS = [
     'Topic :: Text Processing :: Filters',
 ]
 
+OBSOLETES = ["earth_distance", ]
+
+GRAPH_TYPE = None
+
 TEST_EXTRAGLOBS = ["pymetar", ]
 
-def BuildDoc_run(dry_run, force):
-    """
-    Non-standard `setup.BuildDoc` commands
-    """
-    if not IMAGE:
-        raise DistutilsModuleError("Image(python-imaging) import failed, "
-                                   "can't generate image thumbnails")
-    for image in ["ranged_trigpoints", "Scotland_trigpoints", "xearth_trip",
-                  "xplanet_trip_date"]:
-        original = "doc/images/%s.png" % image
-        thumb = "doc/images/%s_mini.png" % image
-        if force or newer(original, thumb):
-            print("Generating thumbnail %s" % thumb)
-            if dry_run:
-                continue
-            im = Image.open(original)
-            im.thumbnail((256, 192))
-            im.save(thumb)
+def TestCode_run(dry_run, force):
+    """Display a warning about test failures when using lxml"""
+    if "lxml" in sys.modules:
+        print("Tests are designed to be run using cElementTree, running them "
+              "with lxml will result in failures due to output format "
+              "differences between the modules.")
+TestDoc_run = TestCode_run
 

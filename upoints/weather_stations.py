@@ -1,4 +1,4 @@
-#! /usr/bin/python -tt
+#
 # vim: set sw=4 sts=4 et tw=80 fileencoding=utf-8:
 #
 """weather_stations - Imports weather station data files"""
@@ -20,11 +20,10 @@
 
 import logging
 
-from earth_distance import (trigpoints, utils)
+from upoints import (point, trigpoints, utils)
 
 class Station(trigpoints.Trigpoint):
-    """
-    Class for representing a weather station from a NOAA data file
+    """Class for representing a weather station from a NOAA data file
 
     :since: 0.2.0
 
@@ -53,6 +52,7 @@ class Station(trigpoints.Trigpoint):
             Station's upper air elevation
         rbsn
             True if station belongs to RSBN
+
     """
 
     __slots__ = ('alt_id', 'state', 'country', 'wmo', 'ua_latitude',
@@ -60,8 +60,7 @@ class Station(trigpoints.Trigpoint):
 
     def __init__(self, alt_id, name, state, country, wmo, latitude, longitude,
                  ua_latitude, ua_longitude, altitude, ua_altitude, rbsn):
-        """
-        Initialise a new `Station` object
+        """Initialise a new `Station` object
 
         >>> Station('EGLL', 'London / Heathrow Airport', None,
         ...         'United Kingdom', 6, 51.4833333333, -0.45, None, None, 24,
@@ -94,6 +93,7 @@ class Station(trigpoints.Trigpoint):
                 Station's upper air elevation
             rbsn : `bool`
                 True if station belongs to RSBN
+
         """
         super(Station, self).__init__(latitude, longitude, altitude, name)
         self.alt_id = alt_id
@@ -106,8 +106,7 @@ class Station(trigpoints.Trigpoint):
         self.rbsn = rbsn
 
     def __str__(self, mode="dd"):
-        """
-        Pretty printed location string
+        """Pretty printed location string
 
         :see: `trigpoints.point.Point`
 
@@ -129,6 +128,7 @@ class Station(trigpoints.Trigpoint):
                 Coordinate formatting system to use
         :rtype: `str`
         :return: Human readable string representation of `Station` object
+
         """
         text = super(Station.__base__, self).__str__(mode)
 
@@ -138,26 +138,23 @@ class Station(trigpoints.Trigpoint):
             return "%s (%s)" % (self.name, text)
 
 
-class Stations(dict):
-    """
-    Class for representing a group of `Station` objects
+class Stations(point.KeyedPoints):
+    """Class for representing a group of `Station` objects
 
     :since: 0.5.1
+
     """
 
     def __init__(self, data=None, index="WMO"):
-        """
-        Initialise a new `Stations` object
-        """
+        """Initialise a new `Stations` object"""
         super(Stations, self).__init__()
         if data:
-            self.import_noaa_file(data, index)
+            self.import_locations(data, index)
 
-    def import_noaa_file(self, data, index="WMO"):
-        """
-        Parse NOAA weather station data files
+    def import_locations(self, data, index="WMO"):
+        """Parse NOAA weather station data files
 
-        `import_noaa_file()` returns a dictionary with keys containing either
+        `import_locations()` returns a dictionary with keys containing either
         the WMO or ICAO identifier, and values that are `Station` objects that
         describes the large variety of data exported by `NOAA
         <http://weather.noaa.gov/>`__.
@@ -179,7 +176,7 @@ class Stations(dict):
         <http://weather.noaa.gov/tg/site.shtml>`__.
 
         WMO indexed files downloaded from the NOAA site when processed by
-        `import_noaa_file()` will return `dict` object of the following
+        `import_locations()` will return `dict` object of the following
         style::
 
             {'00000': Station('PABL', 'Buckland, Buckland Airport', 'AK',
@@ -234,6 +231,7 @@ class Stations(dict):
         :rtype: `dict`
         :return: WMO locations with `Station` objects
         :raise FileFormatError: Unknown file format
+
         """
         data = utils.prepare_read(data)
 
@@ -286,7 +284,7 @@ class Stations(dict):
                 values = map(int, i[:-1].split("-"))
                 if i[-1] in ("S", "W"):
                     values = [-i for i in values]
-                point_data.append(trigpoints.point.utils.to_dd(*values))
+                point_data.append(point.utils.to_dd(*values))
             latitude, longitude, ua_latitude, ua_longitude = point_data
             altitude = int(chunk[11]) if chunk[11] else None
             ua_altitude = int(chunk[12]) if chunk[12] else None

@@ -1,4 +1,4 @@
-#! /usr/bin/python -tt
+#
 # vim: set sw=4 sts=4 et tw=80 fileencoding=utf-8:
 #
 """baken - Imports baken data files"""
@@ -22,11 +22,10 @@ import ConfigParser
 import logging
 import re
 
-from earth_distance import (point, utils)
+from upoints import (point, utils)
 
 class Baken(point.Point):
-    """
-    Class for representing location from baken data files
+    """Class for representing location from baken data files
 
     :since: 0.4.0
 
@@ -53,6 +52,7 @@ class Baken(point.Point):
             Transmitter's power
         qth
             Location's qth
+
     """
 
     __slots__ = ('antenna', 'direction', 'frequency', 'height', '_locator',
@@ -61,8 +61,7 @@ class Baken(point.Point):
     def __init__(self, latitude, longitude, antenna=None, direction=None,
                  frequency=None, height=None, locator=None, mode=None,
                  operator=None, power=None, qth=None):
-        """
-        Initialise a new `Baken` object
+        """Initialise a new `Baken` object
 
         >>> Baken(14.460, 20.680, None, None, None, 0.000, None, None, None,
         ...       None, None)
@@ -101,6 +100,7 @@ class Baken(point.Point):
             qth : `str`
                 Location's qth
         :raise LookupError: No position data to use
+
         """
         if not latitude is None:
             super(Baken, self).__init__(latitude, longitude)
@@ -122,8 +122,7 @@ class Baken(point.Point):
         self.qth = qth
 
     def _set_locator(self, value):
-        """
-        Update the locator, and trigger a latitude and longitude update
+        """Update the locator, and trigger a latitude and longitude update
 
         >>> test = Baken(None, None, "2 x Turnstile", None, 50.000, 460.000,
         ...              "IO93BF", "A1A", None, 25, None)
@@ -135,6 +134,7 @@ class Baken(point.Point):
         :Parameters:
             value : `str`
                 New Maidenhead locator string
+
         """
         self._locator = value
         self._latitude, self._longitude = utils.from_grid_locator(value)
@@ -142,8 +142,7 @@ class Baken(point.Point):
                        lambda self, value: self._set_locator(value))
 
     def __str__(self, mode="dms"):
-        """
-        Pretty printed location string
+        """Pretty printed location string
 
         >>> print(Baken(14.460, 20.680, None, None, None, 0.000, None, None,
         ...             None, None, None))
@@ -157,6 +156,7 @@ class Baken(point.Point):
                 Coordinate formatting system to use
         :rtype: `str`
         :return: Human readable string representation of `Baken` object
+
         """
         text = super(Baken, self).__str__(mode)
         if self._locator:
@@ -164,26 +164,23 @@ class Baken(point.Point):
         return text
 
 
-class Bakens(dict):
-    """
-    Class for representing a group of `Baken` objects
+class Bakens(point.KeyedPoints):
+    """Class for representing a group of `Baken` objects
 
     :since: 0.5.1
+
     """
 
     def __init__(self, baken_file=None):
-        """
-        Initialise a new `Bakens` object
-        """
+        """Initialise a new `Bakens` object"""
         super(Bakens, self).__init__()
         if baken_file:
-            self.import_baken_file(baken_file)
+            self.import_locations(baken_file)
 
-    def import_baken_file(self, baken_file):
-        """
-        Import baken data files
+    def import_locations(self, baken_file):
+        """Import baken data files
 
-        `import_baken_file()` returns a dictionary with keys containing the
+        `import_locations()` returns a dictionary with keys containing the
         section title, and values consisting of a collection `Baken` objects.
 
         It expects data files in the format used by the baken amateur radio
@@ -204,7 +201,7 @@ class Bakens(dict):
 
         The reader uses `Python <http://www.python.org/>`__'s `ConfigParser`
         module, so should be reasonably robust against encodings and such.  The
-        above file processed by `import_baken_file()` will return the following
+        above file processed by `import_locations()` will return the following
         `dict` object::
 
             {"Abeche, Chad": Baken(14.460, 20.680, None, None, None, 0.000,
@@ -227,6 +224,7 @@ class Bakens(dict):
                 Baken data to read
         :rtype: `dict`
         :return: Named locations and their associated values
+
         """
         data = ConfigParser.ConfigParser()
         if hasattr(baken_file, "readlines"):

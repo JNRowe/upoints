@@ -1,4 +1,4 @@
-#! /usr/bin/python -tt
+#
 # vim: set sw=4 sts=4 et tw=80 fileencoding=utf-8:
 #
 """cities - Imports GNU miscfiles cities data files"""
@@ -21,7 +21,7 @@
 import logging
 import time
 
-from earth_distance import (trigpoints, utils)
+from upoints import (point, trigpoints, utils)
 
 TEMPLATE = """\
 ID          : %s
@@ -39,8 +39,7 @@ Date        : %s
 Entered-By  : %s""" #: GNU miscfiles cities.dat template
 
 class City(trigpoints.Trigpoint):
-    """
-    Class for representing an entry from the GNU miscfiles cities data file
+    """Class for representing an entry from the GNU miscfiles cities data file
 
     :since: 0.2.0
 
@@ -71,6 +70,7 @@ class City(trigpoints.Trigpoint):
             Entry date
         entered
             Entry's author
+
     """
 
     __slots__ = ('identifier', 'ptype', 'population', 'size', 'country',
@@ -79,8 +79,7 @@ class City(trigpoints.Trigpoint):
     def __init__(self, identifier, name, ptype, region, country, location,
                  population, size, latitude, longitude, altitude, date,
                  entered):
-        """
-        Initialise a new `City` object
+        """Initialise a new `City` object
 
         >>> City(498, "Zwickau", "City", "Sachsen", "DE", "Earth", 108835,
         ...      None, 12.5, 50.72, None, (1997, 4, 10, 0, 0, 0, 3, 100, -1),
@@ -116,6 +115,7 @@ class City(trigpoints.Trigpoint):
                 Date the entry was added
             entered : `str` or `None`
                 Entry's author
+
         """
         super(City, self).__init__(latitude, longitude, altitude, name)
         self.identifier = identifier
@@ -129,10 +129,7 @@ class City(trigpoints.Trigpoint):
         self.entered = entered
 
     def __str__(self, mode=None):
-        """
-        Pretty printed location string
-
-        :see: `trigpoints.point.Point`
+        """Pretty printed location string
 
         >>> t = City(498, "Zwickau", "City", "Sachsen", "DE", "Earth", 108835,
         ...          None, 50.72, 12.5, None,
@@ -155,9 +152,10 @@ class City(trigpoints.Trigpoint):
         :Parameters:
             mode : `None`
                 Dummy parameter to maintain signature of
-                `Trigpoint.__str__`
+                `trigpoints.Trigpoint.__str__`
         :rtype: `str`
         :return: Human readable string representation of `City` object
+
         """
         values = map(utils.value_or_empty,
                      (self.identifier, self.ptype,
@@ -171,26 +169,23 @@ class City(trigpoints.Trigpoint):
         return TEMPLATE % tuple(values)
 
 
-class Cities(list):
-    """
-    Class for representing a group of `City` objects
+class Cities(point.Points):
+    """Class for representing a group of `City` objects
 
     :since: 0.5.1
+
     """
 
     def __init__(self, data=None):
-        """
-        Initialise a new `Cities` object
-        """
+        """Initialise a new `Cities` object"""
         super(Cities, self).__init__()
         if data:
-            self.import_cities_file(data)
+            self.import_locations(data)
 
-    def import_cities_file(self, data):
-        """
-        Parse GNU miscfiles cities data files
+    def import_locations(self, data):
+        """Parse GNU miscfiles cities data files
 
-        `import_cities_file()` returns a list containing `City` objects.
+        `import_locations()` returns a list containing `City` objects.
 
         It expects data files in the same format that `GNU miscfiles
         <http://www.gnu.org/directory/miscfiles.html>`__  provided,
@@ -224,7 +219,7 @@ class Cities(list):
             Date        : 19961206
             Entered-By  : Rob.Hooft@EMBL-Heidelberg.DE
 
-        When processed by `import_cities_file()` will return `list` object in
+        When processed by `import_locations()` will return `list` object in
         the following style::
 
             [City(1, "City", 210700, None, "Aberdeen", "UK", "Scotland",
@@ -252,6 +247,7 @@ class Cities(list):
         :rtype: `list`
         :return: Places as `City` objects
         :raise TypeError: Invalid value for data
+
         """
         if hasattr(data, "read"):
             data = data.read().split("//\n")
@@ -273,13 +269,12 @@ class Cities(list):
             data = [i.split(":")[1].strip() for i in record.splitlines()[:13]]
             entries = dict(zip(keys, data))
 
+            # Entry for Utrecht has the incorrect value of 0.000 for elevation.
+            if entries["altitude"] == "0.000":
+                logging.debug("Ignoring `0.000' value for elevation in `%s' "
+                              "entry" % record)
+                entries["altitude"] = ""
             for i in ("identifier", "population", "size", "altitude"):
-                # Entry for Utrecht has the incorrect value of 0.000 for
-                # elevation.
-                if i == "altitude" and entries[i] == "0.000":
-                    logging.debug("Ignoring `0.000' value for elevation in "
-                                  "`%s' entry" % record)
-                    entries[i] = ""
                 entries[i] = int(entries[i]) if entries[i] else None
             for i in ("longitude", "latitude"):
                 entries[i] = float(entries[i]) if entries[i] else None

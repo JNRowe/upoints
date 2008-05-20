@@ -1,5 +1,5 @@
-``earth_distance``
-==================
+``upoints``
+===========
 
 Modules for working with points on Earth
 ----------------------------------------
@@ -7,19 +7,28 @@ Modules for working with points on Earth
 Introduction
 ------------
 
-``earth_distance`` is a collection of `GPL v3`_ licensed modules for
-working with points on Earth, or other near spherical objects.  It
-allows you to calculate the distance and bearings between points, mangle
+``upoints`` is a collection of `GPL v3`_ licensed modules for working
+with points on Earth, or other near spherical objects.  It allows you to
+calculate the distance and bearings between points, mangle
 xearth_/xplanet_ data files, work with online UK trigpoint databases,
 NOAA_'s weather station database and other such location databases.
+
+Previous versions of ``upoints`` were called ``earth_distance``, but the
+name was changed as it no longer reflected the majority of uses the
+packages was targeted at.
 
 Requirements
 ------------
 
-``earth_distance`` does not depend on any modules that aren't included
+``upoints`` does not strictly depend on any modules that aren't included
 in Python_'s standard library, and as such should run with Python 2.5 or
-newer [#]_.  If ``earth_distance`` doesn't work with the version of
-Python you have installed, drop me a mail_ and I'll endeavour to fix it.
+newer [#]_.  If ``upoints`` doesn't work with the version of Python you
+have installed, drop me a mail_ and I'll endeavour to fix it.
+
+However, ``upoints`` can make use of lxml_ if it is installed on systems
+that don't have the ``cElementTree`` module.  If neither
+``cElementTree`` nor ``lxml`` are installed it falls back to
+``ElementTree``, but will operate much slower on XML data.
 
 The modules have been tested on many UNIX-like systems, including Linux,
 Solaris and OS X, but it should work fine on other systems too.  The
@@ -39,12 +48,12 @@ documentation can be tested with ``./setup test_doc``.
 Example
 -------
 
-The simplest way to show how ``earth_distance`` works is by example, and
-here goes:
+The simplest way to show how ``upoints`` works is by example, and here
+goes:
 
 .. code-block:: pycon
 
-    >>> from earth_distance import point
+    >>> from upoints import point
     >>> Home = point.Point(52.015, -0.221)
     >>> Telford = point.Point(52.6333, -2.5000)
     >>> print("%d kM, with an initial bearing of %d°"
@@ -65,15 +74,23 @@ a plane`_ contains information on ``weather_stations.py``.  All the
 examples in the ``doc/`` directory can be executed using ``./setup.py
 test_doc``.
 
+Thanks
+------
+
+The following people have submitted patches, testing and feedback:
+
+    * Cédric Dufour - ``edist.py``'s CSV import, and flight plan output
+    * Kelly Turner - Xearth_ import idea, and copious testing
+    * Simon Woods - Testing
+
 API Stability
 -------------
 
 API stability isn't guaranteed across versions, although frivolous
 changes won't be made.
 
-When ``earth_distance`` 1.0 is released the API will be frozen, and any
-changes which aren't backwards compatible will force a major version
-bump.
+When ``upoints`` 1.0 is released the API will be frozen, and any changes
+which aren't backwards compatible will force a major version bump.
 
 Limitations
 -----------
@@ -87,8 +104,8 @@ The reasoning is simple, the caller should always know what is required
 and any heuristics added to the code would be just that -- guesses,
 which can and will be wrong.
 
-The ``earth_distance`` modules do not take flattening in to account, as
-in calculations based in most populated areas of the earth the errors
+The ``upoints`` modules do not take flattening in to account, as in
+calculations based in most populated areas of the earth the errors
 introduced by ignoring the earth's flattening are quite small.  Future
 versions may change if the limitation becomes an issue in real use.
 
@@ -149,6 +166,7 @@ a minimal testcase, or even better a patch!
 .. _PEP 8: http://www.python.org/dev/peps/pep-0008/
 .. _reStructuredText: http://docutils.sourceforge.net/rst.html
 .. _mail: jnrowe@ukfsn.org
+.. _lxml: http://codespeak.net/lxml/
 
 ..
     :vim: set ft=rst ts=2 sw=2 et:

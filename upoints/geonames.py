@@ -1,4 +1,4 @@
-#! /usr/bin/python -tt
+#
 # vim: set sw=4 sts=4 et tw=80 fileencoding=utf-8:
 #
 """geonames - Imports geonames.org data files"""
@@ -25,7 +25,7 @@ try:
 except ImportError:
     tz = None #: ``dateutil`` module reference if available
 
-from earth_distance import (trigpoints, utils)
+from upoints import (point, trigpoints, utils)
 
 class Location(trigpoints.Trigpoint):
     """
@@ -215,7 +215,7 @@ class Location(trigpoints.Trigpoint):
             return "%s (%s)" % (self.name, text)
 
 
-class Locations(list):
+class Locations(point.Points):
     """
     Class for representing a group of `Location` objects
 
@@ -232,14 +232,17 @@ class Locations(list):
         else:
             self.timezones = {}
 
-        if data:
-            self.import_geonames_file(data)
+        self._data = data
+        self._tzfile = tzfile
 
-    def import_geonames_file(self, data):
+        if data:
+            self.import_locations(data)
+
+    def import_locations(self, data):
         """
         Parse geonames.org country database exports
 
-        `import_geonames_file()` returns a list of `trigpoints.Trigpoint`
+        `import_locations()` returns a list of `trigpoints.Trigpoint`
         objects generated from the data exported by `geonames
         <http://geonames.org/>`__.
 
@@ -254,7 +257,7 @@ class Locations(list):
         <http://download.geonames.org/export/dump/>`__.
 
         Files downloaded from the geonames site when processed by
-        `import_geonames_file()` will return `list` objects of the following
+        `import_locations()` will return `list` objects of the following
         style::
 
             [Location(2633441, "Afon Wyre", "Afon Wyre",
@@ -272,7 +275,7 @@ class Locations(list):
                       datetime.date(2006, 8, 21))]
 
         >>> locations = Locations(open("geonames"))
-        >>> for location in sorted(locations):
+        >>> for location in sorted(locations, key=lambda x: x.geonameid):
         ...     print("%i - %s" % (location.geonameid, location))
         2633441 - Afon Wyre (River Wayrai, River Wyrai, Wyre - N52.317°;
         W004.167°)
@@ -288,34 +291,36 @@ class Locations(list):
         :Parameters:
             data : `file`, `list` or `str`
                 geonames locations data to read
-        :rtype: `dict`
+        :rtype: `list`
         :return: geonames identifiers with `Location` objects
         :raise FileFormatError: Unknown file format
         """
-        data = utils.prepare_read(data)
-        for line in data:
-            timezone = None
-            chunk = line.strip().split("	")
-            if not len(chunk) == 19:
+        self._data = data
+        field_names = ("geonameid", "name", "asciiname", "alt_names",
+                       "latitude", "longitude", "feature_class", "feature_code",
+                       "country", "alt_country", "admin1", "admin2", "admin3",
+                       "admin4", "population", "altitude", "gtopo30", "tzname",
+                       "modified_date")
+        comma_split = lambda s: s.split(",")
+        date_parse = lambda s: datetime.date(*map(int, s.split("-")))
+        or_none = lambda x, s: x(s) if s else None
+        str_or_none = lambda s: or_none(str, s)
+        float_or_none = lambda s: or_none(float, s)
+        int_or_none = lambda s: or_none(int, s)
+        tz_parse = lambda s: self.timezones[s][0] if self.timezones else None
+        field_parsers = (int_or_none, str_or_none, str_or_none, comma_split,
+                         float_or_none, float_or_none, str_or_none, str_or_none,
+                         str_or_none, comma_split, str_or_none, str_or_none,
+                         str_or_none, str_or_none, int_or_none, int_or_none,
+                         int_or_none, tz_parse, date_parse)
+        data = utils.prepare_csv_read(data, field_names, delimiter=r"	")
+        for row in data:
+            try:
+                for name, parser in zip(field_names, field_parsers):
+                    row[name] = parser(row[name])
+            except ValueError:
                 raise utils.FileFormatError("geonames.org")
-            for pos, elem in enumerate(chunk):
-                if pos in [0, 14, 15, 16]:
-                    elem = None if not elem else int(elem)
-                elif pos in [4, 5]:
-                    elem = None if not elem else float(elem)
-                elif pos in [3, 9]:
-                    elem = None if not elem else elem.split(",")
-                elif pos == 17 and elem and self.timezones:
-                    timezone = self.timezones[elem][0]
-                elif pos == 18:
-                    elem = datetime.date(*map(int, elem.split("-")))
-                elif not elem:
-                    elem = None
-                else:
-                    continue
-                chunk[pos] = elem
-            chunk.append(timezone)
-            self.append(Location(*chunk))
+            self.append(Location(**row))
 
     def import_timezones_file(self, data):
         """
@@ -346,13 +351,13 @@ class Locations(list):
         >>> timezones = Locations(None, open("geonames_timezones")).timezones
         >>> for key, value in sorted(timezones.items()):
         ...     print("%s - %s" % (key, value))
-        Asia/Dubai - (240, 240)
-        Asia/Kabul - (270, 270)
-        Europe/Andorra - (60, 120)
+        Asia/Dubai - [240, 240]
+        Asia/Kabul - [270, 270]
+        Europe/Andorra - [60, 120]
         >>> header_skip_check = Locations(None,
         ...                               open("geonames_timezones_header"))
-        >>> print(header_skip_check)
-        []
+        >>> print(header_skip_check) # doctest: +ELLIPSIS
+        Locations(None, <open file ...>)
         >>> broken_file_check = Locations(None,
         ...                               open("geonames_timezones_broken"))
         Traceback (most recent call last):
@@ -368,16 +373,18 @@ class Locations(list):
         :return: geonames timezone identifiers with their UTC offsets
         :raise FileFormatError: Unknown file format
         """
-        data = utils.prepare_read(data)
+        self._tzfile = data
+        field_names = ("ident", "gmt_offset", "dst_offset")
+        time_parse = lambda n: int(float(n) * 60)
+        data = utils.prepare_csv_read(data, field_names, delimiter=r"	")
 
         self.timezones = {}
-        for line in data:
-            chunk = line.strip().split("	")
-            if chunk[0] == "TimeZoneId":
+        for row in data:
+            if row['ident'] == "TimeZoneId":
                 continue
-            elif not len(chunk) == 3:
+            try:
+                delta = map(time_parse, (row['gmt_offset'], row['dst_offset']))
+            except ValueError:
                 raise utils.FileFormatError("geonames.org")
-            else:
-                delta = tuple([int(float(x) * 60) for x in chunk[1:]])
-            self.timezones[chunk[0]] = delta
+            self.timezones[row['ident']] = delta
 

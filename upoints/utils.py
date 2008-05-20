@@ -1,7 +1,7 @@
-#! /usr/bin/python -tt
+#
 # vim: set sw=4 sts=4 et tw=80 fileencoding=utf-8:
 #
-"""utils - Support code for earth_distance"""
+"""utils - Support code for upoints"""
 # Copyright (C) 2007-2008  James Rowe
 #
 # This program is free software: you can redistribute it and/or modify
@@ -22,10 +22,23 @@ from __future__ import division
 
 __bug_report__ = "James Rowe <jnrowe@ukfsn.org>" #: Address for use in messages
 
+import csv
 import datetime
 import inspect
+import logging
 import math
 import re
+
+from xml.etree import ElementTree
+try:
+    from xml.etree import cElementTree as ET
+except ImportError:
+    try:
+        from lxml import etree as ET
+    except ImportError:
+        ET = ElementTree
+        logging.info("cElementTree is unavailable XML processing will be much"
+                     "slower with ElementTree")
 
 from operator import add
 
@@ -69,8 +82,7 @@ LONGITUDE_EXTSQUARE = LONGITUDE_SUBSQUARE / 10 #: Longitude field 4 multiplier
 LATITUDE_EXTSQUARE = LATITUDE_SUBSQUARE / 10 #: Latitude field 4 multiplier
 
 class FileFormatError(ValueError):
-    """
-    Error object for data parsing error
+    """Error object for data parsing error
 
     >>> raise FileFormatError
     Traceback (most recent call last):
@@ -87,24 +99,25 @@ class FileFormatError(ValueError):
     :Ivariables:
         site
             Remote site name to display in error message
+
     """
     def __init__(self, site=None):
-        """
-        Initialise a new `FileFormatError` object
+        """Initialise a new `FileFormatError` object
 
         :Parameters:
             site : `str`
                 Remote site name to display in error message
+
         """
         super(FileFormatError, self).__init__()
         self.site = site
 
     def __str__(self):
-        """
-        Pretty printed error string
+        """Pretty printed error string
 
         :rtype: `str`
         :return: Human readable error string
+
         """
         if self.site:
             return ("Incorrect data format, if you're using a file downloaded "
@@ -116,8 +129,7 @@ class FileFormatError(ValueError):
 #{ Implementation utilities
 
 def value_or_empty(value):
-    """
-    Return an empty string for display when value is `None`
+    """Return an empty string for display when value is `None`
 
     >>> value_or_empty(None)
     ''
@@ -129,19 +141,22 @@ def value_or_empty(value):
             Value to prepare for display
     :rtype: `str`
     :return: String representation of `value`
+
     """
     return value if value else ""
 
-def repr_assist(obj, remap={}):
-    """
-    Helper function to simplify `__repr__` methods
+def repr_assist(obj, remap=None):
+    """Helper function to simplify `__repr__` methods
 
     :Parameters:
         obj : Any
             Object to pull arg values for
         remap : `dict`
             Arg pairs to remap before output
+
     """
+    if not remap:
+        remap = {}
     data = []
     for arg in inspect.getargspec(getattr(obj.__class__, '__init__'))[0]:
         if arg == "self":
@@ -160,13 +175,95 @@ def repr_assist(obj, remap={}):
             data.append(str(value))
     return obj.__class__.__name__ + '(' + ", ".join(data) + ')'
 
+def prepare_read(data):
+    """Prepare various input types for parsing
+
+    >>> prepare_read(open("real_file"))
+    ['This is a test file-type object\\n']
+    >>> test_list = ['This is a test list-type object', 'with two elements']
+    >>> prepare_read(test_list)
+    ['This is a test list-type object', 'with two elements']    
+
+    :Parameters:
+        data : `file` like object, `list`, `str`
+            Data to read
+    :rtype: `list`
+    :return: List suitable for parsing
+    :raise TypeError: Invalid value for data
+
+    """
+    if hasattr(data, "readlines"):
+        data = data.readlines()
+    elif isinstance(data, list):
+        pass
+    elif isinstance(data, basestring):
+        data = open(data).readlines()
+    else:
+        raise TypeError("Unable to handle data of type `%s`" % type(data))
+    return data
+
+def prepare_csv_read(data, field_names, *args, **kwargs):
+    """Prepare various input types for CSV parsing
+
+    >>> list(prepare_csv_read(open("real_file.csv"),
+    ...                       ("type", "bool", "string")))
+    [{'bool': 'true', 'type': 'file', 'string': 'test'}]
+    >>> test_list = ['James,Rowe', 'ell,caro']
+    >>> list(prepare_csv_read(test_list, ("first", "last")))
+    [{'last': 'Rowe', 'first': 'James'}, {'last': 'caro', 'first': 'ell'}]
+
+    :Parameters:
+        data : `file` like object, `list`, `str`
+            Data to read
+        field_names : `tuple` of `str`
+            Ordered names to assign to fields
+    :rtype: `csv.DictReader`
+    :return: CSV reader suitable for parsing
+    :raise TypeError: Invalid value for data
+
+    """
+    if hasattr(data, "readlines") or isinstance(data, list):
+        pass
+    elif isinstance(data, basestring):
+        data = open(data)
+    else:
+        raise TypeError("Unable to handle data of type `%s'" % type(data))
+    return csv.DictReader(data, field_names, *args, **kwargs)
+
+def prepare_xml_read(data):
+    """Prepare various input types for XML parsing
+
+    >>> prepare_xml_read(open("real_file.xml")).find("tag").text
+    'This is a test file-type object'
+    >>> test_list = ['<xml>', '<tag>This is a test list</tag>', '</xml>']
+    >>> prepare_xml_read(test_list).find("tag").text
+    'This is a test list'
+
+    :Parameters:
+        data : `file` like object, `list`, `str`
+            Data to read
+    :rtype: `ET.ElementTree`
+    :return: Tree suitable for parsing
+    :raise TypeError: Invalid value for data
+
+    """
+    if hasattr(data, "readlines"):
+        data = ET.parse(data)
+    elif isinstance(data, list):
+        data = ET.fromstring("".join(data))
+    elif isinstance(data, basestring):
+        data = ET.parse(open(data))
+    else:
+        raise TypeError("Unable to handle data of type `%s`"
+                        % type(data))
+    return data
+
 #}
 
 #{ Angle conversion utilities
 
 def to_dms(angle, style="dms"):
-    """
-    Convert decimal angle to degrees, minutes and possibly seconds
+    """Convert decimal angle to degrees, minutes and possibly seconds
 
     >>> to_dms(52.015)
     (52, 0, 54.0)
@@ -187,6 +284,7 @@ def to_dms(angle, style="dms"):
     :rtype: `tuple` of `int` objects for values
     :return: Angle converted to degrees, minutes and possibly seconds
     :raise ValueError: Unknown value for `style`
+
     """
     sign = 1 if angle >= 0 else -1
     angle = abs(angle) * 3600
@@ -202,8 +300,7 @@ def to_dms(angle, style="dms"):
         raise ValueError("Unknown style type `%s'" % style)
 
 def to_dd(degrees, minutes, seconds=0):
-    """
-    Convert degrees, minutes and optionally seconds to decimal angle
+    """Convert degrees, minutes and optionally seconds to decimal angle
 
     >>> "%.3f" % to_dd(52, 0, 54)
     '52.015'
@@ -221,17 +318,91 @@ def to_dd(degrees, minutes, seconds=0):
             Number of seconds
     :rtype: `float`
     :return: Angle converted to decimal degrees
+
     """
     sign = -1 if any([i < 0 for i in degrees, minutes, seconds]) else 1
     return sign * (abs(degrees) + abs(minutes) / 60 + abs(seconds) / 3600)
+
+def __chunk(segment):
+    """Generate a tuple of compass direction names
+
+    :Parameters:
+        segment : `int`
+            Compass segment to generate names for
+    :rtype: `tuple`
+    :return: Direction names for compass segment
+
+    """
+    names = ("north", "east", "south", "west", "north")
+    if segment % 2 == 0:
+        return (names[segment].capitalize(),
+                "%s-%s-%s" % (names[segment].capitalize(), names[segment],
+                              names[segment+1]),
+                "%s-%s" % (names[segment].capitalize(), names[segment+1]),
+                "%s-%s-%s" % (names[segment+1].capitalize(), names[segment],
+                              names[segment+1]))
+    else:
+        return (names[segment].capitalize(),
+                "%s-%s-%s" % (names[segment].capitalize(), names[segment+1],
+                              names[segment]),
+                "%s-%s" % (names[segment+1].capitalize(), names[segment]),
+                "%s-%s-%s" % (names[segment+1].capitalize(), names[segment+1],
+                              names[segment]))
+COMPASS_NAMES = reduce(add, map(__chunk, range(4)))
+
+def angle_to_name(angle, segments=8, abbr=False):
+    """Convert angle in to direction name
+
+    >>> angle_to_name(0)
+    'North'
+    >>> angle_to_name(360)
+    'North'
+    >>> angle_to_name(45)
+    'North-east'
+    >>> angle_to_name(292)
+    'West'
+    >>> angle_to_name(293)
+    'North-west'
+    >>> angle_to_name(0, 4)
+    'North'
+    >>> angle_to_name(360, 16)
+    'North'
+    >>> angle_to_name(45, 4, True)
+    'NE'
+    >>> angle_to_name(292, 16, True)
+    'WNW'
+
+    :Parameters:
+        angle : `float` or coercible to `float`
+            Angle in degrees to convert to direction name
+        segments : `int`
+            Number of segments to split compass in to
+        abbr : `bool`
+            Whether to return abbreviated direction string
+    :rtype: `str`
+    :return: Direction name for `angle`
+
+    """
+    if segments == 4:
+        string = COMPASS_NAMES[int((angle + 45) / 90) % 4 * 2]
+    elif segments == 8:
+        string = COMPASS_NAMES[int((angle + 22.5) / 45) % 8 * 2]
+    elif segments == 16:
+        string = COMPASS_NAMES[int((angle + 11.25) / 22.5) % 16]
+    else:
+        raise ValueError("Segments parameter must be 4, 8 or 16 not `%s'"
+                         % segments)
+    if abbr:
+        return "".join(i[0].capitalize() for i in string.split("-"))
+    else:
+        return string
 
 #}
 
 #{ Coordinate conversion utilities
 
 def from_iso6709(coordinates):
-    """
-    Parse ISO 6709 coordinate strings
+    """Parse ISO 6709 coordinate strings
 
     This function will parse ISO 6709-1983(E) "Standard representation of
     latitude, longitude and altitude for geographic point locations" elements.
@@ -303,7 +474,8 @@ def from_iso6709(coordinates):
     :raise ValueError: Input string is not ISO 6709 compliant
     :raise ValueError: Invalid value for latitude
     :raise ValueError: Invalid value for longitude
-    """
+
+"""
     matches = re.match(r'^([-+][\d\.]+)([-+][\d\.]+)([+-][\d\.]+)?/$',
                        coordinates)
     try:
@@ -338,8 +510,7 @@ def from_iso6709(coordinates):
     return latitude, longitude, altitude
 
 def to_iso6709(latitude, longitude, altitude=None, format="dd", precision=4):
-    """
-    Produce ISO 6709 coordinate strings
+    """Produce ISO 6709 coordinate strings
 
     This function will produce ISO 6709-1983(E) "Standard representation of
     latitude, longitude and altitude for geographic point locations" elements.
@@ -406,6 +577,7 @@ def to_iso6709(latitude, longitude, altitude=None, format="dd", precision=4):
     :rtype: `str`
     :return: ISO 6709 coordinates string
     :raise ValueError: Unknown value for `format`
+
     """
     text = []
     if format == "d":
@@ -439,85 +611,8 @@ def to_iso6709(latitude, longitude, altitude=None, format="dd", precision=4):
     text.append("/")
     return "".join(text)
 
-#}
-
-def __chunk(segment):
-    """
-    Generate a tuple of compass direction names
-
-    :Parameters:
-        segment : `int`
-            Compass segment to generate names for
-    :rtype: `tuple`
-    :return: Direction names for compass segment
-    """
-    names = ("north", "east", "south", "west", "north")
-    if segment % 2 == 0:
-        return (names[segment].capitalize(),
-                "%s-%s-%s" % (names[segment].capitalize(), names[segment],
-                              names[segment+1]),
-                "%s-%s" % (names[segment].capitalize(), names[segment+1]),
-                "%s-%s-%s" % (names[segment+1].capitalize(), names[segment],
-                              names[segment+1]))
-    else:
-        return (names[segment].capitalize(),
-                "%s-%s-%s" % (names[segment].capitalize(), names[segment+1],
-                              names[segment]),
-                "%s-%s" % (names[segment+1].capitalize(), names[segment]),
-                "%s-%s-%s" % (names[segment+1].capitalize(), names[segment+1],
-                              names[segment]))
-COMPASS_NAMES = reduce(add, map(__chunk, range(4)))
-
-def angle_to_name(angle, segments=8, abbr=False):
-    """
-    Convert angle in to direction name
-
-    >>> angle_to_name(0)
-    'North'
-    >>> angle_to_name(360)
-    'North'
-    >>> angle_to_name(45)
-    'North-east'
-    >>> angle_to_name(292)
-    'West'
-    >>> angle_to_name(293)
-    'North-west'
-    >>> angle_to_name(0, 4)
-    'North'
-    >>> angle_to_name(360, 16)
-    'North'
-    >>> angle_to_name(45, 4, True)
-    'NE'
-    >>> angle_to_name(292, 16, True)
-    'WNW'
-
-    :Parameters:
-        angle : `float` or coercible to `float`
-            Angle in degrees to convert to direction name
-        segments : `int`
-            Number of segments to split compass in to
-        abbr : `bool`
-            Whether to return abbreviated direction string
-    :rtype: `str`
-    :return: Direction name for `angle`
-    """
-    if segments == 4:
-        string = COMPASS_NAMES[int((angle + 45) / 90) % 4 * 2]
-    elif segments == 8:
-        string = COMPASS_NAMES[int((angle + 22.5) / 45) % 8 * 2]
-    elif segments == 16:
-        string = COMPASS_NAMES[int((angle + 11.25) / 22.5) % 16]
-    else:
-        raise ValueError("Segments parameter must be 4, 8 or 16 not `%s'"
-                         % segments)
-    if abbr:
-        return "".join(i[0].capitalize() for i in string.split("-"))
-    else:
-        return string
-
-def angle_to_distance(angle, format="metric"):
-    """
-    Convert angle in to distance along a great circle
+def angle_to_distance(angle, units="metric"):
+    """Convert angle in to distance along a great circle
 
     >>> "%.3f" % angle_to_distance(1)
     '111.125'
@@ -528,31 +623,31 @@ def angle_to_distance(angle, format="metric"):
     >>> "%i" % angle_to_distance(10, "baseless")
     Traceback (most recent call last):
         ...
-    ValueError: Unknown unit type `baseless'
+    ValueError: Unknown units type `baseless'
 
     :Parameters:
         angle : `float` or coercible to `float`
             Angle in degrees to convert to distance
-        format : `str`
+        units : `str`
             Unit type to be used for distances
     :rtype: `float`
-    :return: Distance in `format`
-    :raise ValueError: Unknown value for `format`
+    :return: Distance in `units`
+    :raise ValueError: Unknown value for `units`
+
     """
     distance = math.radians(angle) * BODY_RADIUS
 
-    if format == "metric":
+    if units in ("km", "metric"):
         return distance
-    elif format in ("imperial", "US customary"):
+    elif units in ("sm", "imperial", "US customary"):
         return distance / STATUTE_MILE
-    elif format == "nautical":
+    elif units in ("nm", "nautical"):
         return distance / NAUTICAL_MILE
     else:
-        raise ValueError("Unknown unit type `%s'" % format)
+        raise ValueError("Unknown units type `%s'" % units)
 
-def distance_to_angle(distance, format="metric"):
-    """
-    Convert a distance in to an angle along a great circle
+def distance_to_angle(distance, units="metric"):
+    """Convert a distance in to an angle along a great circle
 
     >>> "%.3f" % round(distance_to_angle(111.212))
     '1.000'
@@ -564,23 +659,265 @@ def distance_to_angle(distance, format="metric"):
     :Parameters:
         distance : `float` or coercible to `float`
             Distance to convert to degrees
-        format : `str`
+        units : `str`
             Unit type to be used for distances
     :rtype: `float`
     :return: Angle in degrees
-    :raise ValueError: Unknown value for `format`
-    """
+    :raise ValueError: Unknown value for `units`
 
-    if format == "metric":
+    """
+    if units in ("km", "metric"):
         pass
-    elif format in ("imperial", "US customary"):
+    elif units in ("sm", "imperial", "US customary"):
         distance *= STATUTE_MILE
-    elif format == "nautical":
+    elif units in ("nm", "nautical"):
         distance *= NAUTICAL_MILE
     else:
-        raise ValueError("Unknown unit type `%s'" % format)
+        raise ValueError("Unknown units type `%s'" % units)
 
     return math.degrees(distance / BODY_RADIUS)
+
+def from_grid_locator(locator):
+    """Calculate geodesic latitude/longitude from Maidenhead locator
+
+    >>> "%.3f, %.3f" % from_grid_locator("BL11bh16")
+    '21.319, -157.904'
+    >>> "%.3f, %.3f" % from_grid_locator("IO92va")
+    '52.021, -0.208'
+    >>> "%.3f, %.3f" % from_grid_locator("IO92")
+    '52.021, -1.958'
+
+    :Parameters:
+        locator : `str`
+            Maidenhead locator string
+    :rtype: `tuple` of `float` objects
+    :return: Geodesic latitude and longitude values
+    :raise ValueError: Incorrect grid locator length
+    :raise ValueError: Invalid values in locator string
+
+    """
+    if not len(locator) in (4, 6, 8):
+        raise ValueError("Locator must be 4, 6 or 8 characters long `%s'"
+                         % locator)
+
+    # Convert the locator string to a list, because we need it to be mutable to
+    # munge the values
+    locator = list(locator)
+
+    # Convert characters to numeric value, fields are always uppercase
+    locator[0] = ord(locator[0]) - 65
+    locator[1] = ord(locator[1]) - 65
+
+    # Values for square are always integers
+    locator[2] = int(locator[2])
+    locator[3] = int(locator[3])
+
+    if len(locator) >= 6:
+        # Some people use uppercase for the subsquare data, in spite of
+        # lowercase being the accepted style, so handle that too.
+        locator[4] = ord(locator[4].lower()) - 97
+        locator[5] = ord(locator[5].lower()) - 97
+
+    if len(locator) == 8:
+        # Extended square values are always integers
+        locator[6] = int(locator[6])
+        locator[7] = int(locator[7])
+
+    # Check field values within 'A'(0) to 'R'(17), and square values are within
+    # 0 to 9
+    if not 0 <= locator[0] <= 17 \
+       or not 0 <= locator[1] <= 17 \
+       or not 0 <= locator[2] <= 9 \
+       or not 0 <= locator[3] <= 9:
+        raise ValueError("Invalid values in locator `%s'" % locator)
+
+    # Check subsquare values are within 'a'(0) to 'x'(23)
+    if len(locator) >= 6:
+        if not 0 <= locator[4] <= 23 \
+           or not 0 <= locator[5] <= 23:
+            raise ValueError("Invalid values in locator `%s'" % locator)
+
+    # Extended square values must be within 0 to 9
+    if len(locator) == 8:
+        if not 0 <= locator[6] <= 9 \
+           or not 0 <= locator[7] <= 9:
+            raise ValueError("Invalid values in locator `%s'" % locator)
+
+    longitude = LONGITUDE_FIELD * locator[0] \
+                + LONGITUDE_SQUARE * locator[2]
+    latitude = LATITUDE_FIELD * locator[1] \
+               + LATITUDE_SQUARE * locator[3]
+
+    if len(locator) >= 6:
+        longitude += LONGITUDE_SUBSQUARE * locator[4]
+        latitude += LATITUDE_SUBSQUARE * locator[5]
+
+    if len(locator) == 8:
+        longitude += LONGITUDE_EXTSQUARE * locator[6] + LONGITUDE_EXTSQUARE / 2
+        latitude  += LATITUDE_EXTSQUARE * locator[7] + LATITUDE_EXTSQUARE / 2
+    else:
+        longitude += LONGITUDE_EXTSQUARE * 5
+        latitude  += LATITUDE_EXTSQUARE * 5
+
+    # Rebase longitude and latitude to normal geodesic
+    longitude -= 180
+    latitude -= 90
+
+    return latitude, longitude
+
+def to_grid_locator(latitude, longitude, precision="square"):
+    """Calculate Maidenhead locator from latitude and longitude
+
+    >>> to_grid_locator(21.319, -157.904, "extsquare")
+    'BL11bh16'
+    >>> to_grid_locator(52.021, -0.208, "subsquare")
+    'IO92va'
+    >>> to_grid_locator(52.021, -1.958)
+    'IO92'
+
+    :Parameters:
+        latitude : `float`
+            Position's latitude
+        longitude : `float`
+            Position's longitude
+        precision : `str`
+            Precision with which generate locator string
+    :rtype: `str`
+    :return: Maidenhead locator for latitude and longitude
+    :raise ValueError: Invalid precision identifier
+    :raise ValueError: Invalid latitude or longitude value
+
+    """
+    if not precision in ("square", "subsquare", "extsquare"):
+        raise ValueError("Unsupported precision value `%s'" % precision)
+
+    if not -90 <= latitude <= 90:
+        raise ValueError("Invalid latitude value `%f'" % latitude)
+    if not -180 <= longitude <= 180:
+        raise ValueError("Invalid longitude value `%f'" % longitude)
+
+    latitude  += 90.0
+    longitude += 180.0
+
+    locator = []
+
+    field = int(longitude / LONGITUDE_FIELD)
+    locator.append(chr(field + 65))
+    longitude -= field * LONGITUDE_FIELD
+
+    field = int(latitude / LATITUDE_FIELD)
+    locator.append(chr(field + 65))
+    latitude -= field * LATITUDE_FIELD
+
+    square = int(longitude / LONGITUDE_SQUARE)
+    locator.append(str(square))
+    longitude -= square * LONGITUDE_SQUARE
+
+    square = int(latitude / LATITUDE_SQUARE)
+    locator.append(str(square))
+    latitude -= square * LATITUDE_SQUARE
+
+    if precision in ("subsquare", "extsquare"):
+        subsquare = int(longitude / LONGITUDE_SUBSQUARE)
+        locator.append(chr(subsquare + 97))
+        longitude -= subsquare * LONGITUDE_SUBSQUARE
+
+        subsquare = int(latitude / LATITUDE_SUBSQUARE)
+        locator.append(chr(subsquare + 97))
+        latitude -= subsquare * LATITUDE_SUBSQUARE
+
+    if precision == "extsquare":
+        extsquare = int(longitude / LONGITUDE_EXTSQUARE)
+        locator.append(str(extsquare))
+
+        extsquare = int(latitude / LATITUDE_EXTSQUARE)
+        locator.append(str(extsquare))
+
+    return "".join(locator)
+
+def parse_location(location):
+    """Parse latitude and longitude from string location
+
+    >>> "%.3f;%.3f" % parse_location("52.015;-0.221")
+    '52.015;-0.221'
+    >>> "%.3f;%.3f" % parse_location("52.015,-0.221")
+    '52.015;-0.221'
+    >>> "%.3f;%.3f" % parse_location("52.015 -0.221")
+    '52.015;-0.221'
+    >>> "%.3f;%.3f" % parse_location("52.015N 0.221W")
+    '52.015;-0.221'
+    >>> "%.3f;%.3f" % parse_location("52.015 N 0.221 W")
+    '52.015;-0.221'
+    >>> "%.3f;%.3f" % parse_location("52d00m54s N 0d13m15s W")
+    '52.015;-0.221'
+    >>> "%.3f;%.3f" % parse_location("52d0m54s N 000d13m15s W")
+    '52.015;-0.221'
+    >>> "%.3f;%.3f" % parse_location('''52d0'54" N 000d13'15" W''')
+    '52.015;-0.221'
+
+    :Parameters:
+        location : `str`
+            String to parse
+    :rtype: `tuple` of `float` objects
+    :return: Latitude and longitude of location
+
+    """
+
+    def split_dms(text, hemisphere):
+        """Split degrees, minutes and seconds string
+
+        :Parameters:
+            text : `str`
+                Text to split
+        :rtype: `float`
+        :return: Decimal degrees
+
+        """
+        out = []
+        sect = []
+        for i in text:
+            if i.isdigit():
+                sect.append(i)
+            else:
+                out.append(sect)
+                sect = []
+        degrees, minutes, seconds = [float("".join(i)) for i in out]
+        if hemisphere in "SW":
+            degrees, minutes, seconds = map(lambda x: -1 * x,
+                                            (degrees, minutes, seconds))
+        return to_dd(degrees, minutes, seconds)
+
+    for sep in ";, ":
+        chunks = location.split(sep)
+        if len(chunks) == 2:
+            if chunks[0].endswith("N"):
+                latitude = float(chunks[0][:-1])
+            elif chunks[0].endswith("S"):
+                latitude = -1 * float(chunks[0][:-1])
+            else:
+                latitude = float(chunks[0])
+            if chunks[1].endswith("E"):
+                longitude = float(chunks[1][:-1])
+            elif chunks[1].endswith("W"):
+                longitude = -1 * float(chunks[1][:-1])
+            else:
+                longitude = float(chunks[1])
+            return latitude, longitude
+        elif len(chunks) == 4:
+            if chunks[0].endswith(("s", '"')):
+                latitude = split_dms(chunks[0], chunks[1])
+            else:
+                latitude = float(chunks[0])
+                if chunks[1] == "S":
+                    latitude = -1 * latitude
+            if chunks[2].endswith(("s", '"')):
+                longitude = split_dms(chunks[2], chunks[3])
+            else:
+                longitude = float(chunks[2])
+                if chunks[3] == "W":
+                    longitude = -1 * longitude
+            return latitude, longitude
+#}
 
 #{ Solar event utilities
 
@@ -606,8 +943,7 @@ ZENITH = {
 
 def sun_rise_set(latitude, longitude, date, mode="rise", timezone=0,
                  zenith=None):
-    """
-    Calculate sunrise or sunset for a specific location
+    """Calculate sunrise or sunset for a specific location
 
     This function calculates the time sunrise or sunset, or optionally the
     beginning or end of a specified twilight period.
@@ -654,6 +990,7 @@ def sun_rise_set(latitude, longitude, date, mode="rise", timezone=0,
     :return: The time for the given event in the specified timezone, or
         `None` if the event doesn't occur on the given date
     :raise ValueError: Unknown value for `mode`
+
     """
     if not date:
         date = datetime.date.today()
@@ -739,8 +1076,7 @@ def sun_rise_set(latitude, longitude, date, mode="rise", timezone=0,
     return datetime.time(hour, minute)
 
 def sun_events(latitude, longitude, date, timezone=0, zenith=None):
-    """
-    Convenience function for calculating sunrise and sunset
+    """Convenience function for calculating sunrise and sunset
 
     >>> sun_events(52.015, -0.221, datetime.date(2007, 6, 15))
     (datetime.time(3, 40), datetime.time(20, 23))
@@ -817,200 +1153,15 @@ def sun_events(latitude, longitude, date, timezone=0, zenith=None):
             Calculate rise/set events, or twilight times
     :rtype: `tuple` of ``datetime.time``
     :return: The time for the given events in the specified timezone
+
     """
     return (sun_rise_set(latitude, longitude, date, "rise", timezone, zenith),
             sun_rise_set(latitude, longitude, date, "set", timezone, zenith))
 
 #}
 
-def prepare_read(data):
-    """
-    Prepare various input types for parsing
-
-    >>> prepare_read(open("real_file"))
-    ['This is a test file-type object\\n']
-    >>> test_list = ['This is a test list-type object', 'with two elements']
-    >>> prepare_read(test_list)
-    ['This is a test list-type object', 'with two elements']
-
-    :Parameters:
-        data : `file` like object, `list`, `str`
-            Data to read
-    :rtype: `list`
-    :return: List suitable for parsing
-    :raise TypeError: Invalid value for data
-    """
-    if hasattr(data, "readlines"):
-        data = data.readlines()
-    elif isinstance(data, list):
-        pass
-    elif isinstance(data, basestring):
-        data = open(data).readlines()
-    else:
-        raise TypeError("Unable to handle data of type `%s`" % type(data))
-    return data
-
-def from_grid_locator(locator):
-    """
-    Calculate geodesic latitude/longitude from Maidenhead locator
-
-    >>> "%.3f, %.3f" % from_grid_locator("BL11bh16")
-    '21.319, -157.904'
-    >>> "%.3f, %.3f" % from_grid_locator("IO92va")
-    '52.021, -0.208'
-    >>> "%.3f, %.3f" % from_grid_locator("IO92")
-    '52.021, -1.958'
-
-    :Parameters:
-        locator : `str`
-            Maidenhead locator string
-    :rtype: `tuple` of `float` objects
-    :return: Geodesic latitude and longitude values
-    :raise ValueError: Incorrect grid locator length
-    :raise ValueError: Invalid values in locator string
-    """
-    if not len(locator) in (4, 6, 8):
-        raise ValueError("Locator must be 4, 6 or 8 characters long `%s'"
-                         % locator)
-
-    # Convert the locator string to a list, because we need it to be mutable to
-    # munge the values
-    locator = list(locator)
-
-    # Convert characters to numeric value, fields are always uppercase
-    locator[0] = ord(locator[0]) - 65
-    locator[1] = ord(locator[1]) - 65
-
-    # Values for square are always integers
-    locator[2] = int(locator[2])
-    locator[3] = int(locator[3])
-
-    if len(locator) >= 6:
-        # Some people use uppercase for the subsquare data, in spite of
-        # lowercase being the accepted style, so handle that too.
-        locator[4] = ord(locator[4].lower()) - 97
-        locator[5] = ord(locator[5].lower()) - 97
-
-    if len(locator) == 8:
-        # Extended square values are always integers
-        locator[6] = int(locator[6])
-        locator[7] = int(locator[7])
-
-    # Check field values within 'A'(0) to 'R'(17), and square values are within
-    # 0 to 9
-    if not 0 <= locator[0] <= 17 \
-       or not 0 <= locator[1] <= 17 \
-       or not 0 <= locator[2] <= 9 \
-       or not 0 <= locator[3] <= 9:
-        raise ValueError("Invalid values in locator `%s'" % locator)
-
-    # Check subsquare values are within 'a'(0) to 'x'(23)
-    if len(locator) >= 6:
-        if not 0 <= locator[4] <= 23 \
-           or not 0 <= locator[5] <= 23:
-            raise ValueError("Invalid values in locator `%s'" % locator)
-
-    # Extended square values must be within 0 to 9
-    if len(locator) == 8:
-        if not 0 <= locator[6] <= 9 \
-           or not 0 <= locator[7] <= 9:
-            raise ValueError("Invalid values in locator `%s'" % locator)
-
-    longitude = LONGITUDE_FIELD * locator[0] \
-                + LONGITUDE_SQUARE * locator[2]
-    latitude = LATITUDE_FIELD * locator[1] \
-               + LATITUDE_SQUARE * locator[3]
-
-    if len(locator) >= 6:
-        longitude += LONGITUDE_SUBSQUARE * locator[4]
-        latitude += LATITUDE_SUBSQUARE * locator[5]
-
-    if len(locator) == 8:
-        longitude += LONGITUDE_EXTSQUARE * locator[6] + LONGITUDE_EXTSQUARE / 2
-        latitude  += LATITUDE_EXTSQUARE * locator[7] + LATITUDE_EXTSQUARE / 2
-    else:
-        longitude += LONGITUDE_EXTSQUARE * 5
-        latitude  += LATITUDE_EXTSQUARE * 5
-
-    # Rebase longitude and latitude to normal geodesic
-    longitude -= 180
-    latitude -= 90
-
-    return latitude, longitude
-
-def to_grid_locator(latitude, longitude, precision="square"):
-    """
-    Calculate Maidenhead locator from latitude and longitude
-
-    >>> to_grid_locator(21.319, -157.904, "extsquare")
-    'BL11bh16'
-    >>> to_grid_locator(52.021, -0.208, "subsquare")
-    'IO92va'
-    >>> to_grid_locator(52.021, -1.958)
-    'IO92'
-
-    :Parameters:
-        latitude : `float`
-            Position's latitude
-        longitude : `float`
-            Position's longitude
-        precision : `str`
-            Precision with which generate locator string
-    :rtype: `str`
-    :return: Maidenhead locator for latitude and longitude
-    :raise ValueError: Invalid precision identifier
-    :raise ValueError: Invalid latitude or longitude value
-    """
-    if not precision in ("square", "subsquare", "extsquare"):
-        raise ValueError("Unsupported precision value `%s'" % precision)
-
-    if not -90 <= latitude <= 90:
-        raise ValueError("Invalid latitude value `%f'" % latitude)
-    if not -180 <= longitude <= 180:
-        raise ValueError("Invalid longitude value `%f'" % longitude)
-
-    latitude  += 90.0
-    longitude += 180.0
-
-    locator = []
-
-    field = int(longitude / LONGITUDE_FIELD)
-    locator.append(chr(field + 65))
-    longitude -= field * LONGITUDE_FIELD
-
-    field = int(latitude / LATITUDE_FIELD)
-    locator.append(chr(field + 65))
-    latitude -= field * LATITUDE_FIELD
-
-    square = int(longitude / LONGITUDE_SQUARE)
-    locator.append(str(square))
-    longitude -= square * LONGITUDE_SQUARE
-
-    square = int(latitude / LATITUDE_SQUARE)
-    locator.append(str(square))
-    latitude -= square * LATITUDE_SQUARE
-
-    if precision in ("subsquare", "extsquare"):
-        subsquare = int(longitude / LONGITUDE_SUBSQUARE)
-        locator.append(chr(subsquare + 97))
-        longitude -= subsquare * LONGITUDE_SUBSQUARE
-
-        subsquare = int(latitude / LATITUDE_SUBSQUARE)
-        locator.append(chr(subsquare + 97))
-        latitude -= subsquare * LATITUDE_SUBSQUARE
-
-    if precision == "extsquare":
-        extsquare = int(longitude / LONGITUDE_EXTSQUARE)
-        locator.append(str(extsquare))
-
-        extsquare = int(latitude / LATITUDE_EXTSQUARE)
-        locator.append(str(extsquare))
-
-    return "".join(locator)
-
 def dump_xearth_markers(markers, name="identifier"):
-    """
-    Generate an Xearth compatible marker file
+    """Generate an Xearth compatible marker file
 
     `dump_xearth_markers()` writes a simple `Xearth
     <http://www.cs.colorado.edu/~tuna/xearth/>`__ marker file from a dictionary
@@ -1050,7 +1201,7 @@ def dump_xearth_markers(markers, name="identifier"):
     :note: `xplanet <http://xplanet.sourceforge.net/>`__ also supports xearth
         marker files, and as such can use the output from this function.
 
-    >>> from earth_distance.trigpoints import Trigpoint
+    >>> from upoints.trigpoints import Trigpoint
     >>> markers = {
     ...     500936: Trigpoint(52.066035, -0.281449, 37.000000, "Broom Farm"),
     ...     501097: Trigpoint(52.010585, -0.173443, 97.000000, "Bygrave"),
@@ -1069,7 +1220,7 @@ def dump_xearth_markers(markers, name="identifier"):
         ...
     ValueError: Unknown name type `falseKey'
 
-    >>> from earth_distance.point import Point
+    >>> from upoints.point import Point
     >>> points = {
     ...     "Broom Farm": Point(52.066035, -0.281449),
     ...     "Bygrave": Point(52.010585, -0.173443),
@@ -1080,7 +1231,7 @@ def dump_xearth_markers(markers, name="identifier"):
     52.010585 -0.173443 "Bygrave"
     51.910886 -0.186462 "Sish Lane"
 
-    :see: `earth_distance.xearth.Xearths.import_marker_file`
+    :see: `upoints.xearth.Xearths.import_locations`
 
     :Parameters:
         markers : `dict`
@@ -1090,6 +1241,7 @@ def dump_xearth_markers(markers, name="identifier"):
     :rtype: `list`
     :return: List of strings representing an Xearth marker file
     :raise ValueError: Unsupported value for `name`
+
     """
     output = []
     for identifier, point in markers.items():
@@ -1112,8 +1264,7 @@ def dump_xearth_markers(markers, name="identifier"):
     return sorted(output, key=lambda x: x.split()[2])
 
 def calc_radius(latitude, ellipsoid="WGS84"):
-    """
-    Calculate earth radius for a given latitude
+    """Calculate earth radius for a given latitude
 
     This function is most useful when dealing with datasets that are very
     localised and require the accuracy of an ellipsoid model without the
@@ -1145,6 +1296,7 @@ def calc_radius(latitude, ellipsoid="WGS84"):
             Ellipsoid model to use for calculation
     :rtype: `float`
     :return: Approximated Earth radius at the given latitude
+
     """
 
     ellipsoids = {
@@ -1168,86 +1320,4 @@ def calc_radius(latitude, ellipsoid="WGS84"):
 
     sl = math.sin(math.radians(latitude))
     return (major * (1 - eccentricity)) / (1 - eccentricity * sl**2) ** 1.5
-
-def parse_location(location):
-    """
-    Parse latitude and longitude from string location
-
-    >>> "%.3f;%.3f" % parse_location("52.015;-0.221")
-    '52.015;-0.221'
-    >>> "%.3f;%.3f" % parse_location("52.015,-0.221")
-    '52.015;-0.221'
-    >>> "%.3f;%.3f" % parse_location("52.015 -0.221")
-    '52.015;-0.221'
-    >>> "%.3f;%.3f" % parse_location("52.015N 0.221W")
-    '52.015;-0.221'
-    >>> "%.3f;%.3f" % parse_location("52.015 N 0.221 W")
-    '52.015;-0.221'
-    >>> "%.3f;%.3f" % parse_location("52d00m54s N 0d13m15s W")
-    '52.015;-0.221'
-    >>> "%.3f;%.3f" % parse_location("52d0m54s N 000d13m15s W")
-    '52.015;-0.221'
-    >>> "%.3f;%.3f" % parse_location('''52d0'54" N 000d13'15" W''')
-    '52.015;-0.221'
-
-    :Parameters:
-        location : `str`
-            String to parse
-    :rtype: `tuple` of `float` objects
-    :return: Latitude and longitude of location
-    """
-    def split_dms(text, hemisphere):
-        """
-        Split degrees, minutes and seconds string
-
-        :Parameters:
-            text : `str`
-                Text to split
-        :rtype: `float`
-        :return: Decimal degrees
-        """
-        out = []
-        sect = []
-        for i in text:
-            if i.isdigit():
-                sect.append(i)
-            else:
-                out.append(sect)
-                sect = []
-        degrees, minutes, seconds = [float("".join(i)) for i in out]
-        if hemisphere in "SW":
-            degrees, minutes, seconds = map(lambda x: -1 * x,
-                                            (degrees, minutes, seconds))
-        return to_dd(degrees, minutes, seconds)
-
-    for sep in ";, ":
-        chunks = location.split(sep)
-        if len(chunks) == 2:
-            if chunks[0][-1] == "N":
-                latitude = float(chunks[0][:-1])
-            elif chunks[0][-1] == "S":
-                latitude = -1 * float(chunks[0][:-1])
-            else:
-                latitude = float(chunks[0])
-            if chunks[1][-1] == "E":
-                longitude = float(chunks[1][:-1])
-            elif chunks[1][-1] == "W":
-                longitude = -1 * float(chunks[1][:-1])
-            else:
-                longitude = float(chunks[1])
-            return latitude, longitude
-        elif len(chunks) == 4:
-            if chunks[0][-1] in ("s", '"'):
-                latitude = split_dms(chunks[0], chunks[1])
-            else:
-                latitude = float(chunks[0])
-                if chunks[1] == "S":
-                    latitude = -1 * latitude
-            if chunks[2][-1] in ("s", '"'):
-                longitude = split_dms(chunks[2], chunks[3])
-            else:
-                longitude = float(chunks[2])
-                if chunks[3] == "W":
-                    longitude = -1 * longitude
-            return latitude, longitude
 
