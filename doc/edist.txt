@@ -40,6 +40,9 @@ OPTIONS
 --config-file = *file*
     Config file to read custom locations from
 
+--csv-file = *csv_file*
+    CSV file (gpsbabel format) to read route/locations from
+
 Calculation modes
 '''''''''''''''''
 
@@ -67,6 +70,12 @@ Calculation modes
 -z, --sunset
     calculate the sunset time for a given location
 
+-F, --flight-plan
+    calculate the flight plan corresponding to locations (route)
+
+-S *speed*, --speed *speed*
+    speed to calculate elapsed time
+
 Output options
 ''''''''''''''
 
@@ -93,6 +102,13 @@ Output options
 
 -u *km*, --units *km*
     display distances in km(default), mile or nm
+
+-u *km*, --units *km*
+   display distances in kilometres(default), statute miles or nautical miles
+
+-t *h*, --time *h*
+   display time in hours(default), minutes or seconds
+
 
 CONFIGURATION FILE
 ------------------
