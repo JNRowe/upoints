@@ -484,3 +484,156 @@ class Trackpoints(list):
 
         return ET.ElementTree(gpx)
 
+
+class Routepoint(_GpxElem):
+    """Class for representing a waypoint element from GPX data files
+
+    >>> Routepoint(52, 0)
+    Routepoint(52.0, 0.0, None, None)
+    >>> Routepoint(52, 0, None)
+    Routepoint(52.0, 0.0, None, None)
+    >>> Routepoint(52, 0, "name", "desc")
+    Routepoint(52.0, 0.0, 'name', 'desc')
+
+    :since: 0.10.0
+
+    :Ivariables:
+        latitude
+            Routepoint's latitude
+        longitude
+            Routepoint's longitude
+        name
+            Routepoint's name
+        description
+            Routepoint's description
+
+    """
+
+    __slots__ = ('name', 'description', )
+
+    _elem_name = "rtept"
+
+
+class Routepoints(list):
+    """Class for representing a group of `Routepoint` objects
+
+    :since: 0.10.0
+
+    """
+
+    def __init__(self, gpx_file=None):
+        """Initialise a new `Routepoints` object"""
+        super(Routepoints, self).__init__()
+        if gpx_file:
+            self.import_locations(gpx_file)
+
+    def import_locations(self, gpx_file, gpx_version=None):
+        """Import GPX data files
+
+        `import_locations()` returns a series of lists representing track
+        segments with `Routepoint` objects as contents.
+
+        It expects data files in GPX format, as specified in `GPX 1.1 Schema
+        Documentation <http://www.topografix.com/GPX/1/1/>`__, which is XML such
+        as::
+
+            <?xml version="1.0" encoding="utf-8" standalone="no"?>
+            <gpx version="1.1" creator="upoints/0.11.0"
+            xmlns="http://www.topografix.com/GPX/1/1"
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd">
+              <rte>
+                <rtept lat="52.015" lon="-0.221">
+                  <name>Home</name>
+                  <desc>My place</desc>
+                </rtept>
+                <rtept lat="52.167" lon="0.390">
+                  <name>MSR</name>
+                  <desc>Microsoft Research, Cambridge</desc>
+                </rtept>
+              </rte>
+            </gpx>
+
+        The reader uses `Python <http://www.python.org/>`__'s `ElementTree`
+        module, so should be very fast when importing data.  The above file
+        processed by `import_locations()` will return the following `list`
+        object::
+
+            [[Routepoint(52.015, -0.221, "Home", "My place"),
+              Routepoint(52.167, 0.390, "MSR", "Microsoft Research, Cambridge")], ]
+
+        >>> routepoints = Routepoints(open("gpx_routes"))
+        >>> for value in sorted(routepoints[0],
+        ...                     key=lambda x: x.name.lower()):
+        ...     print(value)
+        Home (52°00'54"N, 000°13'15"W) [My place]
+        MSR (52°10'01"N, 000°23'24"E) [Microsoft Research, Cambridge]
+
+        :Parameters:
+            gpx_file : `file`, `list` or `str`
+                GPX data to read
+            gpx_version : `str`
+                Specific GPX version entities to import
+        :rtype: `list`
+        :return: Locations with optional comments
+
+        """
+        data = utils.prepare_xml_read(gpx_file)
+
+        if gpx_version:
+            try:
+                accepted_gpx = {gpx_version: GPX_VERSIONS[gpx_version]}
+            except KeyError:
+                raise KeyError("Unknown GPX version `%s'" % gpx_version)
+        else:
+            accepted_gpx = GPX_VERSIONS
+
+        for version, namespace in accepted_gpx.items():
+            logging.info("Searching for GPX v%s entries" % version)
+
+            gpx_elem = lambda name: ET.QName(namespace, name).text
+            route_elem = "//" + gpx_elem("rte")
+            routepoint_elem = gpx_elem("rtept")
+            name_elem = gpx_elem("name")
+            desc_elem = gpx_elem("desc")
+
+            for route in data.findall(route_elem):
+                points = point.Points()
+                for routepoint in route.findall(routepoint_elem):
+                    latitude = routepoint.get("lat")
+                    longitude = routepoint.get("lon")
+                    name = routepoint.findtext(name_elem)
+                    description = routepoint.findtext(desc_elem)
+                    points.append(Routepoint(latitude, longitude, name,
+                                             description))
+                self.append(points)
+
+    def export_gpx_file(self, gpx_version=DEF_GPX_VERSION,
+                        human_namespace=False):
+        """Generate GPX element tree from `Routepoints`
+
+        >>> from sys import stdout
+        >>> locations = Routepoints(open("gpx_routes"))
+        >>> xml = locations.export_gpx_file()
+        >>> xml.write(stdout)
+        <ns0:gpx xmlns:ns0="http://www.topografix.com/GPX/1/1"><ns0:rte><ns0:rtept lat="52.015" lon="-0.221"><ns0:name>Home</ns0:name><ns0:desc>My place</ns0:desc></ns0:rtept><ns0:rtept lat="52.167" lon="0.39"><ns0:name>MSR</ns0:name><ns0:desc>Microsoft Research, Cambridge</ns0:desc></ns0:rtept></ns0:rte></ns0:gpx>
+
+        :Parameters:
+            gpx_version : `str`
+                GPX version to generate
+            human_namespace : `bool`
+                Whether to generate output using human readable
+                namespace prefixes
+        :rtype: ``ET.ElementTree``
+        :return: GPX element tree depicting `Routepoints` objects
+
+        """
+        gpx = create_elem('gpx', None, gpx_version, human_namespace)
+        for rte in self:
+            chunk = create_elem('rte', None, gpx_version, human_namespace)
+            gpx.append(chunk)
+            for place in rte:
+                chunk.append(place.togpx(gpx_version, human_namespace))
+
+        return ET.ElementTree(gpx)
+
