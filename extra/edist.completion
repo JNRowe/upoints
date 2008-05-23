@@ -1,0 +1,59 @@
+#
+# vim: set sw=4 sts=4 et tw=80 fenc=utf-8:
+#
+# edist.completion - Bash completion for edist.py
+# Copyright (C) 2008 James Rowe;
+# All rights reserved.
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+
+_edist() {
+    local cur
+
+    COMPREPLY=()
+    cur=${COMP_WORDS[COMP_CWORD]}
+
+    case "$prev" in
+    --@(config|csv)-file)
+        _filedir
+        return 0
+        ;;
+    -@(o|-format))
+        COMPREPLY=($(compgen -W 'dms dm dd locator'))
+        return 0
+        ;;
+    -@(l|-locator))
+        COMPREPLY=($(compgen -W 'square subsquare extsquare'))
+        return 0
+        ;;
+    -@(u|-units))
+        COMPREPLY=($(compgen -W 'km sm nm'))
+        return 0
+        ;;
+    -@(h|-time))
+        COMPREPLY=($(compgen -W 'h m s'))
+        return 0
+        ;;
+    esac
+
+    [[ -f ~/.edist.conf ]] && c_locs=$(sed -n 's,^\[\(.*\)\]$,\1,p' ~/.edist.conf)
+    COMPREPLY=($(compgen -W '${c_locs} --ascii -b --bearing --config-file
+        --csv-file -d --distance -f --final-bearing -F --flight-plan -g --string
+        -h --help -l --locator -o --format -p --print -q --quiet -r --range -s
+        --destination -S --speed -t --time --unicode -u --units --version -v
+        --verbose -y --sunrise -z --sunset' -- $cur))
+}
+complete -o filenames -F _edist edist.py
+
