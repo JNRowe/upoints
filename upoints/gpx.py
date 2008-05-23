@@ -381,7 +381,7 @@ class Trackpoints(list):
         as::
 
             <?xml version="1.0" encoding="utf-8" standalone="no"?>
-            <gpx version="1.1" creator="PocketGPSWorld.com"
+            <gpx version="1.1" creator="upoints/0.11.0"
             xmlns="http://www.topografix.com/GPX/1/1"
             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
             xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd">
@@ -470,7 +470,7 @@ class Trackpoints(list):
                 Whether to generate output using human readable
                 namespace prefixes
         :rtype: ``ET.ElementTree``
-        :return: GPX element tree depicting `Trackpoint` objects
+        :return: GPX element tree depicting `Trackpoints` objects
 
         """
         gpx = create_elem('gpx', None, gpx_version, human_namespace)
