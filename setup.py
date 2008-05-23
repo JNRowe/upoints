@@ -221,7 +221,8 @@ class BuildDoc(NoOptsCommand):
         directives.register_directive('code-block', pygments_directive)
 
         for source in sorted(["NEWS", "README"] + glob('doc/*.txt')):
-            dest = os.path.splitext(source)[0] + '.html'
+            base = os.path.splitext(source)[0]
+            dest = "%s.html" % base
             if self.force or newer(source, dest):
                 print('Building file %s' % dest)
                 if self.dry_run:
@@ -231,7 +232,10 @@ class BuildDoc(NoOptsCommand):
                                       '--generator',
                                       '--stylesheet-path=doc/docutils.css',
                                       '--link-stylesheet', source, dest])
-
+                if base[-2] == "." and base[-1].isdigit():
+                    print('Building file %s' % base)
+                    publish_cmdline(writer_name='man',
+                                    argv=['--strict', source, base])
         if not EPYDOC:
             raise DistutilsModuleError("epydoc import failed, "
                                        "skipping API documentation generation")
