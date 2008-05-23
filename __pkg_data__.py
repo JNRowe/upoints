@@ -33,20 +33,23 @@ KEYWORDS = ["baken", "cities", "geonames", "gis", "gps", "gpx", "navigation",
             "nmea", "openstreetmap", "trigpointing", "weather", "xearth"
 
 CLASSIFIERS = [
-    'Development Status :: 4 - Beta',
+    'Development Status :: 5 - Production/Stable',
     'Environment :: Console',
     'Environment :: Other Environment',
     'Intended Audience :: Developers',
     'Intended Audience :: Education',
+    'Intended Audience :: End Users/Desktop',
     'Intended Audience :: Science/Research',
     'License :: OSI Approved :: GNU General Public License (GPL)',
+    'Natural Language :: English',
     'Operating System :: OS Independent',
     'Programming Language :: Python',
     'Topic :: Database',
-    'Topic :: Education',
     'Topic :: Scientific/Engineering :: GIS',
     'Topic :: Software Development :: Libraries :: Python Modules',
     'Topic :: Text Processing :: Filters',
+    'Topic :: Text Processing :: Markup :: XML',
+    'Topic :: Utilities',
 ]
 
 OBSOLETES = ["earth_distance", ]
