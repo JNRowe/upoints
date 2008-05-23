@@ -29,8 +29,9 @@ SCRIPTS = [edist, ]
 DESCRIPTION = upoints.__doc__.splitlines()[0][:-1]
 LONG_DESCRIPTION = "\n\n".join(upoints.__doc__.split("\n\n")[1:3])
 
-KEYWORDS = ['navigation', 'xearth', 'trigpointing', 'cities', 'baken',
-            'weather', 'geonames', 'openstreetmap', 'nmea', 'gpx']
+KEYWORDS = ["baken", "cities", "geonames", "gis", "gps", "gpx", "navigation",
+            "nmea", "openstreetmap", "trigpointing", "weather", "xearth"
+
 CLASSIFIERS = [
     'Development Status :: 4 - Beta',
     'Environment :: Console',
