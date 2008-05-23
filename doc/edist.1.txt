@@ -1,20 +1,24 @@
-edist.py(1)
-===========
+edist.py
+========
 
-NAME
-----
+Simple command line coordinate processing
+"""""""""""""""""""""""""""""""""""""""""
 
-edist.py - Simple command line coordinate processing
+:Author: James Rowe <jnrowe@ukfsn.org>
+:Date: 2008-01-22
+:Copyright: GPL v3
+:Manual section: 1
+:Manual group: GIS
 
 SYNOPSIS
 --------
 
-``edist.py [OPTIONS] location...``
+    edist.py [OPTIONS] location...
 
 DESCRIPTION
 -----------
 
-``edist.py`` operates on one, or more, locations specified in various
+**edist.py** operates on one, or more, locations specified in various
 formats.  For example, a location string of "52.015;\-0.221" would be
 interpreted as 52.015 degrees North by 0.221 degrees West, as would
 "52d0m54s N 000d13m15s W".  Positive values can be specified with a "+"
@@ -37,10 +41,10 @@ OPTIONS
 -h, --help
     show this help message and exit
 
---config-file = *file*
+--config-file = **file**
     Config file to read custom locations from
 
---csv-file = *csv_file*
+--csv-file = **csv_file**
     CSV file (gpsbabel format) to read route/locations from
 
 Calculation modes
@@ -58,10 +62,10 @@ Calculation modes
 -f, --final-bearing
     calculate the final bearing between locations
 
--r *range*, --range *range*
-    calculate whether locations are within a given *range*
+-r **range**, --range **range**
+    calculate whether locations are within a given **range**
 
--s *distance@bearing*, --destination *distance@bearing*
+-s **distance@bearing**, --destination **distance@bearing**
     calculate the destination for a given distance and bearing
 
 -y, --sunrise
@@ -73,7 +77,7 @@ Calculation modes
 -F, --flight-plan
     calculate the flight plan corresponding to locations (route)
 
--S *speed*, --speed *speed*
+-S **speed**, --speed **speed**
     speed to calculate elapsed time
 
 Output options
@@ -85,10 +89,10 @@ Output options
 --ascii
     produce ASCII output
 
--o *FORMAT*, --format *FORMAT*
+-o **FORMAT**, --format **FORMAT**
     produce output in dms, dm, d format or Maidenhead locator
 
--l *LOCATOR*, --locator *LOCATOR*
+-l **LOCATOR**, --locator **LOCATOR**
     accuracy of Maidenhead locator output
 
 -g, --string
@@ -100,21 +104,21 @@ Output options
 -q, --quiet
     output only results and errors
 
--u *km*, --units *km*
+-u **km**, --units **km**
     display distances in km(default), mile or nm
 
--u *km*, --units *km*
+-u **km**, --units **km**
    display distances in kilometres(default), statute miles or nautical miles
 
--t *h*, --time *h*
+-t **h**, --time **h**
    display time in hours(default), minutes or seconds
 
 
 CONFIGURATION FILE
 ------------------
 
-The configuration file, by default ``~/.edist.conf``, is a simple
-``INI`` format file, with sections headers defining the name of the
+The configuration file, by default **~/.edist.conf**, is a simple
+**INI** format file, with sections headers defining the name of the
 location and their data defining the actual position.  You can define
 locations by either their latitude and longitude, or with a Maidenhead
 locator string.  Any options that aren't handled will simply ignored.
@@ -132,7 +136,7 @@ For example::
     locator = IO92
 
 With the above configuration file one could find the distance from
-*Home* to *Cambridge* using ``edist.py --distance Home Cambridge``.
+**Home** to **Cambridge** using **edist.py --distance Home Cambridge**.
 
 BUGS
 ----
@@ -160,5 +164,5 @@ Free Software Foundation, either version 3 of the License, or (at your
 option) any later version.
 
 ..
-    :vim: set ft=rst ts=2 sw=2 et:
+    :vim: set ft=rst ts=4 sw=4 et:
 
