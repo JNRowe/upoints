@@ -30,7 +30,7 @@ DESCRIPTION = upoints.__doc__.splitlines()[0][:-1]
 LONG_DESCRIPTION = "\n\n".join(upoints.__doc__.split("\n\n")[1:3])
 
 KEYWORDS = ["baken", "cities", "geonames", "gis", "gps", "gpx", "navigation",
-            "nmea", "openstreetmap", "trigpointing", "weather", "xearth"
+            "nmea", "openstreetmap", "trigpointing", "weather", "xearth"]
 
 CLASSIFIERS = [
     'Development Status :: 5 - Production/Stable',
