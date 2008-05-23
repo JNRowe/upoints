@@ -87,13 +87,13 @@ class _GpxElem(point.Point):
 
     :Ivariables:
         latitude
-            Waypoint's latitude
+            _GpxElem's latitude
         longitude
-            Waypoint's longitude
+            _GpxElem's longitude
         name
-            Waypoint's name
+            _GpxElem's name
         description
-            Waypoint's description
+            _GpxElem's description
 
     """
 
@@ -102,7 +102,7 @@ class _GpxElem(point.Point):
     _elem_name = None
 
     def __init__(self, latitude, longitude, name=None, description=None):
-        """Initialise a new `Waypoint` object
+        """Initialise a new `_GpxElem` object
 
         >>> _GpxElem(52, 0)
         _GpxElem(52.0, 0.0, None, None)
