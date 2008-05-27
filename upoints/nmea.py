@@ -215,7 +215,7 @@ class LoranPosition(point.Point):
         if self.mode:
             data.append(self.mode)
         data = ",".join(data)
-        return "$%s*%X\r" % (data, calc_checksum(data))
+        return "$%s*%02X\r" % (data, calc_checksum(data))
 
     def mode_string(self):
         """
@@ -360,7 +360,7 @@ class Position(point.Point):
         if self.mode:
             data.append(self.mode)
         data = ",".join(data)
-        return "$%s*%X\r" % (data, calc_checksum(data))
+        return "$%s*%02X\r" % (data, calc_checksum(data))
 
     def mode_string(self):
         """
@@ -552,7 +552,7 @@ class Fix(point.Point):
         data.append("%.1f" % self.dgps_delta if self.dgps_delta else "")
         data.append("%04i" % self.dgps_station if self.dgps_station else "")
         data = ",".join(data)
-        return "$%s*%X\r" % (data, calc_checksum(data))
+        return "$%s*%02X\r" % (data, calc_checksum(data))
 
     def quality_string(self):
         """
@@ -675,7 +675,7 @@ class Waypoint(point.Point):
         data.extend(nmea_longitude(self.longitude))
         data.append(self.name)
         data = ",".join(data)
-        text = "$%s*%X\r" % (data, calc_checksum(data))
+        text = "$%s*%02X\r" % (data, calc_checksum(data))
         if len(text) > 81:
             raise ValueError("All NMEA sentences must be less than 82 bytes "
                              "including line endings")
