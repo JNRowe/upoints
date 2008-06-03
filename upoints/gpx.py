@@ -267,8 +267,8 @@ class _GpxMeta(object):
         '<ns0:metadata xmlns:ns0="http://www.topografix.com/GPX/1/1"><ns0:time>2008-06-03T16:12:43+0000</ns0:time><ns0:bounds maxlat="54" maxlon="1" minlat="52" minlon="-2" /></ns0:metadata>'
         >>> meta.bounds = [point.Point(52.015, -0.221),
         ...                point.Point(52.167, 0.390)]
-        >>> ET.tostring(meta.togpx())
-        '<ns0:metadata xmlns:ns0="http://www.topografix.com/GPX/1/1"><ns0:time>2008-06-03T16:12:43+0000</ns0:time><ns0:bounds maxlat="0.39" minlat="52.015" minlon="-0.221" /></ns0:metadata>'
+        >>> ET.tostring(meta.togpx()) # doctest: +ELLIPSIS
+        '<ns0:metadata xmlns:ns0="http://www.topografix.com/GPX/1/1"><ns0:time>...</ns0:time><ns0:bounds maxlat="52.167" maxlon="0.39" minlat="52.015" minlon="-0.221" /></ns0:metadata>'
 
         :Parameters:
             gpx_version : `str`
@@ -334,7 +334,10 @@ class _GpxMeta(object):
                         element.append(type)
                 metadata.append(element)
         element = elementise("time", None)
-        element.text = time.strftime("%Y-%m-%dT%H:%M:%S%z", self.time)
+        if self.time:
+            element.text = time.strftime("%Y-%m-%dT%H:%M:%S%z", self.time)
+        else:
+            element.text = time.strftime("%Y-%m-%dT%H:%M:%S%z")
         metadata.append(element)
         if self.keywords:
             element = elementise("keywords", None)
@@ -348,7 +351,7 @@ class _GpxMeta(object):
                     "minlat": str(min(latitudes)),
                     "maxlat": str(max(latitudes)),
                     "minlon": str(min(longitudes)),
-                    "maxlat": str(max(longitudes)),
+                    "maxlon": str(max(longitudes)),
                 }
             else:
                 bounds = dict([(k, str(v)) for k, v in self.bounds.items()])
