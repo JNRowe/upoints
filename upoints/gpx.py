@@ -22,6 +22,7 @@ import logging
 import sys
 import time
 
+from functools import partial
 from xml.etree import ElementTree
 
 try:
@@ -172,16 +173,17 @@ class _GpxElem(point.Point):
         :return: GPX element
 
         """
-        element = create_elem(self.__class__._elem_name,
-                              {"lat": str(self.latitude),
-                               "lon": str(self.longitude)},
-                              gpx_version, human_namespace)
+        elementise = partial(create_elem, gpx_version=gpx_version,
+                             human_namespace=human_namespace)
+        element = elementise(self.__class__._elem_name,
+                             {"lat": str(self.latitude),
+                              "lon": str(self.longitude)})
         if self.name:
-            nametag = create_elem("name", None, gpx_version, human_namespace)
+            nametag = elementise("name", None)
             nametag.text = self.name
             element.append(nametag)
         if self.description:
-            desctag = create_elem("desc", None, gpx_version, human_namespace)
+            desctag = elementise("desc", None)
             desctag.text = self.description
             element.append(desctag)
         return element
@@ -278,85 +280,79 @@ class _GpxMeta(object):
         :return: GPX metadata element
 
         """
-        metadata = create_elem("metadata", None, gpx_version, human_namespace)
+        elementise = partial(create_elem, gpx_version=gpx_version,
+                             human_namespace=human_namespace)
+        metadata = elementise("metadata", None)
         if self.name:
-            element = create_elem("name", None, gpx_version, human_namespace)
+            element = elementise("name", None)
             element.text = getattr(self, name)
             metadata.append(element)
         if self.desc:
-            element = create_elem("desc", None, gpx_version, human_namespace)
+            element = elementise("desc", None)
             element.text = getattr(self, name)
             metadata.append(element)
         if self.author:
-            element = create_elem("author", None, gpx_version, human_namespace)
+            element = elementise("author", None)
             if self.author['name']:
-                name = create_elem("name", None, gpx_version, human_namespace)
+                name = elementise("name", None)
                 name.text = self.author['name']
                 element.append(name)
             if self.author['email']:
-                email = create_elem("email",
-                                    dict(zip(self.author['email'].split("@"),
-                                             ("id", "domain"))),
-                                    gpx_version, human_namespace)
+                email = elementise("email",
+                                   dict(zip(self.author['email'].split("@"),
+                                            ("id", "domain"))))
                 element.append(email)
             if self.author['link']:
-                link = create_elem("link", None, gpx_version, human_namespace)
+                link = elementise("link", None)
                 link.text = self.author['link']
                 element.append(link)
             metadata.append(element)
         if self.copyright:
             author = {"author": self.author['name']} if self.author['name'] else None
-            element = create_elem("copyright", author, gpx_version,
-                                  human_namespace)
+            element = elementise("copyright", author)
             if self.copyright['year']:
-                year = create_elem("year", None, gpx_version, human_namespace)
+                year = elementise("year", None)
                 year.text = self.copyright['year']
                 element.append(copyright)
             if self.copyright['license']:
-                license = create_elem("license", None, gpx_version,
-                                      human_namespace)
+                license = elementise("license", None)
                 element.append(license)
             metadata.append(element)
         if self.link:
             for link in self.link:
                 if isinstance(link, basestring):
-                    element = create_elem("link", {"href": link}, gpx_version,
-                                          human_namespace)
+                    element = elementise("link", {"href": link})
                 else:
-                    element = create_elem("link", {"href": link["href"]},
-                                          gpx_version, human_namespace)
+                    element = elementise("link", {"href": link["href"]})
                     if link['text']:
-                        text = create_elem("text", None, gpx_version,
-                                           human_namespace)
+                        text = elementise("text", None)
                         text.text = link["text"]
                         element.append(text)
                     if link['type']:
-                        ltype = create_elem("type", None, gpx_version,
-                                            human_namespace)
+                        ltype = elementise("type", None)
                         ltype.text = link["type"]
                         element.append(type)
                 metadata.append(element)
-        element = create_elem("time", None, gpx_version, human_namespace)
+        element = elementise("time", None)
         element.text = time.strftime("%Y-%m-%dT%H:%M:%S%z", self.time)
         metadata.append(element)
         if self.keywords:
-            element = create_elem("keywords", None, gpx_version,
-                                  human_namespace)
+            element = elementise("keywords", None)
             element.text = self.keywords
             metadata.append(element)
         if self.bounds:
             if not isinstance(self.bounds, dict):
                 latitudes = map(lambda x: x.latitude, self.bounds)
                 longitudes = map(lambda x: x.longitude, self.bounds)
-                self.bounds = {
-                    "minlat": min(latitudes),
-                    "maxlat": max(latitudes),
-                    "minlon": min(longitudes),
-                    "maxlat": max(longitudes),
+                bounds = {
+                    "minlat": str(min(latitudes)),
+                    "maxlat": str(max(latitudes)),
+                    "minlon": str(min(longitudes)),
+                    "maxlat": str(max(longitudes)),
                 }
-            element = create_elem("bounds",
-                                  dict([(k, str(v)) for k, v in self.bounds.items()]),
-                                  gpx_version, human_namespace)
+            else:
+                bounds = dict([(k, str(v)) for k, v in self.bounds.items()])
+            element = elementise("bounds", bounds)
             metadata.append(element)
         if self.extensions:
             for i in self.extensions:
@@ -651,11 +647,13 @@ class Trackpoints(list):
         :return: GPX element tree depicting `Trackpoints` objects
 
         """
-        gpx = create_elem('gpx', None, gpx_version, human_namespace)
-        track = create_elem('trk', None, gpx_version, human_namespace)
+        elementise = partial(create_elem, gpx_version=gpx_version,
+                             human_namespace=human_namespace)
+        gpx = elementise('gpx', None)
+        track = elementise('trk', None)
         gpx.append(track)
         for segment in self:
-            chunk = create_elem('trkseg', None, gpx_version, human_namespace)
+            chunk = elementise('trkseg', None)
             track.append(chunk)
             for place in segment:
                 chunk.append(place.togpx(gpx_version, human_namespace))
@@ -806,9 +804,11 @@ class Routepoints(list):
         :return: GPX element tree depicting `Routepoints` objects
 
         """
-        gpx = create_elem('gpx', None, gpx_version, human_namespace)
+        elementise = partial(create_elem, gpx_version=gpx_version,
+                             human_namespace=human_namespace)
+        gpx = elementise('gpx', None)
         for rte in self:
-            chunk = create_elem('rte', None, gpx_version, human_namespace)
+            chunk = elementise('rte', None)
             gpx.append(chunk)
             for place in rte:
                 chunk.append(place.togpx(gpx_version, human_namespace))
