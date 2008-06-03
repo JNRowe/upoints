@@ -247,9 +247,9 @@ class _GpxMeta(object):
         super(_GpxMeta, self).__init__()
         self.name = name
         self.desc = desc
-        self.author = author
-        self.copyright = copyright
-        self.link = link
+        self.author = author if author else {}
+        self.copyright = copyright if copyright else {}
+        self.link = link if link else []
         self.time = time
         self.keywords = keywords
         self.bounds = bounds
@@ -308,7 +308,7 @@ class _GpxMeta(object):
                 element.append(link)
             metadata.append(element)
         if self.copyright:
-            author = {"author": self.author['name']} if self.author['name'] else None
+            author = {"author": self.copyright['name']} if self.copyright['name'] else None
             element = elementise("copyright", author)
             if self.copyright['year']:
                 year = elementise("year", None)
