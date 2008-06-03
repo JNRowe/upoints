@@ -47,8 +47,7 @@ def calc_checksum(sentence):
     """
     if sentence.startswith("$"):
         sentence = sentence[1:]
-    if "*" in sentence:
-        sentence = sentence.split("*")[0]
+    sentence = sentence.split("*")[0]
     return reduce(xor, map(ord, sentence))
 
 def nmea_latitude(latitude):
