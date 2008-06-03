@@ -230,12 +230,16 @@ class Timestamp(datetime.datetime):
     def parse_isoformat(timestamp):
         """Parse an ISO 8601 formatted time stamp
 
+        >>> Timestamp.parse_isoformat("2008-02-06T13:33:26+0000")
+        Timestamp(2008, 2, 6, 13, 33, 26, tzinfo=TzOffset('+00:00'))
         >>> Timestamp.parse_isoformat("2008-02-06T13:33:26+00:00")
         Timestamp(2008, 2, 6, 13, 33, 26, tzinfo=TzOffset('+00:00'))
         >>> Timestamp.parse_isoformat("2008-02-06T13:33:26+05:30")
         Timestamp(2008, 2, 6, 13, 33, 26, tzinfo=TzOffset('+05:30'))
         >>> Timestamp.parse_isoformat("2008-02-06T13:33:26-08:00")
         Timestamp(2008, 2, 6, 13, 33, 26, tzinfo=TzOffset('-08:00'))
+        >>> Timestamp.parse_isoformat("2008-02-06T13:31:26z")
+        Timestamp(2008, 2, 6, 13, 33, 26, tzinfo=TzOffset('+00:00'))
 
         :Parameters:
             timestamp : `str`
@@ -244,11 +248,19 @@ class Timestamp(datetime.datetime):
         :return: Parsed timestamp
 
         """
-        zone = TzOffset(timestamp[-6:])
-        timestamp = Timestamp.strptime(timestamp[:-6],
-                                       "%Y-%m-%dT%H:%M:%S")
+        if len(timestamp) == 20:
+            zone = TzOffset("+00:00")
+            timestamp = timestamp[:-1]
+        elif len(timestamp) == 24:
+            zone = TzOffset("%s:%s" % (timestamp[-5:-2], timestamp[-2:]))
+            timestamp = timestamp[:-5]
+        elif len(timestamp) == 25:
+            zone = TzOffset(timestamp[-6:])
+            timestamp = timestamp[:-6]
+        timestamp = Timestamp.strptime(timestamp, "%Y-%m-%dT%H:%M:%S")
         timestamp = timestamp.replace(tzinfo=zone)
         return timestamp
+
 
 class Node(point.Point):
     """Class for representing a node element from OSM data files
