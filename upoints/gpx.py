@@ -20,6 +20,7 @@
 
 import logging
 import sys
+import time
 
 from xml.etree import ElementTree
 
@@ -168,22 +169,199 @@ class _GpxElem(point.Point):
                 Whether to generate output using human readable
                 namespace prefixes
         :rtype: ``ET.Element``
-        :return: GPX waypoint element
+        :return: GPX element
 
         """
-        waypoint = create_elem(self.__class__._elem_name,
-                               {"lat": str(self.latitude),
-                                "lon": str(self.longitude)},
-                               gpx_version, human_namespace)
+        element = create_elem(self.__class__._elem_name,
+                              {"lat": str(self.latitude),
+                               "lon": str(self.longitude)},
+                              gpx_version, human_namespace)
         if self.name:
             nametag = create_elem("name", None, gpx_version, human_namespace)
             nametag.text = self.name
-            waypoint.append(nametag)
+            element.append(nametag)
         if self.description:
             desctag = create_elem("desc", None, gpx_version, human_namespace)
             desctag.text = self.description
-            waypoint.append(desctag)
-        return waypoint
+            element.append(desctag)
+        return element
+
+
+class _GpxMeta(object):
+    """Class for representing GPX global metadata
+
+    :since: 0.12.0
+
+    :Ivariables:
+        name
+            Name for the export
+        desc
+            Description for the GPX export
+        author
+            Author of the entire GPX data
+        copyright
+            Copyright data for the exported data
+        link
+            Links associated with the data
+        time
+            Time the data was generated
+        keywords
+            Keywords associated with the data
+        bounds
+            Area used in the data
+        extensions
+            Any external data associated with the export
+
+    """
+    __slots__ = ("name", "desc", "author", "copyright", "link", "time",
+                 "keywords", "bounds", "extensions")
+
+    def __init__(self, name=None, desc=None, author=None, copyright=None,
+                 link=None, time=None, keywords=None, bounds=None,
+                 extensions=None):
+        """Initialise a new `_GpxMeta` object
+
+        :Parameters:
+            name : `str`
+                Name for the export
+            desc : `str`
+                Description for the GPX export
+            author : `dict`
+                Author of the entire GPX data
+            copyright : `dict`
+                Copyright data for the exported data
+            link : `list` of `str` or `dict`
+                Links associated with the data
+            time : `time.struct_time`
+                Time the data was generated
+            keywords : `str`
+                Keywords associated with the data
+            bounds : `dict` or `list` of `Point` objects
+                Area used in the data
+            extensions : `list` of `ElementTree.Element` objects
+                Any external data associated with the export
+
+        """
+        super(_GpxMeta, self).__init__()
+        self.name = name
+        self.desc = desc
+        self.author = author
+        self.copyright = copyright
+        self.link = link
+        self.time = time
+        self.keywords = keywords
+        self.bounds = bounds
+        self.extensions = extensions
+
+    def togpx(self, gpx_version=DEF_GPX_VERSION, human_namespace=False):
+        """Generate a GPX metadata element subtree
+
+        >>> meta = _GpxMeta(time=(2008, 6, 3, 16, 12, 43, 1, 155, 0))
+        >>> ET.tostring(meta.togpx())
+        '<ns0:metadata xmlns:ns0="http://www.topografix.com/GPX/1/1"><ns0:time>2008-06-03T16:12:43+0000</ns0:time></ns0:metadata>'
+        >>> meta.bounds = {"minlat": 52, "maxlat": 54, "minlon": -2,
+        ...                "maxlon": 1}
+        >>> ET.tostring(meta.togpx())
+        '<ns0:metadata xmlns:ns0="http://www.topografix.com/GPX/1/1"><ns0:time>2008-06-03T16:12:43+0000</ns0:time><ns0:bounds maxlat="54" maxlon="1" minlat="52" minlon="-2" /></ns0:metadata>'
+        >>> meta.bounds = [point.Point(52.015, -0.221),
+        ...                point.Point(52.167, 0.390)]
+        >>> ET.tostring(meta.togpx())
+        '<ns0:metadata xmlns:ns0="http://www.topografix.com/GPX/1/1"><ns0:time>2008-06-03T16:12:43+0000</ns0:time><ns0:bounds maxlat="0.39" minlat="52.015" minlon="-0.221" /></ns0:metadata>'
+
+        :Parameters:
+            gpx_version : `str`
+                GPX version to generate
+            human_namespace : `bool`
+                Whether to generate output using human readable
+                namespace prefixes
+        :rtype: ``ET.Element``
+        :return: GPX metadata element
+
+        """
+        metadata = create_elem("metadata", None, gpx_version, human_namespace)
+        if self.name:
+            element = create_elem("name", None, gpx_version, human_namespace)
+            element.text = getattr(self, name)
+            metadata.append(element)
+        if self.desc:
+            element = create_elem("desc", None, gpx_version, human_namespace)
+            element.text = getattr(self, name)
+            metadata.append(element)
+        if self.author:
+            element = create_elem("author", None, gpx_version, human_namespace)
+            if self.author['name']:
+                name = create_elem("name", None, gpx_version, human_namespace)
+                name.text = self.author['name']
+                element.append(name)
+            if self.author['email']:
+                email = create_elem("email",
+                                    dict(zip(self.author['email'].split("@"),
+                                             ("id", "domain"))),
+                                    gpx_version, human_namespace)
+                element.append(email)
+            if self.author['link']:
+                link = create_elem("link", None, gpx_version, human_namespace)
+                link.text = self.author['link']
+                element.append(link)
+            metadata.append(element)
+        if self.copyright:
+            author = {"author": self.author['name']} if self.author['name'] else None
+            element = create_elem("copyright", author, gpx_version,
+                                  human_namespace)
+            if self.copyright['year']:
+                year = create_elem("year", None, gpx_version, human_namespace)
+                year.text = self.copyright['year']
+                element.append(copyright)
+            if self.copyright['license']:
+                license = create_elem("license", None, gpx_version,
+                                      human_namespace)
+                element.append(license)
+            metadata.append(element)
+        if self.link:
+            for link in self.link:
+                if isinstance(link, basestring):
+                    element = create_elem("link", {"href": link}, gpx_version,
+                                          human_namespace)
+                else:
+                    element = create_elem("link", {"href": link["href"]},
+                                          gpx_version, human_namespace)
+                    if link['text']:
+                        text = create_elem("text", None, gpx_version,
+                                           human_namespace)
+                        text.text = link["text"]
+                        element.append(text)
+                    if link['type']:
+                        ltype = create_elem("type", None, gpx_version,
+                                            human_namespace)
+                        ltype.text = link["type"]
+                        element.append(type)
+                metadata.append(element)
+        element = create_elem("time", None, gpx_version, human_namespace)
+        element.text = time.strftime("%Y-%m-%dT%H:%M:%S%z", self.time)
+        metadata.append(element)
+        if self.keywords:
+            element = create_elem("keywords", None, gpx_version,
+                                  human_namespace)
+            element.text = self.keywords
+            metadata.append(element)
+        if self.bounds:
+            if not isinstance(self.bounds, dict):
+                latitudes = map(lambda x: x.latitude, self.bounds)
+                longitudes = map(lambda x: x.longitude, self.bounds)
+                self.bounds = {
+                    "minlat": min(latitudes),
+                    "maxlat": max(latitudes),
+                    "minlon": min(longitudes),
+                    "maxlat": max(longitudes),
+                }
+            element = create_elem("bounds",
+                                  dict([(k, str(v)) for k, v in self.bounds.items()]),
+                                  gpx_version, human_namespace)
+            metadata.append(element)
+        if self.extensions:
+            for i in self.extensions:
+                metadata.append(i)
+        return metadata
 
 
 class Waypoint(_GpxElem):
