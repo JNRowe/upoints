@@ -362,6 +362,77 @@ class _GpxMeta(object):
                 metadata.append(i)
         return metadata
 
+    def import_metadata(self, elements, gpx_version=None):
+        """Import information from GPX metadata
+
+        :todo: Add support for timezones in import
+
+        :Parameters:
+            elements : `ElementTree.Element`
+                GPX metadata subtree
+            gpx_version : `str`
+                Specific GPX version entities to import
+
+        """
+        if gpx_version:
+            try:
+                accepted_gpx = {gpx_version: GPX_VERSIONS[gpx_version]}
+            except KeyError:
+                raise KeyError("Unknown GPX version `%s'" % gpx_version)
+        else:
+            accepted_gpx = GPX_VERSIONS
+
+        for version, namespace in accepted_gpx.items():
+            logging.info("Searching for GPX v%s entries" % version)
+            metadata_elem = lambda name: ET.QName(namespace, name)
+
+            for child in elements.getchildren():
+                tag_ns, tag_name = child.tag[1:].split("}")
+                if not tag_ns == namespace:
+                    continue
+                if tag_name in ("name", "desc", "keywords"):
+                    setattr(self, tag_name, child.text)
+                elif tag_name == "time":
+                    self.time = time.strptime(child.text[:19], "%Y-%m-%dT%H:%M:%S")
+                elif tag_name == "author":
+                    aname = child.find(metadata_elem("name"))
+                    if aname:
+                        self.author["name"] = aname.text
+                    aemail = child.find(metadata_elem("email"))
+                    if aemail:
+                        self.author["email"] = "%s@%s" % (aemail.get("id"),
+                                                          aemail.get("domain"))
+                    alink = child.find(metadata_elem("link"))
+                    if alink:
+                        self.author["link"] = alink.text
+                elif tag_name == "bounds":
+                    self.bounds = {
+                        "minlat": child.get("minlat"),
+                        "maxlat": child.get("maxlat"),
+                        "minlon": child.get("minlon"),
+                        "maxlon": child.get("maxlon"),
+                    }
+                elif tag_name == "extensions":
+                    self.extensions = child.getchildren()
+                elif tag_name == "copyright":
+                    if child.get("author"):
+                        self.copyright["name"] = child.get("author")
+                    cyear = child.find(metadata_elem("year"))
+                    if cyear:
+                        self.copyright["year"] = cyear.text
+                    clicense = child.find(metadata_elem("license"))
+                    if clicense:
+                        self.copyright["license"] = clicense.text
+                elif tag_name == "link":
+                    link = {}
+                    link["href"] = link.get("href")
+                    ltype = child.find(metadata_elem("type"))
+                    if ltype:
+                        link["type"] = ltype.text
+                    ltext = child.find(metadata_elem("text"))
+                    if ltext:
+                        link["text"] = ltext.text
+                    self.link.append(link)
 
 class Waypoint(_GpxElem):
     """Class for representing a waypoint element from GPX data files
@@ -469,6 +540,9 @@ class Waypoints(point.Points):
             logging.info("Searching for GPX v%s entries" % version)
 
             gpx_elem = lambda name: ET.QName(namespace, name).text
+            metadata = data.find("//" + gpx_elem("metadata"))
+            if metadata:
+                self.metadata.import_metadata(metadata)
             waypoint_elem = "//" + gpx_elem("wpt")
             name_elem = gpx_elem("name")
             desc_elem = gpx_elem("desc")
@@ -621,6 +695,9 @@ class Trackpoints(list):
             logging.info("Searching for GPX v%s entries" % version)
 
             gpx_elem = lambda name: ET.QName(namespace, name).text
+            metadata = data.find("//" + gpx_elem("metadata"))
+            if metadata:
+                self.metadata.import_metadata(metadata)
             segment_elem = "//" + gpx_elem("trkseg")
             trackpoint_elem = gpx_elem("trkpt")
             name_elem = gpx_elem("name")
@@ -784,6 +861,9 @@ class Routepoints(list):
             logging.info("Searching for GPX v%s entries" % version)
 
             gpx_elem = lambda name: ET.QName(namespace, name).text
+            metadata = data.find("//" + gpx_elem("metadata"))
+            if metadata:
+                self.metadata.import_metadata(metadata)
             route_elem = "//" + gpx_elem("rte")
             routepoint_elem = gpx_elem("rtept")
             name_elem = gpx_elem("name")
