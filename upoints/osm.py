@@ -50,7 +50,7 @@ def _parse_flags(element):
     user = element.get("user")
     timestamp = element.get("timestamp")
     if timestamp:
-        timestamp = Timestamp.parse_isoformat(timestamp)
+        timestamp = utils.Timestamp.parse_isoformat(timestamp)
     tags = {}
     for tag in element.findall("tag"):
         key = tag.get("k")
@@ -122,145 +122,6 @@ def get_area_url(location, distance):
     return ("http://api.openstreetmap.org/api/0.5/map?bbox="
             + ",".join(map(str, (west, south, east, north))))
 
-class TzOffset(datetime.tzinfo):
-    """Time offset from UTC
-
-    :Ivariables:
-        __offset
-            Number of minutes offset from UTC
-
-    """
-
-    def __init__(self, tzstring):
-        """Initialise a new `TzOffset` object
-
-        >>> TzOffset("+00:00").utcoffset()
-        datetime.timedelta(0)
-        >>> TzOffset("-00:00").utcoffset()
-        datetime.timedelta(0)
-        >>> TzOffset("+05:30").utcoffset()
-        datetime.timedelta(0, 19800)
-        >>> TzOffset("-08:00").utcoffset()
-        datetime.timedelta(-1, 57600)
-
-        :Parameters:
-            tzstring : `str`
-                ISO 8601 style timezone definition
-
-        """
-        super(TzOffset, self).__init__(self)
-        hours, minutes = map(int, tzstring.split(":"))
-
-        self.__offset = datetime.timedelta(hours=hours, minutes=minutes)
-
-    def __repr__(self):
-        """Self-documenting string representation
-
-        >>> TzOffset("+00:00")
-        TzOffset('+00:00')
-        >>> TzOffset("-00:00")
-        TzOffset('+00:00')
-        >>> TzOffset("+05:30")
-        TzOffset('+05:30')
-        >>> TzOffset("-08:00")
-        TzOffset('-08:00')
-
-        :rtype: `str`
-        :return: String to recreate `Node` object
-
-        """
-        return utils.repr_assist(self, {"tzstring": self.as_timezone()})
-
-    def dst(self, dt=None):
-        """Daylight Savings Time offset
-
-        :note: This method is only for compatibility with the ``tzinfo``
-            interface, and does nothing
-
-        :Parameters:
-            dt : Any
-                For compatibility with parent classes
-
-        """
-        return datetime.timedelta(0)
-
-    def as_timezone(self):
-        """Create a human-readable timezone string
-
-        :rtype: `str`
-        :return: Human-readable timezone definition
-
-        """
-        offset = self.utcoffset()
-        hours, minutes = divmod(offset.seconds/60, 60)
-        if offset.days == -1:
-            hours = -24 + hours
-
-        return '%+03i:%02i' % (hours, minutes)
-
-    def utcoffset(self, dt=None):
-        """Return the offset in minutes from UTC
-
-        :Parameters:
-            dt : Any
-                For compatibility with parent classes
-
-        """
-        return self.__offset
-
-
-class Timestamp(datetime.datetime):
-    """Class for representing an OSM timestamp value"""
-
-    def isoformat(self):
-        """Generate an ISO 8601 formatted time stamp
-
-        :rtype: `str`
-        :return: ISO 8601 formatted time stamp
-
-        """
-        text = [self.strftime("%Y-%m-%dT%H:%M:%S"), ]
-        if self.tzinfo:
-            text.append(self.tzinfo.as_timezone())
-        else:
-            text.append("+00:00")
-        return "".join(text)
-
-    @staticmethod
-    def parse_isoformat(timestamp):
-        """Parse an ISO 8601 formatted time stamp
-
-        >>> Timestamp.parse_isoformat("2008-02-06T13:33:26+0000")
-        Timestamp(2008, 2, 6, 13, 33, 26, tzinfo=TzOffset('+00:00'))
-        >>> Timestamp.parse_isoformat("2008-02-06T13:33:26+00:00")
-        Timestamp(2008, 2, 6, 13, 33, 26, tzinfo=TzOffset('+00:00'))
-        >>> Timestamp.parse_isoformat("2008-02-06T13:33:26+05:30")
-        Timestamp(2008, 2, 6, 13, 33, 26, tzinfo=TzOffset('+05:30'))
-        >>> Timestamp.parse_isoformat("2008-02-06T13:33:26-08:00")
-        Timestamp(2008, 2, 6, 13, 33, 26, tzinfo=TzOffset('-08:00'))
-        >>> Timestamp.parse_isoformat("2008-02-06T13:31:26z")
-        Timestamp(2008, 2, 6, 13, 33, 26, tzinfo=TzOffset('+00:00'))
-
-        :Parameters:
-            timestamp : `str`
-                Timestamp to parse
-        :rtype: `Timestamp`
-        :return: Parsed timestamp
-
-        """
-        if len(timestamp) == 20:
-            zone = TzOffset("+00:00")
-            timestamp = timestamp[:-1]
-        elif len(timestamp) == 24:
-            zone = TzOffset("%s:%s" % (timestamp[-5:-2], timestamp[-2:]))
-            timestamp = timestamp[:-5]
-        elif len(timestamp) == 25:
-            zone = TzOffset(timestamp[-6:])
-            timestamp = timestamp[:-6]
-        timestamp = Timestamp.strptime(timestamp, "%Y-%m-%dT%H:%M:%S")
-        timestamp = timestamp.replace(tzinfo=zone)
-        return timestamp
-
 
 class Node(point.Point):
     """Class for representing a node element from OSM data files
@@ -293,7 +154,7 @@ class Node(point.Point):
 
         >>> Node(0, 52, 0)
         Node(0, 52.0, 0.0, False, None, None, None)
-        >>> Node(0, 52, 0, True, "jnrowe", Timestamp(2008, 1, 25))
+        >>> Node(0, 52, 0, True, "jnrowe", utils.Timestamp(2008, 1, 25))
         Node(0, 52.0, 0.0, True, 'jnrowe',
              Timestamp(2008, 1, 25, 0, 0), None)
         >>> Node(0, 52, 0, tags={"key": "value"})
@@ -330,7 +191,7 @@ class Node(point.Point):
         >>> print(Node(0, 52, 0))
         Node 0 (52°00'00"N, 000°00'00"E)
         >>> print(Node(0, 52, 0, True, "jnrowe",
-        ...            Timestamp(2008, 1, 25)))
+        ...            utils.Timestamp(2008, 1, 25)))
         Node 0 (52°00'00"N, 000°00'00"E) [visible, user: jnrowe, timestamp:
         2008-01-25T00:00:00+00:00]
         >>> print(Node(0, 52, 0, tags={"key": "value"}))
@@ -356,7 +217,7 @@ class Node(point.Point):
         >>> ET.tostring(Node(0, 52, 0).toosm())
          '<node id="0" lat="52.0" lon="0.0" visible="false" />'
         >>> ET.tostring(Node(0, 52, 0, True, "jnrowe",
-        ...                  Timestamp(2008, 1, 25)).toosm())
+        ...                  utils.Timestamp(2008, 1, 25)).toosm())
         '<node id="0" lat="52.0" lon="0.0" timestamp="2008-01-25T00:00:00+00:00" user="jnrowe" visible="true" />'
         >>> ET.tostring(Node(0, 52, 0, tags={"key": "value"}).toosm())
         '<node id="0" lat="52.0" lon="0.0" visible="false"><tag k="key" v="value" /></node>'
@@ -491,7 +352,7 @@ class Way(point.Points):
 
         >>> Way(0, (0, 1, 2))
         Way(0, [0, 1, 2], False, None, None, None)
-        >>> Way(0, (0, 1, 2), True, "jnrowe", Timestamp(2008, 1, 25))
+        >>> Way(0, (0, 1, 2), True, "jnrowe", utils.Timestamp(2008, 1, 25))
         Way(0, [0, 1, 2], True, 'jnrowe', Timestamp(2008, 1, 25, 0, 0),
             None)
         >>> Way(0, (0, 1, 2), tags={"key": "value"})
@@ -509,18 +370,18 @@ class Way(point.Points):
         >>> print(Way(0, (0, 1, 2)))
         Way 0 (nodes: 0, 1, 2)
         >>> print(Way(0, (0, 1, 2), True, "jnrowe",
-        ...           Timestamp(2008, 1, 25)))
+        ...           utils.Timestamp(2008, 1, 25)))
         Way 0 (nodes: 0, 1, 2) [visible, user: jnrowe, timestamp: 2008-01-25T00:00:00+00:00]
         >>> print(Way(0, (0, 1, 2), tags={"key": "value"}))
         Way 0 (nodes: 0, 1, 2) [key: value]
         >>> nodes = [
         ...     Node(0, 52.015749, -0.221765, True, "jnrowe",
-        ...          Timestamp(2008, 1, 25, 12, 52, 11), None),
+        ...          utils.Timestamp(2008, 1, 25, 12, 52, 11), None),
         ...     Node(1, 52.015761, -0.221767, True, None,
-        ...          Timestamp(2008, 1, 25, 12, 53, 14),
+        ...          utils.Timestamp(2008, 1, 25, 12, 53, 14),
         ...          {"created_by": "hand", "highway": "crossing"}),
         ...     Node(2, 52.015754, -0.221766, True, "jnrowe",
-        ...          Timestamp(2008, 1, 25, 12, 52, 30),
+        ...          utils.Timestamp(2008, 1, 25, 12, 52, 30),
         ...          {"amenity": "pub"}),
         ... ]
         >>> print(Way(0, (0, 1, 2), tags={"key": "value"}).__str__(nodes))
@@ -554,7 +415,8 @@ class Way(point.Points):
 
         >>> ET.tostring(Way(0, (0, 1, 2)).toosm())
         '<way id="0" visible="false"><nd ref="0" /><nd ref="1" /><nd ref="2" /></way>'
-        >>> ET.tostring(Way(0, (0, 1, 2), True, "jnrowe", Timestamp(2008, 1, 25)).toosm())
+        >>> ET.tostring(Way(0, (0, 1, 2), True, "jnrowe",
+        ...                 utils.Timestamp(2008, 1, 25)).toosm())
         '<way id="0" timestamp="2008-01-25T00:00:00+00:00" user="jnrowe" visible="true"><nd ref="0" /><nd ref="1" /><nd ref="2" /></way>'
         >>> ET.tostring(Way(0, (0, 1, 2), tags={"key": "value"}).toosm())
         '<way id="0" visible="false"><tag k="key" v="value" /><nd ref="0" /><nd ref="1" /><nd ref="2" /></way>'
@@ -656,15 +518,15 @@ class Osm(point.Points):
 
             Osm([
                 Node(0, 52.015749, -0.221765, True, "jnrowe",
-                     Timestamp(2008, 1, 25, 12, 52, 11), None),
+                     utils.Timestamp(2008, 1, 25, 12, 52, 11), None),
                 Node(1, 52.015761, -0.221767, True,
-                     Timestamp(2008, 1, 25, 12, 53), None,
+                     utils.Timestamp(2008, 1, 25, 12, 53), None,
                      {"created_by": "hand", "highway": "crossing"}),
                 Node(2, 52.015754, -0.221766, True, "jnrowe",
-                     Timestamp(2008, 1, 25, 12, 52, 30),
+                     utils.Timestamp(2008, 1, 25, 12, 52, 30),
                      {"amenity": "pub"}),
                 Way(0, [0, 1, 2], True, None,
-                    Timestamp(2008, 1, 25, 13, 00),
+                    utils.Timestamp(2008, 1, 25, 13, 00),
                     {"ref": "My Way", "highway": "primary"})],
                 generator="upoints/0.9.0")
 

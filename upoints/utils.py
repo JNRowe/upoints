@@ -399,6 +399,149 @@ def angle_to_name(angle, segments=8, abbr=False):
 
 #}
 
+#{ Date andtime handling utilities
+
+class TzOffset(datetime.tzinfo):
+    """Time offset from UTC
+
+    :Ivariables:
+        __offset
+            Number of minutes offset from UTC
+
+    """
+
+    def __init__(self, tzstring):
+        """Initialise a new `TzOffset` object
+
+        >>> TzOffset("+00:00").utcoffset()
+        datetime.timedelta(0)
+        >>> TzOffset("-00:00").utcoffset()
+        datetime.timedelta(0)
+        >>> TzOffset("+05:30").utcoffset()
+        datetime.timedelta(0, 19800)
+        >>> TzOffset("-08:00").utcoffset()
+        datetime.timedelta(-1, 57600)
+
+        :Parameters:
+            tzstring : `str`
+                ISO 8601 style timezone definition
+
+        """
+        super(TzOffset, self).__init__(self)
+        hours, minutes = map(int, tzstring.split(":"))
+
+        self.__offset = datetime.timedelta(hours=hours, minutes=minutes)
+
+    def __repr__(self):
+        """Self-documenting string representation
+
+        >>> TzOffset("+00:00")
+        TzOffset('+00:00')
+        >>> TzOffset("-00:00")
+        TzOffset('+00:00')
+        >>> TzOffset("+05:30")
+        TzOffset('+05:30')
+        >>> TzOffset("-08:00")
+        TzOffset('-08:00')
+
+        :rtype: `str`
+        :return: String to recreate `Node` object
+
+        """
+        return repr_assist(self, {"tzstring": self.as_timezone()})
+
+    def dst(self, dt=None):
+        """Daylight Savings Time offset
+
+        :note: This method is only for compatibility with the ``tzinfo``
+            interface, and does nothing
+
+        :Parameters:
+            dt : Any
+                For compatibility with parent classes
+
+        """
+        return datetime.timedelta(0)
+
+    def as_timezone(self):
+        """Create a human-readable timezone string
+
+        :rtype: `str`
+        :return: Human-readable timezone definition
+
+        """
+        offset = self.utcoffset()
+        hours, minutes = divmod(offset.seconds/60, 60)
+        if offset.days == -1:
+            hours = -24 + hours
+
+        return '%+03i:%02i' % (hours, minutes)
+
+    def utcoffset(self, dt=None):
+        """Return the offset in minutes from UTC
+
+        :Parameters:
+            dt : Any
+                For compatibility with parent classes
+
+        """
+        return self.__offset
+
+
+class Timestamp(datetime.datetime):
+    """Class for representing an OSM timestamp value"""
+
+    def isoformat(self):
+        """Generate an ISO 8601 formatted time stamp
+
+        :rtype: `str`
+        :return: ISO 8601 formatted time stamp
+
+        """
+        text = [self.strftime("%Y-%m-%dT%H:%M:%S"), ]
+        if self.tzinfo:
+            text.append(self.tzinfo.as_timezone())
+        else:
+            text.append("+00:00")
+        return "".join(text)
+
+    @staticmethod
+    def parse_isoformat(timestamp):
+        """Parse an ISO 8601 formatted time stamp
+
+        >>> Timestamp.parse_isoformat("2008-02-06T13:33:26+0000")
+        Timestamp(2008, 2, 6, 13, 33, 26, tzinfo=TzOffset('+00:00'))
+        >>> Timestamp.parse_isoformat("2008-02-06T13:33:26+00:00")
+        Timestamp(2008, 2, 6, 13, 33, 26, tzinfo=TzOffset('+00:00'))
+        >>> Timestamp.parse_isoformat("2008-02-06T13:33:26+05:30")
+        Timestamp(2008, 2, 6, 13, 33, 26, tzinfo=TzOffset('+05:30'))
+        >>> Timestamp.parse_isoformat("2008-02-06T13:33:26-08:00")
+        Timestamp(2008, 2, 6, 13, 33, 26, tzinfo=TzOffset('-08:00'))
+        >>> Timestamp.parse_isoformat("2008-02-06T13:33:26z")
+        Timestamp(2008, 2, 6, 13, 33, 26, tzinfo=TzOffset('+00:00'))
+
+        :Parameters:
+            timestamp : `str`
+                Timestamp to parse
+        :rtype: `Timestamp`
+        :return: Parsed timestamp
+
+        """
+        if len(timestamp) == 20:
+            zone = TzOffset("+00:00")
+            timestamp = timestamp[:-1]
+        elif len(timestamp) == 24:
+            zone = TzOffset("%s:%s" % (timestamp[-5:-2], timestamp[-2:]))
+            timestamp = timestamp[:-5]
+        elif len(timestamp) == 25:
+            zone = TzOffset(timestamp[-6:])
+            timestamp = timestamp[:-6]
+        timestamp = Timestamp.strptime(timestamp, "%Y-%m-%dT%H:%M:%S")
+        timestamp = timestamp.replace(tzinfo=zone)
+        return timestamp
+
+#}
+
 #{ Coordinate conversion utilities
 
 def from_iso6709(coordinates):
