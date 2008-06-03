@@ -367,8 +367,6 @@ class _GpxMeta(object):
     def import_metadata(self, elements, gpx_version=None):
         """Import information from GPX metadata
 
-        :todo: Add support for timezones in import
-
         :Parameters:
             elements : `ElementTree.Element`
                 GPX metadata subtree
@@ -395,7 +393,7 @@ class _GpxMeta(object):
                 if tag_name in ("name", "desc", "keywords"):
                     setattr(self, tag_name, child.text)
                 elif tag_name == "time":
-                    self.time = time.strptime(child.text[:19], "%Y-%m-%dT%H:%M:%S")
+                    self.time = utils.Timestamp.parse_isoformat(child.text)
                 elif tag_name == "author":
                     aname = child.find(metadata_elem("name"))
                     if aname:
