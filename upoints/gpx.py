@@ -399,11 +399,12 @@ class Waypoints(point.Points):
 
     """
 
-    def __init__(self, gpx_file=None):
+    def __init__(self, gpx_file=None, metadata=None):
         """Initialise a new `Waypoints` object"""
         super(Waypoints, self).__init__()
         if gpx_file:
             self.import_locations(gpx_file)
+        self.metadata = metadata
 
     def import_locations(self, gpx_file, gpx_version=None):
         """Import GPX data files
@@ -486,8 +487,8 @@ class Waypoints(point.Points):
         >>> from sys import stdout
         >>> locations = Waypoints(open("gpx"))
         >>> xml = locations.export_gpx_file()
-        >>> xml.write(stdout)
-        <ns0:gpx xmlns:ns0="http://www.topografix.com/GPX/1/1"><ns0:wpt lat="52.015" lon="-0.221"><ns0:name>Home</ns0:name><ns0:desc>My place</ns0:desc></ns0:wpt><ns0:wpt lat="52.167" lon="0.39"><ns0:name>MSR</ns0:name><ns0:desc>Microsoft Research, Cambridge</ns0:desc></ns0:wpt></ns0:gpx>
+        >>> xml.write(stdout) # doctest: +ELLIPSIS
+        <ns0:gpx xmlns:ns0="http://www.topografix.com/GPX/1/1"><ns0:metadata><ns0:time>...</ns0:time><ns0:bounds maxlat="52.167" maxlon="0.39" minlat="52.015" minlon="-0.221" /></ns0:metadata><ns0:wpt lat="52.015" lon="-0.221"><ns0:name>Home</ns0:name><ns0:desc>My place</ns0:desc></ns0:wpt><ns0:wpt lat="52.167" lon="0.39"><ns0:name>MSR</ns0:name><ns0:desc>Microsoft Research, Cambridge</ns0:desc></ns0:wpt></ns0:gpx>
 
         :Parameters:
             gpx_version : `str`
@@ -500,6 +501,11 @@ class Waypoints(point.Points):
 
         """
         gpx = create_elem('gpx', None, gpx_version, human_namespace)
+        if self.metadata:
+            gpx.append(metadata.togpx())
+        else:
+            metadata = _GpxMeta(bounds=self[:])
+            gpx.append(metadata.togpx())
         for place in self:
             gpx.append(place.togpx(gpx_version, human_namespace))
 
@@ -541,11 +547,12 @@ class Trackpoints(list):
 
     """
 
-    def __init__(self, gpx_file=None):
+    def __init__(self, gpx_file=None, metadata=None):
         """Initialise a new `Trackpoints` object"""
         super(Trackpoints, self).__init__()
         if gpx_file:
             self.import_locations(gpx_file)
+        self.metadata = metadata
 
     def import_locations(self, gpx_file, gpx_version=None):
         """Import GPX data files
@@ -637,8 +644,8 @@ class Trackpoints(list):
         >>> from sys import stdout
         >>> locations = Trackpoints(open("gpx_tracks"))
         >>> xml = locations.export_gpx_file()
-        >>> xml.write(stdout)
-        <ns0:gpx xmlns:ns0="http://www.topografix.com/GPX/1/1"><ns0:trk><ns0:trkseg><ns0:trkpt lat="52.015" lon="-0.221"><ns0:name>Home</ns0:name><ns0:desc>My place</ns0:desc></ns0:trkpt><ns0:trkpt lat="52.167" lon="0.39"><ns0:name>MSR</ns0:name><ns0:desc>Microsoft Research, Cambridge</ns0:desc></ns0:trkpt></ns0:trkseg></ns0:trk></ns0:gpx>
+        >>> xml.write(stdout) # doctest: +ELLIPSIS
+        <ns0:gpx xmlns:ns0="http://www.topografix.com/GPX/1/1"><ns0:metadata><ns0:time>...</ns0:time><ns0:bounds maxlat="52.167" maxlon="0.39" minlat="52.015" minlon="-0.221" /></ns0:metadata><ns0:trk><ns0:trkseg><ns0:trkpt lat="52.015" lon="-0.221"><ns0:name>Home</ns0:name><ns0:desc>My place</ns0:desc></ns0:trkpt><ns0:trkpt lat="52.167" lon="0.39"><ns0:name>MSR</ns0:name><ns0:desc>Microsoft Research, Cambridge</ns0:desc></ns0:trkpt></ns0:trkseg></ns0:trk></ns0:gpx>
 
         :Parameters:
             gpx_version : `str`
@@ -653,6 +660,11 @@ class Trackpoints(list):
         elementise = partial(create_elem, gpx_version=gpx_version,
                              human_namespace=human_namespace)
         gpx = elementise('gpx', None)
+        if self.metadata:
+            gpx.append(metadata.togpx())
+        else:
+            metadata = _GpxMeta(bounds=[j for i in self for j in i])
+            gpx.append(metadata.togpx())
         track = elementise('trk', None)
         gpx.append(track)
         for segment in self:
@@ -700,11 +712,12 @@ class Routepoints(list):
 
     """
 
-    def __init__(self, gpx_file=None):
+    def __init__(self, gpx_file=None, metadata=None):
         """Initialise a new `Routepoints` object"""
         super(Routepoints, self).__init__()
         if gpx_file:
             self.import_locations(gpx_file)
+        self.metadata = metadata
 
     def import_locations(self, gpx_file, gpx_version=None):
         """Import GPX data files
@@ -794,8 +807,8 @@ class Routepoints(list):
         >>> from sys import stdout
         >>> locations = Routepoints(open("gpx_routes"))
         >>> xml = locations.export_gpx_file()
-        >>> xml.write(stdout)
-        <ns0:gpx xmlns:ns0="http://www.topografix.com/GPX/1/1"><ns0:rte><ns0:rtept lat="52.015" lon="-0.221"><ns0:name>Home</ns0:name><ns0:desc>My place</ns0:desc></ns0:rtept><ns0:rtept lat="52.167" lon="0.39"><ns0:name>MSR</ns0:name><ns0:desc>Microsoft Research, Cambridge</ns0:desc></ns0:rtept></ns0:rte></ns0:gpx>
+        >>> xml.write(stdout) # doctest: +ELLIPSIS
+        <ns0:gpx xmlns:ns0="http://www.topografix.com/GPX/1/1"><ns0:metadata><ns0:time>...</ns0:time><ns0:bounds maxlat="52.167" maxlon="0.39" minlat="52.015" minlon="-0.221" /></ns0:metadata><ns0:rte><ns0:rtept lat="52.015" lon="-0.221"><ns0:name>Home</ns0:name><ns0:desc>My place</ns0:desc></ns0:rtept><ns0:rtept lat="52.167" lon="0.39"><ns0:name>MSR</ns0:name><ns0:desc>Microsoft Research, Cambridge</ns0:desc></ns0:rtept></ns0:rte></ns0:gpx>
 
         :Parameters:
             gpx_version : `str`
@@ -810,6 +823,11 @@ class Routepoints(list):
         elementise = partial(create_elem, gpx_version=gpx_version,
                              human_namespace=human_namespace)
         gpx = elementise('gpx', None)
+        if self.metadata:
+            gpx.append(metadata.togpx())
+        else:
+            metadata = _GpxMeta(bounds=[j for i in self for j in i])
+            gpx.append(metadata.togpx())
         for rte in self:
             chunk = elementise('rte', None)
             gpx.append(chunk)
