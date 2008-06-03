@@ -358,8 +358,10 @@ class _GpxMeta(object):
             element = elementise("bounds", bounds)
             metadata.append(element)
         if self.extensions:
+            element = elementise("extensions")
             for i in self.extensions:
-                metadata.append(i)
+                element.append(i)
+            metadata.append(extensions)
         return metadata
 
     def import_metadata(self, elements, gpx_version=None):
@@ -473,9 +475,9 @@ class Waypoints(point.Points):
     def __init__(self, gpx_file=None, metadata=None):
         """Initialise a new `Waypoints` object"""
         super(Waypoints, self).__init__()
+        self.metadata = metadata if metadata else _GpxMeta()
         if gpx_file:
             self.import_locations(gpx_file)
-        self.metadata = metadata
 
     def import_locations(self, gpx_file, gpx_version=None):
         """Import GPX data files
@@ -575,11 +577,9 @@ class Waypoints(point.Points):
 
         """
         gpx = create_elem('gpx', None, gpx_version, human_namespace)
-        if self.metadata:
-            gpx.append(metadata.togpx())
-        else:
-            metadata = _GpxMeta(bounds=self[:])
-            gpx.append(metadata.togpx())
+        if not self.metadata.bounds:
+            self.metadata.bounds = self[:]
+        gpx.append(self.metadata.togpx())
         for place in self:
             gpx.append(place.togpx(gpx_version, human_namespace))
 
@@ -624,9 +624,9 @@ class Trackpoints(list):
     def __init__(self, gpx_file=None, metadata=None):
         """Initialise a new `Trackpoints` object"""
         super(Trackpoints, self).__init__()
+        self.metadata = metadata if metadata else _GpxMeta()
         if gpx_file:
             self.import_locations(gpx_file)
-        self.metadata = metadata
 
     def import_locations(self, gpx_file, gpx_version=None):
         """Import GPX data files
@@ -737,11 +737,9 @@ class Trackpoints(list):
         elementise = partial(create_elem, gpx_version=gpx_version,
                              human_namespace=human_namespace)
         gpx = elementise('gpx', None)
-        if self.metadata:
-            gpx.append(metadata.togpx())
-        else:
-            metadata = _GpxMeta(bounds=[j for i in self for j in i])
-            gpx.append(metadata.togpx())
+        if not self.metadata.bounds:
+            self.metadata.bounds = [j for i in self for j in i]
+        gpx.append(self.metadata.togpx())
         track = elementise('trk', None)
         gpx.append(track)
         for segment in self:
@@ -792,9 +790,9 @@ class Routepoints(list):
     def __init__(self, gpx_file=None, metadata=None):
         """Initialise a new `Routepoints` object"""
         super(Routepoints, self).__init__()
+        self.metadata = metadata if metadata else _GpxMeta()
         if gpx_file:
             self.import_locations(gpx_file)
-        self.metadata = metadata
 
     def import_locations(self, gpx_file, gpx_version=None):
         """Import GPX data files
@@ -903,11 +901,9 @@ class Routepoints(list):
         elementise = partial(create_elem, gpx_version=gpx_version,
                              human_namespace=human_namespace)
         gpx = elementise('gpx', None)
-        if self.metadata:
-            gpx.append(metadata.togpx())
-        else:
-            metadata = _GpxMeta(bounds=[j for i in self for j in i])
-            gpx.append(metadata.togpx())
+        if not self.metadata.bounds:
+            self.metadata.bounds = [j for i in self for j in i]
+        gpx.append(self.metadata.togpx())
         for rte in self:
             chunk = elementise('rte', None)
             gpx.append(chunk)
