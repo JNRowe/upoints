@@ -345,8 +345,10 @@ class _GpxMeta(object):
                         element.append(type)
                 metadata.append(element)
         element = elementise("time", None)
-        if self.time:
+        if isinstance(self.time, (time.struct_time, tuple)):
             element.text = time.strftime("%Y-%m-%dT%H:%M:%S%z", self.time)
+        elif isinstance(self.time, utils.Timestamp):
+            element.text = self.time.isoformat()
         else:
             element.text = time.strftime("%Y-%m-%dT%H:%M:%S%z")
         metadata.append(element)
@@ -406,16 +408,12 @@ class _GpxMeta(object):
                 elif tag_name == "time":
                     self.time = utils.Timestamp.parse_isoformat(child.text)
                 elif tag_name == "author":
-                    aname = child.find(metadata_elem("name"))
-                    if aname:
-                        self.author["name"] = aname.text
+                    self.author["name"] = child.findtext(metadata_elem("name"))
                     aemail = child.find(metadata_elem("email"))
                     if aemail:
                         self.author["email"] = "%s@%s" % (aemail.get("id"),
                                                           aemail.get("domain"))
-                    alink = child.find(metadata_elem("link"))
-                    if alink:
-                        self.author["link"] = alink.text
+                    self.author["link"] = child.findtext(metadata_elem("link"))
                 elif tag_name == "bounds":
                     self.bounds = {
                         "minlat": child.get("minlat"),
@@ -428,21 +426,14 @@ class _GpxMeta(object):
                 elif tag_name == "copyright":
                     if child.get("author"):
                         self.copyright["name"] = child.get("author")
-                    cyear = child.find(metadata_elem("year"))
-                    if cyear:
-                        self.copyright["year"] = cyear.text
-                    clicense = child.find(metadata_elem("license"))
-                    if clicense:
-                        self.copyright["license"] = clicense.text
+                    self.copyright["year"] = child.findtext(metadata_elem("year"))
+                    self.copyright["license"] = child.findtext(metadata_elem("license"))
                 elif tag_name == "link":
-                    link = {}
-                    link["href"] = link.get("href")
-                    ltype = child.find(metadata_elem("type"))
-                    if ltype:
-                        link["type"] = ltype.text
-                    ltext = child.find(metadata_elem("text"))
-                    if ltext:
-                        link["text"] = ltext.text
+                    link = {
+                        "href": link.get("href"),
+                        "type": child.findtext(metadata_elem("type")),
+                        "text": child.findtext(metadata_elem("text")),
+                    }
                     self.link.append(link)
 
 class Waypoint(_GpxElem):
@@ -557,13 +548,16 @@ class Waypoints(point.Points):
             waypoint_elem = "//" + gpx_elem("wpt")
             name_elem = gpx_elem("name")
             desc_elem = gpx_elem("desc")
+            elev_elem = gpx_elem("ele")
 
             for waypoint in data.findall(waypoint_elem):
                 latitude = waypoint.get("lat")
                 longitude = waypoint.get("lon")
                 name = waypoint.findtext(name_elem)
                 description = waypoint.findtext(desc_elem)
-                self.append(Waypoint(latitude, longitude, name, description))
+                elevation = waypoint.findtext(elev_elem)
+                self.append(Waypoint(latitude, longitude, name, description,
+                                     elevation))
 
     def export_gpx_file(self, gpx_version=DEF_GPX_VERSION,
                         human_namespace=False):
@@ -711,6 +705,7 @@ class Trackpoints(list):
             trackpoint_elem = gpx_elem("trkpt")
             name_elem = gpx_elem("name")
             desc_elem = gpx_elem("desc")
+            elev_elem = gpx_elem("ele")
 
             for segment in data.findall(segment_elem):
                 points = point.Points()
@@ -719,8 +714,9 @@ class Trackpoints(list):
                     longitude = trackpoint.get("lon")
                     name = trackpoint.findtext(name_elem)
                     description = trackpoint.findtext(desc_elem)
+                    elevation = trackpoint.findtext(elev_elem)
                     points.append(Trackpoint(latitude, longitude, name,
-                                             description))
+                                             description, elevation))
                 self.append(points)
 
     def export_gpx_file(self, gpx_version=DEF_GPX_VERSION,
@@ -875,6 +871,7 @@ class Routepoints(list):
             routepoint_elem = gpx_elem("rtept")
             name_elem = gpx_elem("name")
             desc_elem = gpx_elem("desc")
+            elev_elem = gpx_elem("ele")
 
             for route in data.findall(route_elem):
                 points = point.Points()
@@ -883,8 +880,9 @@ class Routepoints(list):
                     longitude = routepoint.get("lon")
                     name = routepoint.findtext(name_elem)
                     description = routepoint.findtext(desc_elem)
+                    elevation = routepoint.findtext(elev_elem)
                     points.append(Routepoint(latitude, longitude, name,
-                                             description))
+                                             description, elevation))
                 self.append(points)
 
     def export_gpx_file(self, gpx_version=DEF_GPX_VERSION,
