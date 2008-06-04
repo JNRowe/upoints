@@ -179,6 +179,7 @@ class Cities(point.Points):
     def __init__(self, data=None):
         """Initialise a new `Cities` object"""
         super(Cities, self).__init__()
+        self._data = data
         if data:
             self.import_locations(data)
 
@@ -249,6 +250,7 @@ class Cities(point.Points):
         :raise TypeError: Invalid value for data
 
         """
+        self._data = data
         if hasattr(data, "read"):
             data = data.read().split("//\n")
         elif isinstance(data, list):

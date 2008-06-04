@@ -115,6 +115,7 @@ class Trigpoints(point.KeyedPoints):
         Initialise a new `Trigpoints` object
         """
         super(Trigpoints, self).__init__()
+        self._marker_file = marker_file
         if marker_file:
             self.import_locations(marker_file)
 
@@ -172,6 +173,7 @@ class Trigpoints(point.KeyedPoints):
         :return: Named locations with `Trigpoint` objects
         :raise ValueError: Invalid value for `marker_file`
         """
+        self._marker_file = marker_file
         field_names = ("tag", "identity", "latitude", "longitude", "altitude",
                        "name")
         pos_parse = lambda x, s: float(s[1:]) if s[0] == x else 0 - float(s[1:])

@@ -476,6 +476,7 @@ class Waypoints(point.Points):
         """Initialise a new `Waypoints` object"""
         super(Waypoints, self).__init__()
         self.metadata = metadata if metadata else _GpxMeta()
+        self._gpx_file = gpx_file
         if gpx_file:
             self.import_locations(gpx_file)
 
@@ -528,6 +529,7 @@ class Waypoints(point.Points):
         :return: Locations with optional comments
 
         """
+        self._gpx_file = gpx_file
         data = utils.prepare_xml_read(gpx_file)
 
         if gpx_version:
@@ -628,6 +630,7 @@ class Trackpoints(list):
         """Initialise a new `Trackpoints` object"""
         super(Trackpoints, self).__init__()
         self.metadata = metadata if metadata else _GpxMeta()
+        self._gpx_file = gpx_file
         if gpx_file:
             self.import_locations(gpx_file)
 
@@ -684,6 +687,7 @@ class Trackpoints(list):
         :return: Locations with optional comments
 
         """
+        self._gpx_file = gpx_file
         data = utils.prepare_xml_read(gpx_file)
 
         if gpx_version:
@@ -796,6 +800,7 @@ class Routepoints(list):
         """Initialise a new `Routepoints` object"""
         super(Routepoints, self).__init__()
         self.metadata = metadata if metadata else _GpxMeta()
+        self._gpx_file = gpx_file
         if gpx_file:
             self.import_locations(gpx_file)
 
@@ -850,6 +855,7 @@ class Routepoints(list):
         :return: Locations with optional comments
 
         """
+        self._gpx_file = gpx_file
         data = utils.prepare_xml_read(gpx_file)
 
         if gpx_version:

@@ -148,6 +148,8 @@ class Stations(point.KeyedPoints):
     def __init__(self, data=None, index="WMO"):
         """Initialise a new `Stations` object"""
         super(Stations, self).__init__()
+        self._data = data
+        self._index = index
         if data:
             self.import_locations(data, index)
 
@@ -233,6 +235,7 @@ class Stations(point.KeyedPoints):
         :raise FileFormatError: Unknown file format
 
         """
+        self._data = data
         data = utils.prepare_read(data)
 
         for line in data:

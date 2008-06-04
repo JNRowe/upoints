@@ -469,19 +469,11 @@ class Osm(point.Points):
     def __init__(self, osm_file=None):
         """Initialise a new `Osm` object"""
         super(Osm, self).__init__()
+        self._osm_file = osm_file
         if osm_file:
             self.import_locations(osm_file)
         self.generator = "upoints/%s" % __version__
         self.version = "0.5"
-
-    def __repr__(self):
-        """Self-documenting string representation
-
-        :rtype: `str`
-        :return: String to recreate `Osm` object
-
-        """
-        return utils.repr_assist(self)
 
     def import_locations(self, osm_file):
         """Import OSM data files
@@ -545,6 +537,7 @@ class Osm(point.Points):
         :return: Nodes and ways from the data
 
         """
+        self._osm_file = osm_file
         data = utils.prepare_xml_read(osm_file)
 
         # This would be a lot simpler if OSM exports defined a namespace

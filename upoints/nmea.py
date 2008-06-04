@@ -717,6 +717,7 @@ class Locations(point.Points):
         Initialise a new `Locations` object
         """
         super(Locations, self).__init__()
+        self._gpsdata_file = gpsdata_file
         if gpsdata_file:
             self.import_locations(gpsdata_file)
 
@@ -785,6 +786,7 @@ class Locations(point.Points):
         :rtype: `list`
         :return: Series of locations taken from the data
         """
+        self._gpsdata_file = gpsdata_file
         data = utils.prepare_read(gpsdata_file)
 
         parsers = {

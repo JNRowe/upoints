@@ -226,6 +226,7 @@ class Bakens(point.KeyedPoints):
         :return: Named locations and their associated values
 
         """
+        self._baken_file = baken_file
         data = ConfigParser.ConfigParser()
         if hasattr(baken_file, "readlines"):
             data.readfp(baken_file)

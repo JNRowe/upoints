@@ -217,6 +217,7 @@ class Placemarks(point.KeyedPoints):
     def __init__(self, kml_file=None):
         """Initialise a new `Placemarks` object"""
         super(Placemarks, self).__init__()
+        self._kml_file = kml_file
         if kml_file:
             self.import_locations(kml_file)
 
@@ -278,6 +279,7 @@ class Placemarks(point.KeyedPoints):
         :return: Named locations with optional comments
 
         """
+        self._kml_file = kml_file
         data = utils.prepare_xml_read(kml_file)
 
         if kml_version:

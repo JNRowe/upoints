@@ -115,6 +115,7 @@ class Zones(point.Points):
     def __init__(self, zone_file=None):
         """Initialise a new Zones object"""
         super(Zones, self).__init__()
+        self._zone_file = zone_file
         if zone_file:
             self.import_locations(zone_file)
 
@@ -158,6 +159,7 @@ class Zones(point.Points):
         :raise FileFormatError: Unknown file format
 
         """
+        self._zone_file = zone_file
         field_names = ("country", "location", "zone", "comments")
 
         data = utils.prepare_csv_read(zone_file, field_names, delimiter=r"	")

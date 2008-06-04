@@ -94,6 +94,7 @@ class Xearths(point.KeyedPoints):
     def __init__(self, marker_file=None):
         """Initialise a new `Xearths` object"""
         super(Xearths, self).__init__()
+        self._marker_file = marker_file
         if marker_file:
             self.import_locations(marker_file)
 
@@ -152,6 +153,7 @@ class Xearths(point.KeyedPoints):
         :return: Named locations with optional comments
 
         """
+        self._marker_file = marker_file
         data = utils.prepare_read(marker_file)
 
         for line in data:
