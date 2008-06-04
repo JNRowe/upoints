@@ -96,22 +96,25 @@ class _GpxElem(point.Point):
             _GpxElem's name
         description
             _GpxElem's description
+        elevation
+            _GpxElem's elevation
 
     """
 
-    __slots__ = ('name', 'description', )
+    __slots__ = ('name', 'description', 'elevation',)
 
     _elem_name = None
 
-    def __init__(self, latitude, longitude, name=None, description=None):
+    def __init__(self, latitude, longitude, name=None, description=None,
+                 elevation=None):
         """Initialise a new `_GpxElem` object
 
         >>> _GpxElem(52, 0)
-        _GpxElem(52.0, 0.0, None, None)
+        _GpxElem(52.0, 0.0, None, None, None)
         >>> _GpxElem(52, 0, None)
-        _GpxElem(52.0, 0.0, None, None)
+        _GpxElem(52.0, 0.0, None, None, None)
         >>> _GpxElem(52, 0, "name", "desc")
-        _GpxElem(52.0, 0.0, 'name', 'desc')
+        _GpxElem(52.0, 0.0, 'name', 'desc', None)
 
         :Parameters:
             latitude : `float` or coercible to `float`
@@ -122,20 +125,22 @@ class _GpxElem(point.Point):
                 Name for Element
             description : `str`
                 Element's description
+            elevation : `float`
+                Element's elevation
 
         """
         super(_GpxElem, self).__init__(latitude, longitude)
-
         self.name = name
         self.description = description
+        self.elevation = elevation
 
     def __str__(self, mode="dms"):
         """Pretty printed location string
 
         >>> print(_GpxElem(52, 0))
         52°00'00"N, 000°00'00"E
-        >>> print(_GpxElem(52, 0, "name", "desc"))
-        name (52°00'00"N, 000°00'00"E) [desc]
+        >>> print(_GpxElem(52, 0, "name", "desc", 40))
+        name (52°00'00"N, 000°00'00"E @ 40m) [desc]
 
         :Parameters:
             mode : `str`
@@ -145,6 +150,8 @@ class _GpxElem(point.Point):
 
         """
         location = super(_GpxElem, self).__str__(mode)
+        if self.elevation:
+            location += " @ %sm" % self.elevation
         if self.name:
             text = ["%s (%s)" % (self.name, location), ]
         else:
@@ -186,6 +193,10 @@ class _GpxElem(point.Point):
             desctag = elementise("desc", None)
             desctag.text = self.description
             element.append(desctag)
+        if self.elevation:
+            eletag = elementise("ele", None)
+            eletag.text = self.elevation
+            element.append(eletag)
         return element
 
 
@@ -438,11 +449,11 @@ class Waypoint(_GpxElem):
     """Class for representing a waypoint element from GPX data files
 
     >>> Waypoint(52, 0)
-    Waypoint(52.0, 0.0, None, None)
+    Waypoint(52.0, 0.0, None, None, None)
     >>> Waypoint(52, 0, None)
-    Waypoint(52.0, 0.0, None, None)
+    Waypoint(52.0, 0.0, None, None, None)
     >>> Waypoint(52, 0, "name", "desc")
-    Waypoint(52.0, 0.0, 'name', 'desc')
+    Waypoint(52.0, 0.0, 'name', 'desc', None)
 
     :since: 0.8.0
 
@@ -587,11 +598,11 @@ class Trackpoint(_GpxElem):
     """Class for representing a waypoint element from GPX data files
 
     >>> Trackpoint(52, 0)
-    Trackpoint(52.0, 0.0, None, None)
+    Trackpoint(52.0, 0.0, None, None, None)
     >>> Trackpoint(52, 0, None)
-    Trackpoint(52.0, 0.0, None, None)
+    Trackpoint(52.0, 0.0, None, None, None)
     >>> Trackpoint(52, 0, "name", "desc")
-    Trackpoint(52.0, 0.0, 'name', 'desc')
+    Trackpoint(52.0, 0.0, 'name', 'desc', None)
 
     :since: 0.10.0
 
@@ -753,11 +764,11 @@ class Routepoint(_GpxElem):
     """Class for representing a waypoint element from GPX data files
 
     >>> Routepoint(52, 0)
-    Routepoint(52.0, 0.0, None, None)
+    Routepoint(52.0, 0.0, None, None, None)
     >>> Routepoint(52, 0, None)
-    Routepoint(52.0, 0.0, None, None)
+    Routepoint(52.0, 0.0, None, None, None)
     >>> Routepoint(52, 0, "name", "desc")
-    Routepoint(52.0, 0.0, 'name', 'desc')
+    Routepoint(52.0, 0.0, 'name', 'desc', None)
 
     :since: 0.10.0
 
