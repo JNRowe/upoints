@@ -37,8 +37,8 @@ except ImportError:
         from lxml import etree as ET
     except ImportError:
         ET = ElementTree
-        logging.info("cElementTree is unavailable XML processing will be much"
-                     "slower with ElementTree")
+        logging.info("cElementTree is unavailable. XML processing will be "
+                     "much slower with ElementTree")
 
 from operator import add
 

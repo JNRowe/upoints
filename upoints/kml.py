@@ -31,8 +31,14 @@ except ImportError:
         from lxml import etree as ET
     except ImportError:
         ET = ElementTree
-        logging.info("cElementTree is unavailable XML processing will be much"
-                     "slower with ElementTree")
+        logging.info("cElementTree is unavailable. XML processing will be "
+                     "much slower with ElementTree")
+if not ET.__name__ == "xml.etree.cElementTree":
+    logging.warning("You have the fast cElementTree module available, if you "
+                    "choose to use the human readable namespace prefixes in "
+                    "XML output element generation will use the much slower "
+                    "ElementTree code.  Slowdown can be in excess of five "
+                    "times.")
 
 from upoints import (point, trigpoints, utils)
 
@@ -64,12 +70,6 @@ def create_elem(tag, attr=None, kml_version=DEF_KML_VERSION,
     :return: ``ET.Element`` wrapper with predefined namespace
 
     """
-    if human_namespace and "xml.etree.cElementTree" in sys.modules:
-        logging.warning("You have the fast cElementTree module available, if "
-                        "you choose to use the human readable namespace "
-                        "prefixes in XML output element generation will use "
-                        "the much slower ElementTree code.  Slowdown can be in "
-                        "excess of five times.")
     if not attr:
         attr = {}
     try:
