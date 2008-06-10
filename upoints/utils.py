@@ -175,29 +175,34 @@ def repr_assist(obj, remap=None):
             data.append(str(value))
     return obj.__class__.__name__ + '(' + ", ".join(data) + ')'
 
-def prepare_read(data):
+def prepare_read(data, method="readlines"):
     """Prepare various input types for parsing
 
     >>> prepare_read(open("real_file"))
     ['This is a test file-type object\\n']
     >>> test_list = ['This is a test list-type object', 'with two elements']
     >>> prepare_read(test_list)
-    ['This is a test list-type object', 'with two elements']    
+    ['This is a test list-type object', 'with two elements']
+    >>> prepare_read(open("real_file"), "read")
+    'This is a test file-type object\\n'
 
     :Parameters:
         data : `file` like object, `list`, `str`
             Data to read
+        method : `str`
+            Method to process data with
     :rtype: `list`
     :return: List suitable for parsing
     :raise TypeError: Invalid value for data
 
     """
     if hasattr(data, "readlines"):
-        data = data.readlines()
+        data = getattr(data, method)()
     elif isinstance(data, list):
-        pass
+        if method == "read":
+            return "".join(data)
     elif isinstance(data, basestring):
-        data = open(data).readlines()
+        data = getattr(open(data), method)()
     else:
         raise TypeError("Unable to handle data of type `%s`" % type(data))
     return data
