@@ -28,7 +28,7 @@ class Cell(point.Point):
     :since: 0.11.0
 
     :Ivariables:
-        ident : `int`
+        ident
             OpenCellID database identifier
         latitude
             Cell's latitude
