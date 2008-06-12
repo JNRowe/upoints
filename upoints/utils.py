@@ -328,32 +328,40 @@ def to_dd(degrees, minutes, seconds=0):
     sign = -1 if any([i < 0 for i in degrees, minutes, seconds]) else 1
     return sign * (abs(degrees) + abs(minutes) / 60 + abs(seconds) / 3600)
 
-def __chunk(segment):
+def __chunk(segment, abbr=False):
     """Generate a tuple of compass direction names
 
     :Parameters:
         segment : `int`
             Compass segment to generate names for
+        abbr : `bool`
+            Names should use single letter abbreviations
     :rtype: `tuple`
     :return: Direction names for compass segment
 
     """
     names = ("north", "east", "south", "west", "north")
+    if not abbr:
+        sjoin = "-"
+    else:
+        names = map(lambda s: s[0].upper(), names)
+        sjoin = ""
     if segment % 2 == 0:
         return (names[segment].capitalize(),
-                "%s-%s-%s" % (names[segment].capitalize(), names[segment],
-                              names[segment+1]),
-                "%s-%s" % (names[segment].capitalize(), names[segment+1]),
-                "%s-%s-%s" % (names[segment+1].capitalize(), names[segment],
-                              names[segment+1]))
+                sjoin.join((names[segment].capitalize(), names[segment],
+                            names[segment+1])),
+                sjoin.join((names[segment].capitalize(), names[segment+1])),
+                sjoin.join((names[segment+1].capitalize(), names[segment],
+                            names[segment+1])))
     else:
         return (names[segment].capitalize(),
-                "%s-%s-%s" % (names[segment].capitalize(), names[segment+1],
-                              names[segment]),
-                "%s-%s" % (names[segment+1].capitalize(), names[segment]),
-                "%s-%s-%s" % (names[segment+1].capitalize(), names[segment+1],
-                              names[segment]))
+                sjoin.join((names[segment].capitalize(), names[segment+1],
+                            names[segment])),
+                sjoin.join((names[segment+1].capitalize(), names[segment])),
+                sjoin.join((names[segment+1].capitalize(), names[segment+1],
+                           names[segment])))
 COMPASS_NAMES = reduce(add, map(__chunk, range(4)))
+COMPASS_NAMES_ABBR = reduce(add, map(lambda x: __chunk(x, True), range(4)))
 
 def angle_to_name(angle, segments=8, abbr=False):
     """Convert angle in to direction name
