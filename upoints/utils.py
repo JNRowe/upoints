@@ -175,7 +175,7 @@ def repr_assist(obj, remap=None):
             data.append(str(value))
     return obj.__class__.__name__ + '(' + ", ".join(data) + ')'
 
-def prepare_read(data, method="readlines"):
+def prepare_read(data, method="readlines", mode="r"):
     """Prepare various input types for parsing
 
     >>> prepare_read(open("real_file"))
@@ -191,6 +191,8 @@ def prepare_read(data, method="readlines"):
             Data to read
         method : `str`
             Method to process data with
+        mode : `str`
+            Custom mode to process with, if data is a file
     :rtype: `list`
     :return: List suitable for parsing
     :raise TypeError: Invalid value for data
@@ -202,7 +204,7 @@ def prepare_read(data, method="readlines"):
         if method == "read":
             return "".join(data)
     elif isinstance(data, basestring):
-        data = getattr(open(data), method)()
+        data = getattr(open(data, mode), method)()
     else:
         raise TypeError("Unable to handle data of type `%s`" % type(data))
     return data
