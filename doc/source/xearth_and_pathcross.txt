@@ -1,6 +1,10 @@
 xearth and path cross
 =====================
 
+.. module:: upoints.xearth
+   :synopsis: Support for xearth-style marker files
+.. moduleauthor:: James ROwe <jnrpwe@ukfsn.org>
+
 As a final comment in the `geolocation and path cross`_ entry I wrote:
 
   If you think of any good uses for ``edist``, drop me a mail.  Cool new

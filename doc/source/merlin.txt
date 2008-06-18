@@ -1,6 +1,8 @@
 The MERLIN system
 =================
 
+.. currentmodule:: upoints.point
+
 Introduction
 ------------
 
@@ -134,6 +136,8 @@ the Cambridge site, which lucky for me is only a short trip up the road:
 
 Comparisons with other ``Point``-type objects
 ---------------------------------------------
+
+.. :currentmodule: upoints.weather_stations
 
 In our contrived example above we may wish to travel only if the weather
 will be warm enough that we're unlikely to freeze to death(that risk is
