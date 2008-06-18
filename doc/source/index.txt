@@ -1,19 +1,45 @@
-.. upoints documentation master file, created by sphinx-quickstart on Wed Jun 18 07:36:43 2008.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
+:mod:`upoints`
+==============
 
-Welcome to upoints's documentation!
-===================================
+.. module:: upoints
+   :synopsis: Modules for working with points on Earth
+.. moduleauthor:: James ROwe <jnrpwe@ukfsn.org>
 
-Contents:
+``upoints`` is a collection of `GPL v3`_ licensed modules for working
+with points on Earth, or other near spherical objects.  It allows you to
+calculate the distance and bearings between points, mangle
+xearth_/xplanet_ data files, work with online UK trigpoint databases,
+NOAA_'s weather station database and other such location databases.
+
+Previous versions of ``upoints`` were called ``earth_distance``, but the
+name was changed as it no longer reflected the majority of uses the
+packages was targeted at.
+
+Contents
+--------
 
 .. toctree::
    :maxdepth: 2
 
+   geolocation_and_pathcross
+   merlin
+   python_cities
+   pythons_on_a_plane
+   trigpointing_and_point_py
+   xearth_and_pathcross
+
 Indices and tables
-==================
+------------------
 
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
+
+.. _GPL v3: http://www.gnu.org/licenses/
+.. _xearth: http://www.cs.colorado.edu/~tuna/xearth/
+.. _xplanet: http://xplanet.sourceforge.net/
+.. _NOAA: http://weather.noaa.gov/
+
+..
+    :vim: set ft=rst ts=2 sw=2 et:
 
