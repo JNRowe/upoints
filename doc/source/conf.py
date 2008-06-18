@@ -40,11 +40,13 @@ copyright = '2008, James Rowe'
 
 # The default replacements for |version| and |release|, also used in various
 # other places throughout the built documents.
-#
+root_dir = os.path.sep.join(os.path.realpath(__file__).split(os.path.sep)[:-3])
+sys.path.insert(0, root_dir)
+from upoints import __version__
 # The short X.Y version.
-version = '0.11.0'
+version = ".".join(__version__.split(".")[:2])
 # The full version, including alpha/beta/rc tags.
-release = '0.11.0'
+release = __version__
 
 # There are two options for replacing |today|: either, you set today to some
 # non-false value, then it is used:
@@ -159,3 +161,4 @@ latex_documents = [
 
 # If false, no module index is generated.
 #latex_use_modindex = True
+
