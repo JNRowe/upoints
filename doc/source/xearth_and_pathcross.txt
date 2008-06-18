@@ -3,7 +3,8 @@ xearth and path cross
 
 .. module:: upoints.xearth
    :synopsis: Support for xearth-style marker files
-.. moduleauthor:: James ROwe <jnrpwe@ukfsn.org>
+.. moduleauthor:: James Rowe <jnrpwe@ukfsn.org>
+.. versionadded:: 0.2.0
 
 As a final comment in the `geolocation and path cross`_ entry I wrote:
 

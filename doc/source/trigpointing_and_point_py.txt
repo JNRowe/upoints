@@ -3,7 +3,8 @@ Trigpointing and point.py
 
 .. module:: upoints.trigpoints
    :synopsis: Support for trigpoint marker files
-.. moduleauthor:: James ROwe <jnrpwe@ukfsn.org>
+.. moduleauthor:: James Rowe <jnrpwe@ukfsn.org>
+.. versionadded:: 0.2.0
 
 One interesting email I received after posting `geolocation and path
 cross`_ asked if the module could be used for quick visualisation when
