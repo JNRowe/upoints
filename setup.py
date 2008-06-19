@@ -460,7 +460,11 @@ class TestDoc(MyTest):
         """Run the documentation code examples"""
         tot_fails = 0
         tot_tests = 0
-        for filename in sorted(['README'] + glob("doc/*.txt")):
+        sphinx_files = []
+        for root, dirs, files in os.walk("doc/source/"):
+            sphinx_files.extend(map(lambda s: os.path.join(root, s),
+                                    filter(lambda s: s.endswith(".txt"), files)))
+        for filename in sorted(['README'] + glob("doc/*.txt") + sphinx_files):
             print('  Testing documentation file %s' % filename)
             fails, tests = doctest.testfile(filename,
                                             optionflags=self.doctest_opts,
