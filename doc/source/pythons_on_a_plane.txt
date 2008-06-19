@@ -115,10 +115,10 @@ example, create a nice graphical view of your trip with xplanet_:
    :height: 192
    :target: http://www.jnrowe.ukfsn.org/graphics/xearth_trip.png
 
-The code above will create a file named ``trip.txt`` that can be used
-with xplanet or xearth_.  It actually produces a reasonably accurate,
-and quite useful graphical representation of a trip.  An example of the
-output with xplanet can be seen on the right.
+The code above will create a file named :file:`trip.txt` that can be
+used with xplanet or xearth_.  It actually produces a reasonably
+accurate, and quite useful graphical representation of a trip.  An
+example of the output with xplanet can be seen on the right.
 
 If you'd prefer to see locations marked up with dates, perhaps as an aid
 to your own `path cross`_ suite, simply don't set the :attr:`name`
