@@ -236,6 +236,11 @@ class BuildDoc(NoOptsCommand):
                     print('Building file %s' % base)
                     publish_cmdline(writer_name='man',
                                     argv=['--strict', source, base])
+        print("Building sphinx tree")
+        if not os.path.isdir("doc/html"):
+            os.mkdir("doc/html")
+        check_call(["sphinx-build", "-b", "html", "-d", "doc/source/.doctrees",
+                    "doc/source", "doc/html"])
         if not EPYDOC:
             raise DistutilsModuleError("epydoc import failed, "
                                        "skipping API documentation generation")
