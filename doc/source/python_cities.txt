@@ -51,11 +51,13 @@ with awk_ as it would with Python_.
     Date        : 19961206
     Entered-By  : Rob.Hooft@EMBL-Heidelberg.DE
 
-You don't need to hand process the data though, I've added ``cities.py``
-to the ``upoints`` tarball that takes care of importing the data.  When
-you import the entries with ``cities.Cities()`` it returns a dictionary
-of ``City`` objects that are children of the ``Trigpoint`` objects
-defined for `Trigpointing and point.py`_
+You don't need to hand process the data though, I've added
+:mod:`~upoints.cities` to the ``upoints`` tarball that takes care of
+importing the data.  When you import the entries with
+:meth:`~upoints.cities.Cities.import_locations` it returns a dictionary
+of :class:`~upoints.cities.City` objects that are children of the
+:class:`~upoints.trigpoints.Trigpoint` objects defined for `Trigpointing
+and point.py`_
 
 On my Gentoo_ desktop the cities database is installed as
 ``/usr/share/misc/cities.dat``, and can be imported as simply as:
@@ -100,13 +102,16 @@ You can recreate the database as a smoke test using the following:
 
 unfortunately the files aren't simply comparable using ``diff`` because
 of some unusual formatting in the original file, but visually scanning
-over the ``diff -w`` output shows that we have a correct export.
+over the ``diff -w`` output to ignore the whitespace changes shows that
+we have a correct export.
 
-The ``City`` class inherits ``Trigpoint`` which in turn inherits
-``Point``, and therefore has all the same methods they do.  This allows
-you to calculate distances and bearings between the ``City`` objects or
-any other derivative object of the parent classes.  For example, you
-could use the ``dump_xearth_markers`` function from ``utils.py``:
+The :class:`~upoints.cities.City` class inherits
+:class:`~upoints.trigpoints.Trigpoint` which in turn inherits
+:class:`~upoints.point.Point`, and therefore has all the same methods
+they do.  This allows you to calculate distances and bearings between
+the class:`~upoints.cities.City` objects or any other derivative object
+of the parent classes.  For example, you could use the
+:func:`~upoints.utils.dump_xearth_markers` function:
 
 .. code-block:: pycon
 

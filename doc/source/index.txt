@@ -6,14 +6,14 @@
 .. moduleauthor:: James Rowe <jnrpwe@ukfsn.org>
 .. versionadded:: 0.1.0
 
-``upoints`` is a collection of `GPL v3`_ licensed modules for working
+:mod:`upoints` is a collection of `GPL v3`_ licensed modules for working
 with points on Earth, or other near spherical objects.  It allows you to
 calculate the distance and bearings between points, mangle
 xearth_/xplanet_ data files, work with online UK trigpoint databases,
 NOAA_'s weather station database and other such location databases.
 
-Previous versions of ``upoints`` were called ``earth_distance``, but the
-name was changed as it no longer reflected the majority of uses the
+Previous versions of :mod:`upoints` were called ``earth_distance``, but
+the name was changed as it no longer reflected the majority of uses the
 packages was targeted at.
 
 Contents

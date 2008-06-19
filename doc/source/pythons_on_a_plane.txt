@@ -7,7 +7,7 @@ Pythons on a plane
 .. versionadded:: 0.2.0
 
 In what is probably the final spin-off from `geolocation and path
-cross`_ we'll be using the upoints modules to work with airport
+cross`_ we'll be using the :mod:`upoints` modules to work with airport
 locations.  This can be useful if you'd like to calculate how far you've
 travelled in a certain period, or just as a large database for
 calculating rough distances between other places using the closest
@@ -93,10 +93,11 @@ above [#]_.
     >>> print("For a total of %i kilometres" % sum([i[1] for i in legs]))
     For a total of 2078 kilometres
 
-The ``Station`` class inherits from ``Trigpoint`` and as such you can
-use the functions and methods defined for it with ``Station`` objects.
-You could, for example, create a nice graphical view of your trip with
-xplanet_:
+The :class:`~upoints.weather_stations.Station` class inherits from
+:class:`~upoints.trigpoints.Trigpoint` and as such you can use the
+functions and methods defined for it with
+:class:`~upoints.weather_station.Station` objects.  You could, for
+example, create a nice graphical view of your trip with xplanet_:
 
 .. code-block:: pycon
 
@@ -120,10 +121,11 @@ and quite useful graphical representation of a trip.  An example of the
 output with xplanet can be seen on the right.
 
 If you'd prefer to see locations marked up with dates, perhaps as an aid
-to your own `path cross`_ suite, simply don't set the ``name`` parameter
-in your call to ``dump_xearth_markers()``.  Also, as the function only
-requires a dictionary of ``Trigpoint``-style objects you could
-apply ``filter()`` and ``map()`` expressions to the objects to generate
+to your own `path cross`_ suite, simply don't set the :attr:`name`
+parameter in your call to :func:`~upoints.utils.dump_xearth_markers`.
+Also, as the function only requires a dictionary of
+:class:`~upoints.trigpoints.Trigpoint`-style objects you could apply
+:func:`filter` and :func:`map` expressions to the objects to generate
 your own lables for the markers.
 
 .. figure:: http://www.jnrowe.ukfsn.org/graphics/xplanet_trip_date_mini.png
@@ -136,12 +138,12 @@ There is a wealth of epydoc_ generated HTML output in the tarball,
 including documentation and usage examples.  If you still have any
 questions after reading the documentation, drop me a mail_ and I'll do
 my best to answer your questions.  Also, I'd love to hear from you if
-come up with any clever uses for for the modules in ``upoints``.
+come up with any clever uses for for the modules in :mod:`upoints`.
 
-.. [#] I've personally taken to creating and using ``cPickle`` dumps of
-       the database, where each WMO region is stored in
-       a separate file.  If you do this you end up with some interesting
-       results including the 123 locations from the Antarctic, and the
+.. [#] I've personally taken to creating and using :mod:`cPickle` dumps
+       of the database, where each WMO region is stored in a separate
+       file.  If you do this you end up with some interesting results
+       including the 123 locations from the Antarctic, and the
        8 obviously classifiable locations missing an WMO region in the
        data file.  I personally found it quite interesting that the list
        of entries by region is Europe(30%), Asia(30%), North and Central
