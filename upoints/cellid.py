@@ -19,6 +19,7 @@
 #
 
 import datetime
+import logging
 
 from upoints import (point, utils)
 
@@ -205,7 +206,18 @@ class Cells(point.KeyedPoints):
         data = utils.prepare_csv_read(cells_file, field_names)
 
         for row in data:
-            for name, parser in zip(field_names, field_parsers):
-                row[name] = parser(row[name])
-            self[row['ident']] = Cell(**row)
+            try:
+                cell = dict([(n, p(row[n]))
+                             for n, p in zip(field_names, field_parsers)])
+            except ValueError:
+                if r"\N" in row.values():
+                    # A few entries are incomplete, and when that occurs the
+                    # export includes the string "\N" to denote missing
+                    # data.  We just ignore them for now
+                    logging.debug("Skipping incomplete entry `%s'" % row)
+                    break
+                else:
+                    raise utils.FileFormatError("opencellid.org")
+            else:
+                self[row['ident']] = Cell(**cell)
 
