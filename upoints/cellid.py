@@ -120,7 +120,7 @@ class Cell(point.Point):
         :return: OpenCellID.org-style string representation of `Cell` object
 
         """
-        return "%i,%.13f,%.15f,%i,%i,%i,%i,%i,%i,%s,%s" \
+        return "%i,%.13f,%.13f,%i,%i,%i,%i,%i,%i,%s,%s" \
             % (self.ident, self.latitude, self.longitude, self.mcc, self.mnc,
                self.lac, self.cellid, self.crange, self.samples,
                self.created.strftime("%Y-%m-%d %H:%M:%S"),
