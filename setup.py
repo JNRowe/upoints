@@ -442,7 +442,6 @@ class MyTest(NoOptsCommand):
         self.doctest_opts = doctest.REPORT_UDIFF|doctest.NORMALIZE_WHITESPACE
         self.extraglobs = {
             "open": test.mock.open,
-            "os": test.mock.os,
             "urllib": test.mock.urllib,
         } #: Mock objects to include for test framework
         if hasattr(__pkg_data__, "TEST_EXTRAGLOBS"):
