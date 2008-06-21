@@ -18,6 +18,8 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+from __future__ import with_statement
+
 import doctest
 import os
 import shutil
@@ -107,9 +109,8 @@ def write_manifest(files):
             Filenames to include in MANIFEST
 
     """
-    manifest = open("MANIFEST", "w")
-    manifest.write("\n".join(sorted(files)) + "\n")
-    manifest.close()
+    with open("MANIFEST", "w") as manifest:
+        manifest.write("\n".join(sorted(files)) + "\n")
 
 #}
 
