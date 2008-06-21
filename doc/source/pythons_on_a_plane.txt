@@ -49,8 +49,8 @@ work with entries in the UK:
 
 .. code-block:: pycon
 
-    >>> UK_locations = dict(filter(lambda x: x[1].country == "United Kingdom",
-    ...                            ICAO_stations.items()))
+    >>> UK_locations = dict([x for x in ICAO_stations.items()
+    ...                      if x[1].country == "United Kingdom"])
 
 Let us imagine for a minute that next month you're flying from London
 Luton to our office in Toulouse, then dropping by Birmingham for GUADEC,
@@ -61,7 +61,7 @@ easily.
 
 .. code-block:: pycon
 
-    >>> Europe = dict(filter(lambda x: x[1].wmo == 6, ICAO_stations.items()))
+    >>> Europe = dict([x for x in ICAO_stations.items() if x[1].wmo == 6])
     >>> del(ICAO_stations)
     >>> print(len(Europe))
     1130

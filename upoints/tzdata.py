@@ -163,7 +163,7 @@ class Zones(point.Points):
 
         data = utils.prepare_csv_read(zone_file, field_names, delimiter=r"	")
 
-        for row in ifilter(lambda x: not x['country'].startswith("#"), data):
+        for row in (x for x in data if not x['country'].startswith("#")):
             if row['comments']:
                 row['comments'] = row['comments'].split(", ")
             self.append(Zone(**row))

@@ -300,8 +300,7 @@ def hg_finder(dirname, none):
     # do that as it makes builds entirely unpredictable
     output = call_hg(["locate", ])
     # Include all but Bugs Everywhere data from repo in tarballs
-    distributed_files = filter(lambda s: not s.startswith(".be/"),
-                               output.splitlines())
+    distributed_files = [s for s in output.splitlines() if s.startswith(".be/")]
     distributed_files.extend([".hg_version", "ChangeLog"])
     distributed_files.extend(glob("*.html"))
     distributed_files.extend(glob("doc/*.html"))
@@ -340,8 +339,8 @@ class HgSdist(sdist):
         """Generate MANIFEST file contents from Mercurial tree"""
         output = call_hg(["locate", ])
         # Include all but Bugs Everywhere data from repo in tarballs
-        manifest_files = filter(lambda s: not s.startswith(".be/"),
-                                output.splitlines())
+        manifest_files = [s for s in output.splitlines()
+                          if not s.startswith(".be/")]
         manifest_files.extend([".hg_version", "ChangeLog"])
         manifest_files.extend(glob("*.html"))
         manifest_files.extend(glob("doc/*.html"))
@@ -354,7 +353,7 @@ class HgSdist(sdist):
     def make_distribution(self):
         """Update versioning data and build distribution"""
         news_format = "%s - " % __pkg_data__.MODULE.__version__
-        news_matches = filter(lambda s: s.startswith(news_format), open("NEWS"))
+        news_matches = [s for s in open("NEWS") if s.startswith(news_format)]
         if not any(news_matches):
             print("NEWS entry for `%s' missing"
                   % __pkg_data__.MODULE.__version__)
@@ -464,8 +463,8 @@ class TestDoc(MyTest):
         tot_tests = 0
         sphinx_files = []
         for root, dirs, files in os.walk("doc/source/"):
-            sphinx_files.extend(map(lambda s: os.path.join(root, s),
-                                    filter(lambda s: s.endswith(".txt"), files)))
+            sphinx_files.extend([os.path.join(root, s)
+                                 for s in files if s.endswith(".txt")])
         for filename in sorted(['README'] + glob("doc/*.txt") + sphinx_files):
             print('  Testing documentation file %s' % filename)
             fails, tests = doctest.testfile(filename,

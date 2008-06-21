@@ -346,7 +346,7 @@ def __chunk(segment, abbr=False):
     if not abbr:
         sjoin = "-"
     else:
-        names = map(lambda s: s[0].upper(), names)
+        names = [s[0].upper() for s in names]
         sjoin = ""
     if segment % 2 == 0:
         return (names[segment].capitalize(),
@@ -363,7 +363,7 @@ def __chunk(segment, abbr=False):
                 sjoin.join((names[segment+1].capitalize(), names[segment+1],
                            names[segment])))
 COMPASS_NAMES = reduce(add, map(__chunk, range(4)))
-COMPASS_NAMES_ABBR = reduce(add, map(lambda x: __chunk(x, True), range(4)))
+COMPASS_NAMES_ABBR = reduce(add, [__chunk(x, True) for x in range(4)])
 
 def angle_to_name(angle, segments=8, abbr=False):
     """Convert angle in to direction name
@@ -1039,11 +1039,10 @@ def parse_location(location):
             else:
                 out.append(sect)
                 sect = []
-        degrees, minutes, seconds = [float("".join(i)) for i in out]
+        d, m, s = [float("".join(i)) for i in out]
         if hemisphere in "SW":
-            degrees, minutes, seconds = map(lambda x: -1 * x,
-                                            (degrees, minutes, seconds))
-        return to_dd(degrees, minutes, seconds)
+            d, m, s = [-1 * x for x in (d, m, s)]
+        return to_dd(d, m, s)
 
     for sep in ";, ":
         chunks = location.split(sep)

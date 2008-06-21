@@ -760,7 +760,7 @@ class Points(list):
             if parse:
                 self.import_locations(points)
             else:
-                if not all(map(lambda x: isinstance(x, Point), points)):
+                if not all([x for x in points if isinstance(x, Point)]):
                     raise TypeError("All `points` elements must be an instance "
                                     "of the `Point` class")
                 self.extend(points)
@@ -830,7 +830,7 @@ class Points(list):
 
         >>> locations = Points(["52.015;-0.221", "52.168;0.040", "52.855;0.657"],
         ...                    parse=True)
-        >>> map(lambda x: "%.3f" % x, locations.bearing())
+        >>> ["%.3f" % x for x in locations.bearing()]
         ['46.242', '28.416']
 
         :Parameters:
@@ -848,7 +848,7 @@ class Points(list):
 
         >>> locations = Points(["52.015;-0.221", "52.168;0.040", "52.855;0.657"],
         ...                    parse=True)
-        >>> map(lambda x: "%.3f" % x, locations.final_bearing())
+        >>> ["%.3f" % x for x in locations.final_bearing()]
         ['46.448', '28.906']
 
         :Parameters:
@@ -908,7 +908,7 @@ class Points(list):
         :rtype: `list` of `Point` objects within specified range
 
         """
-        return ifilter(lambda x: location.__eq__(x, distance), self)
+        return (x for x in self if location.__eq__(x, distance))
 
     def destination(self, bearing, distance):
         """Calculate destination locations for given distance and bearings
@@ -1042,8 +1042,7 @@ class KeyedPoints(dict):
             if parse:
                 self.import_locations(points)
             else:
-                if not all(map(lambda x: isinstance(x, Point),
-                               points.values())):
+                if not all(x for x in points.values() if isinstance(x, Point)):
                     raise TypeError("All `points` element's values must be an "
                                     "instance of the `Point` class")
                 self.update(points)
@@ -1119,8 +1118,7 @@ class KeyedPoints(dict):
         ...                          ("Carol", "52.168;0.040"),
         ...                          ("Kenny", "52.855;0.657")],
         ...                         parse=True)
-        >>> map(lambda x: "%.3f" % x,
-        ...     locations.bearing(("home", "Carol", "Kenny")))
+        >>> ["%.3f" % x for x in locations.bearing(("home", "Carol", "Kenny"))]
         ['46.242', '28.416']
 
         :Parameters:
@@ -1143,8 +1141,8 @@ class KeyedPoints(dict):
         ...                          ("Carol", "52.168;0.040"),
         ...                          ("Kenny", "52.855;0.657")],
         ...                         parse=True)
-        >>> map(lambda x: "%.3f" % x,
-        ...     locations.final_bearing(("home", "Carol", "Kenny")))
+        >>> ["%.3f" % x
+        ...  for x in locations.final_bearing(("home", "Carol", "Kenny"))]
         ['46.448', '28.906']
 
         :Parameters:

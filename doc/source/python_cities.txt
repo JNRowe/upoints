@@ -116,8 +116,8 @@ of the parent classes.  For example, you could use the
 .. code-block:: pycon
 
     >>> from upoints.utils import dump_xearth_markers
-    >>> scottish_cities = filter(lambda x: x.region == "Scotland", Cities)
-    >>> scottish_markers = dict(map(lambda x: (x.identifier, x), scottish_cities))
+    >>> scottish_markers = dict([(x.identifier, x) for x in Cities
+    ...                          if x.region == "Scotland"])
     >>> print("\n".join(dump_xearth_markers(scottish_markers, "name")))
     57.150000 -2.083000 "Aberdeen" # 1
     55.950000 -3.183000 "Edinburgh" # 83

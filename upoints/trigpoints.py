@@ -186,7 +186,7 @@ class Trigpoints(point.KeyedPoints):
 
         data = utils.prepare_csv_read(marker_file, field_names)
 
-        for row in ifilter(lambda x: x['tag'] == "W", data):
+        for row in (x for x in data if x['tag'] == "W"):
             for name, parser in zip(field_names, field_parsers):
                 row[name] = parser(row[name])
             del row['tag']
