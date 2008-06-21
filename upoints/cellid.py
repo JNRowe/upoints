@@ -21,6 +21,8 @@
 import datetime
 import logging
 
+from operator import attrgetter
+
 from upoints import (point, utils)
 
 class Cell(point.Point):
@@ -154,7 +156,7 @@ class Cells(point.KeyedPoints):
         :return: OpenCellID.org formatted output
 
         """
-        return "\n".join(map(str, sorted(self.values(), key=lambda x: x.ident)))
+        return "\n".join(map(str, sorted(self.values(), key=attrgetter("ident"))))
 
     def import_locations(self, cells_file):
         """Parse OpenCellID.org data files
@@ -183,7 +185,7 @@ class Cells(point.KeyedPoints):
                          datetime.datetime(2008, 4, 5, 21, 32, 59))}
 
         >>> cells = Cells(open("cells"))
-        >>> for value in sorted(cells.values(), key=lambda x: x.ident):
+        >>> for value in sorted(cells.values(), key=attrgetter("ident")):
         ...     print(value)
         22747,52.0438995361328,-0.2246370017529,234,33,2319,647,0,1,2008-04-05 21:32:40,2008-04-05 21:32:40
         22995,52.3305015563965,-0.2255620062351,234,10,20566,4068,0,1,2008-04-05 21:32:59,2008-04-05 21:32:59

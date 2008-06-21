@@ -18,7 +18,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from itertools import ifilter
+from operator import attrgetter
 
 from upoints import (point, utils)
 
@@ -143,8 +143,7 @@ class Zones(point.Points):
                   ["McMurdo Station", "Ross Island"])]
 
         >>> zones = Zones(open("timezones"))
-        >>> for value in sorted(zones,
-        ...                     key=lambda x: x.zone):
+        >>> for value in sorted(zones, key=attrgetter("zone")):
         ...     print(value)
         Africa/Luanda (AO: 08°48'00"S, 013°14'00"E)
         America/Curacao (AN: 12°11'00"N, 069°00'00"W)
@@ -183,7 +182,7 @@ class Zones(point.Points):
 
         """
         data = []
-        for zone in sorted(self, key=lambda x: x.country):
+        for zone in sorted(self, key=attrgetter("country")):
             text = ["%s	%s	%s"
                     % (zone.country,
                        utils.to_iso6709(zone.latitude, zone.longitude,

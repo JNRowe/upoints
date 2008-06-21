@@ -60,6 +60,8 @@ import optparse
 import os
 import sys
 
+from operator import itemgetter
+
 from upoints import (point, utils)
 
 class LocationsError(ValueError):
@@ -512,7 +514,7 @@ class NumberedPoints(point.Points):
                       % (loc.name, leg[0], leg[1], leg_speed, loc.latitude,
                          loc.longitude))
         if self.verbose:
-            overall_distance = sum(map(lambda x: x[1], legs))
+            overall_distance = sum(map(itemgetter(1), legs))
             direct_distance = self[0].distance(self[-1])
             if speed == 0:
                 speed_marker = "#"

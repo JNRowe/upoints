@@ -23,6 +23,7 @@ from __future__ import division
 import math
 
 from itertools import (ifilter, imap)
+from operator import attrgetter
 
 from upoints import utils
 

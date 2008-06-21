@@ -22,6 +22,7 @@ import datetime
 import logging
 import urllib
 
+from operator import attrgetter
 from xml.etree import ElementTree
 
 try:
@@ -111,8 +112,8 @@ def get_area_url(location, distance):
 
     """
     locations = [location.destination(i, distance) for i in range(0, 360, 90)]
-    latitudes = [i.latitude for i in locations]
-    longitudes = [i.longitude for i in locations]
+    latitudes = map(attrgetter("latitude"), locations)
+    longitudes = map(attrgetter("longitude"), locations)
 
     west = min(longitudes)
     south = min(latitudes)
@@ -523,8 +524,8 @@ class Osm(point.Points):
                 generator="upoints/0.9.0")
 
         >>> region = Osm(open("osm"))
-        >>> for node in sorted(filter(lambda x: isinstance(x, Node), region),
-        ...                    key=lambda x: x.ident):
+        >>> for node in sorted([x for x in region if isinstance(x, Node)],
+        ...                    key=attrgetter("ident")):
         ...     print(node)
         Node 0 (52°00'56"N, 000°13'18"W) [visible, user: jnrowe, timestamp: 2008-01-25T12:52:11+00:00]
         Node 1 (52°00'56"N, 000°13'18"W) [visible, timestamp: 2008-01-25T12:53:00+00:00, highway: crossing, created_by: hand]

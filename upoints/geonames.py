@@ -24,6 +24,7 @@ try:
     from dateutil import tz
 except ImportError:
     tz = None #: ``dateutil`` module reference if available
+from operator import attrgetter
 
 from upoints import (point, trigpoints, utils)
 
@@ -275,7 +276,7 @@ class Locations(point.Points):
                       datetime.date(2006, 8, 21))]
 
         >>> locations = Locations(open("geonames"))
-        >>> for location in sorted(locations, key=lambda x: x.geonameid):
+        >>> for location in sorted(locations, key=attrgetter("geonameid")):
         ...     print("%i - %s" % (location.geonameid, location))
         2633441 - Afon Wyre (River Wayrai, River Wyrai, Wyre - N52.317°;
         W004.167°)

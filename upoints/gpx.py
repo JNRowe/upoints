@@ -23,6 +23,7 @@ import sys
 import time
 
 from functools import partial
+from operator import attrgetter
 from xml.etree import ElementTree
 
 try:
@@ -358,8 +359,8 @@ class _GpxMeta(object):
             metadata.append(element)
         if self.bounds:
             if not isinstance(self.bounds, dict):
-                latitudes = map(lambda x: x.latitude, self.bounds)
-                longitudes = map(lambda x: x.longitude, self.bounds)
+                latitudes = map(attrgetter("latitude"), self.bounds)
+                longitudes = map(attrgetter("longitude"), self.bounds)
                 bounds = {
                     "minlat": str(min(latitudes)),
                     "maxlat": str(max(latitudes)),
@@ -514,8 +515,7 @@ class Waypoints(point.Points):
              Waypoint(52.167, 0.390, "MSR", "Microsoft Research, Cambridge")]
 
         >>> waypoints = Waypoints(open("gpx"))
-        >>> for value in sorted(waypoints,
-        ...                     key=lambda x: x.name.lower()):
+        >>> for value in sorted(waypoints, key=attrgetter("name")):
         ...     print(value)
         Home (52°00'54"N, 000°13'15"W) [My place]
         MSR (52°10'01"N, 000°23'24"E) [Microsoft Research, Cambridge]
@@ -673,7 +673,7 @@ class Trackpoints(list):
 
         >>> trackpoints = Trackpoints(open("gpx_tracks"))
         >>> for value in sorted(trackpoints[0],
-        ...                     key=lambda x: x.name.lower()):
+        ...                     key=attrgetter("name")):
         ...     print(value)
         Home (52°00'54"N, 000°13'15"W) [My place]
         MSR (52°10'01"N, 000°23'24"E) [Microsoft Research, Cambridge]
@@ -841,7 +841,7 @@ class Routepoints(list):
 
         >>> routepoints = Routepoints(open("gpx_routes"))
         >>> for value in sorted(routepoints[0],
-        ...                     key=lambda x: x.name.lower()):
+        ...                     key=attrgetter("name")):
         ...     print(value)
         Home (52°00'54"N, 000°13'15"W) [My place]
         MSR (52°10'01"N, 000°23'24"E) [Microsoft Research, Cambridge]

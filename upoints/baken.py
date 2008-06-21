@@ -22,6 +22,8 @@ import ConfigParser
 import logging
 import re
 
+from operator import attrgetter
+
 from upoints import (point, utils)
 
 class Baken(point.Point):
@@ -138,7 +140,7 @@ class Baken(point.Point):
         """
         self._locator = value
         self._latitude, self._longitude = utils.from_grid_locator(value)
-    locator = property(lambda self: self._locator,
+    locator = property(attrgetter("_locator"),
                        lambda self, value: self._set_locator(value))
 
     def __str__(self, mode="dms"):
