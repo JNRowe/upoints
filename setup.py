@@ -420,6 +420,8 @@ class MyClean(clean):
                 if os.path.exists(filename):
                     os.unlink(filename)
             execute(shutil.rmtree, ("html", True))
+            execute(shutil.rmtree, ("doc/html", True))
+            execute(shutil.rmtree, ("doc/source/.doctrees", True))
         if hasattr(__pkg_data__, "MyClean_run"):
             __pkg_data__.MyClean_run(self.dry_run, self.force)
 
