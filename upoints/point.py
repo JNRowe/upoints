@@ -823,7 +823,7 @@ class Points(list):
         """
         if not len(self) > 1:
             raise RuntimeError("More than one location is required")
-        return [self[i].distance(self[i+1], method) for i in range(len(self)-1)]
+        return (self[i].distance(self[i+1], method) for i in range(len(self)-1))
 
     def bearing(self, format="numeric"):
         """Calculate bearing between locations
@@ -841,7 +841,7 @@ class Points(list):
         """
         if not len(self) > 1:
             raise RuntimeError("More than one location is required")
-        return [self[i].bearing(self[i+1], format) for i in range(len(self)-1)]
+        return (self[i].bearing(self[i+1], format) for i in range(len(self)-1))
 
     def final_bearing(self, format="numeric"):
         """Calculate final bearing between locations
@@ -859,15 +859,14 @@ class Points(list):
         """
         if len(self) == 1:
             raise RuntimeError("More than one location is required")
-        return [self[i].final_bearing(self[i+1], format)
-                for i in range(len(self)-1)]
+        return (self[i].final_bearing(self[i+1], format) for i in range(len(self)-1))
 
     def inverse(self):
         """Calculate the inverse geodesic between locations
 
         >>> locations = Points(["52.015;-0.221", "52.168;0.040", "52.855;0.657"],
         ...                    parse=True)
-        >>> locations.inverse()
+        >>> list(locations.inverse())
         [(46.242393198024672, 24.629669163425465),
          (28.416173848453582, 87.002075833085328)]
 
@@ -875,15 +874,15 @@ class Points(list):
         :return: Bearing and distance between points in series
 
         """
-        return [(self[i].bearing(self[i+1]), self[i].distance(self[i+1]))
-                for i in range(len(self)-1)]
+        return ((self[i].bearing(self[i+1]), self[i].distance(self[i+1]))
+                for i in range(len(self)-1))
 
     def midpoint(self):
         """Calculate the midpoint between locations
 
         >>> locations = Points(["52.015;-0.221", "52.168;0.040", "52.855;0.657"],
         ...                    parse=True)
-        >>> locations.midpoint()
+        >>> list(locations.midpoint())
         [Point(52.0915720432, -0.0907237539143, 'metric', 'degrees', 0),
          Point(52.5119010509, 0.346088603087, 'metric', 'degrees', 0)]
 
@@ -891,7 +890,7 @@ class Points(list):
         :return: Midpoint between points in series
 
         """
-        return [self[i].midpoint(self[i+1]) for i in range(len(self)-1)]
+        return (self[i].midpoint(self[i+1]) for i in range(len(self)-1))
 
     def range(self, location, distance):
         """Test whether locations are within a given range of the first
@@ -928,7 +927,7 @@ class Points(list):
                 Distance in kilometres
 
         """
-        return imap(lambda x: x.destination(bearing, distance), self)
+        return (x.destination(bearing, distance) for x in self)
     forward = destination
 
     def sunrise(self, date=None, zenith=None):
@@ -949,7 +948,7 @@ class Points(list):
         :return: The time for the sunrise for each point
 
         """
-        return imap(lambda x: x.sunrise(date, zenith), self)
+        return (x.sunrise(date, zenith) for x in self)
 
     def sunset(self, date=None, zenith=None):
         """Calculate sunset times for locations
@@ -969,7 +968,7 @@ class Points(list):
         :return: The time for the sunset for each point
 
         """
-        return imap(lambda x: x.sunset(date, zenith), self)
+        return (x.sunset(date, zenith) for x in self)
 
     def sun_events(self, date=None, zenith=None):
         """Calculate sunrise/sunset times for locations
@@ -991,7 +990,7 @@ class Points(list):
         :return: The time for the sunrise and sunset events for each point
 
         """
-        return imap(lambda x: x.sun_events(date, zenith), self)
+        return (x.sun_events(date, zenith) for x in self)
 
     def to_grid_locator(self, precision="square"):
         """Calculate Maidenhead locator for locations
@@ -1010,7 +1009,7 @@ class Points(list):
         :return: Maidenhead locator for each point
 
         """
-        return imap(lambda x: x.to_grid_locator(precision), self)
+        return (x.to_grid_locator(precision) for x in self)
 
 class KeyedPoints(dict):
     """Class for representing a keyed group of `Point` objects
@@ -1110,8 +1109,8 @@ class KeyedPoints(dict):
         """
         if not len(self) > 1:
             raise RuntimeError("More than one location is required")
-        return [self[order[i]].distance(self[order[i+1]], method)
-                for i in range(len(order)-1)]
+        return (self[order[i]].distance(self[order[i+1]], method)
+                for i in range(len(order)-1))
 
     def bearing(self, order, format="numeric"):
         """Calculate bearing between locations
@@ -1134,8 +1133,8 @@ class KeyedPoints(dict):
         """
         if not len(self) > 1:
             raise RuntimeError("More than one location is required")
-        return [self[order[i]].bearing(self[order[i+1]], format)
-                for i in range(len(order)-1)]
+        return (self[order[i]].bearing(self[order[i+1]], format)
+                for i in range(len(order)-1))
 
     def final_bearing(self, order, format="numeric"):
         """Calculate final bearing between locations
@@ -1158,8 +1157,8 @@ class KeyedPoints(dict):
         """
         if len(self) == 1:
             raise RuntimeError("More than one location is required")
-        return [self[order[i]].final_bearing(self[order[i+1]], format)
-                for i in range(len(order)-1)]
+        return (self[order[i]].final_bearing(self[order[i+1]], format)
+                for i in range(len(order)-1))
 
     def inverse(self, order):
         """Calculate the inverse geodesic between locations
@@ -1168,7 +1167,7 @@ class KeyedPoints(dict):
         ...                          ("Carol", "52.168;0.040"),
         ...                          ("Kenny", "52.855;0.657")],
         ...                         parse=True)
-        >>> locations.inverse(("home", "Carol", "Kenny"))
+        >>> list(locations.inverse(("home", "Carol", "Kenny")))
         [(46.242393198024672, 24.629669163425465),
          (28.416173848453582, 87.002075833085328)]
 
@@ -1179,9 +1178,9 @@ class KeyedPoints(dict):
         :return: Bearing and distance between points in series
 
         """
-        return [(self[order[i]].bearing(self[order[i+1]]),
+        return ((self[order[i]].bearing(self[order[i+1]]),
                  self[order[i]].distance(self[order[i+1]]))
-                for i in range(len(order)-1)]
+                for i in range(len(order)-1))
 
     def midpoint(self, order):
         """Calculate the midpoint between locations
@@ -1190,7 +1189,7 @@ class KeyedPoints(dict):
         ...                          ("Carol", "52.168;0.040"),
         ...                          ("Kenny", "52.855;0.657")],
         ...                         parse=True)
-        >>> locations.midpoint(("home", "Carol", "Kenny"))
+        >>> list(locations.midpoint(("home", "Carol", "Kenny")))
         [Point(52.0915720432, -0.0907237539143, 'metric', 'degrees', 0),
          Point(52.5119010509, 0.346088603087, 'metric', 'degrees', 0)]
 
@@ -1201,8 +1200,8 @@ class KeyedPoints(dict):
         :return: Midpoint between points in series
 
         """
-        return [self[order[i]].midpoint(self[order[i+1]])
-                for i in range(len(order)-1)]
+        return (self[order[i]].midpoint(self[order[i+1]])
+                for i in range(len(order)-1))
 
     def range(self, location, distance):
         """Test whether locations are within a given range of the first
@@ -1222,7 +1221,7 @@ class KeyedPoints(dict):
         :rtype: `list` of `Point` objects within specified range
 
         """
-        return ifilter(lambda x: location.__eq__(x[1], distance), self.items())
+        return (x for x in self.items() if location.__eq__(x[1], distance))
 
     def destination(self, bearing, distance):
         """Calculate destination locations for given distance and bearings
@@ -1243,8 +1242,7 @@ class KeyedPoints(dict):
                 Distance in kilometres
 
         """
-        return imap(lambda x: (x[0], x[1].destination(bearing, distance)),
-                    self.items())
+        return ((x[0], x[1].destination(bearing, distance)) for x in self.items())
     forward = destination
 
     def sunrise(self, date=None, zenith=None):
@@ -1268,8 +1266,7 @@ class KeyedPoints(dict):
         :return: The time for the sunrise for each point
 
         """
-        return imap(lambda x: (x[0], x[1].sunrise(date, zenith)),
-                    self.items())
+        return ((x[0], x[1].sunrise(date, zenith)) for x in self.items())
 
     def sunset(self, date=None, zenith=None):
         """Calculate sunset times for locations
@@ -1292,8 +1289,7 @@ class KeyedPoints(dict):
         :return: The time for the sunset for each point
 
         """
-        return imap(lambda x: (x[0], x[1].sunset(date, zenith)),
-                    self.items())
+        return ((x[0], x[1].sunset(date, zenith)) for x in self.items())
 
     def sun_events(self, date=None, zenith=None):
         """Calculate sunrise/sunset times for locations
@@ -1317,8 +1313,7 @@ class KeyedPoints(dict):
         :return: The time for the sunrise and sunset events for each point
 
         """
-        return imap(lambda x: (x[0], x[1].sun_events(date, zenith)),
-                    self.items())
+        return ((x[0], x[1].sun_events(date, zenith)) for x in self.items())
 
     def to_grid_locator(self, precision="square"):
         """Calculate Maidenhead locator for locations
@@ -1339,6 +1334,5 @@ class KeyedPoints(dict):
         :return: Maidenhead locator for each point
 
         """
-        return imap(lambda x: (x[0], x[1].to_grid_locator(precision)),
-                    self.items())
+        return ((x[0], x[1].to_grid_locator(precision)) for x in self.items())
 

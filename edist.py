@@ -299,7 +299,7 @@ class NumberedPoints(point.Points):
         Total distance is 159 kilometres
 
         """
-        distances = super(NumberedPoints, self).distance()
+        distances = list(super(NumberedPoints, self).distance())
         leg_msg = ["Location %s to %s is %i", ]
         total_msg = ["Total distance is %i", ]
         if self.units == "sm":
@@ -504,7 +504,7 @@ class NumberedPoints(point.Points):
         if self.verbose:
             print("WAYPOINT,BEARING[°],DISTANCE[%s],ELAPSED_TIME[%s],"
                   "LATITUDE[d.dd],LONGITUDE[d.dd]" % (self.units, time))
-        legs = [(0, 0), ] + self.inverse()
+        legs = [(0, 0), ] + list(self.inverse())
         for leg, loc in zip(legs, self):
             if leg == (0, 0):
                 print("%s,,,,%f,%f" % (loc.name, loc.latitude, loc.longitude))
