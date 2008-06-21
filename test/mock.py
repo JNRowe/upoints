@@ -46,11 +46,7 @@ def isfile(path):
 
     """
     filename = os.path.basename(path)
-    try:
-        __builtin__.open(os.path.join(BASEDIR, "data", filename))
-    except IOError:
-        return False
-    return True
+    return os.path.isfile(os.path.join(BASEDIR, "data", filename))
 
 def _get_test_file(filename):
     """Open a test data file
