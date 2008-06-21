@@ -115,13 +115,10 @@ def get_area_url(location, distance):
     latitudes = map(attrgetter("latitude"), locations)
     longitudes = map(attrgetter("longitude"), locations)
 
-    west = min(longitudes)
-    south = min(latitudes)
-    east = max(longitudes)
-    north = max(latitudes)
+    bounds = (min(longitudes), min(latitudes), max(longitudes), max(latitudes))
 
     return ("http://api.openstreetmap.org/api/0.5/map?bbox="
-            + ",".join(map(str, (west, south, east, north))))
+            + ",".join(map(str, bounds)))
 
 
 class Node(point.Point):
