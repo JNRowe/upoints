@@ -55,11 +55,11 @@ usage.  An example of how to use it follows:
 293
 >>> import datetime
 >>> Home.sun_events(datetime.date(2007, 6, 28))
-(datetime.time(3, 42), datetime.time(20, 25))
+(datetime.time(3, 42), datetime.time(20, 24))
 >>> Home.sunrise(datetime.date(2007, 6, 28))
 datetime.time(3, 42)
 >>> Home.sunset(datetime.date(2007, 6, 28))
-datetime.time(20, 25)
+datetime.time(20, 24)
 
 :version: %s
 :author: `%s <mailto:%s>`__

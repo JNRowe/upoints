@@ -661,9 +661,9 @@ class Point(object):
         >>> import datetime
         >>> date = datetime.date(2007, 6, 15)
         >>> Point(52.015, -0.221).sunset(date)
-        datetime.time(20, 23)
+        datetime.time(20, 22)
         >>> Point(52.6333, -2.5).sunset(date)
-        datetime.time(20, 36)
+        datetime.time(20, 35)
         >>> Point(36.1200, -86.6700).sunset(date)
         datetime.time(1, 5)
         >>> Point(33.9400, -118.4000).sunset(date)
@@ -689,9 +689,9 @@ class Point(object):
         >>> import datetime
         >>> date = datetime.date(2007, 6, 15)
         >>> Point(52.015, -0.221).sun_events(date)
-        (datetime.time(3, 40), datetime.time(20, 23))
+        (datetime.time(3, 40), datetime.time(20, 22))
         >>> Point(52.6333, -2.5).sun_events(date)
-        (datetime.time(3, 45), datetime.time(20, 36))
+        (datetime.time(3, 45), datetime.time(20, 35))
         >>> Point(36.1200, -86.6700).sun_events(date)
         (datetime.time(10, 29), datetime.time(1, 5))
         >>> Point(33.9400, -118.4000).sun_events(date)
@@ -957,7 +957,7 @@ class Points(list):
         ...                    parse=True)
         >>> import datetime
         >>> list(locations.sunset(datetime.date(2008, 5, 2)))
-        [datetime.time(19, 29), datetime.time(19, 28), datetime.time(19, 28)]
+        [datetime.time(19, 28), datetime.time(19, 27), datetime.time(19, 27)]
 
         :Parameters:
             date : ``datetime.date``
@@ -977,9 +977,9 @@ class Points(list):
         ...                    parse=True)
         >>> import datetime
         >>> list(locations.sun_events(datetime.date(2008, 5, 2)))
-        [(datetime.time(4, 28), datetime.time(19, 29)),
-         (datetime.time(4, 26), datetime.time(19, 28)),
-         (datetime.time(4, 21), datetime.time(19, 28))]
+        [(datetime.time(4, 28), datetime.time(19, 28)),
+         (datetime.time(4, 26), datetime.time(19, 27)),
+         (datetime.time(4, 21), datetime.time(19, 27))]
 
         :Parameters:
             date : ``datetime.date``
@@ -1275,8 +1275,8 @@ class KeyedPoints(dict):
         ...                         parse=True)
         >>> import datetime
         >>> list(locations.sunset(datetime.date(2008, 5, 2)))
-        [('home', datetime.time(19, 29)), ('Carol', datetime.time(19, 28)),
-         ('Kenny', datetime.time(19, 28))]
+        [('home', datetime.time(19, 28)), ('Carol', datetime.time(19, 27)),
+         ('Kenny', datetime.time(19, 27))]
 
         :Parameters:
             date : ``datetime.date``
@@ -1298,9 +1298,9 @@ class KeyedPoints(dict):
         ...                         parse=True)
         >>> import datetime
         >>> list(locations.sun_events(datetime.date(2008, 5, 2)))
-        [('home', (datetime.time(4, 28), datetime.time(19, 29))),
-         ('Carol', (datetime.time(4, 26), datetime.time(19, 28))),
-         ('Kenny', (datetime.time(4, 21), datetime.time(19, 28)))]
+        [('home', (datetime.time(4, 28), datetime.time(19, 28))),
+         ('Carol', (datetime.time(4, 26), datetime.time(19, 27))),
+         ('Kenny', (datetime.time(4, 21), datetime.time(19, 27)))]
 
         :Parameters:
             date : ``datetime.date``

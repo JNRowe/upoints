@@ -1115,15 +1115,15 @@ def sun_rise_set(latitude, longitude, date, mode="rise", timezone=0,
     >>> sun_rise_set(52.015, -0.221, datetime.date(2007, 6, 15))
     datetime.time(3, 40)
     >>> sun_rise_set(52.015, -0.221, datetime.date(2007, 6, 15), "set")
-    datetime.time(20, 23)
+    datetime.time(20, 22)
     >>> sun_rise_set(52.015, -0.221, datetime.date(2007, 6, 15), timezone=60)
     datetime.time(4, 40)
     >>> sun_rise_set(52.015, -0.221, datetime.date(2007, 6, 15), "set", 60)
-    datetime.time(21, 23)
+    datetime.time(21, 22)
     >>> sun_rise_set(52.015, -0.221, datetime.date(1993, 12, 11))
     datetime.time(7, 58)
     >>> sun_rise_set(52.015, -0.221, datetime.date(1993, 12, 11), "set")
-    datetime.time(15, 50)
+    datetime.time(15, 49)
     >>> sun_rise_set(89, 0, datetime.date(2007, 12, 21))
     >>> sun_rise_set(52.015, -0.221, datetime.date(2007, 2, 21))
     datetime.time(7, 4)
@@ -1199,7 +1199,7 @@ def sun_rise_set(latitude, longitude, date, mode="rise", timezone=0,
     if cosH > 1:
         # The sun never rises on this location (on the specified date)
         return None
-    if cosH < -1:
+    elif cosH < -1:
         # The sun never sets on this location (on the specified date)
         return None
 
@@ -1218,16 +1218,16 @@ def sun_rise_set(latitude, longitude, date, mode="rise", timezone=0,
 
     # Convert UT value to local time zone of latitude/longitude
     localT = UT + timezone/60
+    if localT < 0:
+        localT += 24
+    elif localT > 23:
+        localT -= 24
 
     hour = int(localT)
     if hour == 0:
         minute = int(60 * localT)
     else:
         minute = int(60 * (localT % hour))
-    if hour < 0:
-        hour += 23
-    elif hour > 23:
-        hour = hour % 24
     if minute < 0:
         minute += 60
     return datetime.time(hour, minute)
@@ -1236,50 +1236,50 @@ def sun_events(latitude, longitude, date, timezone=0, zenith=None):
     """Convenience function for calculating sunrise and sunset
 
     >>> sun_events(52.015, -0.221, datetime.date(2007, 6, 15))
-    (datetime.time(3, 40), datetime.time(20, 23))
+    (datetime.time(3, 40), datetime.time(20, 22))
     >>> sun_events(52.015, -0.221, datetime.date(2007, 6, 15), 60)
-    (datetime.time(4, 40), datetime.time(21, 23))
+    (datetime.time(4, 40), datetime.time(21, 22))
     >>> sun_events(52.015, -0.221, datetime.date(1993, 12, 11))
-    (datetime.time(7, 58), datetime.time(15, 50))
+    (datetime.time(7, 58), datetime.time(15, 49))
     >>> sun_events(52.015, -0.221, datetime.date(2007, 6, 15))
-    (datetime.time(3, 40), datetime.time(20, 23))
+    (datetime.time(3, 40), datetime.time(20, 22))
     >>> sun_events(40.638611, -73.762222, datetime.date(2007, 6, 15)) # JFK
     (datetime.time(9, 23), datetime.time(0, 27))
     >>> sun_events(49.016666, -2.5333333, datetime.date(2007, 6, 15)) # CDG
-    (datetime.time(4, 5), datetime.time(20, 16))
+    (datetime.time(4, 5), datetime.time(20, 15))
     >>> sun_events(35.549999, 139.78333333, datetime.date(2007, 6, 15)) # TIA
-    (datetime.time(19, 25), datetime.time(9, 58))
+    (datetime.time(19, 24), datetime.time(9, 57))
 
     Civil twilight starts/ends when the Sun's center is 6 degrees below
     the horizon.
 
     >>> sun_events(52.015, -0.221, datetime.date(2007, 6, 15), zenith="civil")
-    (datetime.time(2, 51), datetime.time(21, 12))
+    (datetime.time(2, 51), datetime.time(21, 11))
     >>> sun_events(40.638611, -73.762222, datetime.date(2007, 6, 15),
     ...            zenith="civil") # JFK
     (datetime.time(8, 50), datetime.time(1, 0))
     >>> sun_events(49.016666, -2.5333333, datetime.date(2007, 6, 15),
     ...            zenith="civil") # CDG
-    (datetime.time(3, 22), datetime.time(20, 59))
+    (datetime.time(3, 22), datetime.time(20, 58))
     >>> sun_events(35.549999, 139.78333333, datetime.date(2007, 6, 15),
     ...            zenith="civil") # TIA
-    (datetime.time(18, 55), datetime.time(10, 28))
+    (datetime.time(18, 54), datetime.time(10, 27))
 
     Nautical twilight starts/ends when the Sun's center is 12 degrees
     below the horizon.
 
     >>> sun_events(52.015, -0.221, datetime.date(2007, 6, 15),
     ...            zenith="nautical")
-    (datetime.time(1, 32), datetime.time(22, 31))
+    (datetime.time(1, 32), datetime.time(22, 30))
     >>> sun_events(40.638611, -73.762222, datetime.date(2007, 6, 15),
     ...            zenith="nautical") # JFK
     (datetime.time(8, 7), datetime.time(1, 44))
     >>> sun_events(49.016666, -2.5333333, datetime.date(2007, 6, 15),
     ...            zenith="nautical") # CDG
-    (datetime.time(2, 20), datetime.time(22, 1))
+    (datetime.time(2, 20), datetime.time(22, 0))
     >>> sun_events(35.549999, 139.78333333, datetime.date(2007, 6, 15),
     ...            zenith="nautical") # TIA
-    (datetime.time(18, 18), datetime.time(11, 6))
+    (datetime.time(18, 17), datetime.time(11, 5))
 
     Astronomical twilight starts/ends when the Sun's centre is 18 degrees below
     the horizon.
@@ -1295,7 +1295,7 @@ def sun_events(latitude, longitude, date, timezone=0, zenith=None):
     (None, None)
     >>> sun_events(35.549999, 139.78333333, datetime.date(2007, 6, 15),
     ...            zenith="astronomical") # TIA
-    (datetime.time(17, 35), datetime.time(11, 49))
+    (datetime.time(17, 34), datetime.time(11, 48))
 
     :Parameters:
         latitude : `float` or coercible to `float`
