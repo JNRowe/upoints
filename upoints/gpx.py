@@ -296,11 +296,11 @@ class _GpxMeta(object):
         metadata = elementise("metadata", None)
         if self.name:
             element = elementise("name", None)
-            element.text = getattr(self, name)
+            element.text = self.name
             metadata.append(element)
         if self.desc:
             element = elementise("desc", None)
-            element.text = getattr(self, name)
+            element.text = self.name
             metadata.append(element)
         if self.author:
             element = elementise("author", None)
@@ -760,7 +760,7 @@ class Trackpoints(list):
 
 
 class Routepoint(_GpxElem):
-    """Class for representing a waypoint element from GPX data files
+    """Class for representing a `rtepoint` element from GPX data files
 
     >>> Routepoint(52, 0)
     Routepoint(52.0, 0.0, None, None, None)
