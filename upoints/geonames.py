@@ -24,7 +24,6 @@ try:
     from dateutil import tz
 except ImportError:
     tz = None #: ``dateutil`` module reference if available
-from operator import attrgetter
 
 from upoints import (point, trigpoints, utils)
 

@@ -140,6 +140,7 @@ class Cells(point.KeyedPoints):
     def __init__(self, cells_file=None):
         """Initialise a new `Cells` object"""
         super(Cells, self).__init__()
+        self._cells_file = cells_file
         if cells_file:
             self.import_locations(cells_file)
 
@@ -156,7 +157,8 @@ class Cells(point.KeyedPoints):
         :return: OpenCellID.org formatted output
 
         """
-        return "\n".join(map(str, sorted(self.values(), key=attrgetter("ident"))))
+        return "\n".join(map(str, sorted(self.values(),
+                                         key=attrgetter("ident"))))
 
     def import_locations(self, cells_file):
         """Parse OpenCellID.org data files

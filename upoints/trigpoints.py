@@ -19,7 +19,6 @@
 #
 
 from functools import partial
-from itertools import ifilter
 
 from upoints import (point, utils)
 

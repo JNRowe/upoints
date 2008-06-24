@@ -22,9 +22,6 @@ from __future__ import division
 
 import math
 
-from itertools import (ifilter, imap)
-from operator import attrgetter
-
 from upoints import utils
 
 def _manage_location(attr):
@@ -859,7 +856,8 @@ class Points(list):
         """
         if len(self) == 1:
             raise RuntimeError("More than one location is required")
-        return (self[i].final_bearing(self[i+1], format) for i in range(len(self)-1))
+        return (self[i].final_bearing(self[i+1], format)
+                for i in range(len(self)-1))
 
     def inverse(self):
         """Calculate the inverse geodesic between locations
@@ -1240,7 +1238,8 @@ class KeyedPoints(dict):
                 Distance in kilometres
 
         """
-        return ((x[0], x[1].destination(bearing, distance)) for x in self.items())
+        return ((x[0], x[1].destination(bearing, distance))
+                for x in self.items())
     forward = destination
 
     def sunrise(self, date=None, zenith=None):

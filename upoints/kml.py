@@ -19,7 +19,6 @@
 #
 
 import logging
-import sys
 
 from functools import partial
 from xml.etree import ElementTree
