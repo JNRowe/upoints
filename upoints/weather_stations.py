@@ -224,6 +224,7 @@ class Stations(point.KeyedPoints):
         ...     print("%s - %s" % (key, value))
         KBRX - Bordeaux (N41.933°; W104.950°)
         KCQB - Chandler, Chandler Municipal Airport (N35.724°; W096.820°)
+        KTYR - Tyler, Tyler Pounds Field (N32.359°; W095.404°)
 
         :Parameters:
             data : `file`, `list` or `str`
