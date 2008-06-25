@@ -51,7 +51,7 @@ KML_VERSIONS = {
 # Changing this will cause tests to fail.
 DEF_KML_VERSION = "2.2" #: Default KML version to output
 
-def create_elem(tag, attr=None, kml_version=DEF_KML_VERSION,
+def create_elem(tag, attr=None, text=None, kml_version=DEF_KML_VERSION,
                 human_namespace=False):
     """Create a partial ``ET.Element`` wrapper with namespace defined
 
@@ -60,6 +60,8 @@ def create_elem(tag, attr=None, kml_version=DEF_KML_VERSION,
             Tag name
         attr : `dict`
             Default attributes for tag
+        text : `str`
+            Text content for the tag
         kml_version : `str`
             KML version to use
         human_namespace : `bool`
@@ -77,9 +79,12 @@ def create_elem(tag, attr=None, kml_version=DEF_KML_VERSION,
         raise KeyError("Unknown KML version `%s'" % kml_version)
     if human_namespace:
         ElementTree._namespace_map[kml_ns] = "kml"
-        return ElementTree.Element("{%s}%s" % (kml_ns, tag), attr)
+        element = ElementTree.Element("{%s}%s" % (kml_ns, tag), attr)
     else:
-        return ET.Element("{%s}%s" % (kml_ns, tag), attr)
+        element = ET.Element("{%s}%s" % (kml_ns, tag), attr)
+    if text:
+        element.text = text
+    return element
 
 class Placemark(trigpoints.Trigpoint):
     """Class for representing a Placemark element from KML data files
@@ -180,11 +185,9 @@ class Placemark(trigpoints.Trigpoint):
         placemark = element("Placemark")
         if self.name:
             placemark.set("id", self.name)
-            nametag = element("name")
-            nametag.text = self.name
+            nametag = element("name", None, self.name)
         if self.description:
-            desctag = element("description")
-            desctag.text = self.description
+            desctag = element("description", None, self.description)
         tpoint = element("Point")
         coords = element("coordinates")
 

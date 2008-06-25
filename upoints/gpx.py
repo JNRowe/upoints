@@ -52,7 +52,7 @@ GPX_VERSIONS = {
 # Changing this will cause tests to fail.
 DEF_GPX_VERSION = "1.1" #: Default GPX version to output
 
-def create_elem(tag, attr=None, gpx_version=DEF_GPX_VERSION,
+def create_elem(tag, attr=None, text=None, gpx_version=DEF_GPX_VERSION,
                 human_namespace=False):
     """Create a partial ``ET.Element`` wrapper with namespace defined
 
@@ -61,6 +61,8 @@ def create_elem(tag, attr=None, gpx_version=DEF_GPX_VERSION,
             Tag name
         attr : `dict`
             Default attributes for tag
+        text : `str`
+            Text content for the tag
         gpx_version : `str`
             GPX version to use
         human_namespace : `bool`
@@ -78,9 +80,12 @@ def create_elem(tag, attr=None, gpx_version=DEF_GPX_VERSION,
         raise KeyError("Unknown GPX version `%s'" % gpx_version)
     if human_namespace:
         ElementTree._namespace_map[gpx_ns] = "gpx"
-        return ElementTree.Element("{%s}%s" % (gpx_ns, tag), attr)
+        element = ElementTree.Element("{%s}%s" % (gpx_ns, tag), attr)
     else:
-        return ET.Element("{%s}%s" % (gpx_ns, tag), attr)
+        element = ET.Element("{%s}%s" % (gpx_ns, tag), attr)
+    if text:
+        element.text = text
+    return element
 
 class _GpxElem(point.Point):
     """Abstract class for representing an element from GPX data files
@@ -186,17 +191,11 @@ class _GpxElem(point.Point):
                              {"lat": str(self.latitude),
                               "lon": str(self.longitude)})
         if self.name:
-            nametag = elementise("name", None)
-            nametag.text = self.name
-            element.append(nametag)
+            element.append(elementise("name", None, self.name))
         if self.description:
-            desctag = elementise("desc", None)
-            desctag.text = self.description
-            element.append(desctag)
+            element.append(elementise("desc", None, self.description))
         if self.elevation:
-            eletag = elementise("ele", None)
-            eletag.text = self.elevation
-            element.append(eletag)
+            element.append(elementise("ele", None, self.elevation))
         return element
 
 
@@ -295,36 +294,25 @@ class _GpxMeta(object):
                              human_namespace=human_namespace)
         metadata = elementise("metadata", None)
         if self.name:
-            element = elementise("name", None)
-            element.text = self.name
-            metadata.append(element)
+            metadata.append(elementise("name", None, self.name))
         if self.desc:
-            element = elementise("desc", None)
-            element.text = self.name
-            metadata.append(element)
+            metadata.append(elementise("desc", None, self.desc))
         if self.author:
             element = elementise("author", None)
             if self.author['name']:
-                name = elementise("name", None)
-                name.text = self.author['name']
-                element.append(name)
+                element.append(elementise("name", None, self.author['name']))
             if self.author['email']:
-                email = elementise("email",
-                                   dict(zip(self.author['email'].split("@"),
-                                            ("id", "domain"))))
-                element.append(email)
+                element.append(elementise("email",
+                                          dict(zip(self.author['email'].split("@"),
+                                                   ("id", "domain")))))
             if self.author['link']:
-                link = elementise("link", None)
-                link.text = self.author['link']
-                element.append(link)
+                element.append(elementise("link", None, self.author['link']))
             metadata.append(element)
         if self.copyright:
             author = {"author": self.copyright['name']} if self.copyright['name'] else None
             element = elementise("copyright", author)
             if self.copyright['year']:
-                year = elementise("year", None)
-                year.text = self.copyright['year']
-                element.append(copyright)
+                element.append(elementise("year", None, self.copyright['year']))
             if self.copyright['license']:
                 license = elementise("license", None)
                 element.append(license)
@@ -336,13 +324,9 @@ class _GpxMeta(object):
                 else:
                     element = elementise("link", {"href": link["href"]})
                     if link['text']:
-                        text = elementise("text", None)
-                        text.text = link["text"]
-                        element.append(text)
+                        element.append(elementise("text", None, link["text"]))
                     if link['type']:
-                        ltype = elementise("type", None)
-                        ltype.text = link["type"]
-                        element.append(type)
+                        element.append(elementise("type", None, link["type"]))
                 metadata.append(element)
         element = elementise("time", None)
         if isinstance(self.time, (time.struct_time, tuple)):
@@ -353,9 +337,7 @@ class _GpxMeta(object):
             element.text = time.strftime("%Y-%m-%dT%H:%M:%S%z")
         metadata.append(element)
         if self.keywords:
-            element = elementise("keywords", None)
-            element.text = self.keywords
-            metadata.append(element)
+            metadata.append(elementise("keywords", None, self.keywords))
         if self.bounds:
             if not isinstance(self.bounds, dict):
                 latitudes = map(attrgetter("latitude"), self.bounds)
@@ -368,8 +350,7 @@ class _GpxMeta(object):
                 }
             else:
                 bounds = dict([(k, str(v)) for k, v in self.bounds.items()])
-            element = elementise("bounds", bounds)
-            metadata.append(element)
+            metadata.append(elementise("bounds", bounds))
         if self.extensions:
             element = elementise("extensions")
             for i in self.extensions:
@@ -580,7 +561,7 @@ class Waypoints(point.Points):
         :return: GPX element tree depicting `Waypoints` object
 
         """
-        gpx = create_elem('gpx', None, gpx_version, human_namespace)
+        gpx = create_elem('gpx', None, None, gpx_version, human_namespace)
         if not self.metadata.bounds:
             self.metadata.bounds = self[:]
         gpx.append(self.metadata.togpx())
