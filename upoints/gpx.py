@@ -134,7 +134,7 @@ class _GpxElem(point.Point):
                 Element's description
             elevation : `float`
                 Element's elevation
-            time : `time.struct_time`
+            time : `utils.Timestamp`
                 Time the data was generated
 
         """
@@ -152,7 +152,7 @@ class _GpxElem(point.Point):
         >>> print(_GpxElem(52, 0, "name", "desc", 40))
         name (52°00'00"N, 000°00'00"E @ 40m) [desc]
         >>> print(_GpxElem(52, 0, "name", "desc", 40,
-        ...                time.gmtime(1216944000)))
+        ...                utils.Timestamp(2008, 7, 25)))
         name (52°00'00"N, 000°00'00"E @ 40m on 2008-07-25T00:00:00) [desc]
 
         :Parameters:
@@ -166,8 +166,7 @@ class _GpxElem(point.Point):
         if self.elevation:
             location += " @ %sm" % self.elevation
         if self.time:
-            location += " on %s" % time.strftime("%Y-%m-%dT%H:%M:%S%z",
-                                                 self.time)
+            location += " on %s" % self.time.isoformat()
         if self.name:
             text = ["%s (%s)" % (self.name, location), ]
         else:
@@ -186,7 +185,7 @@ class _GpxElem(point.Point):
         >>> ET.tostring(_GpxElem(52, 0, "Cambridge", "in the UK").togpx())
         '<ns0:None lat="52.0" lon="0.0" xmlns:ns0="http://www.topografix.com/GPX/1/1"><ns0:name>Cambridge</ns0:name><ns0:desc>in the UK</ns0:desc></ns0:None>'
         >>> ET.tostring(_GpxElem(52, 0, "name", "desc", 40,
-        ...                      time.gmtime(1216944000)))
+        ...                      utils.Timestamp(2008, 7 ,25)))
 
         :Parameters:
             gpx_version : `str`
@@ -210,9 +209,7 @@ class _GpxElem(point.Point):
         if self.elevation:
             element.append(elementise("ele", None, self.elevation))
         if self.time:
-            element.append(elementise("time", None,
-                                      time.strftime("%Y-%m-%dT%H:%M:%S%z",
-                                                    self.time)))
+            element.append(elementise("time", None, self.time.isoformat()))
         return element
 
 
@@ -261,7 +258,7 @@ class _GpxMeta(object):
                 Copyright data for the exported data
             link : `list` of `str` or `dict`
                 Links associated with the data
-            time : `time.struct_time`
+            time : `utils.Timestamp`
                 Time the data was generated
             keywords : `str`
                 Keywords associated with the data
