@@ -23,7 +23,7 @@ __date__ = "2008-05-20"
 __author__ = "James Rowe <jnrowe@ukfsn.org>"
 __copyright__ = "Copyright (C) 2007-2008 James Rowe"
 __license__ = "GNU General Public License Version 3"
-__credits__ = "Cédric Dufour, Kelly Turner, Simon Woods"
+__credits__ = "Cédric Dufour, Thomas Traber, Kelly Turner, Simon Woods"
 __history__ = "See Mercurial repository"
 
 from email.utils import parseaddr

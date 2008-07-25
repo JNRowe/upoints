@@ -80,6 +80,8 @@ Thanks
 The following people have submitted patches, testing and feedback:
 
     * Cédric Dufour - ``edist.py``'s CSV import, and flight plan output
+    * Thomas Traber - GPX support enhancements, Points filtering, and
+      some cool usage scenarios
     * Kelly Turner - Xearth_ import idea, and copious testing
     * Simon Woods - Testing
 
