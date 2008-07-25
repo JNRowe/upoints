@@ -506,8 +506,8 @@ class Waypoints(point.Points):
         >>> waypoints = Waypoints(open("gpx"))
         >>> for value in sorted(waypoints, key=attrgetter("name")):
         ...     print(value)
-        Home (52°00'54"N, 000°13'15"W) [My place]
-        MSR (52°10'01"N, 000°23'24"E) [Microsoft Research, Cambridge]
+        Home (52°00'54"N, 000°13'15"W on 2008-07-26T00:00:00+00:00) [My place]
+        MSR (52°10'01"N, 000°23'24"E on 2008-07-27T00:00:00+00:00) [Microsoft Research, Cambridge]
 
         :Parameters:
             gpx_file : `file`, `list` or `str`
@@ -552,7 +552,7 @@ class Waypoints(point.Points):
                     elevation = float(elevation)
                 time = waypoint.findtext(time_elem)
                 if time:
-                    time = utils.Timestamp.parse_isoformat(time.text)
+                    time = utils.Timestamp.parse_isoformat(time)
                 self.append(Waypoint(latitude, longitude, name, description,
                                      elevation, time))
 
@@ -564,7 +564,7 @@ class Waypoints(point.Points):
         >>> locations = Waypoints(open("gpx"))
         >>> xml = locations.export_gpx_file()
         >>> xml.write(stdout) # doctest: +ELLIPSIS
-        <ns0:gpx xmlns:ns0="http://www.topografix.com/GPX/1/1"><ns0:metadata><ns0:time>...</ns0:time><ns0:bounds maxlat="52.167" maxlon="0.39" minlat="52.015" minlon="-0.221" /></ns0:metadata><ns0:wpt lat="52.015" lon="-0.221"><ns0:name>Home</ns0:name><ns0:desc>My place</ns0:desc></ns0:wpt><ns0:wpt lat="52.167" lon="0.39"><ns0:name>MSR</ns0:name><ns0:desc>Microsoft Research, Cambridge</ns0:desc></ns0:wpt></ns0:gpx>
+        <ns0:gpx xmlns:ns0="http://www.topografix.com/GPX/1/1"><ns0:metadata><ns0:time>...</ns0:time><ns0:bounds maxlat="52.167" maxlon="0.39" minlat="52.015" minlon="-0.221" /></ns0:metadata><ns0:wpt lat="52.015" lon="-0.221"><ns0:name>Home</ns0:name><ns0:desc>My place</ns0:desc><ns0:time>2008-07-26T00:00:00+00:00</ns0:time></ns0:wpt><ns0:wpt lat="52.167" lon="0.39"><ns0:name>MSR</ns0:name><ns0:desc>Microsoft Research, Cambridge</ns0:desc><ns0:time>2008-07-27T00:00:00+00:00</ns0:time></ns0:wpt></ns0:gpx>
 
         :Parameters:
             gpx_version : `str`
@@ -662,8 +662,8 @@ class Trackpoints(list):
         >>> for value in sorted(trackpoints[0],
         ...                     key=attrgetter("name")):
         ...     print(value)
-        Home (52°00'54"N, 000°13'15"W) [My place]
-        MSR (52°10'01"N, 000°23'24"E) [Microsoft Research, Cambridge]
+        Home (52°00'54"N, 000°13'15"W on 2008-07-26T00:00:00+00:00) [My place]
+        MSR (52°10'01"N, 000°23'24"E on 2008-07-27T00:00:00+00:00) [Microsoft Research, Cambridge]
 
         :Parameters:
             gpx_file : `file`, `list` or `str`
@@ -711,7 +711,7 @@ class Trackpoints(list):
                         elevation = float(elevation)
                     time = trackpoint.findtext(time_elem)
                     if time:
-                        time = utils.Timestamp.parse_isoformat(time.text)
+                        time = utils.Timestamp.parse_isoformat(time)
                     points.append(Trackpoint(latitude, longitude, name,
                                              description, elevation, time))
                 self.append(points)
@@ -724,7 +724,7 @@ class Trackpoints(list):
         >>> locations = Trackpoints(open("gpx_tracks"))
         >>> xml = locations.export_gpx_file()
         >>> xml.write(stdout) # doctest: +ELLIPSIS
-        <ns0:gpx xmlns:ns0="http://www.topografix.com/GPX/1/1"><ns0:metadata><ns0:time>...</ns0:time><ns0:bounds maxlat="52.167" maxlon="0.39" minlat="52.015" minlon="-0.221" /></ns0:metadata><ns0:trk><ns0:trkseg><ns0:trkpt lat="52.015" lon="-0.221"><ns0:name>Home</ns0:name><ns0:desc>My place</ns0:desc></ns0:trkpt><ns0:trkpt lat="52.167" lon="0.39"><ns0:name>MSR</ns0:name><ns0:desc>Microsoft Research, Cambridge</ns0:desc></ns0:trkpt></ns0:trkseg></ns0:trk></ns0:gpx>
+        <ns0:gpx xmlns:ns0="http://www.topografix.com/GPX/1/1"><ns0:metadata><ns0:time>...</ns0:time><ns0:bounds maxlat="52.167" maxlon="0.39" minlat="52.015" minlon="-0.221" /></ns0:metadata><ns0:trk><ns0:trkseg><ns0:trkpt lat="52.015" lon="-0.221"><ns0:name>Home</ns0:name><ns0:desc>My place</ns0:desc><ns0:time>2008-07-26T00:00:00+00:00</ns0:time></ns0:trkpt><ns0:trkpt lat="52.167" lon="0.39"><ns0:name>MSR</ns0:name><ns0:desc>Microsoft Research, Cambridge</ns0:desc><ns0:time>2008-07-27T00:00:00+00:00</ns0:time></ns0:trkpt></ns0:trkseg></ns0:trk></ns0:gpx>
 
         :Parameters:
             gpx_version : `str`
@@ -828,8 +828,8 @@ class Routepoints(list):
         >>> for value in sorted(routepoints[0],
         ...                     key=attrgetter("name")):
         ...     print(value)
-        Home (52°00'54"N, 000°13'15"W) [My place]
-        MSR (52°10'01"N, 000°23'24"E) [Microsoft Research, Cambridge]
+        Home (52°00'54"N, 000°13'15"W on 2008-07-26T00:00:00+00:00) [My place]
+        MSR (52°10'01"N, 000°23'24"E on 2008-07-27T00:00:00+00:00) [Microsoft Research, Cambridge]
 
         :Parameters:
             gpx_file : `file`, `list` or `str`
@@ -877,7 +877,7 @@ class Routepoints(list):
                         elevation = float(elevation)
                     time = routepoint.findtext(time_elem)
                     if time:
-                        time = utils.Timestamp.parse_isoformat(time.text)
+                        time = utils.Timestamp.parse_isoformat(time)
                     points.append(Routepoint(latitude, longitude, name,
                                              description, elevation, time))
                 self.append(points)
@@ -890,7 +890,7 @@ class Routepoints(list):
         >>> locations = Routepoints(open("gpx_routes"))
         >>> xml = locations.export_gpx_file()
         >>> xml.write(stdout) # doctest: +ELLIPSIS
-        <ns0:gpx xmlns:ns0="http://www.topografix.com/GPX/1/1"><ns0:metadata><ns0:time>...</ns0:time><ns0:bounds maxlat="52.167" maxlon="0.39" minlat="52.015" minlon="-0.221" /></ns0:metadata><ns0:rte><ns0:rtept lat="52.015" lon="-0.221"><ns0:name>Home</ns0:name><ns0:desc>My place</ns0:desc></ns0:rtept><ns0:rtept lat="52.167" lon="0.39"><ns0:name>MSR</ns0:name><ns0:desc>Microsoft Research, Cambridge</ns0:desc></ns0:rtept></ns0:rte></ns0:gpx>
+        <ns0:gpx xmlns:ns0="http://www.topografix.com/GPX/1/1"><ns0:metadata><ns0:time>...</ns0:time><ns0:bounds maxlat="52.167" maxlon="0.39" minlat="52.015" minlon="-0.221" /></ns0:metadata><ns0:rte><ns0:rtept lat="52.015" lon="-0.221"><ns0:name>Home</ns0:name><ns0:desc>My place</ns0:desc><ns0:time>2008-07-26T00:00:00+00:00</ns0:time></ns0:rtept><ns0:rtept lat="52.167" lon="0.39"><ns0:name>MSR</ns0:name><ns0:desc>Microsoft Research, Cambridge</ns0:desc><ns0:time>2008-07-27T00:00:00+00:00</ns0:time></ns0:rtept></ns0:rte></ns0:gpx>
 
         :Parameters:
             gpx_version : `str`
