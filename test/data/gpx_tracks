@@ -8,10 +8,12 @@ xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/
       <trkpt lat="52.015" lon="-0.221">
         <name>Home</name>
         <desc>My place</desc>
+        <time>2008-07-26T00:00:00+00:00</time>
       </trkpt>
       <trkpt lat="52.167" lon="0.390">
         <name>MSR</name>
         <desc>Microsoft Research, Cambridge</desc>
+        <time>2008-07-27T00:00:00+00:00</time>
       </trkpt>
     </trkseg>
   </trk>
