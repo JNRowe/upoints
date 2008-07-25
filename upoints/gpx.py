@@ -103,15 +103,17 @@ class _GpxElem(point.Point):
             _GpxElem's description
         elevation
             _GpxElem's elevation
+        time
+            _GpxElem's time
 
     """
 
-    __slots__ = ('name', 'description', 'elevation',)
+    __slots__ = ('name', 'description', 'elevation', 'time', )
 
     _elem_name = None
 
     def __init__(self, latitude, longitude, name=None, description=None,
-                 elevation=None):
+                 elevation=None, time=None):
         """Initialise a new `_GpxElem` object
 
         >>> _GpxElem(52, 0)
@@ -132,12 +134,15 @@ class _GpxElem(point.Point):
                 Element's description
             elevation : `float`
                 Element's elevation
+            time : `time.struct_time`
+                Time the data was generated
 
         """
         super(_GpxElem, self).__init__(latitude, longitude)
         self.name = name
         self.description = description
         self.elevation = elevation
+        self.time = time
 
     def __str__(self, mode="dms"):
         """Pretty printed location string
@@ -146,6 +151,9 @@ class _GpxElem(point.Point):
         52°00'00"N, 000°00'00"E
         >>> print(_GpxElem(52, 0, "name", "desc", 40))
         name (52°00'00"N, 000°00'00"E @ 40m) [desc]
+        >>> print(_GpxElem(52, 0, "name", "desc", 40,
+        ...                time.gmtime(1216944000)))
+        name (52°00'00"N, 000°00'00"E @ 40m on 2008-07-25T00:00:00) [desc]
 
         :Parameters:
             mode : `str`
@@ -157,6 +165,9 @@ class _GpxElem(point.Point):
         location = super(_GpxElem, self).__str__(mode)
         if self.elevation:
             location += " @ %sm" % self.elevation
+        if self.time:
+            location += " on %s" % time.strftime("%Y-%m-%dT%H:%M:%S%z",
+                                                 self.time)
         if self.name:
             text = ["%s (%s)" % (self.name, location), ]
         else:
@@ -174,6 +185,8 @@ class _GpxElem(point.Point):
         '<ns0:None lat="52.0" lon="0.0" xmlns:ns0="http://www.topografix.com/GPX/1/1"><ns0:name>Cambridge</ns0:name></ns0:None>'
         >>> ET.tostring(_GpxElem(52, 0, "Cambridge", "in the UK").togpx())
         '<ns0:None lat="52.0" lon="0.0" xmlns:ns0="http://www.topografix.com/GPX/1/1"><ns0:name>Cambridge</ns0:name><ns0:desc>in the UK</ns0:desc></ns0:None>'
+        >>> ET.tostring(_GpxElem(52, 0, "name", "desc", 40,
+        ...                      time.gmtime(1216944000)))
 
         :Parameters:
             gpx_version : `str`
@@ -196,6 +209,10 @@ class _GpxElem(point.Point):
             element.append(elementise("desc", None, self.description))
         if self.elevation:
             element.append(elementise("ele", None, self.elevation))
+        if self.time:
+            element.append(elementise("time", None,
+                                      time.strftime("%Y-%m-%dT%H:%M:%S%z",
+                                                    self.time)))
         return element
 
 
@@ -531,6 +548,7 @@ class Waypoints(point.Points):
             name_elem = gpx_elem("name")
             desc_elem = gpx_elem("desc")
             elev_elem = gpx_elem("ele")
+            time_elem = gpx_elem("time")
 
             for waypoint in data.findall(waypoint_elem):
                 latitude = waypoint.get("lat")
@@ -538,8 +556,13 @@ class Waypoints(point.Points):
                 name = waypoint.findtext(name_elem)
                 description = waypoint.findtext(desc_elem)
                 elevation = waypoint.findtext(elev_elem)
+                if elevation:
+                    elevation = float(elevation)
+                time = waypoint.findtext(time_elem)
+                if time:
+                    time = utils.Timestamp.parse_isoformat(time.text)
                 self.append(Waypoint(latitude, longitude, name, description,
-                                     elevation))
+                                     elevation, time))
 
     def export_gpx_file(self, gpx_version=DEF_GPX_VERSION,
                         human_namespace=False):
@@ -690,6 +713,7 @@ class Trackpoints(list):
             name_elem = gpx_elem("name")
             desc_elem = gpx_elem("desc")
             elev_elem = gpx_elem("ele")
+            time_elem = gpx_elem("time")
 
             for segment in data.findall(segment_elem):
                 points = point.Points()
@@ -699,8 +723,13 @@ class Trackpoints(list):
                     name = trackpoint.findtext(name_elem)
                     description = trackpoint.findtext(desc_elem)
                     elevation = trackpoint.findtext(elev_elem)
+                    if elevation:
+                        elevation = float(elevation)
+                    time = waypoint.findtext(time_elem)
+                    if time:
+                        time = utils.Timestamp.parse_isoformat(time.text)
                     points.append(Trackpoint(latitude, longitude, name,
-                                             description, elevation))
+                                             description, elevation, time))
                 self.append(points)
 
     def export_gpx_file(self, gpx_version=DEF_GPX_VERSION,
@@ -858,6 +887,7 @@ class Routepoints(list):
             name_elem = gpx_elem("name")
             desc_elem = gpx_elem("desc")
             elev_elem = gpx_elem("ele")
+            time_elem = gpx_elem("time")
 
             for route in data.findall(route_elem):
                 points = point.Points()
@@ -867,8 +897,13 @@ class Routepoints(list):
                     name = routepoint.findtext(name_elem)
                     description = routepoint.findtext(desc_elem)
                     elevation = routepoint.findtext(elev_elem)
+                    if elevation:
+                        elevation = float(elevation)
+                    time = waypoint.findtext(time_elem)
+                    if time:
+                        time = utils.Timestamp.parse_isoformat(time.text)
                     points.append(Routepoint(latitude, longitude, name,
-                                             description, elevation))
+                                             description, elevation, time))
                 self.append(points)
 
     def export_gpx_file(self, gpx_version=DEF_GPX_VERSION,
