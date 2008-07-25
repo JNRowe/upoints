@@ -231,6 +231,173 @@ class _SegWrap(list):
         if gpx_file:
             self.import_locations(gpx_file)
 
+    def distance(self, method="haversine"):
+        """Calculate distances between locations in segments
+
+        :Parameters:
+            method : `str`
+                Method used to calculate distance
+
+        :rtype: `list` of `list` of `float`
+        :return: Groups of distance between points in segments
+
+        """
+        distances = []
+        for segment in self:
+            if len(segment) < 2:
+                distances.append([])
+            else:
+                distances.append(segment.distance(method))
+        return distances
+
+    def bearing(self, format="numeric"):
+        """Calculate bearing between locations in segments
+
+        :Parameters:
+            format : `str`
+                Format of the bearing string to return
+        :rtype: `list` of `list` of `float`
+        :return: Groups of bearings between points in segments
+        """
+        bearings = []
+        for segment in self:
+            if len(segment) < 2:
+                bearings.append([])
+            else:
+                bearings.append(segment.bearing(format))
+        return bearings
+
+    def final_bearing(self, format="numeric"):
+        """Calculate final bearing between locations in segments
+
+        :Parameters:
+            format : `str`
+                Format of the bearing string to return
+        :rtype: `list` of `list` of `float`
+        :return: Groups of bearings between points in segments
+        """
+        bearings = []
+        for segment in self:
+            if len(segment) < 2:
+                bearings.append([])
+            else:
+                bearings.append(segment.final_bearing(format))
+        return bearings
+
+    def inverse(self):
+        """Calculate the inverse geodesic between locations in segments
+
+        :rtype: `list` of 2 `tuple` of `float`
+        :return: Groups in bearing and distance between points in segments
+
+        """
+        inverses = []
+        for segment in self:
+            if len(segment) < 2:
+                inverses.append([])
+            else:
+                inverses.append(segment.inverse())
+        return inverses
+
+    def midpoint(self):
+        """Calculate the midpoint between locations in segments
+
+        :rtype: `list` of `Point` instance
+        :return: Groups of midpoint between points in segments
+
+        """
+        midpoints = []
+        for segment in self:
+            if len(segment) < 2:
+                midpoints.append([])
+            else:
+                midpoints.append(segment.midpoint())
+        return midpoints
+
+    def range(self, location, distance):
+        """Test whether locations are within a given range of `location`
+
+        :Parameters:
+            location : `Point`
+                Location to test range against
+            distance : `float`
+                Distance to test location is within
+        :rtype: `list` of `list` of `Point` objects within specified range
+        :return: Groups of points in range per segment
+
+        """
+        return (segment.range(location, distance) for segment in self)
+
+    def destination(self, bearing, distance):
+        """Calculate destination locations for given distance and bearings
+
+        :Parameters:
+            bearing : `float` or coercible to `float`
+                Bearing to move on in degrees
+            distance : `float` or coercible to `float`
+                Distance in kilometres
+        :rtype: `list` of `list` of `Point`
+        :return: Groups of points shifted by `distance` and `bearing`
+
+        """
+        return (segment.destination(bearing, distance) for segment in self)
+    forward = destination
+
+    def sunrise(self, date=None, zenith=None):
+        """Calculate sunrise times for locations
+
+        :Parameters:
+            date : ``datetime.date``
+                Calculate rise or set for given date
+            zenith : `None` or `str`
+                Calculate rise/set events, or twilight times
+        :rtype: `list` of `list` of ``datetime.datetime``
+        :return: The time for the sunrise for each point in each segment
+
+        """
+        return (segment.sunrise(date, zenith) for segment in self)
+
+    def sunset(self, date=None, zenith=None):
+        """Calculate sunset times for locations
+
+        :Parameters:
+            date : ``datetime.date``
+                Calculate rise or set for given date
+            zenith : `None` or `str`
+                Calculate rise/set events, or twilight times
+        :rtype: `list` of `list` of ``datetime.datetime``
+        :return: The time for the sunset for each point in each segment
+
+        """
+        return (segment.sunset(date, zenith) for segment in self)
+
+    def sun_events(self, date=None, zenith=None):
+        """Calculate sunrise/sunset times for locations
+
+        :Parameters:
+            date : ``datetime.date``
+                Calculate rise or set for given date
+            zenith : `None` or `str`
+                Calculate rise/set events, or twilight times
+        :rtype: `list` of `list` of 2 `tuple` of ``datetime.datetime``
+        :return: The time for the sunrise and sunset events for each point in
+            each segment
+
+        """
+        return (segment.sun_events(date, zenith) for segment in self)
+
+    def to_grid_locator(self, precision="square"):
+        """Calculate Maidenhead locator for locations
+
+        :Parameters:
+            precision : `str`
+                Precision with which generate locator string
+        :rtype: `list` of `list` of `str`
+        :return: Groups of Maidenhead locator for each point in segments
+
+        """
+        return (segment.to_grid_locator(precision) for segment in self)
+
 
 class _GpxMeta(object):
     """Class for representing GPX global metadata
