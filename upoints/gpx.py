@@ -117,11 +117,11 @@ class _GpxElem(point.Point):
         """Initialise a new `_GpxElem` object
 
         >>> _GpxElem(52, 0)
-        _GpxElem(52.0, 0.0, None, None, None)
+        _GpxElem(52.0, 0.0, None, None, None, None)
         >>> _GpxElem(52, 0, None)
-        _GpxElem(52.0, 0.0, None, None, None)
+        _GpxElem(52.0, 0.0, None, None, None, None)
         >>> _GpxElem(52, 0, "name", "desc")
-        _GpxElem(52.0, 0.0, 'name', 'desc', None)
+        _GpxElem(52.0, 0.0, 'name', 'desc', None, None)
 
         :Parameters:
             latitude : `float` or coercible to `float`
@@ -153,7 +153,7 @@ class _GpxElem(point.Point):
         name (52°00'00"N, 000°00'00"E @ 40m) [desc]
         >>> print(_GpxElem(52, 0, "name", "desc", 40,
         ...                utils.Timestamp(2008, 7, 25)))
-        name (52°00'00"N, 000°00'00"E @ 40m on 2008-07-25T00:00:00) [desc]
+        name (52°00'00"N, 000°00'00"E @ 40m on 2008-07-25T00:00:00+00:00) [desc]
 
         :Parameters:
             mode : `str`
@@ -184,8 +184,11 @@ class _GpxElem(point.Point):
         '<ns0:None lat="52.0" lon="0.0" xmlns:ns0="http://www.topografix.com/GPX/1/1"><ns0:name>Cambridge</ns0:name></ns0:None>'
         >>> ET.tostring(_GpxElem(52, 0, "Cambridge", "in the UK").togpx())
         '<ns0:None lat="52.0" lon="0.0" xmlns:ns0="http://www.topografix.com/GPX/1/1"><ns0:name>Cambridge</ns0:name><ns0:desc>in the UK</ns0:desc></ns0:None>'
+        >>> ET.tostring(_GpxElem(52, 0, "Cambridge", "in the UK").togpx())
+        '<ns0:None lat="52.0" lon="0.0" xmlns:ns0="http://www.topografix.com/GPX/1/1"><ns0:name>Cambridge</ns0:name><ns0:desc>in the UK</ns0:desc></ns0:None>'
         >>> ET.tostring(_GpxElem(52, 0, "name", "desc", 40,
-        ...                      utils.Timestamp(2008, 7 ,25)))
+        ...                      utils.Timestamp(2008, 7, 25)).togpx())
+        '<ns0:None lat="52.0" lon="0.0" xmlns:ns0="http://www.topografix.com/GPX/1/1"><ns0:name>name</ns0:name><ns0:desc>desc</ns0:desc><ns0:ele>40</ns0:ele><ns0:time>2008-07-25T00:00:00+00:00</ns0:time></ns0:None>'
 
         :Parameters:
             gpx_version : `str`
@@ -207,7 +210,7 @@ class _GpxElem(point.Point):
         if self.description:
             element.append(elementise("desc", None, self.description))
         if self.elevation:
-            element.append(elementise("ele", None, self.elevation))
+            element.append(elementise("ele", None, str(self.elevation)))
         if self.time:
             element.append(elementise("time", None, self.time.isoformat()))
         return element
@@ -435,23 +438,15 @@ class Waypoint(_GpxElem):
     """Class for representing a waypoint element from GPX data files
 
     >>> Waypoint(52, 0)
-    Waypoint(52.0, 0.0, None, None, None)
+    Waypoint(52.0, 0.0, None, None, None, None)
     >>> Waypoint(52, 0, None)
-    Waypoint(52.0, 0.0, None, None, None)
+    Waypoint(52.0, 0.0, None, None, None, None)
     >>> Waypoint(52, 0, "name", "desc")
-    Waypoint(52.0, 0.0, 'name', 'desc', None)
+    Waypoint(52.0, 0.0, 'name', 'desc', None, None)
 
     :since: 0.8.0
 
-    :Ivariables:
-        latitude
-            Waypoint's latitude
-        longitude
-            Waypoint's longitude
-        name
-            Waypoint's name
-        description
-            Waypoint's description
+    :see: `_GpxElem`
 
     """
 
@@ -594,23 +589,15 @@ class Trackpoint(_GpxElem):
     """Class for representing a waypoint element from GPX data files
 
     >>> Trackpoint(52, 0)
-    Trackpoint(52.0, 0.0, None, None, None)
+    Trackpoint(52.0, 0.0, None, None, None, None)
     >>> Trackpoint(52, 0, None)
-    Trackpoint(52.0, 0.0, None, None, None)
+    Trackpoint(52.0, 0.0, None, None, None, None)
     >>> Trackpoint(52, 0, "name", "desc")
-    Trackpoint(52.0, 0.0, 'name', 'desc', None)
+    Trackpoint(52.0, 0.0, 'name', 'desc', None, None)
 
     :since: 0.10.0
 
-    :Ivariables:
-        latitude
-            Trackpoint's latitude
-        longitude
-            Trackpoint's longitude
-        name
-            Trackpoint's name
-        description
-            Trackpoint's description
+    :see: `_GpxElem`
 
     """
 
@@ -722,7 +709,7 @@ class Trackpoints(list):
                     elevation = trackpoint.findtext(elev_elem)
                     if elevation:
                         elevation = float(elevation)
-                    time = waypoint.findtext(time_elem)
+                    time = trackpoint.findtext(time_elem)
                     if time:
                         time = utils.Timestamp.parse_isoformat(time.text)
                     points.append(Trackpoint(latitude, longitude, name,
@@ -770,23 +757,15 @@ class Routepoint(_GpxElem):
     """Class for representing a `rtepoint` element from GPX data files
 
     >>> Routepoint(52, 0)
-    Routepoint(52.0, 0.0, None, None, None)
+    Routepoint(52.0, 0.0, None, None, None, None)
     >>> Routepoint(52, 0, None)
-    Routepoint(52.0, 0.0, None, None, None)
+    Routepoint(52.0, 0.0, None, None, None, None)
     >>> Routepoint(52, 0, "name", "desc")
-    Routepoint(52.0, 0.0, 'name', 'desc', None)
+    Routepoint(52.0, 0.0, 'name', 'desc', None, None)
 
     :since: 0.10.0
 
-    :Ivariables:
-        latitude
-            Routepoint's latitude
-        longitude
-            Routepoint's longitude
-        name
-            Routepoint's name
-        description
-            Routepoint's description
+    :see: `_GpxElem`
 
     """
 
@@ -896,7 +875,7 @@ class Routepoints(list):
                     elevation = routepoint.findtext(elev_elem)
                     if elevation:
                         elevation = float(elevation)
-                    time = waypoint.findtext(time_elem)
+                    time = routepoint.findtext(time_elem)
                     if time:
                         time = utils.Timestamp.parse_isoformat(time.text)
                     points.append(Routepoint(latitude, longitude, name,
