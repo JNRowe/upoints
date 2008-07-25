@@ -216,6 +216,22 @@ class _GpxElem(point.Point):
         return element
 
 
+class _SegWrap(list):
+    """Abstract class for representing segmented elements from GPX data files
+
+    :since: 0.12.0
+
+    """
+
+    def __init__(self, gpx_file=None, metadata=None):
+        """Initialise a new `_SegWrap` object"""
+        super(_SeqWrap, self).__init__()
+        self.metadata = metadata if metadata else _GpxMeta()
+        self._gpx_file = gpx_file
+        if gpx_file:
+            self.import_locations(gpx_file)
+
+
 class _GpxMeta(object):
     """Class for representing GPX global metadata
 
@@ -585,6 +601,7 @@ class Waypoints(point.Points):
 
         return ET.ElementTree(gpx)
 
+
 class Trackpoint(_GpxElem):
     """Class for representing a waypoint element from GPX data files
 
@@ -606,20 +623,12 @@ class Trackpoint(_GpxElem):
     _elem_name = "trkpt"
 
 
-class Trackpoints(list):
+class Trackpoints(_SegWrap):
     """Class for representing a group of `Trackpoint` objects
 
     :since: 0.10.0
 
     """
-
-    def __init__(self, gpx_file=None, metadata=None):
-        """Initialise a new `Trackpoints` object"""
-        super(Trackpoints, self).__init__()
-        self.metadata = metadata if metadata else _GpxMeta()
-        self._gpx_file = gpx_file
-        if gpx_file:
-            self.import_locations(gpx_file)
 
     def import_locations(self, gpx_file, gpx_version=None):
         """Import GPX data files
@@ -774,20 +783,12 @@ class Routepoint(_GpxElem):
     _elem_name = "rtept"
 
 
-class Routepoints(list):
+class Routepoints(_SegWrap):
     """Class for representing a group of `Routepoint` objects
 
     :since: 0.10.0
 
     """
-
-    def __init__(self, gpx_file=None, metadata=None):
-        """Initialise a new `Routepoints` object"""
-        super(Routepoints, self).__init__()
-        self.metadata = metadata if metadata else _GpxMeta()
-        self._gpx_file = gpx_file
-        if gpx_file:
-            self.import_locations(gpx_file)
 
     def import_locations(self, gpx_file, gpx_version=None):
         """Import GPX data files
