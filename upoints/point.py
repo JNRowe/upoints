@@ -891,7 +891,7 @@ class Points(list):
         return (self[i].midpoint(self[i+1]) for i in range(len(self)-1))
 
     def range(self, location, distance):
-        """Test whether locations are within a given range of the first
+        """Test whether locations are within a given range of `location`
 
         >>> locations = Points(["52.015;-0.221", "52.168;0.040", "52.855;0.657"],
         ...                    parse=True)
@@ -904,6 +904,7 @@ class Points(list):
             distance : `float`
                 Distance to test location is within
         :rtype: `list` of `Point` objects within specified range
+        :return: Points within range of the specified location
 
         """
         return (x for x in self if location.__eq__(x, distance))
@@ -923,6 +924,8 @@ class Points(list):
                 Bearing to move on in degrees
             distance : `float` or coercible to `float`
                 Distance in kilometres
+        :rtype: `list` of `Point`
+        :return: Points shifted by `distance` and `bearing`
 
         """
         return (x.destination(bearing, distance) for x in self)
