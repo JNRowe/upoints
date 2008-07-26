@@ -225,7 +225,7 @@ class _SegWrap(list):
 
     def __init__(self, gpx_file=None, metadata=None):
         """Initialise a new `_SegWrap` object"""
-        super(_SeqWrap, self).__init__()
+        super(_SegWrap, self).__init__()
         self.metadata = metadata if metadata else _GpxMeta()
         self._gpx_file = gpx_file
         if gpx_file:
