@@ -405,10 +405,7 @@ class _SegWrap(list):
         :return: Speed between points in each segment in km/h
 
         """
-        speedsegs = []
-        for timeseg, distseg in zip(self.time(), self.distance()):
-            speedsegs.append([distseg[i-1]/(timeseg[i]-timeseg[i-1]).seconds*3600 for i in range(1,len(timeseg))])
-        return speedsegs
+        return (segment.speed() for segment in self)
 
 
 class _GpxMeta(object):
