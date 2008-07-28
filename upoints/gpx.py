@@ -398,6 +398,18 @@ class _SegWrap(list):
         """
         return (segment.to_grid_locator(precision) for segment in self)
 
+    def speed(self):
+        """Calculate speed between locations per segment
+
+        :rtype: `list` of `list` of `float`
+        :return: Speed between points in each segment in km/h
+
+        """
+        speedsegs = []
+        for timeseg, distseg in zip(self.time(), self.distance()):
+            speedsegs.append([distseg[i-1]/(timeseg[i]-timeseg[i-1]).seconds*3600 for i in range(1,len(timeseg))])
+        return speedsegs
+
 
 class _GpxMeta(object):
     """Class for representing GPX global metadata

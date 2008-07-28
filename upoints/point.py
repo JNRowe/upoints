@@ -1012,6 +1012,38 @@ class Points(list):
         """
         return (x.to_grid_locator(precision) for x in self)
 
+    def speed(self):
+        """Calculate speed between `Points`
+
+        >>> class TimedPoint(Point):
+        ...     __slots__ = ("time", )
+        ...     def __init__(self, latitude, longitude, time):
+        ...         super(TimedPoint, self).__init__(latitude, longitude)
+        ...         self.time = time
+        >>> from datetime import datetime
+        >>> locations = Points()
+        >>> locations.extend([
+        ...     TimedPoint(52.015, -0.221, datetime(2008, 7, 28, 16, 38)),
+        ...     TimedPoint(52.168, 0.040, datetime(2008, 7, 28, 18, 38)),
+        ...     TimedPoint(52.855, 0.657, datetime(2008, 7, 28, 19, 17)),
+        ... ])
+        >>> map(lambda s: "%.3f" % s, Points.speed(locations))
+        ['12.315', '133.849']
+
+        :rtype: `list` of `float`
+        :return: Speed between `Point` elements in km/h
+
+        """
+        try:
+            times = [i.time for i in self]
+        except AttributeError:
+            raise NotImplementedError("Not all Point objects include time "
+                                      "attribute")
+
+        return (distance / ((times[i+1] - times[i]).seconds / 3600)
+                for i, distance in enumerate(self.distance()))
+
+
 class KeyedPoints(dict):
     """Class for representing a keyed group of `Point` objects
 
