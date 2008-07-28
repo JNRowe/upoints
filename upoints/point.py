@@ -1034,6 +1034,8 @@ class Points(list):
         :return: Speed between `Point` elements in km/h
 
         """
+        if not len(self) > 1:
+            raise RuntimeError("More than one location is required")
         try:
             times = [i.time for i in self]
         except AttributeError:
