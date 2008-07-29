@@ -20,6 +20,7 @@
 
 from __future__ import division
 
+import datetime
 import math
 
 from upoints import utils
@@ -627,7 +628,6 @@ class Point(object):
 
         :see: `utils.sun_rise_set`
 
-        >>> import datetime
         >>> date = datetime.date(2007, 6, 15)
         >>> Point(52.015, -0.221).sunrise(date)
         datetime.time(3, 40)
@@ -655,7 +655,6 @@ class Point(object):
 
         :see: `utils.sun_rise_set`
 
-        >>> import datetime
         >>> date = datetime.date(2007, 6, 15)
         >>> Point(52.015, -0.221).sunset(date)
         datetime.time(20, 22)
@@ -683,7 +682,6 @@ class Point(object):
 
         :see: `utils.sun_rise_set`
 
-        >>> import datetime
         >>> date = datetime.date(2007, 6, 15)
         >>> Point(52.015, -0.221).sun_events(date)
         (datetime.time(3, 40), datetime.time(20, 22))
@@ -724,6 +722,61 @@ class Point(object):
         return (self.bearing(other), self.distance(other))
     # Forward geodesic function maps directly to destination method
     forward = destination
+
+
+class TimedPoint(Point):
+    """Class for representing a location with an associated time
+
+    :since: 0.12.0
+
+    :Ivariables:
+        units
+            Type of distance units to be used
+        latitude
+            Location's latitude
+        longitude
+            Locations's longitude
+        rad_latitude
+            Location's latitude in radians
+        rad_longitude
+            Location's longitude in radians
+        timezone
+            Location's offset from UTC in minutes
+        time
+            Time associated with the location
+
+    """
+
+    __slots__ = ("time", )
+
+    def __init__(self, latitude, longitude, units="metric",
+                 angle="degrees", timezone=0, time=None):
+        """Initialise a new `TimedPoint` object
+
+        >>> place = TimedPoint(52.015, -0.221,
+        ...                    time=datetime.datetime(2008, 7, 29))
+
+        :Parameters:
+            latitude : `float` or coercible to `float`, `tuple` or `list`
+                Location's latitude
+            longitude : `float` or coercible to `float`, `tuple` or `list`
+                Location's longitude
+            angle : `str`
+                Type for specified angles
+            units : `str`
+                Units type to be used for distances
+            timezone : `int`
+                Offset from UTC in minutes
+            time : `datetime.datetime`
+                Time associated with the location
+
+        """
+        super(TimedPoint, self).__init__(latitude, longitude, units, angle,
+                                         timezone)
+        if time:
+            self.time = time
+        else:
+            self.time = datetime.datetime.now()
 
 
 class Points(list):
@@ -936,7 +989,6 @@ class Points(list):
 
         >>> locations = Points(["52.015;-0.221", "52.168;0.040", "52.855;0.657"],
         ...                    parse=True)
-        >>> import datetime
         >>> list(locations.sunrise(datetime.date(2008, 5, 2)))
         [datetime.time(4, 28), datetime.time(4, 26), datetime.time(4, 21)]
 
@@ -956,7 +1008,6 @@ class Points(list):
 
         >>> locations = Points(["52.015;-0.221", "52.168;0.040", "52.855;0.657"],
         ...                    parse=True)
-        >>> import datetime
         >>> list(locations.sunset(datetime.date(2008, 5, 2)))
         [datetime.time(19, 28), datetime.time(19, 27), datetime.time(19, 27)]
 
@@ -976,7 +1027,6 @@ class Points(list):
 
         >>> locations = Points(["52.015;-0.221", "52.168;0.040", "52.855;0.657"],
         ...                    parse=True)
-        >>> import datetime
         >>> list(locations.sun_events(datetime.date(2008, 5, 2)))
         [(datetime.time(4, 28), datetime.time(19, 28)),
          (datetime.time(4, 26), datetime.time(19, 27)),
@@ -1012,22 +1062,21 @@ class Points(list):
         """
         return (x.to_grid_locator(precision) for x in self)
 
+
+class TimedPoints(Points):
     def speed(self):
         """Calculate speed between `Points`
 
-        >>> class TimedPoint(Point):
-        ...     __slots__ = ("time", )
-        ...     def __init__(self, latitude, longitude, time):
-        ...         super(TimedPoint, self).__init__(latitude, longitude)
-        ...         self.time = time
-        >>> from datetime import datetime
-        >>> locations = Points()
+        >>> locations = TimedPoints()
         >>> locations.extend([
-        ...     TimedPoint(52.015, -0.221, datetime(2008, 7, 28, 16, 38)),
-        ...     TimedPoint(52.168, 0.040, datetime(2008, 7, 28, 18, 38)),
-        ...     TimedPoint(52.855, 0.657, datetime(2008, 7, 28, 19, 17)),
+        ...     TimedPoint(52.015, -0.221,
+        ...                time=datetime.datetime(2008, 7, 28, 16, 38)),
+        ...     TimedPoint(52.168, 0.040,
+        ...                time=datetime.datetime(2008, 7, 28, 18, 38)),
+        ...     TimedPoint(52.855, 0.657,
+        ...                time=datetime.datetime(2008, 7, 28, 19, 17)),
         ... ])
-        >>> map(lambda s: "%.3f" % s, Points.speed(locations))
+        >>> map(lambda s: "%.3f" % s, locations.speed())
         ['12.315', '133.849']
 
         :rtype: `list` of `float`
@@ -1286,7 +1335,6 @@ class KeyedPoints(dict):
         ...                          ("Carol", "52.168;0.040"),
         ...                          ("Kenny", "52.855;0.657")],
         ...                         parse=True)
-        >>> import datetime
         >>> list(locations.sunrise(datetime.date(2008, 5, 2)))
         [('home', datetime.time(4, 28)), ('Carol', datetime.time(4, 26)),
          ('Kenny', datetime.time(4, 21))]
@@ -1309,7 +1357,6 @@ class KeyedPoints(dict):
         ...                          ("Carol", "52.168;0.040"),
         ...                          ("Kenny", "52.855;0.657")],
         ...                         parse=True)
-        >>> import datetime
         >>> list(locations.sunset(datetime.date(2008, 5, 2)))
         [('home', datetime.time(19, 28)), ('Carol', datetime.time(19, 27)),
          ('Kenny', datetime.time(19, 27))]
@@ -1332,7 +1379,6 @@ class KeyedPoints(dict):
         ...                          ("Carol", "52.168;0.040"),
         ...                          ("Kenny", "52.855;0.657")],
         ...                         parse=True)
-        >>> import datetime
         >>> list(locations.sun_events(datetime.date(2008, 5, 2)))
         [('home', (datetime.time(4, 28), datetime.time(19, 28))),
          ('Carol', (datetime.time(4, 26), datetime.time(19, 27))),
