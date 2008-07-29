@@ -773,10 +773,7 @@ class TimedPoint(Point):
         """
         super(TimedPoint, self).__init__(latitude, longitude, units, angle,
                                          timezone)
-        if time:
-            self.time = time
-        else:
-            self.time = datetime.datetime.now()
+        self.time = time
 
 
 class Points(list):

@@ -87,7 +87,7 @@ def create_elem(tag, attr=None, text=None, gpx_version=DEF_GPX_VERSION,
         element.text = text
     return element
 
-class _GpxElem(point.Point):
+class _GpxElem(point.TimedPoint):
     """Abstract class for representing an element from GPX data files
 
     :since: 0.11.0
@@ -138,11 +138,10 @@ class _GpxElem(point.Point):
                 Time the data was generated
 
         """
-        super(_GpxElem, self).__init__(latitude, longitude)
+        super(_GpxElem, self).__init__(latitude, longitude, time=time)
         self.name = name
         self.description = description
         self.elevation = elevation
-        self.time = time
 
     def __str__(self, mode="dms"):
         """Pretty printed location string
