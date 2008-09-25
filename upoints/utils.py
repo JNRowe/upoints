@@ -559,6 +559,7 @@ class Timestamp(datetime.datetime):
 
 #{ Coordinate conversion utilities
 
+iso6709_matcher = re.compile(r'^([-+][\d.]+)([-+][\d.]+)([+-][\d.]+)?/$')
 def from_iso6709(coordinates):
     """Parse ISO 6709 coordinate strings
 
@@ -634,11 +635,10 @@ def from_iso6709(coordinates):
     :raise ValueError: Invalid value for longitude
 
 """
-    matches = re.match(r'^([-+][\d\.]+)([-+][\d\.]+)([+-][\d\.]+)?/$',
-                       coordinates)
-    try:
+    matches = iso6709_matcher.match(coordinates)
+    if matches:
         latitude, longitude, altitude = matches.groups()
-    except:
+    else:
         raise ValueError("Incorrect format for string")
     sign = 1 if latitude[0] == "+" else -1
     latitude_head = len(latitude.split(".")[0])

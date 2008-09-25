@@ -239,7 +239,7 @@ class Bakens(point.KeyedPoints):
         else:
             raise TypeError("Unable to handle data of type `%s`"
                             % type(baken_file))
-        valid_locator = re.compile("[A-Z]{2}[0-9]{2}[A-Z]{2}")
+        valid_locator = re.compile(r"[A-Z]{2}\d{2}[A-Z]{2}")
         for name in data.sections():
             elements = {}
             for item in ("latitude", "longitude", "antenna", "direction",
