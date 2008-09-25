@@ -646,7 +646,7 @@ class Waypoint(_GpxElem):
     _elem_name = "wpt"
 
 
-class Waypoints(point.Points):
+class Waypoints(point.TimedPoints):
     """Class for representing a group of `Waypoint` objects
 
     :since: 0.8.0
@@ -884,7 +884,7 @@ class Trackpoints(_SegWrap):
             time_elem = gpx_elem("time")
 
             for segment in data.findall(segment_elem):
-                points = point.Points()
+                points = point.TimedPoints()
                 for trackpoint in segment.findall(trackpoint_elem):
                     latitude = trackpoint.get("lat")
                     longitude = trackpoint.get("lon")
@@ -1042,7 +1042,7 @@ class Routepoints(_SegWrap):
             time_elem = gpx_elem("time")
 
             for route in data.findall(route_elem):
-                points = point.Points()
+                points = point.TimedPoints()
                 for routepoint in route.findall(routepoint_elem):
                     latitude = routepoint.get("lat")
                     longitude = routepoint.get("lon")
