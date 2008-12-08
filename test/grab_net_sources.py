@@ -39,9 +39,9 @@ SOURCES = [
 def data_file(name):
     """Generate a local filename for the source
 
-    >>> print(data_file(SOURCES[0]))
+    >>> print data_file(SOURCES[0])
     test/data/cities.dat
-    >>> print(data_file(SOURCES[4]))
+    >>> print data_file(SOURCES[4])
     test/data/cells.txt
 
     :Parameters:
@@ -68,10 +68,10 @@ def main(argv=None):
             Command line arguments
 
     """
-    print("*WARNING* This script will fetch some data files that can not be "
-          "distributed legally!  In some jurisdictions you may not even be "
-          "entitled to personal use of the data it fetches without express "
-          "consent of the copyright holders.")
+    print "*WARNING* This script will fetch some data files that can not be " + \
+          "distributed legally!  In some jurisdictions you may not even be " + \
+          "entitled to personal use of the data it fetches without express " + \
+          "consent of the copyright holders."
     if not argv:
         argv = sys.argv
     if len(argv) == 2 and argv[1] in ("-f" or "--force"):
@@ -82,10 +82,10 @@ def main(argv=None):
     for resource in SOURCES:
         filename = data_file(resource)
         if not force and os.path.exists(filename):
-            print("`%s' already downloaded." % resource)
+            print "`%s' already downloaded." % resource
             cached += 1
         else:
-            print("Fetching `%s'..." % resource)
+            print "Fetching `%s'..." % resource
             if resource.endswith(".gz"):
                 temp = tempfile.mkstemp()[1]
                 try:
@@ -100,7 +100,7 @@ def main(argv=None):
             else:
                 urllib.urlretrieve(resource, filename)
     if cached > 1:
-        print("You can force download with the `-f' option to this script.")
+        print "You can force download with the `-f' option to this script."
 
 if __name__ == '__main__':
     main(sys.argv)

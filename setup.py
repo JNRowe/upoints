@@ -80,26 +80,30 @@ if sys.version_info < (2, 5, 0, 'final'):
 #{ Generated data file functions
 
 def write_changelog(filename):
-    """Generate a ChangeLog from Mercurial repo
+    """Generate a ChangeLog from SCM repo
 
     :Parameters:
         filename : `str`
             Filename to write ChangeLog to
 
     """
-    if os.path.isdir(".hg"):
-        print('Building ChangeLog from Mercurial repository')
-        try:
-            call_hg(["log", "--exclude", ".be/", "--no-merges",
-                     "--style", "changelog"],
-                    stdout=open(filename, "w"))
-        finally:
-            # Remove the ChangeLog if call_hg() failed
-            if os.stat(filename).st_size == 0:
-                os.unlink(filename)
+    if __pkg_data__.SCM == "mercurial" and os.path.isdir(".hg"):
+        print 'Building ChangeLog from Mercurial repository'
+        options = "log --exclude .be/ --no-merges --style changelog"
+    elif __pkg_data__.SCM == "git" and os.path.isdir(".git"):
+        print 'Building ChangeLog from Git repository'
+        # TODO: How to exclude paths from ChangeLog with git?
+        options = "log --graph --date=iso8601"
     else:
-        print("Unable to build ChangeLog, dir is not a Mercurial clone")
+        print "Unable to build ChangeLog, dir is not a %s clone" \
+              % __pkg_data__.SCM
         return False
+    try:
+        call_scm(options, stdout=open(filename, "w"))
+    finally:
+        # Remove the ChangeLog if call_scm() failed
+        if os.stat(filename).st_size == 0:
+            os.unlink(filename)
 
 def write_manifest(files):
     """Generate a MANIFEST file
@@ -116,32 +120,41 @@ def write_manifest(files):
 
 #{ Implementation utilities
 
-def call_hg(options, *args, **kwargs):
-    """Call Mercurial command line tools
+def call_scm(options, *args, **kwargs):
+    """SCM command line tools
 
     :Parameters:
         options : `list`
-            Mercurial command options
+            SCM command options
         *args : `list`
             Positional arguments for ``subprocess.Popen``
         **kwargs : `dict`
             Keyword arguments for ``subprocess.Popen``
     :rtype: `str`
-    :return: Mercurial command output
-    :raise OSError: `hg` command not found
+    :return: SCM command output
+    :raise OSError: SCM command not found
+    :raise ValueError: Unknown SCM type
 
     """
+    options = options.split()
     if not "stdout" in kwargs:
         kwargs["stdout"] = PIPE
-    options.insert(0, "hg")
+    if __pkg_data__.SCM == "mercurial":
+        options.insert(0, "hg")
+    elif __pkg_data__.SCM == "git":
+        options.insert(0, "git")
+    else:
+        raise ValueError("Unknown SCM type `%s'" % __pkg_data__.SCM)
     try:
         process = Popen(options, *args, **kwargs)
     except OSError, e:
-        print("Error calling `hg`, is Mercurial installed? [%s]" % e)
+        print "Error calling `%s`, is %s installed? [%s]" \
+              % (options[0], __pkg_data__.SCM, e)
         sys.exit(1)
     process.wait()
     if not process.returncode == 0:
-        print("`hg' completed with %i return code" % process.returncode)
+        print "`%s' completed with %i return code" \
+              % (options[0], process.returncode)
         sys.exit(process.returncode)
     return process.communicate()[0]
 
@@ -225,7 +238,7 @@ class BuildDoc(NoOptsCommand):
             base = os.path.splitext(source)[0]
             dest = "%s.html" % base
             if self.force or newer(source, dest):
-                print('Building file %s' % dest)
+                print 'Building file %s' % dest
                 if self.dry_run:
                     continue
                 publish_cmdline(writer_name='html',
@@ -234,10 +247,10 @@ class BuildDoc(NoOptsCommand):
                                       '--stylesheet-path=doc/docutils.css',
                                       '--link-stylesheet', source, dest])
                 if base[-2] == "." and base[-1].isdigit():
-                    print('Building file %s' % base)
+                    print 'Building file %s' % base
                     publish_cmdline(writer_name='man',
                                     argv=['--strict', source, base])
-        print("Building sphinx tree")
+        print "Building sphinx tree"
         if not os.path.isdir("doc/html"):
             os.mkdir("doc/html")
         check_call(["sphinx-build", "-b", "html", "-d", "doc/source/.doctrees",
@@ -249,7 +262,7 @@ class BuildDoc(NoOptsCommand):
         files.extend(["%s.py" % i.__name__ for i in __pkg_data__.SCRIPTS])
         if self.force \
             or any(newer(filename, "html/index.html") for filename in files):
-            print("Building API documentation")
+            print "Building API documentation"
             if not self.dry_run:
                 saved_args = sys.argv[1:]
                 sys.argv[1:] = ["--name", __pkg_data__.MODULE.__name__,
@@ -261,18 +274,28 @@ class BuildDoc(NoOptsCommand):
                 sys.argv.extend(files)
                 cli.cli()
                 sys.argv[1:] = saved_args
-        if os.path.isdir(".hg"):
+        if __pkg_data__.SCM == "mercurial" and os.path.isdir(".hg"):
             if self.force or not os.path.isfile("ChangeLog"):
                 execute(write_changelog, ("ChangeLog", ))
             else:
-                output = call_hg(["tip", "--template", "'{date}'"])
+                output = call_scm("tip --template '{date}'")
                 tip_time = float(output[1:output.find("-")])
                 cl_time = os.stat("ChangeLog").st_mtime
                 if tip_time > cl_time:
                     execute(write_changelog, ("ChangeLog", ))
+        elif __pkg_data__.SCM == "git" and os.path.isdir(".git"):
+            if self.force or not os.path.isfile("ChangeLog"):
+                execute(write_changelog, ("ChangeLog", ))
+            else:
+                output = call_scm("log -n 1 --pretty=format:%at HEAD")
+                tip_time = int(output)
+                cl_time = os.stat("ChangeLog").st_mtime
+                if tip_time > cl_time:
+                    execute(write_changelog, ("ChangeLog", ))
         else:
-            print("Unable to build ChangeLog, this directory is not a "
-                  "Mercurial clone")
+            print "Unable to build ChangeLog, dir is not a %s clone" \
+                  % __pkg_data__.SCM
+            return False
 
         if hasattr(__pkg_data__, "BuildDoc_run"):
             __pkg_data__.BuildDoc_run(self.dry_run, self.force)
@@ -280,7 +303,7 @@ class BuildDoc(NoOptsCommand):
 
 #{ Distribution utilities
 
-def hg_finder(dirname, none):
+def scm_finder(*none):
     """Find files for distribution tarball
 
     This is only used when ``setuptools`` is imported, simply to create a valid
@@ -291,17 +314,22 @@ def hg_finder(dirname, none):
     :see: `MySdist.get_file_list`
 
     :Parameters:
-        dirname : `str`
-            Base directory to search for files
         none : any
             Just for compatibility
     """
     # setuptools documentation says this shouldn't be a hard fail, but we won't
     # do that as it makes builds entirely unpredictable
-    output = call_hg(["locate", ])
+    if __pkg_data__.SCM == "mercurial":
+        output = call_scm("locate")
+    elif __pkg_data__.SCM == "git":
+        output = call_scm("ls-tree -r --full-name --name-only HEAD")
     # Include all but Bugs Everywhere data from repo in tarballs
     distributed_files = [s for s in output.splitlines() if s.startswith(".be/")]
-    distributed_files.extend([".hg_version", "ChangeLog"])
+    if __pkg_data__.SCM == "mercurial":
+        distributed_files.append(".hg_version")
+    elif __pkg_data__.SCM == "git":
+        distributed_files.append(".git_version")
+    distributed_files.append("ChangeLog")
     distributed_files.extend(glob("*.html"))
     distributed_files.extend(glob("doc/*.html"))
     for path, directory, filenames in os.walk("html"):
@@ -309,44 +337,45 @@ def hg_finder(dirname, none):
             distributed_files.append(os.path.join(path, filename))
     return distributed_files
 if SETUPTOOLS:
-    finders.append((convert_path('.hg/dirstate'), hg_finder))
+    if __pkg_data__.SCM == "mercurial":
+        finders.append((convert_path('.hg/dirstate'), scm_finder))
+    elif __pkg_data__.SCM == "git":
+        finders.append((convert_path('.git/index'), scm_finder))
 
-class HgSdist(sdist):
+class ScmSdist(sdist):
     """Create a source distribution tarball
 
     :see: `sdist`
 
     :Ivariables:
         repo
-            Mercurial repository object
+            SCM repository object
 
     """
     description = gen_desc(__doc__)
     user_options = [
         ('force-build', 'b', "force build with stale version numbere"),
-    ] + sdist.user_options #: `HgSdist`'s option mapping
+    ] + sdist.user_options #: `ScmSdist`'s option mapping
     boolean_options = ['force-build']
 
     def initialize_options(self):
         """Set default values for options"""
         sdist.initialize_options(self)
         self.force_build = False
-        output = call_hg(["status", "-mard"])
-        if not len(output) == 0:
-            raise DistutilsFileError("Uncommitted changes!")
+        if __pkg_data__.SCM == "mercurial":
+            output = call_scm("status -mard")
+            if not len(output) == 0:
+                raise DistutilsFileError("Uncommitted changes!")
+        elif __pkg_data__.SCM == "git":
+            output = call_scm("diff --name-status")
+            if not len(output) == 0:
+                raise DistutilsFileError("Uncommitted changes!")
+        else:
+            raise ValueError("Unknown SCM type `%s'" % __pkg_data__.SCM)
 
     def get_file_list(self):
         """Generate MANIFEST file contents from Mercurial tree"""
-        output = call_hg(["locate", ])
-        # Include all but Bugs Everywhere data from repo in tarballs
-        manifest_files = [s for s in output.splitlines()
-                          if not s.startswith(".be/")]
-        manifest_files.extend([".hg_version", "ChangeLog"])
-        manifest_files.extend(glob("*.html"))
-        manifest_files.extend(glob("doc/*.html"))
-        for path, directory, filenames in os.walk("html"):
-            for filename in filenames:
-                manifest_files.append(os.path.join(path, filename))
+        manifest_files = scm_finder()
         execute(write_manifest, [manifest_files], "writing MANIFEST")
         sdist.get_file_list(self)
 
@@ -355,24 +384,30 @@ class HgSdist(sdist):
         news_format = "%s - " % __pkg_data__.MODULE.__version__
         news_matches = [s for s in open("NEWS") if s.startswith(news_format)]
         if not any(news_matches):
-            print("NEWS entry for `%s' missing"
-                  % __pkg_data__.MODULE.__version__)
+            print "NEWS entry for `%s' missing" \
+                  % __pkg_data__.MODULE.__version__
             sys.exit(1)
         news_time = time.mktime(time.strptime(news_matches[0].split()[-1],
                                 "%Y-%m-%d"))
         if time.time() - news_time > 86400 and not self.force_build:
-            print("NEWS entry is older than a day, version may not have been "
-                  "updated")
+            print "NEWS entry is older than a day, version may not have been " \
+                  "updated"
             sys.exit(1)
         execute(self.write_version, ())
         sdist.make_distribution(self)
 
     def write_version(self):
         """Store the current Mercurial changeset in a file"""
-        # This could use `hg identify' but that output other unused information
-        output = call_hg(["tip", "--template", "'{node|short}'"])
-        repo_id = output[1:-1]
-        write_file(".hg_version", ("%s tip\n" % repo_id, ))
+        if __pkg_data__.SCM == "mercurial":
+            # This could use `hg identify' but that outputs other unused information
+            output = call_scm("tip --template '{node|short}'")
+            repo_id = output[1:-1]
+            write_file(".hg_version", ("%s tip\n" % repo_id, ))
+        elif __pkg_data__.SCM == "git":
+            output = call_scm("log -n 1 --pretty=format:%T HEAD")
+            write_file(".git_version", (output, ))
+        else:
+            raise ValueError("Unknown SCM type `%s'" % __pkg_data__.SCM)
 
 
 class Snapshot(NoOptsCommand):
@@ -395,10 +430,19 @@ class Snapshot(NoOptsCommand):
 
     @staticmethod
     def generate_tree(snapshot_name):
-        """Generate a clean Mercurial clone"""
-        check_call(["hg", "archive", snapshot_name])
-        shutil.rmtree("%s/.be" % snapshot_name)
-
+        """Generate a clean SCM clone"""
+        if __pkg_data__.SCM == "mercurial":
+            check_call(["hg", "archive", snapshot_name])
+            shutil.rmtree("%s/.be" % snapshot_name)
+        elif __pkg_data__.SCM == "git":
+            basename = os.path.basename(snapshot_name)
+            check_call(("git archive --prefix=%s/ HEAD" % snapshot_name).split(),
+                       stdout=open("%s.tar" % basename, "w"))
+            check_call(("tar xfv %s.tar" % basename).split())
+            os.remove("%s.tar" % basename)
+            shutil.rmtree("%s/.be" % snapshot_name)
+        else:
+            raise ValueError("Unknown SCM type `%s'" % __pkg_data__.SCM)
 #}
 
 
@@ -414,14 +458,13 @@ class MyClean(clean):
         """Remove built and temporary files"""
         clean.run(self)
         if self.all:
-            for filename in [".hg_version", "ChangeLog", "MANIFEST"] \
+            for filename in [".git_version", ".hg_version", "ChangeLog",
+                             "MANIFEST"] \
                 + glob("*.html") + glob("doc/*.html") \
                 + glob("%s/*.pyc" % __pkg_data__.MODULE.__name__):
                 if os.path.exists(filename):
                     os.unlink(filename)
             execute(shutil.rmtree, ("html", True))
-            execute(shutil.rmtree, ("doc/html", True))
-            execute(shutil.rmtree, ("doc/source/.doctrees", True))
         if hasattr(__pkg_data__, "MyClean_run"):
             __pkg_data__.MyClean_run(self.dry_run, self.force)
 
@@ -466,16 +509,16 @@ class TestDoc(MyTest):
             sphinx_files.extend([os.path.join(root, s)
                                  for s in files if s.endswith(".txt")])
         for filename in sorted(['README'] + glob("doc/*.txt") + sphinx_files):
-            print('  Testing documentation file %s' % filename)
+            print '  Testing documentation file %s' % filename
             fails, tests = doctest.testfile(filename,
                                             optionflags=self.doctest_opts,
                                             extraglobs=self.extraglobs)
-            print("    %i tests run, %i failed" % (tests, fails))
+            print "    %i tests run, %i failed" % (tests, fails)
             if self.exit_on_fail and not fails == 0:
                 sys.exit(1)
             tot_fails += fails
             tot_tests += tests
-        print("Total of %i tests run, %i failed" % (tot_tests, tot_fails))
+        print "Total of %i tests run, %i failed" % (tot_tests, tot_fails)
         if hasattr(__pkg_data__, "TestDoc_run"):
             __pkg_data__.TestDoc_run(self.dry_run, self.force)
 
@@ -495,19 +538,19 @@ class TestCode(MyTest):
         tot_fails = 0
         tot_tests = 0
         for filename in sorted(files):
-            print('  Testing python file %s' % filename)
+            print '  Testing python file %s' % filename
             module = os.path.splitext(filename)[0].replace("/", ".")
             if module.endswith("__init__"):
                 module = module[:-9]
             fails, tests = doctest.testmod(sys.modules[module],
                                            optionflags=self.doctest_opts,
                                            extraglobs=self.extraglobs)
-            print("    %i tests run, %i failed" % (tests, fails))
+            print "    %i tests run, %i failed" % (tests, fails)
             if self.exit_on_fail and not fails == 0:
                 sys.exit(1)
             tot_fails += fails
             tot_tests += tests
-        print("Total of %i tests run, %i failed" % (tot_tests, tot_fails))
+        print "Total of %i tests run, %i failed" % (tot_tests, tot_fails)
         if hasattr(__pkg_data__, "TestCode_run"):
             __pkg_data__.TestCode_run(self.dry_run, self.force)
 
@@ -542,7 +585,7 @@ def main():
         obsoletes=__pkg_data__.OBSOLETES,
         options={'sdist': {'formats': 'bztar'}},
         cmdclass={
-            'build_doc': BuildDoc, 'clean': MyClean, 'sdist': HgSdist,
+            'build_doc': BuildDoc, 'clean': MyClean, 'sdist': ScmSdist,
             'snapshot': Snapshot, 'test_doc': TestDoc, 'test_code': TestCode,
         },
     )

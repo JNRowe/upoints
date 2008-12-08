@@ -26,8 +26,8 @@ MODULE = upoints
 import edist
 SCRIPTS = [edist, ]
 
-DESCRIPTION = upoints.__doc__.splitlines()[0][:-1]
-LONG_DESCRIPTION = "\n\n".join(upoints.__doc__.split("\n\n")[1:3])
+DESCRIPTION = MODULE.__doc__.splitlines()[0][:-1]
+LONG_DESCRIPTION = "\n\n".join(MODULE.__doc__.split("\n\n")[1:3])
 
 KEYWORDS = ["baken", "cities", "geonames", "gis", "gps", "gpx", "navigation",
             "nmea", "openstreetmap", "trigpointing", "weather", "xearth"]
@@ -65,4 +65,6 @@ def TestCode_run(dry_run, force):
               "with lxml will result in failures due to output format "
               "differences between the modules.")
 TestDoc_run = TestCode_run
+
+SCM = "git"
 
