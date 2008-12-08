@@ -1,0 +1,23 @@
+build/
+dist/
+doc/html/
+doc/source/.doctrees/
+html/
+upoints.egg-info/
+
+.coverage
+.hg_version
+*.py[co]
+*.html
+*.[0-9]
+
+ChangeLog
+MANIFEST
+
+# test data files
+test/data/alltrigs-wgs84.txt
+test/data/cells.txt
+test/data/cities.dat
+test/data/earth-markers-schaumann
+test/data/nsd_bbsss.txt
+test/data/nsd_cccc.txt
