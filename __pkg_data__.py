@@ -56,7 +56,10 @@ OBSOLETES = ["earth_distance", ]
 
 GRAPH_TYPE = None
 
-TEST_EXTRAGLOBS = ["pymetar", ]
+from test import pymetar
+TEST_EXTRAGLOBS = {
+    "pymetar": pymetar,
+}
 
 def TestCode_run(dry_run, force):
     """Display a warning about test failures when using lxml"""

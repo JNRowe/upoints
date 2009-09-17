@@ -19,16 +19,12 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-import __builtin__
+try:
+    import __builtin__
+except ImportError:
+    import builtins as __builtin__
 import os
 import urllib
-
-try:
-    import cStringIO as StringIO
-except ImportError:
-    import StringIO
-
-from types import ModuleType
 
 from test import grab_net_sources
 SOURCES = dict([(os.path.basename(i), i) for i in grab_net_sources.SOURCES])
@@ -46,7 +42,11 @@ def isfile(path):
 
     """
     filename = os.path.basename(path)
-    return os.path.isfile(os.path.join(BASEDIR, "data", filename))
+    try:
+        __builtin__.open(os.path.join(BASEDIR, "data", filename))
+    except IOError:
+        return False
+    return True
 
 def _get_test_file(filename):
     """Open a test data file

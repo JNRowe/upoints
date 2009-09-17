@@ -24,9 +24,12 @@ __author__ = "James Rowe <jnrowe@ukfsn.org>"
 __copyright__ = "Copyright (C) 2007-2008 James Rowe"
 __license__ = "GNU General Public License Version 3"
 __credits__ = ""
-__history__ = "See Mercurial repository"
+__history__ = "See git repository"
 
-from email.utils import parseaddr
+try:
+    from email.utils import parseaddr
+except ImportError: # Python 2.4
+    from email.Utils import parseaddr
 
 __doc__ += """
 
