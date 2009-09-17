@@ -234,7 +234,7 @@ class BuildDoc(NoOptsCommand):
         pygments_directive.content = 1
         directives.register_directive('code-block', pygments_directive)
 
-        for source in sorted(["NEWS", "README"] + glob('doc/*.txt')):
+        for source in sorted(["NEWS.rst", "README.rst"] + glob('doc/*.txt')):
             base = os.path.splitext(source)[0]
             dest = "%s.html" % base
             if self.force or newer(source, dest):
@@ -382,16 +382,16 @@ class ScmSdist(sdist):
     def make_distribution(self):
         """Update versioning data and build distribution"""
         news_format = "%s - " % __pkg_data__.MODULE.__version__
-        news_matches = [s for s in open("NEWS") if s.startswith(news_format)]
+        news_matches = [s for s in open("NEWS.rst") if s.startswith(news_format)]
         if not any(news_matches):
-            print "NEWS entry for `%s' missing" \
+            print "NEWS.rst entry for `%s' missing" \
                   % __pkg_data__.MODULE.__version__
             sys.exit(1)
         news_time = time.mktime(time.strptime(news_matches[0].split()[-1],
                                 "%Y-%m-%d"))
         if time.time() - news_time > 86400 and not self.force_build:
-            print "NEWS entry is older than a day, version may not have been " \
-                  "updated"
+            print "NEWS.rst entry is older than a day, version may not have "
+                  "been updated"
             sys.exit(1)
         execute(self.write_version, ())
         sdist.make_distribution(self)
@@ -511,7 +511,7 @@ class TestDoc(MyTest):
         for root, dirs, files in os.walk("doc/source/"):
             sphinx_files.extend([os.path.join(root, s)
                                  for s in files if s.endswith(".txt")])
-        for filename in sorted(['README'] + glob("doc/*.txt") + sphinx_files):
+        for filename in sorted(['README.rst'] + glob("doc/*.txt") + sphinx_files):
             print '  Testing documentation file %s' % filename
             fails, tests = doctest.testfile(filename,
                                             optionflags=self.doctest_opts,
