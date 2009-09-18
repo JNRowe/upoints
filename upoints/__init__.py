@@ -20,7 +20,7 @@
 
 __version__ = "0.11.0"
 __date__ = "2008-05-20"
-__author__ = "James Rowe <jnrowe@ukfsn.org>"
+__author__ = "James Rowe <jnrowe@gmail.com>"
 __copyright__ = "Copyright (C) 2007-2008 James Rowe"
 __license__ = "GNU General Public License Version 3"
 __credits__ = "Cédric Dufour, Thomas Traber, Kelly Turner, Simon Woods"

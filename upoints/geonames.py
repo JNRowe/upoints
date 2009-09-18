@@ -287,7 +287,7 @@ class Locations(point.Points):
             ...
         FileFormatError: Incorrect data format, if you're using a file
         downloaded from geonames.org please report this to James Rowe
-        <jnrowe@ukfsn.org>
+        <jnrowe@gmail.com>
 
         :Parameters:
             data : `file`, `list` or `str`
@@ -365,7 +365,7 @@ class Locations(point.Points):
             ...
         FileFormatError: Incorrect data format, if you're using a file
         downloaded from geonames.org please report this to James Rowe
-        <jnrowe@ukfsn.org>
+        <jnrowe@gmail.com>
 
         :Parameters:
             data : `file`, `list` or `str`

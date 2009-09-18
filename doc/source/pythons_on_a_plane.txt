@@ -156,7 +156,7 @@ come up with any clever uses for for the modules in :mod:`upoints`.
 .. _epydoc: http://epydoc.sourceforge.net/
 .. _meteorological station location information page: http://weather.noaa.gov/tg/site.shtml
 .. _station location page: http://weather.noaa.gov/tg/site.shtml
-.. _mail: jnrowe@ukfsn.org
+.. _mail: jnrowe@gmail.com
 .. _xplanet: http://xplanet.sourceforge.net/
 .. _xearth: http://www.cs.colorado.edu/~tuna/xearth/
 .. _path cross: http://esw.w3.org/topic/PathCross

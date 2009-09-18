@@ -20,7 +20,7 @@
 
 from __future__ import division
 
-__bug_report__ = "James Rowe <jnrowe@ukfsn.org>" #: Address for use in messages
+__bug_report__ = "James Rowe <jnrowe@gmail.com>" #: Address for use in messages
 
 import csv
 import datetime
@@ -92,7 +92,7 @@ class FileFormatError(ValueError):
     Traceback (most recent call last):
         ...
     FileFormatError: Incorrect data format, if you're using a file downloaded
-    from test site please report this to James Rowe <jnrowe@ukfsn.org>
+    from test site please report this to James Rowe <jnrowe@gmail.com>
 
     :since: 0.3.0
 

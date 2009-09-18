@@ -167,7 +167,7 @@ a minimal testcase, or even better a patch!
 .. _NOAA: http://weather.noaa.gov/
 .. _PEP 8: http://www.python.org/dev/peps/pep-0008/
 .. _reStructuredText: http://docutils.sourceforge.net/rst.html
-.. _mail: jnrowe@ukfsn.org
+.. _mail: jnrowe@gmail.com
 .. _lxml: http://codespeak.net/lxml/
 
 ..
