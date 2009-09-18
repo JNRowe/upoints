@@ -221,5 +221,5 @@ of code, so why not?
 .. _xearth: http://www.cs.colorado.edu/~tuna/xearth/
 
 ..
-    :vim: set ft=rst ts=2 sw=2 et:
+    :vim: set ft=rst ts=4 sw=4 et:
 

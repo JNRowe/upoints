@@ -136,5 +136,5 @@ the tarball to see what can be done.
 .. _gentoo: http://www.gentoo.org/
 
 ..
-    :vim: set ft=rst ts=2 sw=2 et:
+    :vim: set ft=rst ts=4 sw=4 et:
 

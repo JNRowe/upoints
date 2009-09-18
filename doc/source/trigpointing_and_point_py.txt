@@ -201,5 +201,5 @@ the classes and functions in the :mod:`upoints` tarball drop me a mail.
 .. _TrigpointingUK: http://www.trigpointinguk.com/
 
 ..
-    :vim: set ft=rst ts=2 sw=2 et:
+    :vim: set ft=rst ts=4 sw=4 et:
 

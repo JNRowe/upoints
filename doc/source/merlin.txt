@@ -184,5 +184,5 @@ weather data for the station using the ever useful pymetar_ library.
 .. _pymetar: http://www.schwarzvogel.de/software-pymetar.shtml
 
 ..
-    :vim: set ft=rst ts=2 sw=2 et:
+    :vim: set ft=rst ts=4 sw=4 et:
 

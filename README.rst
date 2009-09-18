@@ -171,5 +171,5 @@ a minimal testcase, or even better a patch!
 .. _lxml: http://codespeak.net/lxml/
 
 ..
-    :vim: set ft=rst ts=2 sw=2 et:
+    :vim: set ft=rst ts=4 sw=4 et:
 

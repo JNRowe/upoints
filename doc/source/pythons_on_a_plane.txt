@@ -162,5 +162,5 @@ come up with any clever uses for for the modules in :mod:`upoints`.
 .. _path cross: http://esw.w3.org/topic/PathCross
 
 ..
-    :vim: set ft=rst ts=2 sw=2 et:
+    :vim: set ft=rst ts=4 sw=4 et:
 
