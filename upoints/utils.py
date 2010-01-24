@@ -442,7 +442,7 @@ class TzOffset(datetime.tzinfo):
                 ISO 8601 style timezone definition
 
         """
-        super(TzOffset, self).__init__(self)
+        super(TzOffset, self).__init__()
         hours, minutes = map(int, tzstring.split(":"))
 
         self.__offset = datetime.timedelta(hours=hours, minutes=minutes)
