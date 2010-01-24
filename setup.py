@@ -257,6 +257,11 @@ class BuildDoc(NoOptsCommand):
                                       '--generator',
                                       '--stylesheet-path=doc/docutils.css',
                                       '--link-stylesheet', source, dest])
+        print "Building sphinx tree"
+        if not os.path.isdir("doc/html"):
+            os.mkdir("doc/html")
+        check_call(["sphinx-build", "-b", "html", "-d", "doc/source/.doctrees",
+                    "doc/source", "doc/html"])
 
         files = glob("%s/*.py" % __pkg_data__.MODULE.__name__)
         files.extend(["%s.py" % i.__name__ for i in __pkg_data__.SCRIPTS])
@@ -443,6 +448,8 @@ class MyClean(clean):
                 if os.path.exists(filename):
                     os.unlink(filename)
             execute(shutil.rmtree, ("html", True))
+            execute(shutil.rmtree, ("doc/html", True))
+            execute(shutil.rmtree, ("doc/source/.doctrees", True))
         if hasattr(__pkg_data__, "MyClean_run"):
             __pkg_data__.MyClean_run(self.dry_run, self.force)
 
@@ -479,7 +486,7 @@ class MyTest(NoOptsCommand):
             test_func = doctest.testmod
             hook = "TestCode_run"
         else:
-            files = ['README.rst'] + glob("doc/*.txt")
+            files = ['README.rst'] + glob("doc/*.txt") + glob("doc/source/*.txt")
             test_func = doctest.testfile
             hook = "TestDoc_run"
         tot_fails = 0

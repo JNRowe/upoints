@@ -24,7 +24,10 @@ try:
 except ImportError:
     import builtins as __builtin__
 import os
+import StringIO
 import urllib
+
+from types import ModuleType
 
 from test import grab_net_sources
 SOURCES = dict([(os.path.basename(i), i) for i in grab_net_sources.SOURCES])

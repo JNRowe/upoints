@@ -56,9 +56,10 @@ OBSOLETES = ["earth_distance", ]
 
 GRAPH_TYPE = None
 
-from test import pymetar
+from test import mock
 TEST_EXTRAGLOBS = {
-    "pymetar": pymetar,
+    "open": mock.open,
+    "pymetar": mock.pymetar,
 }
 
 def TestCode_run(dry_run, force):
