@@ -23,7 +23,9 @@ import sys, os
 
 # Add any Sphinx extension module names here, as strings. They can be extensions
 # coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
-#extensions = []
+extensions = ['sphinx.ext.autodoc', 'sphinx.ext.coverage', 'sphinx.ext.doctest',
+    'sphinx.ext.ifconfig', 'sphinx.ext.intersphinx', 'sphinx.ext.todo',
+    'sphinxcontrib.aafig']
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['.templates']
@@ -162,3 +164,5 @@ latex_documents = [
 # If false, no module index is generated.
 #latex_use_modindex = True
 
+# Example configuration for intersphinx: refer to the Python standard library.
+intersphinx_mapping = {'http://docs.python.org/': None}
