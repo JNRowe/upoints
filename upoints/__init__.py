@@ -2,7 +2,7 @@
 # vim: set sw=4 sts=4 et tw=80 fileencoding=utf-8:
 #
 """upoints - Modules for working with points on Earth"""
-# Copyright (C) 2007-2008  James Rowe
+# Copyright (C) 2007-2010  James Rowe
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -21,7 +21,7 @@
 __version__ = "0.11.0"
 __date__ = "2008-05-20"
 __author__ = "James Rowe <jnrowe@gmail.com>"
-__copyright__ = "Copyright (C) 2007-2008 James Rowe"
+__copyright__ = "Copyright (C) 2007-2010 James Rowe"
 __license__ = "GNU General Public License Version 3"
 __credits__ = "Cédric Dufour, Thomas Traber, Kelly Turner, Simon Woods"
 __history__ = "See git repository"
