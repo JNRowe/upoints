@@ -3,7 +3,7 @@ Cities and cities.py
 
 .. module:: upoints.cities
    :synopsis: Support for GNU miscfiles cities data files
-.. moduleauthor:: James Rowe <jnrpwe@ukfsn.org>
+.. moduleauthor:: James Rowe <jnrowe@gmail.com>
 .. versionadded:: 0.2.0
 
 A colleague pointed me to the `GNU miscfiles`_ cities database after
