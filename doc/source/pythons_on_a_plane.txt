@@ -123,11 +123,11 @@ your own lables for the markers.
    :height: 192
    :target: http://www.jnrowe.ukfsn.org/graphics/xplanet_trip_date.png
 
-There is a wealth of epydoc_ generated HTML output in the tarball,
-including documentation and usage examples.  If you still have any
-questions after reading the documentation, drop me a mail_ and I'll do
-my best to answer your questions.  Also, I'd love to hear from you if
-come up with any clever uses for for the modules in :mod:`upoints`.
+There is a wealth of Sphinx_ generated HTML output in the tarball, including
+documentation and usage examples.  If you still have any questions after reading
+the documentation, drop me a mail_ and I'll do my best to answer your questions.
+Also, I'd love to hear from you if come up with any clever uses for for the
+modules in :mod:`upoints`.
 
 .. [#] I've personally taken to creating and using :mod:`cPickle` dumps
        of the database, where each WMO region is stored in a separate
@@ -142,12 +142,12 @@ come up with any clever uses for for the modules in :mod:`upoints`.
 
 .. _geolocation and path cross: geolocation_and_pathcross.html
 .. _Mercurial: http://www.selenic.com/mercurial/
-.. _epydoc: http://epydoc.sourceforge.net/
 .. _meteorological station location information page: http://weather.noaa.gov/tg/site.shtml
 .. _station location page: http://weather.noaa.gov/tg/site.shtml
 .. _mail: jnrowe@gmail.com
 .. _xplanet: http://xplanet.sourceforge.net/
 .. _xearth: http://www.cs.colorado.edu/~tuna/xearth/
 .. _path cross: http://esw.w3.org/topic/PathCross
+.. _Sphinx: http://sphinx.pocoo.org/
 
 .. vim: set ft=rst ts=8 sw=4 tw=80 et:

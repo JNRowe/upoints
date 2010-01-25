@@ -61,8 +61,8 @@ goes:
     169 kM, with an initial bearing of 294°
 
 All the class definitions, methods and independent functions contain
-hopefully useful usage examples in the docstrings.  The ``html/``
-directory contains the preprocessed epydoc_ output for reference.
+hopefully useful usage examples in the docstrings.  The API documentation is
+built with Sphinx_, and is available in ``doc/html/api/``.
 
 There is some accompanying text and examples for ``point.py``, formerly
 ``edist.py``, available in `geolocation and path cross`_.  More examples
@@ -133,8 +133,8 @@ just want to convince me that your style is better.
     future if such a need were to arise, you are encouraged to use v2.5
     features now.
   * All new classes and methods should be accompanied by new
-    ``doctest`` examples, and epydoc_'s epytext formatted descriptions if
-    at all possible.
+    ``doctest`` examples, and Sphinx_ ``autodoc`` formatted descriptions if at
+    all possible.
   * Tests *must not* span network boundaries, see ``test.mock`` for
     workarounds.
   * ``doctest`` tests in modules are only for unit testing in general,
@@ -158,7 +158,6 @@ a minimal testcase, or even better a patch!
 .. _xearth: http://www.cs.colorado.edu/~tuna/xearth/
 .. _xplanet: http://xplanet.sourceforge.net/
 .. _Python: http://www.python.org/
-.. _epydoc: http://epydoc.sourceforge.net/
 .. _geolocation and path cross: doc/geolocation_and_pathcross.html
 .. _xearth and path cross: doc/xearth_and_pathcross.html
 .. _Trigpointing and point.py: doc/trigpointing_and_point_py.html
@@ -169,5 +168,6 @@ a minimal testcase, or even better a patch!
 .. _reStructuredText: http://docutils.sourceforge.net/rst.html
 .. _mail: jnrowe@gmail.com
 .. _lxml: http://codespeak.net/lxml/
+.. _Sphinx: http://sphinx.pocoo.org/
 
 .. vim: set ft=rst ts=8 sw=4 tw=80 et:

@@ -83,16 +83,16 @@ of the parent classes.  For example, you could use the
     55.950000 -3.183000 "Edinburgh" # 83
     55.867000 -4.267000 "Glasgow" # 92
 
-Take a look at the epydoc_ generated documentation that is included in
-the tarball to see what can be done.
+Take a look at the Sphinx_ generated documentation that is included in the
+tarball to see what can be done.
 
 .. _GNU miscfiles: http://www.gnu.org/directory/miscfiles.html
 .. _awk: http://www.gnu.org/software/gawk/gawk.html
 .. _geolocation and path cross: geolocation_and_pathcross.html
 .. _Mercurial: http://www.selenic.com/mercurial/
 .. _Python: http://www.python.org/
-.. _epydoc: http://epydoc.sourceforge.net/
 .. _Trigpointing and point.py: trigpointing_and_point_py.html
 .. _gentoo: http://www.gentoo.org/
+.. _Sphinx: http://sphinx.pocoo.org/
 
 .. vim: set ft=rst ts=8 sw=4 tw=80 et:
