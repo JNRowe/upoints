@@ -2,14 +2,13 @@ build/
 dist/
 doc/html/
 doc/source/.doctrees/
-html/
 upoints.egg-info/
 
 .coverage
-.hg_version
+.git_version
 *.py[co]
 *.html
-*.[0-9]
+doc/*.[0-9]
 
 ChangeLog
 MANIFEST
