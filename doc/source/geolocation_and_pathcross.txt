@@ -79,7 +79,7 @@ calculating the distance, because they're the two I happen to know.
 Too inaccurate?
 ---------------
 
-.. code-block:: pycon
+::
 
     >>> from upoints import point
     >>> Home = point.Point(52.015, -0.221)
@@ -120,9 +120,7 @@ I've hacked support for relative proximities in to our Haskell tool, but
 :mod:`upoints` could be used as the basis to implement something similar
 in Python.  Taking Seemant, who lives in Boston, Ma., as an example as
 it is his fault I'm playing with Python and geoip :mod:`upoints` can
-tell us:
-
-.. code-block:: pycon
+tell us::
 
     >>> Seemant = point.Point(42, -71)
     >>> print("%i kM" % Home.distance(Seemant))
@@ -151,7 +149,7 @@ allow one to assign weighting automatically.  Continuing the Seemant
 example would mean increasing his range significantly, being
 a BTS and email-only contact.
 
-.. code-block:: pycon
+::
 
     >>> import math
     >>> math.sqrt(Home.distance(Seemant))
@@ -182,7 +180,7 @@ Having already implemented the basic class and distance method,
 I figured I may as well add bearing calculation too.  It's only 4 lines
 of code, so why not?
 
-.. code-block:: pycon
+::
 
     >>> print("A heading of %i° will find the beers!" % Home.bearing(Telford))
     A heading of 294° will find the beers!

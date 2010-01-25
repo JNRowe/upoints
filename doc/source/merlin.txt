@@ -36,9 +36,7 @@ Using :class:`~upoints.point.Point` objects
 -------------------------------------------
 
 We can create a Python dictionary containing the locations of the array
-very simply:
-
-.. code-block:: pycon
+very simply::
 
     >>> from upoints.point import (Point, KeyedPoints)
     >>> from upoints import utils
@@ -57,9 +55,7 @@ which states the longest baseline in the array is Cambridge to Knocking
 at 217 kM, and also that the shortest baseline is between the Jodrell
 Bank site and Pickmere at 11.2 kM.  The :class:`~upoints.point.Point`
 object's :meth:`~upoints.point.Point.distance` method can calculate
-these distances for us quite simply:
-
-.. code-block:: pycon
+these distances for us quite simply::
 
     >>> "%.3f kM" % MERLIN['Cambridge'].distance(MERLIN['Knocking'])
     '217.312 kM'
@@ -80,9 +76,7 @@ Using :func:`~upoints.utils.dump_xearth_markers`
 
 The MERLIN website also contains a `layman description page`_
 that has a nice map showing the locations of the array elements, we can
-create a similar image with xplanet_ or xearth_:
-
-.. code-block:: pycon
+create a similar image with xplanet_ or xearth_::
 
     >>> print("\n".join(utils.dump_xearth_markers(MERLIN)))
     52.168467 0.039792 "Cambridge"
@@ -112,9 +106,7 @@ locations and we're hoping to catch the end of an imaginary partial
 eclipse occurring at 05:45 UTC on 2007-09-20 we can find the best
 location to view from quite simply.  Clearly, the most important factor
 is whether the Sun will be visible at the given time and this can be
-calculated very easily:
-
-.. code-block:: pycon
+calculated very easily::
 
     >>> import datetime
     >>> for name, rise in MERLIN.sunrise(datetime.date(2007, 9, 20)):
@@ -125,9 +117,7 @@ calculated very easily:
          - sunrise @ 05:41 UTC
 
 This simple code snippet shows us that we should set up our equipment at
-the Cambridge site, which lucky for me is only a short trip up the road:
-
-.. code-block:: pycon
+the Cambridge site, which lucky for me is only a short trip up the road::
 
     >>> Home = Point(52.015, -0.221)
     >>> print("%i kM" % Home.distance(MERLIN['Cambridge']))
@@ -139,9 +129,7 @@ Comparisons with other :class:`~upoints.point.Point`-type objects
 In our contrived example above we may wish to travel only if the weather
 will be warm enough that we're unlikely to freeze to death(that risk is
 only acceptable for a full eclipse), and we can use the other
-:mod:`upoints` tools to find closest weather station quite easily:
-
-.. code-block:: pycon
+:mod:`upoints` tools to find closest weather station quite easily::
 
     >>> from upoints import weather_stations
     >>> ICAO_stations_database = urllib.urlopen("http://weather.noaa.gov/data/nsd_cccc.txt")
@@ -162,7 +150,7 @@ closest weather station.
 As we're already using Python_ we may as well use Python to fetch the
 weather data for the station using the ever useful pymetar_ library.
 
-.. code-block:: pycon
+::
 
     >>> report = pymetar.ReportFetcher(station_id).FetchReport()
     >>> report_decoded = pymetar.ReportParser().ParseReport(report)

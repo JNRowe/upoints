@@ -16,7 +16,7 @@ publish extensive location data for the weather stations they monitor.
 And many thanks to them, because we can use their databases to populate
 our local geolocation databases.
 
-.. code-block:: pycon
+::
 
     >>> from upoints import (point, weather_stations)
     >>> WMO_stations_database = urllib.urlopen("http://weather.noaa.gov/data/nsd_bbsss.txt")
@@ -25,9 +25,7 @@ our local geolocation databases.
 The above snippet will import the WMO identifier keyed database
 available from the `meteorological station location information page`_.
 They also provide a database keyed with ICAO identifiers, which
-can also be imported:
-
-.. code-block:: pycon
+can also be imported::
 
     >>> ICAO_stations_database = urllib.urlopen("http://weather.noaa.gov/data/nsd_cccc.txt")
     >>> ICAO_stations = weather_stations.Stations(ICAO_stations_database, "ICAO")
@@ -40,9 +38,7 @@ or import both and filter the duplicates.
 
 Another thing to consider because of the size of the database is whether
 you need to operate on all the entries at once.  Maybe you only want to
-work with entries in the UK:
-
-.. code-block:: pycon
+work with entries in the UK::
 
     >>> UK_locations = dict([x for x in ICAO_stations.items()
     ...                      if x[1].country == "United Kingdom"])
@@ -54,7 +50,7 @@ along Great Circles and don't get stuck in holding patterns waiting to
 land then we can calculate the distance for the whole journey quite
 easily.
 
-.. code-block:: pycon
+::
 
     >>> Europe = dict([x for x in ICAO_stations.items() if x[1].wmo == 6])
     >>> del(ICAO_stations)
@@ -69,7 +65,7 @@ and if we wished we could release the full database containing 10000
 entries we don't need from memory using code similar to the snippet
 above [#]_.
 
-.. code-block:: pycon
+::
 
     >>> Trip = point.Points([Europe[i] for i in ('EGGW', 'LFBO', 'EGBB', 'EGSS')])
     >>> legs = list(Trip.inverse())
@@ -92,9 +88,7 @@ The :class:`~upoints.weather_stations.Station` class inherits from
 :class:`~upoints.trigpoints.Trigpoint` and as such you can use the
 functions and methods defined for it with
 :class:`~upoints.weather_station.Station` objects.  You could, for
-example, create a nice graphical view of your trip with xplanet_:
-
-.. code-block:: pycon
+example, create a nice graphical view of your trip with xplanet_::
 
     >>> Trip = dict(zip(("2007-06-29", "2007-06-30", "2007-07-12",
     ...                  "2007-07-14"),

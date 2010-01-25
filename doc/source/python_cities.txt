@@ -55,16 +55,12 @@ of :class:`~upoints.cities.City` objects that are children of the
 and point.py`_
 
 On my Gentoo_ desktop the cities database is installed as
-:file:`/usr/share/misc/cities.dat`, and can be imported as simply as:
-
-.. code-block:: pycon
+:file:`/usr/share/misc/cities.dat`, and can be imported as simply as::
 
     >>> from upoints import cities
     >>> Cities = cities.Cities(open("/usr/share/misc/cities.dat"))
 
-And the imported database can be used in a variety of ways:
-
-.. code-block:: pycon
+And the imported database can be used in a variety of ways::
 
     >>> print("%i cities" % len(Cities))
     497 cities
@@ -87,9 +83,7 @@ And the imported database can be used in a variety of ways:
        Aconcagua
        Popocatepetl
 
-You can recreate the database as a smoke test using the following:
-
-.. code-block:: pycon
+You can recreate the database as a smoke test using the following::
 
     >>> f = open("cities.dat", "w")
     >>> f.write("\n//\n".join(map(str, Cities)))
@@ -106,9 +100,7 @@ The :class:`~upoints.cities.City` class inherits
 they do.  This allows you to calculate distances and bearings between
 the class:`~upoints.cities.City` objects or any other derivative object
 of the parent classes.  For example, you could use the
-:func:`~upoints.utils.dump_xearth_markers` function:
-
-.. code-block:: pycon
+:func:`~upoints.utils.dump_xearth_markers` function::
 
     >>> from upoints.utils import dump_xearth_markers
     >>> scottish_markers = dict([(x.identifier, x) for x in Cities

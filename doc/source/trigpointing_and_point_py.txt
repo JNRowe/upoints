@@ -31,7 +31,7 @@ That being said technology is here to assist us, and with that let me
 introduce :mod:`~upoints.trigpoints` a simple extension over the
 original ``edist.py`` script.
 
-.. code-block:: pycon
+::
 
     >>> from upoints import trigpoints
     >>> database_location = urllib.urlopen("http://www.haroldstreet.org.uk/waypoints/alltrigs-wgs84.txt")
@@ -45,9 +45,7 @@ dictionary.
 
 If I'd like to see trigpoints close to me, say within 20kM, and less
 than 60m above sea level I could tap the following in to my IPython_
-session:
-
-.. code-block:: pycon
+session::
 
     >>> Home = trigpoints.point.Point(52.015, -0.221)
     >>> for identifier, trigpoint in sorted(Trigpoints.items()):
@@ -62,7 +60,7 @@ Or we can display all the trigpoints within a given region. For example,
 to show trigpoints within the region from 51°52'15"N, 000°28'29"W to
 52°09'07"N, 000°01'52"W.
 
-.. code-block:: pycon
+::
 
     >>> latitude_min = trigpoints.utils.to_dd(51, 52, 15)
     >>> longitude_min = trigpoints.utils.to_dd(0, -28, -29)
@@ -92,9 +90,7 @@ to show trigpoints within the region from 51°52'15"N, 000°28'29"W to
 
 
 Or we could generate a file to use with xearth that contains all the
-trigpoints above 1000m above sea level:
-
-.. code-block:: pycon
+trigpoints above 1000m above sea level::
 
     >>> from upoints.utils import dump_xearth_markers
     >>> high_markers = {}
@@ -122,9 +118,7 @@ result is just going to be a sea of blurred text when rendered.
 
 And it is possible to fold the generation of the ``high_markers``
 dictionary in to a single operation using lambda expressions and
-:func:`filter` such as:
-
-.. code-block:: pycon
+:func:`filter` such as::
 
     >>> high_markers = dict(filter(lambda x: x[1].altitude > 1000,
     ...                            Trigpoints.items()))
@@ -141,7 +135,7 @@ Using :mod:`~upoints.trigpoints` you could generate marker file for
 locations with an altitude of between 900m and 910m using their location
 names as labels.
 
-.. code-block:: pycon
+::
 
     >>> display_markers = {}
     >>> for identifier, trigpoint in Trigpoints.items():

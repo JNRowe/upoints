@@ -23,9 +23,7 @@ more generic, and it also now includes a new module,
 :mod:`~upoints.xearth`, that can import locations from an xearth marker
 file.  Unfortunately, I can't use an example generated from our system
 because I don't have permission to publish the data but I'll give an
-example of its usage with a public file:
-
-.. code-block:: pycon
+example of its usage with a public file::
 
     >>> from upoints import xearth
     >>> earth_markers = urllib.urlopen("http://xplanet.sourceforge.net/Extras/earth-markers-schaumann")
@@ -47,7 +45,7 @@ You can use all the methods, such as
 :class:`~upoints.point.Point` class on :class:`~upoints.xearth.Xearth`
 objects.
 
-.. code-block:: pycon
+::
 
     >>> print("Suva to Tokyo is %i kM" % markers['Suva'].distance(markers['Tokyo']))
     Suva to Tokyo is 7253 kM
@@ -59,7 +57,7 @@ finding people local to a customer it would be nice to use
 :mod:`~upoints.xearth` to do the same in a more programmatic way, and of
 course that is possible too.
 
-.. code-block:: pycon
+::
 
     >>> Customer = xearth.point.Point(52.015, -0.221)
     >>> for marker in markers:
