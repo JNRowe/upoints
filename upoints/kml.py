@@ -41,15 +41,16 @@ if not ET.__name__ == "xml.etree.cElementTree":
 
 from upoints import (point, trigpoints, utils)
 
-# Supported KML versions
+#: Supported KML namespace version to URI mapping
 KML_VERSIONS = {
   "2.0": "http://earth.google.com/kml/2.0",
   "2.1": "http://earth.google.com/kml/2.1",
   "2.2": "http://earth.google.com/kml/2.2",
-} #: Supported KML namespace version to URI mapping
+}
 
+#: Default KML version to output
 # Changing this will cause tests to fail.
-DEF_KML_VERSION = "2.2" #: Default KML version to output
+DEF_KML_VERSION = "2.2"
 
 def create_elem(tag, attr=None, text=None, kml_version=DEF_KML_VERSION,
                 human_namespace=False):

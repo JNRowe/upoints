@@ -23,7 +23,8 @@ import datetime
 try:
     from dateutil import tz
 except ImportError:
-    tz = None #: ``dateutil`` module reference if available
+    #: ``dateutil`` module reference if available
+    tz = None
 from operator import attrgetter
 
 from upoints import (point, trigpoints, utils)

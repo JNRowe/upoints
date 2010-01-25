@@ -43,14 +43,15 @@ if not ET.__name__ == "xml.etree.cElementTree":
 
 from upoints import (point, utils)
 
-# Supported GPX versions
+#: Supported GPX namespace version to URI mapping
 GPX_VERSIONS = {
   "1.0": "http://www.topografix.com/GPX/1/0",
   "1.1": "http://www.topografix.com/GPX/1/1",
-} #: Supported GPX namespace version to URI mapping
+}
 
+#: Default GPX version to output
 # Changing this will cause tests to fail.
-DEF_GPX_VERSION = "1.1" #: Default GPX version to output
+DEF_GPX_VERSION = "1.1"
 
 def create_elem(tag, attr=None, text=None, gpx_version=DEF_GPX_VERSION,
                 human_namespace=False):

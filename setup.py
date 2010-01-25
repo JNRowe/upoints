@@ -29,7 +29,8 @@ try:
     from setuptools.command.sdist import (finders, sdist)
     from setuptools import Command
     from distutils.util import convert_path
-    SETUPTOOLS = True #: True if ``setuptools`` is installed
+    #: True if ``setuptools`` is installed
+    SETUPTOOLS = True
 except ImportError:
     from distutils.core import setup
     from distutils.command.sdist import sdist
@@ -65,21 +66,24 @@ try:
     from docutils.core import publish_cmdline
     from docutils import nodes
     from docutils.parsers.rst import directives
-    DOCUTILS = True #: True if ``docutils`` module is available
+    #: True if ``docutils`` module is available
+    DOCUTILS = True
 except ImportError:
     DOCUTILS = False
 try:
     from pygments import highlight
     from pygments.lexers import get_lexer_by_name
     from pygments.formatters import HtmlFormatter
-    PYGMENTS = True #: True if ``pygments`` module is available
+    #: True if ``pygments`` module is available
+    PYGMENTS = True
 except ImportError:
     PYGMENTS = False
 
 import __pkg_data__
 import test
 
-BASE_URL = "http://github.com/JNRowe/" #: Base URL for links
+#: Base URL for links
+BASE_URL = "http://github.com/JNRowe/"
 PROJECT_URL = "%s%s" % (BASE_URL, __pkg_data__.MODULE.__name__)
 
 if sys.version_info < (2, 4, 0, 'final'):
@@ -205,11 +209,13 @@ class BuildDoc(NoOptsCommand):
 
     """
     description = gen_desc(__doc__)
+    #: `BuildDoc`'s option mapping
     user_options = [
         ('force', 'f',
          "force documentation generation"),
-    ] #: `BuildDoc`'s option mapping
-    boolean_options = ['force'] #: `BuildDoc` class' boolean options
+    ]
+    #: `BuildDoc` class' boolean options
+    boolean_options = ['force']
 
     def initialize_options(self):
         """Set default values for options"""
@@ -336,9 +342,10 @@ class ScmSdist(sdist):
 
     """
     description = gen_desc(__doc__)
+    #: `ScmSdist`'s option mapping
     user_options = [
         ('force-build', 'b', "force build with stale version number"),
-    ] + sdist.user_options #: `ScmSdist`'s option mapping
+    ] + sdist.user_options
     boolean_options = ['force-build']
 
     def initialize_options(self):
@@ -395,7 +402,8 @@ class ScmSdist(sdist):
 class Snapshot(NoOptsCommand):
     """Build a daily snapshot tarball"""
     description = gen_desc(__doc__)
-    user_options = [] #: `Snapshot`'s option mapping
+    #: `Snapshot`'s option mapping
+    user_options = []
 
     def run(self):
         """Prepare and create tarball"""
@@ -460,19 +468,21 @@ class MyClean(clean):
 
 class MyTest(NoOptsCommand):
     """Abstract class for test command implementations"""
+    #: `MyTest`'s option mapping
     user_options = [
         ('exit-on-fail', 'x',
          "exit on first failure"),
-    ] #: `MyTest`'s option mapping
+    ]
     boolean_options = ['exit-on-fail']
 
     def initialize_options(self):
         """Set default values for options"""
         self.exit_on_fail = False
         self.doctest_opts = doctest.REPORT_UDIFF|doctest.NORMALIZE_WHITESPACE
+        #: Mock objects to include for test framework
         self.extraglobs = {
             "urllib": test.mock.urllib,
-        } #: Mock objects to include for test framework
+        }
         if hasattr(__pkg_data__, "TEST_EXTRAGLOBS"):
             for key, value in __pkg_data__.TEST_EXTRAGLOBS.items():
                 if value:

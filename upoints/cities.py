@@ -29,6 +29,7 @@ import time
 
 from upoints import (point, trigpoints, utils)
 
+#: GNU miscfiles cities.dat template
 TEMPLATE = """\
 ID          : %s
 Type        : %s
@@ -42,7 +43,7 @@ Location    : %s
  Latitude   : %s
  Elevation  : %s
 Date        : %s
-Entered-By  : %s""" #: GNU miscfiles cities.dat template
+Entered-By  : %s"""
 
 class City(trigpoints.Trigpoint):
     """Class for representing an entry from the `GNU miscfiles`_ cities data file

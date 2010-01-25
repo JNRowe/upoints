@@ -20,7 +20,8 @@
 
 from __future__ import division
 
-__bug_report__ = "James Rowe <jnrowe@gmail.com>" #: Address for use in messages
+#: Address for use in messages
+__bug_report__ = "James Rowe <jnrowe@gmail.com>"
 
 import csv
 import datetime
@@ -42,6 +43,7 @@ except ImportError:
 
 from operator import add
 
+#: Body radii of various solar system objects
 BODIES = {
     # Body radii in kilometres
     'Sun': 696000,
@@ -65,21 +67,24 @@ BODIES = {
     'Pluto': 1153,
     'Ceres': 475,
     'Eris': 1200,
-} #: Body radii of various solar system objects
+}
 
-BODY_RADIUS = BODIES['Earth'] #: Default body radius to use for calculations
-NAUTICAL_MILE = 1.852 #: Number of kilometres per nautical mile
-STATUTE_MILE = 1.609 #: Number of kilometres per statute mile
+#: Default body radius to use for calculations
+BODY_RADIUS = BODIES['Earth']
+#: Number of kilometres per nautical mile
+NAUTICAL_MILE = 1.852
+#: Number of kilometres per statute mile
+STATUTE_MILE = 1.609
 
-# Maidenhead locator constants
-LONGITUDE_FIELD = 20 #: Longitude field 1 multiplier
-LATITUDE_FIELD = 10 #: Latitude field 1 multiplier
-LONGITUDE_SQUARE = LONGITUDE_FIELD / 10 #: Longitude field 2 multiplier
-LATITUDE_SQUARE = LATITUDE_FIELD / 10 #: Latitude field 2 multiplier
-LONGITUDE_SUBSQUARE = LONGITUDE_SQUARE / 24 #: Longitude field 3 multiplier
-LATITUDE_SUBSQUARE = LATITUDE_SQUARE / 24 #: Latitude field 3 multiplier
-LONGITUDE_EXTSQUARE = LONGITUDE_SUBSQUARE / 10 #: Longitude field 4 multiplier
-LATITUDE_EXTSQUARE = LATITUDE_SUBSQUARE / 10 #: Latitude field 4 multiplier
+#: Maidenhead locator constants
+LONGITUDE_FIELD = 20
+LATITUDE_FIELD = 10
+LONGITUDE_SQUARE = LONGITUDE_FIELD / 10
+LATITUDE_SQUARE = LATITUDE_FIELD / 10
+LONGITUDE_SUBSQUARE = LONGITUDE_SQUARE / 24
+LATITUDE_SUBSQUARE = LATITUDE_SQUARE / 24
+LONGITUDE_EXTSQUARE = LONGITUDE_SUBSQUARE / 10
+LATITUDE_EXTSQUARE = LATITUDE_SUBSQUARE / 10
 
 class FileFormatError(ValueError):
     """Error object for data parsing error
@@ -1070,6 +1075,7 @@ def parse_location(location):
 
 #{ Solar event utilities
 
+#: Sunrise/-set mappings from name to angle
 ZENITH = {
     # All values are specified in degrees!
 
@@ -1088,7 +1094,7 @@ ZENITH = {
     "civil": -6,
     "nautical": -12,
     "astronomical": -18,
-} #: Sunrise/-set mappings from name to angle
+}
 
 def sun_rise_set(latitude, longitude, date, mode="rise", timezone=0,
                  zenith=None):

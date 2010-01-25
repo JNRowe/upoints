@@ -121,6 +121,7 @@ def parse_longitude(longitude, hemisphere):
         raise ValueError("Incorrect North/South value `%s'" % hemisphere)
     return longitude
 
+#: NMEA's mapping of code to reading type
 MODE_INDICATOR = {
     "A": "Autonomous",
     "D": "Differential",
@@ -128,7 +129,7 @@ MODE_INDICATOR = {
     "M": "Manual",
     "S": "Simulated",
     "N": "Invalid",
-} #: NMEA's mapping of code to reading type
+}
 
 class LoranPosition(point.Point):
     """Class for representing a GPS NMEA-formatted Loran-C position
