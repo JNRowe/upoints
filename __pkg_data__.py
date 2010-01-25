@@ -63,7 +63,7 @@ TEST_EXTRAGLOBS = {
 }
 
 def TestCode_run(dry_run, force):
-    """Display a warning about test failures when using lxml"""
+    """Display a warning about test failures when using :mod:`lxml`"""
     if "lxml" in sys.modules:
         print("Tests are designed to be run using cElementTree, running them "
               "with lxml will result in failures due to output format "

@@ -1,11 +1,6 @@
 Geolocation and path cross
 ==========================
 
-.. module:: upoints.point
-   :synopsis: Base objects for working with upoints
-.. moduleauthor:: James Rowe <jnrowe@gmail.com>
-.. versionadded:: 0.1.0
-
 Spurred on by `Seemant's voyage`_ in to geoip_ for deciding on the
 location of users writing comments on his website I decided to have
 a look in to MaxMind's library with the intent of using it in

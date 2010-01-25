@@ -26,33 +26,55 @@ from operator import attrgetter
 from upoints import (point, utils)
 
 class Cell(point.Point):
-    """Class for representing a cellular cite from OpenCellID.org
+    """Class for representing a cellular cite from OpenCellID.org_
 
-    :since: 0.11.0
+    .. versionadded:: 0.11.0
 
-    :Ivariables:
-        ident
-            OpenCellID database identifier
-        latitude
-            Cell's latitude
-        longitude
-            Cell's longitude
-        mcc
-            Cell's country code
-        mnc
-            Cell's network code
-        lac
-            Cell's local area code
-        cellid
-            Cell's identifier
-        crange
-            Cell's range
-        samples
-            Number of samples for the cell
-        created
-            Date the cell was first entered
-        updated
-            Date of the last update
+    .. attribute:: ident
+
+       OpenCellID database identifier
+
+    .. attribute:: latitude
+
+       Cell's latitude
+
+    .. attribute:: longitude
+
+       Cell's longitude
+
+    .. attribute:: mcc
+
+       Cell's country code
+
+    .. attribute:: mnc
+
+       Cell's network code
+
+    .. attribute:: lac
+
+       Cell's local area code
+
+    .. attribute:: cellid
+
+       Cell's identifier
+
+    .. attribute:: crange
+
+       Cell's range
+
+    .. attribute:: samples
+
+       Number of samples for the cell
+
+    .. attribute:: created
+
+       Date the cell was first entered
+
+    .. attribute:: updated
+
+       Date of the last update
+
+    .. _OpenCellID.org: http://opencellid.org/
 
     """
 
@@ -61,7 +83,7 @@ class Cell(point.Point):
 
     def __init__(self, ident, latitude, longitude, mcc, mnc, lac, cellid,
                  crange, samples, created, updated):
-        """Initialise a new `Cell` object
+        """Initialise a new ``Cell`` object
 
         >>> Cell(4, 52.015, -0.221, 21, 46, 40000, 10, 0, 1,
         ...      datetime.datetime(2008, 4, 15, 15, 21, 35),
@@ -70,29 +92,28 @@ class Cell(point.Point):
              datetime.datetime(2008, 4, 15, 15, 21, 35),
              datetime.datetime(2008, 4, 15, 15, 28, 49))
 
-        :Parameters:
-            ident : `int`
-                OpenCellID database identifier
-            latitude : `float`
-                Cell's latitude
-            longitude : `float`
-                Cell's longitude
-            mcc : `int`
-                Cell's country code
-            mnc : `int`
-                Cell's network code
-            lac : `int`
-                Cell's local area code
-            cellid : `int`
-                Cell's identifier
-            crange : `int`
-                Cell's range
-            samples : `int`
-                Number of samples for the cell
-            created : `datetime.datetime`
-                Date the cell was first entered
-            updated : `datetime.datetime`
-                Date of the last update
+        :type ident : ``int``
+        :param OpenCellID database identifier
+        :type latitude : ``float``
+        :param Cell's latitude
+        :type longitude : ``float``
+        :param Cell's longitude
+        :type mcc : ``int``
+        :param Cell's country code
+        :type mnc : ``int``
+        :param Cell's network code
+        :type lac : ``int``
+        :param Cell's local area code
+        :type cellid : ``int``
+        :param Cell's identifier
+        :type crange : ``int``
+        :param Cell's range
+        :type samples : ``int``
+        :param Number of samples for the cell
+        :type created : :class:`datetime.datetime`
+        :param Date the cell was first entered
+        :type updated : :class:`datetime.datetime`
+        :param Date of the last update
 
         """
         super(Cell, self).__init__(latitude, longitude)
@@ -109,18 +130,19 @@ class Cell(point.Point):
     def __str__(self, mode=None):
         """OpenCellID.org-style location string
 
-        :see: `point.Point`
+        .. seealso::
+
+           :class:`point.Point`
 
         >>> print(Cell(4, 52.015, -0.221, 21, 46, 40000, 10, 0, 1,
         ...       datetime.datetime(2008, 4, 15, 15, 21, 35),
         ...       datetime.datetime(2008, 4, 15, 15, 28, 49)))
         4,52.0150000000000,-0.2210000000000,21,46,40000,10,0,1,2008-04-15 15:21:35,2008-04-15 15:28:49
 
-        :Parameters:
-            mode : any
-                For compatibility with parent class
-        :rtype: `str`
-        :return: OpenCellID.org-style string representation of `Cell` object
+        :type mode: any
+        :param mode: For compatibility with parent class
+        :rtype: ``str``
+        :return: OpenCellID.org-style string representation of ``Cell`` object
 
         """
         return "%i,%.13f,%.13f,%i,%i,%i,%i,%i,%i,%s,%s" \
@@ -131,21 +153,21 @@ class Cell(point.Point):
 
 
 class Cells(point.KeyedPoints):
-    """Class for representing a group of `Cell` objects
+    """Class for representing a group of :class:`Cell` objects
 
-    :since: 0.11.0
+    .. versionadded:: 0.11.0
 
     """
 
     def __init__(self, cells_file=None):
-        """Initialise a new `Cells` object"""
+        """Initialise a new ``Cells`` object"""
         super(Cells, self).__init__()
         self._cells_file = cells_file
         if cells_file:
             self.import_locations(cells_file)
 
     def __str__(self):
-        """`Cells` objects rendered as export from OpenCellID.org
+        """``Cells`` objects rendered as export from OpenCellID.org
 
         >>> cells = Cells(open("cells"))
         >>> print(cells)
@@ -153,7 +175,7 @@ class Cells(point.KeyedPoints):
         22995,52.3305015563965,-0.2255620062351,234,10,20566,4068,0,1,2008-04-05 21:32:59,2008-04-05 21:32:59
         23008,52.3506011962891,-0.2234109938145,234,10,10566,4068,0,1,2008-04-05 21:32:59,2008-04-05 21:32:59
 
-        :rtype: `str`
+        :rtype: ``str``
         :return: OpenCellID.org formatted output
 
         """
@@ -163,9 +185,9 @@ class Cells(point.KeyedPoints):
     def import_locations(self, cells_file):
         """Parse OpenCellID.org data files
 
-        `import_locations()` returns a dictionary with keys containing the
-        `OpenCellID <http://opencellid.org>`__ database identifier, and values
-        consisting of a `Cell` objects.
+        ``import_locations()`` returns a dictionary with keys containing the
+        OpenCellID.org_ database identifier, and values consisting of a ``Cell``
+        objects.
 
         It expects cell files in the following format::
 
@@ -173,8 +195,8 @@ class Cells(point.KeyedPoints):
             22995,52.3305015563965,-0.2255620062351,234,10,20566,4068,0,1,2008-04-05 21:32:59,2008-04-05 21:32:59
             23008,52.3506011962891,-0.2234109938145,234,10,10566,4068,0,1,2008-04-05 21:32:59,2008-04-05 21:32:59
 
-        The above file processed by `import_locations()` will return the
-        following `dict` object::
+        The above file processed by ``import_locations()`` will return the
+        following ``dict`` object::
 
             {23008: Cell(23008, 52.3506011963, -0.223410993814, 234, 10, 10566,
                          4068, 0, 1, datetime.datetime(2008, 4, 5, 21, 32, 59),
@@ -193,11 +215,12 @@ class Cells(point.KeyedPoints):
         22995,52.3305015563965,-0.2255620062351,234,10,20566,4068,0,1,2008-04-05 21:32:59,2008-04-05 21:32:59
         23008,52.3506011962891,-0.2234109938145,234,10,10566,4068,0,1,2008-04-05 21:32:59,2008-04-05 21:32:59
 
-        :Parameters:
-            cells_file : `file`, `list` or `str`
-                Cell data to read
-        :rtype: `dict`
+        :type cells_file: ``file``, ``list`` or ``str``
+        :param cells_file: Cell data to read
+        :rtype: ``dict``
         :return: Cell data with their associated database identifier
+
+        .. _OpenCellID.org: http://opencellid.org/
 
         """
         self._cells_file = cells_file

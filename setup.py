@@ -90,9 +90,8 @@ if sys.version_info < (2, 4, 0, 'final'):
 def write_changelog(filename):
     """Generate a ChangeLog from SCM repo
 
-    :Parameters:
-        filename : `str`
-            Filename to write ChangeLog to
+    :type filename: ``str``
+    :param filename: Filename to write :file:`ChangeLog` to
 
     """
     if __pkg_data__.SCM == "hg" and os.path.isdir(".hg"):
@@ -116,11 +115,10 @@ def write_changelog(filename):
             os.unlink(filename)
 
 def write_manifest(files):
-    """Generate a MANIFEST file
+    """Generate a :file:`MANIFEST` file
 
-    :Parameters:
-        files : `list`
-            Filenames to include in MANIFEST
+    :type files: ``list``
+    :param files: Filenames to include in :file:`MANIFEST`
 
     """
     open("MANIFEST", "w").write("\n".join(sorted(files)) + "\n")
@@ -132,14 +130,13 @@ def write_manifest(files):
 def call_scm(options, *args, **kwargs):
     """SCM command line tools
 
-    :Parameters:
-        options : `list`
-            SCM command options
-        *args : `list`
-            Positional arguments for ``subprocess.Popen``
-        **kwargs : `dict`
-            Keyword arguments for ``subprocess.Popen``
-    :rtype: `str`
+    :type options: ``list``
+    :param options: SCM command options
+    :type args: ``list``
+    :param args: Positional arguments for ``subprocess.Popen``
+    :type kwargs: ``dict``
+    :param kwargs: Keyword arguments for ``subprocess.Popen``
+    :rtype: ``str``
     :return: SCM command output
     :raise OSError: SCM command not found
     :raise ValueError: Unknown SCM type
@@ -174,11 +171,11 @@ def call_scm(options, *args, **kwargs):
 def gen_desc(doc):
     """Pull simple description from docstring
 
-    :Parameters:
-        doc : `str`
-            Docstring to manipulate
-    :rtype: str
-    :return: Description string suitable for ``Command`` class's description
+    :type doc: ``str``
+    :param doc: Docstring to manipulate
+    :rtype: ``str``
+    :return: Description string suitable for :class:`Command` class's
+        description
 
     """
     desc = doc.splitlines()[0].lstrip()
@@ -186,7 +183,7 @@ def gen_desc(doc):
 
 
 class NoOptsCommand(Command):
-    """Abstract class for simple ``distutils`` command implementation"""
+    """Abstract class for simple :mod:`distutils` command implementation"""
 
     def initialize_options(self):
         """Set default values for options"""
@@ -202,9 +199,9 @@ class NoOptsCommand(Command):
 class BuildDoc(NoOptsCommand):
     """Build project documentation
 
-    :Ivariables:
-        force
-            Force documentation generation
+    .. attribute:: force
+
+       Force documentation generation
 
     """
     description = gen_desc(__doc__)
@@ -232,7 +229,7 @@ class BuildDoc(NoOptsCommand):
         def pygments_directive(name, arguments, options, content, lineno,
                                content_offset, block_text, state,
                                state_machine):
-            """Code colourising directive for ``docutils``"""
+            """Code colourising directive for :mod:`docutils`"""
             # Previously we tested to see if the lexer existed and set
             # a default of text if it didn't, but this hides bugs such as a typo
             # in the directive
@@ -296,11 +293,12 @@ def scm_finder(*none):
     Without this it *appears* to work, but only distributes a very small subset
     of the package.
 
-    :see: `MySdist.get_file_list`
+    .. seealso::
 
-    :Parameters:
-        none : any
-            Just for compatibility
+       :class:`MySdist.get_file_list`
+
+    :type none: any
+    :param none: Just for compatibility
     """
     # setuptools documentation says this shouldn't be a hard fail, but we won't
     # do that as it makes builds entirely unpredictable
@@ -328,11 +326,13 @@ if SETUPTOOLS:
 class ScmSdist(sdist):
     """Create a source distribution tarball
 
-    :see: `sdist`
+    .. seealso::
 
-    :Ivariables:
-        repo
-            SCM repository object
+       :class:`sdist`
+
+    .. attribute: repo
+
+       SCM repository object
 
     """
     description = gen_desc(__doc__)
@@ -432,7 +432,9 @@ class Snapshot(NoOptsCommand):
 class MyClean(clean):
     """Clean built and temporary files
 
-    :see: `clean`
+    .. seealso::
+
+       :class:`clean`
 
     """
     description = gen_desc(__doc__)
@@ -516,15 +518,19 @@ class MyTest(NoOptsCommand):
 class TestDoc(MyTest):
     """Test documentation's code examples
 
-    :see: `MyTest`
+    .. seealso:
+
+       :class:`MyTest`
 
     """
     description = gen_desc(__doc__)
 
 class TestCode(MyTest):
-    """Test script and module's ``doctest`` examples
+    """Test script and module's :mod:`doctest` examples
 
-    :see: `MyTest`
+    .. seealso::
+
+       :class:`MyTest`
 
     """
     description = gen_desc(__doc__)

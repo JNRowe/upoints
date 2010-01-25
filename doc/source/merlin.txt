@@ -1,8 +1,6 @@
 The MERLIN system
 =================
 
-.. currentmodule:: upoints.point
-
 Introduction
 ------------
 

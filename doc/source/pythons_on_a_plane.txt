@@ -1,11 +1,6 @@
 Pythons on a plane
 ==================
 
-.. module:: upoints.weather_stations
-   :synopsis: Support for NOAA weather station data
-.. moduleauthor:: James Rowe <jnrowe@gmail.com>
-.. versionadded:: 0.2.0
-
 In what is probably the final spin-off from `geolocation and path
 cross`_ we'll be using the :mod:`upoints` modules to work with airport
 locations.  This can be useful if you'd like to calculate how far you've

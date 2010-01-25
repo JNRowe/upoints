@@ -25,39 +25,46 @@ from upoints import (point, utils)
 class Zone(point.Point):
     """Class for representing timezone descriptions from zoneinfo data
 
-    :since: 0.6.0
+    .. versionadded:: 0.6.0
 
-    :Ivariables:
-        latitude
-            Location's latitude
-        longitude
-            Locations's longitude
-        country
-            Location's ISO 3166 country code
-        zone
-            Location's zone name as used in zoneinfo database
-        comments
-            Location comments
+    .. attribute:: latitude
+
+       Location's latitude
+
+    .. attribute:: longitude
+
+       Locations's longitude
+
+    .. attribute:: country
+
+       Location's ISO 3166 country code
+
+    .. attribute:: zone
+
+       Location's zone name as used in zoneinfo database
+
+    .. attribute:: comments
+
+       Location comments
 
     """
 
     __slots__ = ('country', 'zone', 'comments')
 
     def __init__(self, location, country, zone, comments=None):
-        """Initialise a new `Zone` object
+        """Initialise a new ``Zone`` object
 
         >>> Zone("+513030-0000731", 'GB', "Europe/London")
         Zone('+513030-0000730', 'GB', 'Europe/London', None)
 
-        :Parameters:
-            location : `str`
-                Primary location in ISO 6709 format
-            country : `str`
-                Location's ISO 3166 country code
-            zone : `str`
-                Location's zone name as used in zoneinfo databse
-            comments : `list`
-                Location's alternate names
+        :type location: ``str``
+        :param location: Primary location in ISO 6709 format
+        :type country: ``str``
+        :param country: Location's ISO 3166 country code
+        :type zone: ``str``
+        :param zone: Location's zone name as used in zoneinfo databse
+        :type comments: ``list``
+        :param comments: Location's alternate names
 
         """
         latitude, longitude = utils.from_iso6709(location + "/")[:2]
@@ -73,8 +80,8 @@ class Zone(point.Point):
         >>> Zone("+513030-0000731", 'GB', "Europe/London")
         Zone('+513030-0000730', 'GB', 'Europe/London', None)
 
-        :rtype: `str`
-        :return: String to recreate `Zone` object
+        :rtype: ``str``
+        :return: String to recreate ``Zone`` object
 
         """
         location = utils.to_iso6709(self.latitude, self.longitude,
@@ -90,11 +97,10 @@ class Zone(point.Point):
         ...            ["Ponape (Pohnpei)", ]))
         Pacific/Ponape (FM: 06°58'00"N, 158°13'00"W also Ponape (Pohnpei))
 
-        :Parameters:
-            mode : `str`
-                Coordinate formatting system to use
-        :rtype: `str`
-        :return: Human readable string representation of `Zone` object
+        :type mode: ``str``
+        :param mode: Coordinate formatting system to use
+        :rtype: ``str``
+        :return: Human readable string representation of ``Zone`` object
 
         """
         text = ["%s (%s: %s" % (self.zone, self.country,
@@ -106,9 +112,9 @@ class Zone(point.Point):
 
 
 class Zones(point.Points):
-    """Class for representing a group of `Zone` objects
+    """Class for representing a group of :class:`Zone` objects
 
-    :since: 0.6.0
+    .. versionadded:: 0.6.0
 
     """
 
@@ -122,7 +128,7 @@ class Zones(point.Points):
     def import_locations(self, zone_file):
         """Parse zoneinfo zone description data files
 
-        `import_locations()` returns a list of `Zone` objects.
+        ``import_locations()`` returns a list of :class:`Zone` objects.
 
         It expects data files in one of the following formats::
 
@@ -130,11 +136,11 @@ class Zones(point.Points):
             AO	-0848+01314	Africa/Luanda
             AQ	-7750+16636	Antarctica/McMurdo	McMurdo Station, Ross Island
 
-        Files containing the data in this format can be found in ``zone.tab`` file
-        that is normally found in ``/usr/share/zoneinfo`` on UNIX-like systems, or
-        from the `standard distribution site <ftp://elsie.nci.nih.gov/pub/>`__.
+        Files containing the data in this format can be found in ``zone.tab``
+        file that is normally found in :file:``/usr/share/zoneinfo`` on
+        UNIX-like systems, or from the `standard distribution site`_.
 
-        When processed by `import_locations()` a `list` object of the
+        When processed by ``import_locations()`` a ``list`` object of the
         following style will be returned::
 
             [Zone(None, None, "AN", "America/Curacao", None),
@@ -150,12 +156,13 @@ class Zones(point.Points):
         Antarctica/McMurdo (AQ: 77°50'00"S, 166°36'00"E also McMurdo Station,
         Ross Island)
 
-        :Parameters:
-            zone_file : `file`, `list` or `str`
-                zone.tab data to read
-        :rtype: `list`
-        :return: Locations as `Zone` objects
+        :type zone_file: ``file``, ``list`` or ``str``
+        :param zone_file: ``zone.tab`` data to read
+        :rtype: ``list``
+        :return: Locations as :class:`Zone` objects
         :raise FileFormatError: Unknown file format
+
+        .. _standard distribution site: ftp://elsie.nci.nih.gov/pub/
 
         """
         self._zone_file = zone_file
@@ -177,7 +184,7 @@ class Zones(point.Points):
          'AO\\t-084800+0131400\\tAfrica/Luanda',
          'AQ\\t-775000+1663600\\tAntarctica/McMurdo\\tMcMurdo Station, Ross Island']
 
-        :rtype: `list`
+        :rtype: ``list``
         :return: zoneinfo descriptions
 
         """

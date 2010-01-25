@@ -1,9 +1,5 @@
-:mod:`upoints`
-==============
-
-.. module:: upoints
-   :synopsis: Modules for working with points on Earth
-.. moduleauthor:: James Rowe <jnrowe@gmail.com>
+``upoints``
+===========
 
 :mod:`upoints` is a collection of `GPL v3`_ licensed modules for working
 with points on Earth, or other near spherical objects.  It allows you to

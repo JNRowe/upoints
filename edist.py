@@ -35,19 +35,17 @@ For example::
     $ ./edist.py --sunrise --sunset --ascii '52.015;-0.221'
     $ ./edist.py --destination 20@45 -- '-52.015;0.221'
 
-In the second example the locations are separated by '--', which stops
+In the second example the locations are separated by ``--``, which stops
 processing options and allows you to specify locations beginning with
 a hyphen(such as anywhere in the Southern hemisphere).
 
-:note: In most shells the locations must be quoted because of the special
-    nature of the semicolon.
+.. note::
+   In most shells the locations must be quoted because of the special nature of
+   the semicolon.
 
-:version: %s
-:author: `%s <mailto:%s>`__
-:copyright: %s
-:status: WIP
-:license: %s
-""" % ((__version__, ) + parseaddr(__author__) + (__copyright__, __license__))
+.. currentmodule:: edist
+.. moduleauthor:: `%s <mailto:%s>`__
+""" % parseaddr(__author__)
 
 # Pull the first paragraph from the docstring
 USAGE = __doc__[:__doc__.find('\n\n', 100)].splitlines()[2:]
@@ -80,21 +78,24 @@ class LocationsError(ValueError):
         ...
     LocationsError: Location parsing failure in location 4 `52;None'.
 
-    :since: 0.6.0
+    .. versionadded:: 0.6.0
 
-    :Ivariables:
-        function
-            Function where error is raised.
+    .. attribute:: function
+
+       Function where error is raised.
+
+    .. attribute:: data
+
+       Location number and data
 
     """
     def __init__(self, function=None, data=None):
-        """Initialise a new `LocationsError` object
+        """Initialise a new ``LocationsError`` object
 
-        :Parameters:
-            function : `str`
-                Function where error is raised
-            data : `tuple`
-                Location number and data
+        :type function: ``str``
+        :param function: Function where error is raised
+        :type data: ``tuple``
+        :param data: Location number and data
 
         """
         super(LocationsError, self).__init__()
@@ -119,35 +120,40 @@ class LocationsError(ValueError):
 class NumberedPoint(point.Point):
     """Class for representing locations from command line
 
-    :since: 0.6.0
+    .. seealso::
 
-    :Ivariables:
-        name
-            A name for location, or its position on the command line
-        units
-            Unit type to be used for distances
+       :class:`upoints.point.Point`.
+
+    .. versionadded:: 0.6.0
+
+    .. attribute:: name
+
+       A name for location, or its position on the command line
+
+    .. attribute:: units
+
+       Unit type to be used for distances
 
     """
 
     __slots__ = ("name")
 
     def __init__(self, latitude, longitude, name, units="km"):
-        """Initialise a new `NumberedPoint` object
+        """Initialise a new ``NumberedPoint`` object
 
         >>> NumberedPoint(52.015, -0.221, 4)
         NumberedPoint(52.015, -0.221, 4, 'metric')
         >>> NumberedPoint(52.015, -0.221, "Home")
         NumberedPoint(52.015, -0.221, 'Home', 'metric')
 
-        :Parameters:
-            latitude : `float` or coercible to `float`
-                Location's latitude
-            longitude : `float` or coercible to `float`
-                Location's longitude
-            name : `str`
-                Location's name or command line position
-            units : `str`
-                Unit type to be used for distances
+        :type latitude: ``float`` or coercible to ``float``
+        :param latitude: Location's latitude
+        :type longitude: ``float`` or coercible to ``float``
+        :param longitude: Location's longitude
+        :type name: ``str``
+        :param name: Location's name or command line position
+        :type units: ``str``
+        :param units: Unit type to be used for distances
 
         """
         super(NumberedPoint, self).__init__(latitude, longitude, units)
@@ -156,29 +162,28 @@ class NumberedPoint(point.Point):
 
 
 class NumberedPoints(point.Points):
-    """Class for representing a group of `NumberedPoint` objects
+    """Class for representing a group of :class:`NumberedPoint` objects
 
-    :since: 2008-01-08
+    .. versionadded:: 0.6.0
 
     """
 
     def __init__(self, locations=None, format="dd", unistr=True,
                  verbose=True, config_locations=None, units="km"):
-        """Initialise a new `NumberedPoints` object
+        """Initialise a new ``NumberedPoints`` object
 
-        :Parameters:
-            locations : `list` of `str` objects
-                Location identifiers
-            format : `str`
-                Coordinate formatting system to use
-            unistr : `bool`
-                Whether to output Unicode results
-            verbose : `bool`
-                Whether to generate verbose output
-            config_locations : `dict`
-                Locations imported from user's config file
-            units : `str`
-                Unit type to be used for distances
+        :type locations: ``list`` of ``str`` objects
+        :param locations: Location identifiers
+        :type format: ``str``
+        :param format: Coordinate formatting system to use
+        :type unistr: ``bool``
+        :param unistr: Whether to output Unicode results
+        :type verbose: ``bool``
+        :param verbose: Whether to generate verbose output
+        :type config_locations: ``dict``
+        :param config_locations: Locations imported from user's config file
+        :type units: ``str``
+        :param units: Unit type to be used for distances
 
         """
         super(NumberedPoints, self).__init__()
@@ -205,8 +210,8 @@ class NumberedPoints(point.Points):
                         NumberedPoint(0.0, 0.0, 4, 'metric')],
                        'dd', True, True, None, 'km')
 
-        :rtype: `str`
-        :return: String to recreate `NumberedPoints` object
+        :rtype: ``str``
+        :return: String to recreate ``NumberedPoints`` object
 
         """
         return utils.repr_assist(self, {"locations": self[:]})
@@ -222,11 +227,10 @@ class NumberedPoints(point.Points):
                        'dd', True, True, {'Home': (52.015000000000001, -0.221)},
                        'km')
 
-        :Parameters:
-            locations : `list` of `str`
-                Location identifiers
-            config_locations : `dict`
-                Locations imported from user's config file
+        :type locations: ``list`` of ``str``
+        :param locations: Location identifiers
+        :type config_locations: ``dict``
+        :param config_locations: Locations imported from user's config file
 
         """
         for number, location in enumerate(locations):
@@ -263,9 +267,8 @@ class NumberedPoints(point.Points):
         IO92va33
         JO02ae40
 
-        :Parameters:
-            locator : `str`
-                Accuracy of Maidenhead locator output
+        :type locator: ``str``
+        :param locator: Accuracy of Maidenhead locator output
 
         """
         for location in self:
@@ -340,11 +343,10 @@ class NumberedPoints(point.Points):
         >>> locations.bearing("final_bearing", True)
         North-east
 
-        :Parameters:
-            mode : `str`
-                Type of bearing to calculate
-            string : `bool`
-                Use named directions
+        :type mode: ``str``
+        :param mode: Type of bearing to calculate
+        :type string: ``bool``
+        :param string: Use named directions
 
         """
         bearings = getattr(super(NumberedPoints, self), mode)()
@@ -375,9 +377,8 @@ class NumberedPoints(point.Points):
         >>> locations.range(30)
         True
 
-        :Parameters:
-            distance : `float`
-                Distance to test location is within
+        :type distance: ``float``
+        :param distance: Distance to test location is within
 
         """
         test_location = self[0]
@@ -415,11 +416,10 @@ class NumberedPoints(point.Points):
         IO91ot97
         IO91sx14
 
-        :Parameters:
-            options : `tuple`
-                Distance and bearing
-            locator : `str`
-                Accuracy of Maidenhead locator output
+        :type options: ``tuple``
+        :param options: Distance and bearing
+        :type locator: ``str``
+        :param locator: Accuracy of Maidenhead locator output
 
         """
         distance, bearing = options
@@ -447,9 +447,8 @@ class NumberedPoints(point.Points):
         Sunset at ... in location 1
         Sunset at ... in location 2
 
-        :Parameters:
-            mode : `str`
-                Sun event to display
+        :type mode: ``str``
+        :param mode: Sun event to display
 
         """
         mode_str = mode.capitalize()
@@ -468,7 +467,7 @@ class NumberedPoints(point.Points):
     def flight_plan(self, speed, time):
         """Output the flight plan corresponding to the given locations
 
-        TODO: Description
+        .. todo:: Description
 
         >>> locations = NumberedPoints(["52.015;-0.221", "52.168;0.040",
         ...                             "52.249;0.130", "52.494;0.654"])
@@ -492,11 +491,10 @@ class NumberedPoints(point.Points):
         -- OVERALL --,,43.4,2.2,,
         -- DIRECT --,47,43.1,2.2,,
 
-        :Parameters:
-            speed : `float`
-                Speed to use for elapsed time calculation
-            time : `str`
-                Time unit to use for output
+        :type speed : ``float``
+        :param speed: Speed to use for elapsed time calculation
+        :type time: ``str``
+        :param time: Time unit to use for output
 
         """
         if len(self) == 1:
@@ -545,8 +543,8 @@ def process_command_line():
     (['distance', 'bearing'], ['52.015;-0.221', '52.168;0.040'])
     >>> sys.argv[1:] = saved_args
 
-    :rtype: `tuple` of `list`, `dict` and `list`
-    :return: Modes, options, list of locations as `str` objects
+    :rtype: ``tuple`` of ``list``, ``dict`` and ``list``
+    :return: Modes, options, list of locations as ``str`` objects
 
     """
     parser = optparse.OptionParser(usage="%prog [options...] <location>...",
@@ -644,10 +642,9 @@ def process_command_line():
 def read_locations(filename):
     """Pull locations from a user's config file
 
-    :Parameters:
-        filename : `str`
-            Config file to parse
-    :rtype: `dict`
+    :type filename: ``str``
+    :param filename: Config file to parse
+    :rtype: ``dict``
     :return: List of locations from config file
 
     """
@@ -682,11 +679,10 @@ def read_csv(filename):
     >>> names
     ['01:My place', '02:Microsoft Research Cambridge']
 
-    :Parameters:
-        filename : `str`
-            CSV file to parse (STDIN if '-')
-    :rtype: `tuple` of `dict` and `list`
-    :return: list of locations as `str` objects
+    :type filename: ``str``
+    :param filename: CSV file to parse (STDIN if '-')
+    :rtype: ``tuple`` of ``dict`` and ``list``
+    :return: List of locations as ``str`` objects
     """
     if filename == "-":
         filename = sys.stdin
@@ -714,7 +710,7 @@ def main():
     Destination from location 1 is 52°09′59″N, 000°00′48″W
     >>> sys.argv[1:] = saved_args
 
-    :rtype: `int`
+    :rtype: ``int``
     :return: 0 for success, >1 error code
 
     """

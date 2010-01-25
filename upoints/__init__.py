@@ -41,9 +41,9 @@ other such location databases.
 .. _xplanet: http://xplanet.sourceforge.net/
 .. _NOAA: http://weather.noaa.gov/
 
-The `upoints.point` module is the simplest interface available, and is mainly
-useful as a naïve object for simple calculation and subclassing for specific
-usage.  An example of how to use it follows:
+The :mod:`upoints.point` module is the simplest interface available, and is
+mainly useful as a naïve object for simple calculation and subclassing for
+specific usage.  An example of how to use it follows:
 
 >>> Home = point.Point(52.015, -0.221)
 >>> Telford = point.Point(52.6333, -2.5000)
@@ -61,12 +61,8 @@ datetime.time(3, 42)
 >>> Home.sunset(datetime.date(2007, 6, 28))
 datetime.time(20, 24)
 
-:version: %s
-:author: `%s <mailto:%s>`__
-:copyright: %s
-:status: WIP
-:license: %s
-""" % ((__version__, ) + parseaddr(__author__) + (__copyright__, __license__))
+.. moduleauthor:: `%s <mailto:%s>`__
+""" % parseaddr(__author__)
 
 from upoints import (baken, cellid, cities, geonames, gpx, kml, nmea, osm,
                      point, trigpoints, tzdata, utils, weather_stations, xearth)
