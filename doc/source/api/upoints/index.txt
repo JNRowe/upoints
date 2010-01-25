@@ -3,6 +3,7 @@
 
 .. automodule:: upoints
    :members:
+   :show-inheritance:
 
 Contents
 --------
