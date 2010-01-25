@@ -47,7 +47,7 @@ root_dir = os.path.sep.join(os.path.realpath(__file__).split(os.path.sep)[:-3])
 sys.path.insert(0, root_dir)
 from upoints import __version__
 # The short X.Y version.
-version = ".".join(__version__.split(".")[:2])
+version = __version__.rsplit(".", 1)[0]
 # The full version, including alpha/beta/rc tags.
 release = __version__
 
