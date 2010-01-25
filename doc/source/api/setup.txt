@@ -1,0 +1,9 @@
+``setup``
+=========
+
+.. automodule:: setup
+   :members:
+
+..
+    :vim: set ft=rst ts=4 sw=4 et:
+

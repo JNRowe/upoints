@@ -18,9 +18,8 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-__doc__ += """
-.. module:: upoints.weather_stations
-   :synopsis: Support for NOAA weather station data
+__doc__ += """.
+
 .. moduleauthor:: James Rowe <jnrowe@gmail.com>
 .. versionadded:: 0.2.0
 """

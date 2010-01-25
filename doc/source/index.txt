@@ -24,6 +24,8 @@ Contents
    trigpointing_and_point_py
    xearth_and_pathcross
 
+   api/index
+
    todo
 
 Indices and tables

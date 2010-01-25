@@ -1,0 +1,9 @@
+``__pkg_data__``
+================
+
+.. automodule:: __pkg_data__
+   :members:
+
+..
+    :vim: set ft=rst ts=4 sw=4 et:
+
