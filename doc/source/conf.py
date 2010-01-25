@@ -171,3 +171,6 @@ intersphinx_mapping = {'http://docs.python.org/': None}
 todo_include_todos = True
 
 autoclass_content = "both"
+
+modindex_common_prefix = ['upoints.', ]
+
