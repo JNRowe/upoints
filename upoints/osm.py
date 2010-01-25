@@ -122,34 +122,6 @@ class Node(point.Point):
 
     .. versionadded:: 0.9.0
 
-    .. attribute:: ident
-
-       Node's unique indentifier
-
-    .. attribute:: latitude
-
-       Node's latitude
-
-    .. attribute:: longitude
-
-       Node's longitude
-
-    .. attribute:: visible
-
-       Whether the node is visible
-
-    .. attribute:: user
-
-       User who logged the node
-
-    .. attribute:: timestamp
-
-       The date and time a node was logged
-
-    .. attribute:: tags
-
-       Tags associated with the node
-
     """
 
     __slots__ = ('ident', 'visible', 'user', 'timestamp', 'tags')
@@ -302,26 +274,6 @@ class Way(point.Points):
     """Class for representing a way element from OSM data files
 
     .. versionadded:: 0.9.0
-
-    .. attribute:: ident
-
-       Way's unique identifier
-
-    .. attribute:: visible
-
-       Whether the way is visible
-
-    .. attribute:: user
-
-       User who logged the way
-
-    .. attribute:: timestamp
-
-       The date and time a way was logged
-
-    .. attribute:: tags
-
-       Tags associated with the way
 
     """
 

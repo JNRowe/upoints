@@ -101,10 +101,6 @@ class FileFormatError(ValueError):
 
     .. versionadded:: 0.3.0
 
-    .. attribute: site
-
-       Remote site name to display in error message
-
     """
     def __init__(self, site=None):
         """Initialise a new ``FileFormatError`` object
@@ -412,13 +408,7 @@ def angle_to_name(angle, segments=8, abbr=False):
 #{ Date andtime handling utilities
 
 class TzOffset(datetime.tzinfo):
-    """Time offset from UTC
-
-    .. attribute:: __offset
-
-       Number of minutes offset from UTC
-
-    """
+    """Time offset from UTC"""
 
     def __init__(self, tzstring):
         """Initialise a new ``TzOffset`` object

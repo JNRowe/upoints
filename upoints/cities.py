@@ -50,58 +50,6 @@ class City(trigpoints.Trigpoint):
 
     .. versionadded:: 0.2.0
 
-    .. attribute:: identifier
-
-       Numeric identifier for object
-
-    .. attribute:: name
-
-       Place name
-
-    .. attribute:: ptype
-
-       Place type
-
-    .. attribute:: population
-
-       Place population, if known
-
-    .. attribute:: size
-
-       Place Size
-
-    .. attribute:: country
-
-       Country the place is in
-
-    .. attribute:: region
-
-       Region the place is in
-
-    .. attribute:: location
-
-       Body, always Earth in miscfiles 1.4.2
-
-    .. attribute:: latitude
-
-       Place's latitude
-
-    .. attribute:: longitude
-
-       Place's longitude
-
-    .. attribute:: altitude
-
-       Place's elevation
-
-    .. attribute:: date
-
-       Entry date
-
-    .. attribute:: entered
-
-       Entry's author
-
     .. _GNU miscfiles: http://www.gnu.org/directory/miscfiles.html
 
     """

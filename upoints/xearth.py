@@ -31,18 +31,6 @@ class Xearth(point.Point):
 
     .. versionadded:: 0.2.0
 
-    .. attribute:: latitude
-
-       Location's latitude
-
-    .. attribute:: longitude
-
-       Locations's longitude
-
-    .. attribute:: comment
-
-       Location's comment
-
     """
 
     __slots__ = ('comment', )

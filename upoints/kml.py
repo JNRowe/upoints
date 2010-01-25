@@ -91,18 +91,6 @@ class Placemark(trigpoints.Trigpoint):
 
     .. versionadded:: 0.6.0
 
-    .. attribute:: latitude
-
-       Placemark's latitude
-
-    .. attribute:: longitude
-
-       Placemark's longitude
-
-    .. attribute:: altitude
-
-       Placemark's altitude
-
     """
 
     __slots__ = ('description', )

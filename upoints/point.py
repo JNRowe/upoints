@@ -81,30 +81,6 @@ class Point(object):
 
     .. versionadded:: 0.2.0
 
-    .. attribute:: units
-
-       Type of distance units to be used
-
-    .. attribute:: latitude
-
-       Location's latitude
-
-    .. attribute:: longitude
-
-       Locations's longitude
-
-    .. attribute:: rad_latitude
-
-       Location's latitude in radians
-
-    .. attribute:: rad_longitude
-
-       Location's longitude in radians
-
-    .. attribute:: timezone
-
-       Location's offset from UTC in minutes
-
     """
 
     __slots__ = ('units', '_latitude', '_longitude', '_rad_latitude',
@@ -744,34 +720,6 @@ class TimedPoint(Point):
     """Class for representing a location with an associated time
 
     .. versionadded:: 0.12.0
-
-    .. attribute:: units
-
-       Type of distance units to be used
-
-    .. attribute:: latitude
-
-       Location's latitude
-
-    .. attribute:: longitude
-
-       Locations's longitude
-
-    .. attribute:: rad_latitude
-
-       Location's latitude in radians
-
-    .. attribute:: rad_longitude
-
-       Location's longitude in radians
-
-    .. attribute:: timezone
-
-       Location's offset from UTC in minutes
-
-    .. attribute:: time
-
-       Time associated with the location
 
     """
 

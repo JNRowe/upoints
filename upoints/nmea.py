@@ -132,31 +132,7 @@ MODE_INDICATOR = {
 }
 
 class LoranPosition(point.Point):
-    """Class for representing a GPS NMEA-formatted Loran-C position
-
-    .. versionadded:: 0.8.0
-
-    .. attribute:: latitude
-
-       Unit's latitude
-
-    .. attribute:: longitude
-
-       Unit's longitude
-
-    .. attribute:: time
-
-       Time the position was taken
-
-    .. attribute:: status
-
-       GPS status
-
-    .. attribute:: mode
-
-       Type of reading
-
-    """
+    """Class for representing a GPS NMEA-formatted Loran-C position"""
 
     __slots__ = ('time', 'status', 'mode')
 
@@ -266,42 +242,6 @@ class Position(point.Point):
     """Class for representing a GPS NMEA-formatted position
 
     .. versionadded:: 0.8.0
-
-    .. attribute:: time
-
-       Time the position was taken
-
-    .. attribute:: status
-
-       GPS status
-
-    .. attribute:: latitude
-
-       Unit's latitude
-
-    .. attribute:: longitude
-
-       Unit's longitude
-
-    .. attribute:: speed
-
-       Unit's speed in knots
-
-    .. attribute:: track
-
-       Track angle
-
-    .. attribute:: date
-
-       Date when position was taken
-
-    .. attribute:: variation
-
-       Magnetic variation
-
-    .. attribute:: mode
-
-       Type of reading
 
     """
 
@@ -442,54 +382,6 @@ class Fix(point.Point):
     """Class for representing a GPS NMEA-formatted system fix
 
     .. versionadded:: 0.8.0
-
-    .. attribute:: time
-
-       Time the fix was taken
-
-    .. attribute:: latitude
-
-       Fix's latitude
-
-    .. attribute:: longitude
-
-       Fix's longitude
-
-    .. attribute:: quality
-
-       Mode under which the fix was taken
-
-    .. attribute:: satellites
-
-       Number of tracked satellites
-
-    .. attribute:: dilution
-
-       Horizontal dilution at reported position
-
-    .. attribute:: altitude
-
-       Altitude above MSL
-
-    .. attribute:: geoid_delta
-
-       Height of geoid's MSL above WGS84 ellipsoid
-
-    .. attribute:: dgps_delta
-
-       Number of seconds since last DGPS sync
-
-    .. attribute:: dgps_station
-
-       Identifier of the last synced DGPS station
-
-    .. attribute:: mode
-
-       Type of reading
-
-    .. attribute:: fix_quality
-
-       List of fix quality integer to string representations
 
     """
 
@@ -661,18 +553,6 @@ class Waypoint(point.Point):
     """Class for representing a NMEA-formatted waypoint
 
     .. versionadded:: 0.8.0
-
-    .. attribute:: latitude
-
-       Waypoint's latitude
-
-    .. attribute:: longitude
-
-       Waypoint's longitude
-
-    .. attribute:: ame
-
-       Waypoint's name
 
     """
 

@@ -41,26 +41,6 @@ class Trigpoint(point.Point):
 
     .. versionadded:: 0.2.0
 
-    .. attribute:: latitude
-
-       Location's latitude
-
-    .. attribute:: longitude
-
-       Locations's longitude
-
-    .. attribute:: altitude
-
-       Location's altitude
-
-    .. attribute:: name
-
-       Location's name
-
-    .. attribute:: identity
-
-       Database identifier, if known
-
     """
 
     __slots__ = ('altitude', 'name', 'identity')

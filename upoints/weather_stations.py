@@ -34,53 +34,6 @@ class Station(trigpoints.Trigpoint):
 
     .. versionadded:: 0.2.0
 
-    .. attribute:: alt_id
-
-       Alternate location identifier(either ICAO or WMO)
-
-    .. attribute:: name
-       Station's name
-
-    .. attribute:: state
-
-       State name, if station is in the US
-
-    .. attribute:: country
-
-       Country name
-
-    .. attribute:: wmo
-
-       WMO region code
-
-    .. attribute:: latitude
-
-       Station's latitude
-
-    .. attribute:: longitude
-
-       Station's longitude
-
-    .. attribute:: ua_latitude
-
-       Station's upper air latitude
-
-    .. attribute:: ua_longitude
-
-       Station's upper air longitude
-
-    .. attribute:: altitude
-
-       Station's elevation
-
-    .. attribute:: ua_altitude
-
-       Station's upper air elevation
-
-    .. attribute:: rbsn
-
-       True if station belongs to RSBN
-
     """
 
     __slots__ = ('alt_id', 'state', 'country', 'wmo', 'ua_latitude',

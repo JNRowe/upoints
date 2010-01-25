@@ -27,26 +27,6 @@ class Zone(point.Point):
 
     .. versionadded:: 0.6.0
 
-    .. attribute:: latitude
-
-       Location's latitude
-
-    .. attribute:: longitude
-
-       Locations's longitude
-
-    .. attribute:: country
-
-       Location's ISO 3166 country code
-
-    .. attribute:: zone
-
-       Location's zone name as used in zoneinfo database
-
-    .. attribute:: comments
-
-       Location comments
-
     """
 
     __slots__ = ('country', 'zone', 'comments')

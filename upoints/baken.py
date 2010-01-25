@@ -31,50 +31,6 @@ class Baken(point.Point):
 
     .. versionadded:: 0.4.0
 
-    .. attribute:: latitude
-
-       Location's latitude
-
-    .. attribute:: longitude
-
-       Locations's longitude
-
-    .. attribute:: antenna
-
-       Location's antenna type
-
-    .. attribute:: direction
-
-       Antenna's direction
-
-    .. attribute:: frequency
-
-       Transmitter's frequency
-
-    .. attribute:: height
-
-       Antenna's height
-
-    .. attribute:: locator
-
-       Location's locator string
-
-    .. attribute:: mode
-
-       Transmitter's mode
-
-    .. attribute:: operator
-
-       Transmitter's operator
-
-    .. attribute:: power
-
-       Transmitter's power
-
-    .. attribute:: qth
-
-       Location's qth
-
     .. _baken: http://www.qsl.net:80/g4klx/
 
     """

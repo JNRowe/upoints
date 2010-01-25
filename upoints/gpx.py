@@ -92,30 +92,6 @@ class _GpxElem(point.TimedPoint):
 
     .. versionadded:: 0.11.0
 
-    .. attribute:: latitude
-
-       _GpxElem's latitude
-
-    .. attribute:: longitude
-
-       _GpxElem's longitude
-
-    .. attribute:: name
-
-       _GpxElem's name
-
-    .. attribute:: description
-
-       _GpxElem's description
-
-    .. attribute:: elevation
-
-       _GpxElem's elevation
-
-    .. attribute::time
-
-       _GpxElem's time
-
     """
 
     __slots__ = ('name', 'description', 'elevation', 'time', )
@@ -412,42 +388,6 @@ class _GpxMeta(object):
     """Class for representing GPX global metadata
 
     .. versionadded:: 0.12.0
-
-    .. attribute:: name
-
-       Name for the export
-
-    .. attribute:: desc
-
-       Description for the GPX export
-
-    .. attribute:: author
-
-       Author of the entire GPX data
-
-    .. attribute:: copyright
-
-       Copyright data for the exported data
-
-    .. attribute:: link
-
-       Links associated with the data
-
-    .. attribute:: time
-
-       Time the data was generated
-
-    .. attribute:: keywords
-
-       Keywords associated with the data
-
-    .. attribute:: bounds
-
-       Area used in the data
-
-    .. attribute:: extensions
-
-       Any external data associated with the export
 
     """
     __slots__ = ("name", "desc", "author", "copyright", "link", "time",

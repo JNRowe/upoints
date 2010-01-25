@@ -30,50 +30,6 @@ class Cell(point.Point):
 
     .. versionadded:: 0.11.0
 
-    .. attribute:: ident
-
-       OpenCellID database identifier
-
-    .. attribute:: latitude
-
-       Cell's latitude
-
-    .. attribute:: longitude
-
-       Cell's longitude
-
-    .. attribute:: mcc
-
-       Cell's country code
-
-    .. attribute:: mnc
-
-       Cell's network code
-
-    .. attribute:: lac
-
-       Cell's local area code
-
-    .. attribute:: cellid
-
-       Cell's identifier
-
-    .. attribute:: crange
-
-       Cell's range
-
-    .. attribute:: samples
-
-       Number of samples for the cell
-
-    .. attribute:: created
-
-       Date the cell was first entered
-
-    .. attribute:: updated
-
-       Date of the last update
-
     .. _OpenCellID.org: http://opencellid.org/
 
     """
