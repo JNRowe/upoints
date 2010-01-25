@@ -7,17 +7,16 @@ trigpointing.  Now that I've found out what trigpointing is I believe it
 can, and I've added a couple of extra features to make it easier for
 trigpointers to use the :mod:`upoints` module.
 
-Firstly, for those who don't know, trigpointing is the activity of
-tracking down trigpoints and recording them.  I guess you could make
-a parallel to trainspotting, but with a navigational slant.  Some people
-apparently use GPS units to track down the trigpoints, that I'd
-suggest makes it just hiking with trigpoints as waypoints.  And some
-people, like Robert Johnson who mailed me, prefer to do the navigation
-with just an ordnance survey map and a compass which in my eyes makes it
-a little more interesting.  Also, a few sites I've found with Google_
-seem to suggest that many trigpointers like to use triangulation,
-although I suspect some mean trilateration, to travel between trigpoints
-as a navigational challenge.
+Firstly, for those who don't know, trigpointing is the activity of tracking down
+trigpoints and recording them.  I guess you could make a parallel to
+trainspotting, but with a navigational slant.  Some people apparently use
+:term:`GPS` units to track down the trigpoints, that I'd suggest makes it just
+hiking with trigpoints as waypoints.  And some people, like Robert Johnson who
+mailed me, prefer to do the navigation with just an ordnance survey map and
+a compass which in my eyes makes it a little more interesting.  Also, a few
+sites I've found with Google_ seem to suggest that many trigpointers like to use
+triangulation, although I suspect some mean trilateration, to travel between
+trigpoints as a navigational challenge.
 
 .. Note::
    Robert tells me that TrigpointingUK_ is a popular website among

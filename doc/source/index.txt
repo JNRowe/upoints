@@ -26,6 +26,7 @@ Contents
 
    api/index
 
+   glossary
    todo
 
 Indices and tables

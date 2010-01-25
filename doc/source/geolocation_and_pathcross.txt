@@ -165,12 +165,12 @@ a reasonable limit would be, so that should be user defined.
 Conclusions
 -----------
 
-geoip wasn't, and isn't going to become, a viable way to update the path
-cross database and until more mobile devices come equipped with GPS
-automated updates just aren't going to be usable.  If you want to start
-claiming those owed beers the answer is to publish your schedule in
-valid hCalendar, and publish a hCard containing your home location so
-you get the correct range allowance.
+geoip wasn't, and isn't going to become, a viable way to update the path cross
+database and until more mobile devices come equipped with :term:`GPS` automated
+updates just aren't going to be usable.  If you want to start claiming those
+owed beers the answer is to publish your schedule in valid hCalendar, and
+publish a hCard containing your home location so you get the correct range
+allowance.
 
 If you think of any good uses for :mod:`upoints`, drop me a mail.  Cool
 new uses with attached patches are even better!
