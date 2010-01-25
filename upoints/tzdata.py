@@ -116,8 +116,8 @@ class Zones(point.Points):
             AO	-0848+01314	Africa/Luanda
             AQ	-7750+16636	Antarctica/McMurdo	McMurdo Station, Ross Island
 
-        Files containing the data in this format can be found in ``zone.tab``
-        file that is normally found in :file:``/usr/share/zoneinfo`` on
+        Files containing the data in this format can be found in the :file:`zone.tab`
+        file that is normally found in :file:`/usr/share/zoneinfo` on
         UNIX-like systems, or from the `standard distribution site`_.
 
         When processed by ``import_locations()`` a ``list`` object of the
