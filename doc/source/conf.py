@@ -174,3 +174,5 @@ autoclass_content = "both"
 
 modindex_common_prefix = ['upoints.', ]
 
+html_theme_options = {"rightsidebar": True, "stickysidebar": True}
+
