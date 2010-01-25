@@ -32,8 +32,8 @@ the array elements are:
 | Pickmere         | 53°16′44.42″N               | 002°26′41.98″W               |
 +------------------+-----------------------------+------------------------------+
 
-Using :class:`upoints.point.Point` objects
-------------------------------------------
+Using :class:`~upoints.point.Point` objects
+-------------------------------------------
 
 We can create a Python dictionary containing the locations of the array
 very simply:
@@ -75,8 +75,8 @@ these distances for us quite simply:
    elements based at Jodrell Bank(Lovell Telescope and the Mark II) are
    giving a plausible value.
 
-Using :func:`upoints.utils.dump_xearth_markers`
------------------------------------------------
+Using :func:`~upoints.utils.dump_xearth_markers`
+------------------------------------------------
 
 The MERLIN website also contains a `layman description page`_
 that has a nice map showing the locations of the array elements, we can
@@ -135,8 +135,6 @@ the Cambridge site, which lucky for me is only a short trip up the road:
 
 Comparisons with other :class:`~upoints.point.Point`-type objects
 -----------------------------------------------------------------
-
-.. :currentmodule: upoints.weather_stations
 
 In our contrived example above we may wish to travel only if the weather
 will be warm enough that we're unlikely to freeze to death(that risk is
