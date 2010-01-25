@@ -4,5 +4,6 @@
 .. automodule:: upoints.kml
    :members:
    :show-inheritance:
+   :synopsis: Imports KML data files
 
 .. vim: set ft=rst ts=8 sw=4 tw=80 et:

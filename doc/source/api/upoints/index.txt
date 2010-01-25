@@ -4,6 +4,7 @@
 .. automodule:: upoints
    :members:
    :show-inheritance:
+   :synopsis: Modules for working with points on Earth
 
 Contents
 --------
