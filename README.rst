@@ -170,6 +170,4 @@ a minimal testcase, or even better a patch!
 .. _mail: jnrowe@gmail.com
 .. _lxml: http://codespeak.net/lxml/
 
-..
-    :vim: set ft=rst ts=4 sw=4 et:
-
+.. vim: set ft=rst ts=8 sw=4 tw=80 et:

@@ -156,6 +156,4 @@ come up with any clever uses for for the modules in :mod:`upoints`.
 .. _xearth: http://www.cs.colorado.edu/~tuna/xearth/
 .. _path cross: http://esw.w3.org/topic/PathCross
 
-..
-    :vim: set ft=rst ts=4 sw=4 et:
-
+.. vim: set ft=rst ts=8 sw=4 tw=80 et:

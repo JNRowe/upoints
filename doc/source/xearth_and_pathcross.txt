@@ -83,6 +83,4 @@ uses with attached patches are even better!
 .. _xearth: http://www.cs.colorado.edu/~tuna/xearth/
 .. _Mercurial: http://www.selenic.com/mercurial/
 
-..
-    :vim: set ft=rst ts=4 sw=4 et:
-
+.. vim: set ft=rst ts=8 sw=4 tw=80 et:
