@@ -105,7 +105,7 @@ class LocationsError(ValueError):
     def __str__(self):
         """Pretty printed error string
 
-        :rtype: `str`
+        :rtype: ``str``
         :return: Human readable error string
 
         """
