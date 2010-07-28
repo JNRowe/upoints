@@ -154,11 +154,11 @@ class Placemark(trigpoints.Trigpoint):
         >>> ET.tostring(Placemark(52, 0, 4).tokml())
         '<ns0:Placemark xmlns:ns0="http://earth.google.com/kml/2.2"><ns0:Point><ns0:coordinates>0.0,52.0,4</ns0:coordinates></ns0:Point></ns0:Placemark>'
         >>> ET.tostring(Placemark(52, 0, 4, "Cambridge").tokml())
-        '<ns0:Placemark id="Cambridge" xmlns:ns0="http://earth.google.com/kml/2.2"><ns0:name>Cambridge</ns0:name><ns0:Point><ns0:coordinates>0.0,52.0,4</ns0:coordinates></ns0:Point></ns0:Placemark>'
+        '<ns0:Placemark xmlns:ns0="http://earth.google.com/kml/2.2" id="Cambridge"><ns0:name>Cambridge</ns0:name><ns0:Point><ns0:coordinates>0.0,52.0,4</ns0:coordinates></ns0:Point></ns0:Placemark>'
         >>> ET.tostring(Placemark(52, 0, 4).tokml(kml_version="2.0"))
         '<ns0:Placemark xmlns:ns0="http://earth.google.com/kml/2.0"><ns0:Point><ns0:coordinates>0.0,52.0,4</ns0:coordinates></ns0:Point></ns0:Placemark>'
         >>> ET.tostring(Placemark(52, 0, 4, "Cambridge", "in the UK").tokml())
-        '<ns0:Placemark id="Cambridge" xmlns:ns0="http://earth.google.com/kml/2.2"><ns0:name>Cambridge</ns0:name><ns0:description>in the UK</ns0:description><ns0:Point><ns0:coordinates>0.0,52.0,4</ns0:coordinates></ns0:Point></ns0:Placemark>'
+        '<ns0:Placemark xmlns:ns0="http://earth.google.com/kml/2.2" id="Cambridge"><ns0:name>Cambridge</ns0:name><ns0:description>in the UK</ns0:description><ns0:Point><ns0:coordinates>0.0,52.0,4</ns0:coordinates></ns0:Point></ns0:Placemark>'
 
         :type kml_version: ``str``
         :param kml_version: KML version to generate
