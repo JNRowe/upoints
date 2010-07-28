@@ -34,7 +34,7 @@ The modules have been tested on many UNIX-like systems, including Linux,
 Solaris and OS X, but it should work fine on other systems too.  The
 modules and scripts contain a large collection of ``doctest`` tests that
 can be checked with ``./setup test_code``, and the code examples in the
-documentation can be tested with ``./setup test_doc``.
+documentation can be tested with ``./setup test_doc`` [#]_.
 
 .. [#] If you still use Python v2.4 only small changes are required, for
        example to the base class definitions and the unrolling of
