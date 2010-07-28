@@ -216,8 +216,8 @@ class NumberedPoints(point.Points):
         NumberedPoints([NumberedPoint(0.0, 0.0, 1, 'metric'),
                         NumberedPoint(52.015, -0.221, 'Home', 'metric'),
                         NumberedPoint(0.0, 0.0, 3, 'metric')],
-                       'dd', True, True, {'Home': (52.015000000000001, -0.221)},
-                       'km')
+                       'dd', True, True,
+                       {'Home': (52.015000000000001, -0.221)}, 'km')
 
         :type locations: ``list`` of ``str``
         :param locations: Location identifiers
@@ -236,7 +236,7 @@ class NumberedPoints(point.Points):
                         latitude, longitude = data
                     else:
                         latitude, longitude = utils.from_grid_locator(location)
-                    self.append(NumberedPoint(latitude, longitude, number+1,
+                    self.append(NumberedPoint(latitude, longitude, number + 1,
                                               self.units))
                 except ValueError:
                     raise LocationsError(data=(number, location))
@@ -244,17 +244,17 @@ class NumberedPoints(point.Points):
     def display(self, locator):
         """Pretty print locations
 
-        >>> locations = NumberedPoints(["Home", "52.168;0.040"],
-        ...                            config_locations={"Home": (52.015, -0.221)})
-        >>> locations.display(None)
+        >>> locs = NumberedPoints(["Home", "52.168;0.040"],
+        ...                       config_locations={"Home": (52.015, -0.221)})
+        >>> locs.display(None)
         Location Home is N52.015°; W000.221°
         Location 2 is N52.168°; E000.040°
-        >>> locations.format = "locator"
-        >>> locations.display("extsquare")
+        >>> locs.format = "locator"
+        >>> locs.display("extsquare")
         Location Home is IO92va33
         Location 2 is JO02ae40
-        >>> locations.verbose = False
-        >>> locations.display("extsquare")
+        >>> locs.verbose = False
+        >>> locs.display("extsquare")
         IO92va33
         JO02ae40
 
@@ -277,10 +277,12 @@ class NumberedPoints(point.Points):
         >>> locations = NumberedPoints(["52.015;-0.221", "52.168;0.040"])
         >>> locations.distance()
         Location 1 to 2 is 24 kilometres
-        >>> locations = NumberedPoints(["52.015;-0.221", "52.168;0.040"], units="sm")
+        >>> locations = NumberedPoints(["52.015;-0.221", "52.168;0.040"],
+        ...                            units="sm")
         >>> locations.distance()
         Location 1 to 2 is 15 miles
-        >>> locations = NumberedPoints(["52.015;-0.221", "52.168;0.040"], units="nm")
+        >>> locations = NumberedPoints(["52.015;-0.221", "52.168;0.040"],
+        ...                            units="nm")
         >>> locations.verbose = False
         >>> locations.distance()
         13.2989574317
@@ -307,7 +309,7 @@ class NumberedPoints(point.Points):
         if self.verbose:
             for number, distance in enumerate(distances):
                 print(" ".join(leg_msg) % (self[number].name,
-                                           self[number+1].name,
+                                           self[number + 1].name,
                                            distance))
             if len(distances) > 1:
                 print(" ".join(total_msg) % sum(distances))
@@ -348,7 +350,7 @@ class NumberedPoints(point.Points):
             verbose_fmt = "Final bearing from location %s to %s is %s"
         for number, bearing in enumerate(bearings):
             if self.verbose:
-                print(verbose_fmt % (self[number].name, self[number+1].name,
+                print(verbose_fmt % (self[number].name, self[number + 1].name,
                                      bearing))
             else:
                 print(bearing)
@@ -647,6 +649,7 @@ def read_locations(filename):
         locations[name] = (latitude, longitude)
     return locations
 
+
 def read_csv(filename):
     """Pull locations from a user's CSV file
 
@@ -678,6 +681,7 @@ def read_csv(filename):
         locations[name] = (row['latitude'], row['longitude'])
         args.append(name)
     return locations, args
+
 
 def main():
     """Main script handler
@@ -743,4 +747,3 @@ def main():
 
 if __name__ == '__main__':
     sys.exit(main())
-

@@ -248,4 +248,3 @@ class Bakens(point.KeyedPoints):
                 continue
 
             self[name] = Baken(**elements)
-
