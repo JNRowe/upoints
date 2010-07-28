@@ -100,6 +100,11 @@ class Baken(point.Point):
         self.power = power
         self.qth = qth
 
+    @property
+    def locator(self):
+        return self._locator
+
+    @locator.setter
     def _set_locator(self, value):
         """Update the locator, and trigger a latitude and longitude update
 
@@ -116,9 +121,6 @@ class Baken(point.Point):
         """
         self._locator = value
         self._latitude, self._longitude = utils.from_grid_locator(value)
-    locator = property(attrgetter("_locator"),
-                       lambda self, value: self._set_locator(value),
-                       doc="Property to handle locator to latitude/longitude")
 
     def __str__(self, mode="dms"):
         """Pretty printed location string
