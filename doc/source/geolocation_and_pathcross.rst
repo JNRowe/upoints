@@ -153,7 +153,7 @@ a BTS and email-only contact.
 
     >>> import math
     >>> math.sqrt(Home.distance(Seemant))
-    72.511542038315213
+    72.51154203831521
 
 If we forget about the anomalies, and just take the square root as being
 correct I can populate the relationship for Seemant with a 73 kM limit.

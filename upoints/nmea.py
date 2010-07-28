@@ -83,7 +83,7 @@ def parse_latitude(latitude, hemisphere):
     """Parse a NMEA-formatted latitude pair
 
     >>> parse_latitude("5308.6414", "N")
-    53.144023333333337
+    53.14402333333334
 
     :type latitude: ``str``
     :param latitude: Latitude in DDMM.MMMM

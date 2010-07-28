@@ -185,8 +185,8 @@ class Point(object):
 
         >>> Home = Point(52.015, -0.221)
         >>> sorted(Home.__dict__.items())
-        [('_angle', 'degrees'), ('_latitude', 52.015000000000001),
-         ('_longitude', -0.221), ('_rad_latitude', 0.90783301042485054),
+        [('_angle', 'degrees'), ('_latitude', 52.015),
+         ('_longitude', -0.221), ('_rad_latitude', 0.9078330104248505),
          ('_rad_longitude', -0.0038571776469074684), ('timezone', 0),
          ('units', 'metric')]
         >>> class Test(Point):
@@ -197,8 +197,8 @@ class Point(object):
         >>> a = Test(52.015, -0.221)
         >>> sorted(a.__dict__.items())
         [('TEST', 'tested'), ('_angle', 'degrees'),
-         ('_latitude', 52.015000000000001), ('_longitude', -0.221),
-         ('_rad_latitude', 0.90783301042485054),
+         ('_latitude', 52.015), ('_longitude', -0.221),
+         ('_rad_latitude', 0.9078330104248505),
          ('_rad_longitude', -0.0038571776469074684), ('timezone', 0),
          ('units', 'metric')]
 
@@ -887,8 +887,8 @@ class Points(list):
         >>> locations = Points(["52.015;-0.221", "52.168;0.040", "52.855;0.657"],
         ...                    parse=True)
         >>> list(locations.inverse())
-        [(46.242393198024672, 24.629669163425465),
-         (28.416173848453582, 87.002075833085328)]
+        [(46.24239319802467, 24.629669163425465),
+         (28.41617384845358, 87.00207583308533)]
 
         :rtype: ``list`` of 2 ``tuple`` of ``float``
         :return: Bearing and distance between points in series
@@ -1208,8 +1208,8 @@ class KeyedPoints(dict):
         ...                          ("Kenny", "52.855;0.657")],
         ...                         parse=True)
         >>> list(locations.inverse(("home", "Carol", "Kenny")))
-        [(46.242393198024672, 24.629669163425465),
-         (28.416173848453582, 87.002075833085328)]
+        [(46.24239319802467, 24.629669163425465),
+         (28.41617384845358, 87.00207583308533)]
 
         :type order: ``list`` of identifiers
         :param order: Order to process elements in

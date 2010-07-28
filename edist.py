@@ -217,7 +217,7 @@ class NumberedPoints(point.Points):
                         NumberedPoint(52.015, -0.221, 'Home', 'metric'),
                         NumberedPoint(0.0, 0.0, 3, 'metric')],
                        'dd', True, True,
-                       {'Home': (52.015000000000001, -0.221)}, 'km')
+                       {'Home': (52.015, -0.221)}, 'km')
 
         :type locations: ``list`` of ``str``
         :param locations: Location identifiers

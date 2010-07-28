@@ -578,11 +578,11 @@ def from_iso6709(coordinates):
     >>> from_iso6709("+46+002/") # France
     (46.0, 2.0, None)
     >>> from_iso6709("+4852+00220/") # Paris
-    (48.866666666666667, 2.3333333333333335, None)
+    (48.86666666666667, 2.3333333333333335, None)
     >>> from_iso6709("+48.8577+002.295/") # Eiffel Tower
-    (48.857700000000001, 2.2949999999999999, None)
+    (48.8577, 2.295, None)
     >>> from_iso6709("+27.5916+086.5640+8850/") # Mount Everest
-    (27.5916, 86.563999999999993, 8850.0)
+    (27.5916, 86.564, 8850.0)
     >>> from_iso6709("+90+000/") # North Pole
     (90.0, 0.0, None)
     >>> from_iso6709("+00-160/") # Pacific Ocean
@@ -594,21 +594,21 @@ def from_iso6709(coordinates):
     >>> from_iso6709("+40.75-074.00/") # New York City
     (40.75, -74.0, None)
     >>> from_iso6709("+40.6894-074.0447/") # Statue of Liberty
-    (40.689399999999999, -74.044700000000006, None)
+    (40.6894, -74.0447, None)
 
     The following tests are from the `Latitude, Longitude and Altitude format
     for geospatial information`_ page:
 
     >>> from_iso6709("+27.5916+086.5640+8850/") # Mount Everest
-    (27.5916, 86.563999999999993, 8850.0)
+    (27.5916, 86.564, 8850.0)
     >>> from_iso6709("-90+000+2800/") # South Pole
     (-90.0, 0.0, 2800.0)
     >>> from_iso6709("+40.75-074.00/") # New York City
     (40.75, -74.0, None)
     >>> from_iso6709("+352139+1384339+3776/") # Mount Fuji
-    (35.360833333333332, 138.72749999999999, 3776.0)
+    (35.36083333333333, 138.7275, 3776.0)
     >>> from_iso6709("+35.658632+139.745411/") # Tokyo Tower
-    (35.658631999999997, 139.74541099999999, None)
+    (35.658632, 139.745411, None)
     >>> from_iso6709("+35.658632+1/") # Broken
     Traceback (most recent call last):
         ...
@@ -1431,17 +1431,17 @@ def calc_radius(latitude, ellipsoid="WGS84"):
     it has been expanded to cover other ellipsoids.
 
     >>> calc_radius(52.015)
-    6375.1660253118571
+    6375.166025311857
     >>> calc_radius(0)
-    6335.4387009096872
+    6335.438700909687
     >>> calc_radius(90)
-    6399.5939421215426
+    6399.593942121543
     >>> calc_radius(52.015, "FAI sphere")
     6371.0
     >>> calc_radius(0, "Airy (1830)")
-    6335.0221785420217
+    6335.022178542022
     >>> calc_radius(90, "International")
-    6399.9365538714392
+    6399.936553871439
 
     :type latitude: ``float``
     :param latitude: Latitude to calculate earth radius for
