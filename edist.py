@@ -62,6 +62,7 @@ from operator import itemgetter
 
 from upoints import (point, utils)
 
+
 class LocationsError(ValueError):
     """Error object for data parsing error
 
@@ -92,10 +93,8 @@ class LocationsError(ValueError):
     def __init__(self, function=None, data=None):
         """Initialise a new ``LocationsError`` object
 
-        :type function: ``str``
-        :param function: Function where error is raised
-        :type data: ``tuple``
-        :param data: Location number and data
+        :param str function: Function where error is raised
+        :param tuple data: Location number and data
 
         """
         super(LocationsError, self).__init__()
@@ -150,10 +149,8 @@ class NumberedPoint(point.Point):
         :param latitude: Location's latitude
         :type longitude: ``float`` or coercible to ``float``
         :param longitude: Location's longitude
-        :type name: ``str``
-        :param name: Location's name or command line position
-        :type units: ``str``
-        :param units: Unit type to be used for distances
+        :param str name: Location's name or command line position
+        :param str units: Unit type to be used for distances
 
         """
         super(NumberedPoint, self).__init__(latitude, longitude, units)
@@ -174,16 +171,11 @@ class NumberedPoints(point.Points):
 
         :type locations: ``list`` of ``str`` objects
         :param locations: Location identifiers
-        :type format: ``str``
-        :param format: Coordinate formatting system to use
-        :type unistr: ``bool``
-        :param unistr: Whether to output Unicode results
-        :type verbose: ``bool``
-        :param verbose: Whether to generate verbose output
-        :type config_locations: ``dict``
-        :param config_locations: Locations imported from user's config file
-        :type units: ``str``
-        :param units: Unit type to be used for distances
+        :param str format: Coordinate formatting system to use
+        :param bool unistr: Whether to output Unicode results
+        :param bool verbose: Whether to generate verbose output
+        :param dict config_locations: Locations imported from user's config file
+        :param str units: Unit type to be used for distances
 
         """
         super(NumberedPoints, self).__init__()
@@ -229,8 +221,7 @@ class NumberedPoints(point.Points):
 
         :type locations: ``list`` of ``str``
         :param locations: Location identifiers
-        :type config_locations: ``dict``
-        :param config_locations: Locations imported from user's config file
+        :param dict config_locations: Locations imported from user's config file
 
         """
         for number, location in enumerate(locations):
@@ -267,8 +258,7 @@ class NumberedPoints(point.Points):
         IO92va33
         JO02ae40
 
-        :type locator: ``str``
-        :param locator: Accuracy of Maidenhead locator output
+        :param str locator: Accuracy of Maidenhead locator output
 
         """
         for location in self:
@@ -343,10 +333,8 @@ class NumberedPoints(point.Points):
         >>> locations.bearing("final_bearing", True)
         North-east
 
-        :type mode: ``str``
-        :param mode: Type of bearing to calculate
-        :type string: ``bool``
-        :param string: Use named directions
+        :param str mode: Type of bearing to calculate
+        :param bool string: Use named directions
 
         """
         bearings = getattr(super(NumberedPoints, self), mode)()
@@ -377,8 +365,7 @@ class NumberedPoints(point.Points):
         >>> locations.range(30)
         True
 
-        :type distance: ``float``
-        :param distance: Distance to test location is within
+        :param float distance: Distance to test location is within
 
         """
         test_location = self[0]
@@ -416,10 +403,8 @@ class NumberedPoints(point.Points):
         IO91ot97
         IO91sx14
 
-        :type options: ``tuple``
-        :param options: Distance and bearing
-        :type locator: ``str``
-        :param locator: Accuracy of Maidenhead locator output
+        :param tuple options: Distance and bearing
+        :param str locator: Accuracy of Maidenhead locator output
 
         """
         distance, bearing = options
@@ -447,8 +432,7 @@ class NumberedPoints(point.Points):
         Sunset at ... in location 1
         Sunset at ... in location 2
 
-        :type mode: ``str``
-        :param mode: Sun event to display
+        :param str mode: Sun event to display
 
         """
         mode_str = mode.capitalize()
@@ -491,10 +475,8 @@ class NumberedPoints(point.Points):
         -- OVERALL --,,43.4,2.2,,
         -- DIRECT --,47,43.1,2.2,,
 
-        :type speed : ``float``
-        :param speed: Speed to use for elapsed time calculation
-        :type time: ``str``
-        :param time: Time unit to use for output
+        :param float speed: Speed to use for elapsed time calculation
+        :param str time: Time unit to use for output
 
         """
         if len(self) == 1:
@@ -639,11 +621,11 @@ def process_command_line():
 
     return modes, options, args
 
+
 def read_locations(filename):
     """Pull locations from a user's config file
 
-    :type filename: ``str``
-    :param filename: Config file to parse
+    :param str filename: Config file to parse
     :rtype: ``dict``
     :return: List of locations from config file
 
@@ -679,8 +661,7 @@ def read_csv(filename):
     >>> names
     ['01:My place', '02:Microsoft Research Cambridge']
 
-    :type filename: ``str``
-    :param filename: CSV file to parse (STDIN if '-')
+    :param str filename: CSV file to parse (STDIN if '-')
     :rtype: ``tuple`` of ``dict`` and ``list``
     :return: List of locations as ``str`` objects
     """
