@@ -88,7 +88,7 @@ exclude_patterns = []
 #show_authors = False
 
 # The name of the Pygments (syntax highlighting) style to use.
-pygments_style = 'sphinx'
+pygments_style = 'emacs'
 
 # A list of ignored prefixes for module index sorting.
 #modindex_common_prefix = []
@@ -103,7 +103,35 @@ html_theme = 'default'
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
 # documentation.
-#html_theme_options = {"rightsidebar": True, "stickysidebar": True}
+html_theme_options = {
+    "rightsidebar": True,
+    "stickysidebar": True,
+    "externalrefs": True,
+
+    "footerbgcolor": "rgb(37, 64, 92)",
+    "footertextcolor": "rgb(239, 239, 239)",
+
+    "sidebarbgcolor": "rgb(57, 84, 112)",
+    "sidebartextcolor": "rgb(255, 255, 255)",
+    "sidebarlinkcolor": "rgb(239, 239, 239)",
+
+    "relbarbgcolor": "rgb(57, 84, 112)",
+    "relbartextcolor": "rgb(223, 223, 223)",
+    "relbarlinkcolor": "rgb(207, 207, 207)",
+
+    "bgcolor": "rgb(255, 255, 255)",
+    "textcolor": "rgb(0, 0, 0)",
+
+    "headbgcolor": "rgb(77, 104, 132)",
+    "headtextcolor": "rgb(239, 239, 239)",
+    "headlinkcolor": "rgb(207, 207, 207)",
+
+    "codebgcolor": "rgb(248, 248, 248)",
+    "codetextcolor": "rgb(107, 91, 75)",
+
+    "bodyfont": "'Verdana', 'Arial', sans-serif",
+    "headfont": "'Georgia', 'Times New Roman', serif",
+}
 
 # Add any paths that contain custom themes here, relative to this directory.
 #html_theme_path = []
