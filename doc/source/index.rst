@@ -1,3 +1,5 @@
+.. _upoints-label:
+
 ``upoints``
 ===========
 
