@@ -69,7 +69,7 @@ today_fmt = '%Y-%m-%d'
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
-exclude_patterns = []
+exclude_patterns = ['jnrowe']
 
 # The reST default role (used for this markup: `text`) to use for all documents.
 #default_role = None
@@ -96,43 +96,15 @@ pygments_style = 'emacs'
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
-html_theme = 'default'
+html_theme = 'jnrowe'
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
 # documentation.
-html_theme_options = {
-    "rightsidebar": True,
-    "stickysidebar": True,
-    "externalrefs": True,
-
-    "footerbgcolor": "rgb(37, 64, 92)",
-    "footertextcolor": "rgb(239, 239, 239)",
-
-    "sidebarbgcolor": "rgb(57, 84, 112)",
-    "sidebartextcolor": "rgb(255, 255, 255)",
-    "sidebarlinkcolor": "rgb(239, 239, 239)",
-
-    "relbarbgcolor": "rgb(57, 84, 112)",
-    "relbartextcolor": "rgb(223, 223, 223)",
-    "relbarlinkcolor": "rgb(207, 207, 207)",
-
-    "bgcolor": "rgb(255, 255, 255)",
-    "textcolor": "rgb(0, 0, 0)",
-
-    "headbgcolor": "rgb(77, 104, 132)",
-    "headtextcolor": "rgb(239, 239, 239)",
-    "headlinkcolor": "rgb(207, 207, 207)",
-
-    "codebgcolor": "rgb(248, 248, 248)",
-    "codetextcolor": "rgb(107, 91, 75)",
-
-    "bodyfont": "'Verdana', 'Arial', sans-serif",
-    "headfont": "'Georgia', 'Times New Roman', serif",
-}
+html_theme_options = {}
 
 # Add any paths that contain custom themes here, relative to this directory.
-#html_theme_path = []
+html_theme_path = ["."]
 
 # The name for this set of Sphinx documents.  If None, it defaults to
 # "<project> v<release> documentation".

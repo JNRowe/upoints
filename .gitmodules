@@ -1,0 +1,3 @@
+[submodule "doc/source/jnrowe"]
+	path = doc/source/jnrowe
+	url = git://github.com/JNRowe/sphinx-jnrowe.git
