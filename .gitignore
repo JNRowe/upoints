@@ -8,7 +8,6 @@ upoints.egg-info/
 .git_version
 *.py[co]
 *.html
-doc/*.[0-9]
 
 ChangeLog
 MANIFEST
