@@ -30,11 +30,10 @@ that don't have the ``cElementTree`` module.  If neither
 ``cElementTree`` nor ``lxml`` are installed it falls back to
 ``ElementTree``, but will operate much slower on XML data.
 
-The modules have been tested on many UNIX-like systems, including Linux,
-Solaris and OS X, but it should work fine on other systems too.  The
-modules and scripts contain a large collection of ``doctest`` tests that
-can be checked with ``./setup test_code``, and the code examples in the
-documentation can be tested with ``./setup test_doc`` [#]_.
+The modules have been tested on many UNIX-like systems, including Linux and OS
+X, but it should work fine on other systems too.  The modules and scripts
+contain a large collection of ``doctest`` tests that can be checked with
+nose_.
 
 .. [#] If you still use Python v2.5 only small changes are required, for
        example to the property definitions.
@@ -67,9 +66,7 @@ are available for ``xearth.py`` in `xearth and path cross`_.  Some
 background and more examples for ``trigpoints.py`` is online in
 `Trigpointing and point.py`_.  Usage examples for ``cities.py`` is
 available in `Cities and cities.py`_.  And finally, `Pythons on
-a plane`_ contains information on ``weather_stations.py``.  All the
-examples in the ``doc/`` directory can be executed using ``./setup.py
-test_doc``.
+a plane`_ contains information on ``weather_stations.py``.
 
 Thanks
 ------
@@ -161,3 +158,4 @@ a minimal testcase, or even better a patch!
 .. _mail: jnrowe@gmail.com
 .. _lxml: http://codespeak.net/lxml/
 .. _Sphinx: http://sphinx.pocoo.org/
+.. _nose: http://somethingaboutorange.com/mrl/projects/nose/
