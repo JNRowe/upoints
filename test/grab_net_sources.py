@@ -36,7 +36,7 @@ SOURCES = [
     "http://weather.noaa.gov/data/nsd_bbsss.txt",
     "http://weather.noaa.gov/data/nsd_cccc.txt",
     "http://www.haroldstreet.org.uk/waypoints/alltrigs-wgs84.txt",
-    "http://www.opencellid.org/data/cells.txt.gz",
+    "http://myapp.fr/cellsIdData/cells.txt.gz",
     "http://xplanet.sourceforge.net/Extras/earth-markers-schaumann",
 ]
 
