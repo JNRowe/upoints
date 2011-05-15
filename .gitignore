@@ -1,18 +1,21 @@
+.tox/
 build/
 dist/
 doc/.build/
 doc/.static/*_mini.png
 upoints.egg-info/
+test/data
 
+*.html
+*.py[co]
 .coverage
 .git_version
-*.py[co]
-*.html
+.noseids
 
 ChangeLog
 MANIFEST
 
-# test data files
+# test data files that can't be distributed
 test/data/alltrigs-wgs84.txt
 test/data/cells.txt
 test/data/cities.dat
