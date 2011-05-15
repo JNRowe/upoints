@@ -21,7 +21,7 @@ Requirements
 ------------
 
 ``upoints`` does not strictly depend on any modules that aren't included
-in Python_'s standard library, and as such should run with Python 2.5 or
+in Python_'s standard library, and as such should run with Python 2.6 or
 newer [#]_.  If ``upoints`` doesn't work with the version of Python you
 have installed, drop me a mail_ and I'll endeavour to fix it.
 
@@ -36,9 +36,8 @@ modules and scripts contain a large collection of ``doctest`` tests that
 can be checked with ``./setup test_code``, and the code examples in the
 documentation can be tested with ``./setup test_doc`` [#]_.
 
-.. [#] If you still use Python v2.4 only small changes are required, for
-       example to the base class definitions and the unrolling of
-       conditional expressions.
+.. [#] If you still use Python v2.5 only small changes are required, for
+       example to the property definitions.
 
 .. [#] Some tests may fail due to rounding errors depending on the
        system the tests are being run on, but such instances should be
