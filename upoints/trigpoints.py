@@ -165,7 +165,7 @@ class Trigpoints(point.KeyedPoints):
         :return: Named locations with :class:`Trigpoint` objects
         :raise ValueError: Invalid value for ``marker_file``
 
-        .. _alltrigs-wgs84.txt: http://www.haroldstreet.org.uk/trigpoints.php
+        .. _alltrigs-wgs84.txt: http://www.haroldstreet.org.uk/trigpoints/
 
         """
         self._marker_file = marker_file

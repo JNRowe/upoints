@@ -40,6 +40,6 @@ Indices and tables
 * :ref:`search`
 
 .. _GPL v3: http://www.gnu.org/licenses/
-.. _xearth: http://www.cs.colorado.edu/~tuna/xearth/
+.. _xearth: http://hewgill.com/xearth/original/
 .. _xplanet: http://xplanet.sourceforge.net/
 .. _NOAA: http://weather.noaa.gov/

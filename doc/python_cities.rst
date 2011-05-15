@@ -86,7 +86,7 @@ of the parent classes.  For example, you could use the
 Take a look at the Sphinx_ generated documentation that is included in the
 tarball to see what can be done.
 
-.. _GNU miscfiles: http://www.gnu.org/directory/miscfiles.html
+.. _GNU miscfiles: http://directory.fsf.org/project/miscfiles/
 .. _awk: http://www.gnu.org/software/gawk/gawk.html
 .. _geolocation and path cross: geolocation_and_pathcross.html
 .. _Mercurial: http://www.selenic.com/mercurial/

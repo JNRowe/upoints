@@ -202,7 +202,7 @@ of code, so why not?
 
 .. _Seemant's voyage: http://kulleen.org/seemant/blog/2007/apr/16/building-my-django-weblog-part3/
 .. _geoip: http://www.maxmind.com/geoip/api/c.shtml
-.. _pathcross: http://esw.w3.org/topic/PathCross
+.. _pathcross: http://www.w3.org/wiki/PathCross
 .. _city: http://www.maxmind.com/app/city
 .. _Python: http://www.python.org/
 .. _Locate my IP: http://www.maxmind.com/app/locate_my_ip
@@ -211,4 +211,4 @@ of code, so why not?
 .. _hCard: http://microformats.org/wiki/hcard
 .. _Gentoo: http://www.gentoo.org/
 .. _Mercurial: http://www.selenic.com/mercurial
-.. _xearth: http://www.cs.colorado.edu/~tuna/xearth/
+.. _xearth: http://hewgill.com/xearth/original/

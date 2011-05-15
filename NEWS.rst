@@ -61,7 +61,7 @@ SCM only
 
 * Support for reading `NMEA 0183`_ formatted data
 
-.. _NMEA 0183: http://www.nmea.org/pub/0183/
+.. _NMEA 0183: http://en.wikipedia.org/wiki/NMEA_0183
 
 0.6.0 - 2007-12-14
 ------------------
@@ -77,7 +77,7 @@ SCM only
 * Tests no longer span network boundaries, and should run on any default Python
   install once initially seeded
 
-.. _KML: http://code.google.com/apis/kml/documentation/kml_tags_21.html
+.. _KML: http://code.google.com/apis/kml/documentation/kmlreference.html
 
 0.5.0 - 2007-01-01
 ------------------
@@ -106,4 +106,4 @@ SCM only
   objects using ``utils.dump_xearth_markers``
 
 .. _geonames: http://www.geonames.org/
-.. _Xearth: http://www.cs.colorado.edu/~tuna/xearth/
+.. _Xearth: http://hewgill.com/xearth/original/

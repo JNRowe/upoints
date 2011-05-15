@@ -144,7 +144,7 @@ If you find a bug don't hesitate to drop me a mail_ preferably including
 a minimal testcase, or even better a patch!
 
 .. _GPL v3: http://www.gnu.org/licenses/
-.. _xearth: http://www.cs.colorado.edu/~tuna/xearth/
+.. _xearth: http://hewgill.com/xearth/original/
 .. _xplanet: http://xplanet.sourceforge.net/
 .. _Python: http://www.python.org/
 .. _geolocation and path cross: doc/geolocation_and_pathcross.html

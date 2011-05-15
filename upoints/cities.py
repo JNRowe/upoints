@@ -49,7 +49,7 @@ class City(trigpoints.Trigpoint):
 
     .. versionadded:: 0.2.0
 
-    .. _GNU miscfiles: http://www.gnu.org/directory/miscfiles.html
+    .. _GNU miscfiles: http://directory.fsf.org/project/miscfiles/
 
     """
 
@@ -228,7 +228,7 @@ class Cities(point.Points):
         :return: Places as ``City`` objects
         :raise TypeError: Invalid value for data
 
-        .. _GNU miscfiles: http://www.gnu.org/directory/miscfiles.html
+        .. _GNU miscfiles: http://directory.fsf.org/project/miscfiles/
 
         """
         self._data = data

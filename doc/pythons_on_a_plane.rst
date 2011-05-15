@@ -146,6 +146,6 @@ modules in :mod:`upoints`.
 .. _station location page: http://weather.noaa.gov/tg/site.shtml
 .. _mail: jnrowe@gmail.com
 .. _xplanet: http://xplanet.sourceforge.net/
-.. _xearth: http://www.cs.colorado.edu/~tuna/xearth/
-.. _path cross: http://esw.w3.org/topic/PathCross
+.. _xearth: http://hewgill.com/xearth/original/
+.. _path cross: http://www.w3.org/wiki/PathCross
 .. _Sphinx: http://sphinx.pocoo.org/

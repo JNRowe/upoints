@@ -266,7 +266,7 @@ class Placemarks(point.KeyedPoints):
         :return: Named locations with optional comments
 
         .. _KML Reference:
-           http://code.google.com/apis/kml/documentation/kml_tags_21.html
+           http://code.google.com/apis/kml/documentation/kmlreference.html
 
         """
         self._kml_file = kml_file

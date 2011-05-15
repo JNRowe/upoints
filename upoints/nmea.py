@@ -706,7 +706,7 @@ class Locations(point.Points):
         :rtype: ``list``
         :return: Series of locations taken from the data
 
-        .. _the official documentation: http://www.nmea.org/pub/0183/
+        .. _the official documentation: http://en.wikipedia.org/wiki/NMEA_0183
 
         """
         self._gpsdata_file = gpsdata_file

@@ -494,7 +494,7 @@ class Osm(point.Points):
         :return: Nodes and ways from the data
 
         .. _OpenStreetMap 0.5 DTD:
-            http://wiki.openstreetmap.org/index.php/OSM_Protocol_Version_0.5/DTD
+            http://wiki.openstreetmap.org/wiki/OSM_Protocol_Version_0.5/DTD
 
         """
         self._osm_file = osm_file

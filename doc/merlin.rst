@@ -159,10 +159,10 @@ weather data for the station using the ever useful pymetar_ library.
     10°C @ 2007-11-28 19:20:00Z
 
 .. _MERLIN: http://www.merlin.ac.uk/
-.. _location page : http://www.merlin.ac.uk/user_guide/OnlineMUG/newch0-node62.html
+.. _location page: http://www.merlin.ac.uk/user_guide/OnlineMUG-ajh/newch0-node62.html
 .. _layman description page: http://www.merlin.ac.uk/about/layman/merlin.html
 .. _xplanet: http://xplanet.sourceforge.net/
-.. _xearth: http://www.cs.colorado.edu/~tuna/xearth/
+.. _xearth: http://hewgill.com/xearth/original/
 .. _NOAA: http://weather.noaa.gov/
 .. _Python: http://www.python.org/
 .. _pymetar: http://www.schwarzvogel.de/software-pymetar.shtml

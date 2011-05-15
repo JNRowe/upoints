@@ -626,7 +626,6 @@ def from_iso6709(coordinates):
     .. _Latitude, Longitude and Altitude format for geospatial information:
        http://www.w3.org/2005/Incubator/geo/Wiki/LatitudeLongitudeAltitude
     .. _simplified ISO 8601 profile: http://www.w3.org/TR/NOTE-datetime
-       http://www.w3.org/2005/Incubator/geo/Wiki/LatitudeLongitudeAltitude
     .. _wikipedia ISO 6709 page: http://en.wikipedia.org/wiki/ISO_6709
 
     """
@@ -1393,7 +1392,7 @@ def dump_xearth_markers(markers, name="identifier"):
     :return: List of strings representing an Xearth marker file
     :raise ValueError: Unsupported value for ``name``
 
-    .. _xearth: http://www.cs.colorado.edu/~tuna/xearth/
+    .. _xearth: http://hewgill.com/xearth/original/
     .. _xplanet: http://xplanet.sourceforge.net/
 
     """

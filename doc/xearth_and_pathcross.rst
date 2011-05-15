@@ -78,5 +78,5 @@ uses with attached patches are even better!
        repository, so a big thanks to him!
 
 .. _geolocation and path cross: geolocation_and_pathcross.html
-.. _xearth: http://www.cs.colorado.edu/~tuna/xearth/
+.. _xearth: http://hewgill.com/xearth/original/
 .. _Mercurial: http://www.selenic.com/mercurial/

@@ -151,7 +151,7 @@ Written by `James Rowe <mailto:jnrowe@gmail.com>`__
 RESOURCES
 ---------
 
-Home page: http://github.com/JNRowe/upoints
+Home page: https://github.com/JNRowe/upoints
 
 COPYING
 -------

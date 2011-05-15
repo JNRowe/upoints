@@ -38,7 +38,7 @@ class Location(trigpoints.Trigpoint):
 
     :cvar __TIMEZONES: ``dateutil.gettz`` cache to speed up generation
 
-    .. _geonames.org: http://geonames.org/
+    .. _geonames.org: http://www.geonames.org/
 
     """
 
@@ -254,7 +254,7 @@ class Locations(point.Points):
         :return: geonames.org identifiers with :class:`Location` objects
         :raise FileFormatError: Unknown file format
 
-        .. _geonames.org: http://geonames.org/
+        .. _geonames.org: http://www.geonames.org/
         .. _database export page: http://download.geonames.org/export/dump/
 
         """
@@ -336,7 +336,7 @@ class Locations(point.Points):
         :return: geonames.org timezone identifiers with their UTC offsets
         :raise FileFormatError: Unknown file format
 
-        .. _geonames.org: http://geonames.org/
+        .. _geonames.org: http://www.geonames.org/
         .. _database export page: http://download.geonames.org/export/dump/
 
         """

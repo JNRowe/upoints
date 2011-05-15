@@ -176,8 +176,8 @@ the classes and functions in the :mod:`upoints` tarball drop me a mail.
 
 .. _geolocation and path cross: geolocation_and_pathcross.html
 .. _Google: http://www.google.com/
-.. _the online database: http://www.haroldstreet.org.uk/trigpoints.php
-.. _xearth: http://www.cs.colorado.edu/~tuna/xearth/
+.. _the online database: http://www.haroldstreet.org.uk/trigpoints/
+.. _xearth: http://hewgill.com/xearth/original/
 .. _xplanet: http://xplanet.sourceforge.net/
 .. _Mercurial: http://www.selenic.com/mercurial/
 .. _Python: http://www.python.org/

@@ -147,7 +147,7 @@ class Xearths(point.KeyedPoints):
         :rtype: ``dict``
         :return: Named locations with optional comments
 
-        .. _xearth: http://www.cs.colorado.edu/~tuna/xearth/
+        .. _xearth: http://hewgill.com/xearth/original/
         .. _xplanet: http://xplanet.sourceforge.net/
 
         """
