@@ -1,7 +1,6 @@
 build/
 dist/
-doc/html/
-doc/source/.doctrees/
+doc/.build/
 upoints.egg-info/
 
 .coverage
