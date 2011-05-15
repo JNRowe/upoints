@@ -26,6 +26,7 @@ Contents
    trigpointing_and_point_py
    xearth_and_pathcross
 
+   edist.1
    api/index
 
    glossary
