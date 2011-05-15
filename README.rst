@@ -49,9 +49,7 @@ Example
 -------
 
 The simplest way to show how ``upoints`` works is by example, and here
-goes:
-
-.. code-block:: pycon
+goes::
 
     >>> from upoints import point
     >>> Home = point.Point(52.015, -0.221)
