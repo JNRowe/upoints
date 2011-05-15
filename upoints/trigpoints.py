@@ -141,7 +141,7 @@ class Trigpoints(point.KeyedPoints):
              501097: point.Point(52.010585, -0.173443, 97.0, "Bygrave"),
              505392: point.Point(51.910886, -0.186462, 136.0, "Sish Lane")}
 
-        >>> marker_file = open("trigpoints")
+        >>> marker_file = open("test/data/trigpoints")
         >>> markers = Trigpoints(marker_file)
         >>> for key, value in sorted(markers.items()):
         ...     print("%s - %s" % (key, value))
@@ -150,10 +150,10 @@ class Trigpoints(point.KeyedPoints):
         505392 - Sish Lane (51°54'39"N, 000°11'11"W alt 136m)
         >>> marker_file.seek(0)
         >>> markers = Trigpoints(marker_file.readlines())
-        >>> markers = Trigpoints(open("southern_trigpoints"))
+        >>> markers = Trigpoints(open("test/data/southern_trigpoints"))
         >>> print(markers[1])
         FakeLand (48°07'23"S, 000°07'23"W alt 12m)
-        >>> markers = Trigpoints(open("broken_trigpoints"))
+        >>> markers = Trigpoints(open("test/data/broken_trigpoints"))
         >>> for key, value in sorted(markers.items()):
         ...     print("%s - %s" % (key, value))
         500968 - Brown Hill Nm  See The Heights (53°38'23"N, 001°39'34"W)

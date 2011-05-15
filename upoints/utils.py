@@ -93,6 +93,7 @@ class FileFormatError(ValueError):
     Traceback (most recent call last):
         ...
     FileFormatError: Unsupported data format.
+    >>> from dtopt import NORMALIZE_WHITESPACE
     >>> raise FileFormatError("test site")
     Traceback (most recent call last):
         ...
@@ -178,12 +179,12 @@ def repr_assist(obj, remap=None):
 def prepare_read(data, method="readlines", mode="r"):
     """Prepare various input types for parsing
 
-    >>> prepare_read(open("real_file"))
+    >>> prepare_read(open("test/data/real_file"))
     ['This is a test file-type object\\n']
     >>> test_list = ['This is a test list-type object', 'with two elements']
     >>> prepare_read(test_list)
     ['This is a test list-type object', 'with two elements']
-    >>> prepare_read(open("real_file"), "read")
+    >>> prepare_read(open("test/data/real_file"), "read")
     'This is a test file-type object\\n'
 
     :type data: ``file`` like object, ``list``, ``str``
@@ -212,7 +213,7 @@ def prepare_read(data, method="readlines", mode="r"):
 def prepare_csv_read(data, field_names, *args, **kwargs):
     """Prepare various input types for CSV parsing
 
-    >>> list(prepare_csv_read(open("real_file.csv"),
+    >>> list(prepare_csv_read(open("test/data/real_file.csv"),
     ...                       ("type", "bool", "string")))
     [{'bool': 'true', 'type': 'file', 'string': 'test'}]
     >>> test_list = ['James,Rowe', 'ell,caro']
@@ -240,7 +241,7 @@ def prepare_csv_read(data, field_names, *args, **kwargs):
 def prepare_xml_read(data):
     """Prepare various input types for XML parsing
 
-    >>> prepare_xml_read(open("real_file.xml")).find("tag").text
+    >>> prepare_xml_read(open("test/data/real_file.xml")).find("tag").text
     'This is a test file-type object'
     >>> test_list = ['<xml>', '<tag>This is a test list</tag>', '</xml>']
     >>> prepare_xml_read(test_list).find("tag").text

@@ -61,6 +61,7 @@ class City(trigpoints.Trigpoint):
                  entered):
         """Initialise a new ``City`` object
 
+        >>> from dtopt import NORMALIZE_WHITESPACE
         >>> City(498, "Zwickau", "City", "Sachsen", "DE", "Earth", 108835,
         ...      None, 12.5, 50.72, None, (1997, 4, 10, 0, 0, 0, 3, 100, -1),
         ...      "M.Dowling@tu-bs.de")
@@ -207,7 +208,7 @@ class Cities(point.Points):
                   "Earth", -3.867, 5.333, None, (1996, 12, 6, 0, 0, 0, 4,
                   341, -1), "Rob.Hooft@EMBL-Heidelberg.DE")])
 
-        >>> cities_file = open("city_data")
+        >>> cities_file = open("test/data/city_data")
         >>> cities = Cities(cities_file)
         >>> for city in sorted(cities, key=lambda x: x.identifier):
         ...     print("%i - %s (%s;%s)" % (city.identifier, city.name, city.latitude,

@@ -42,6 +42,7 @@ class Station(trigpoints.Trigpoint):
                  ua_latitude, ua_longitude, altitude, ua_altitude, rbsn):
         """Initialise a new ``Station`` object
 
+        >>> from dtopt import NORMALIZE_WHITESPACE
         >>> Station('EGLL', 'London / Heathrow Airport', None,
         ...         'United Kingdom', 6, 51.4833333333, -0.45, None, None, 24,
         ...         0, True)
@@ -182,24 +183,24 @@ class Stations(point.KeyedPoints):
                              5, -9.433333, 147.216667, -9.433333, 147.216667,
                              38, 49, True}
 
-        >>> stations = Stations(open("WMO_stations"))
+        >>> stations = Stations(open("test/data/WMO_stations"))
         >>> for key, value in sorted(stations.items()):
         ...     print("%s - %s" % (key, value))
         00000 - Buckland, Buckland Airport (PABL - N65.982°; W161.152°)
         01001 - Jan Mayen (ENJA - N70.933°; W008.667°)
         01002 - Grahuken (N79.783°; E014.467°)
-        >>> stations = Stations(open("ICAO_stations"), "ICAO")
+        >>> stations = Stations(open("test/data/ICAO_stations"), "ICAO")
         >>> for key, value in sorted(stations.items()):
         ...     print("%s - %s" % (key, value))
         AYMD - Madang (94014 - S05.217°; E145.783°)
         AYMO - Manus Island/Momote (S02.062°; E147.424°)
         AYPY - Moresby (94035 - S09.433°; E147.217°)
-        >>> stations = Stations(open("broken_WMO_stations"))
+        >>> stations = Stations(open("test/data/broken_WMO_stations"))
         >>> for key, value in sorted(stations.items()):
         ...     print("%s - %s" % (key, value))
         71046 - Komakuk Beach, Y. T. (CWKM - N69.617°; W140.200°)
         71899 - Langara, B. C. (CWLA - N54.250°; W133.133°)
-        >>> stations = Stations(open("broken_ICAO_stations"), "ICAO")
+        >>> stations = Stations(open("test/data/broken_ICAO_stations"), "ICAO")
         >>> for key, value in sorted(stations.items()):
         ...     print("%s - %s" % (key, value))
         KBRX - Bordeaux (N41.933°; W104.950°)

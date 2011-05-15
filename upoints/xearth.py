@@ -98,7 +98,7 @@ class Xearths(point.KeyedPoints):
     def __str__(self):
         """``Xearth`` objects rendered for use with Xearth/Xplanet
 
-        >>> markers = Xearths(open("xearth"))
+        >>> markers = Xearths(open("test/data/xearth"))
         >>> print(markers)
         52.015000 -0.221000 "Home"
         52.633300 -2.500000 "Telford"
@@ -136,7 +136,7 @@ class Xearths(point.KeyedPoints):
            points can optionally contain added xplanet specific keywords for
            defining colours and fonts.
 
-        >>> markers = Xearths(open("xearth"))
+        >>> markers = Xearths(open("test/data/xearth"))
         >>> for key, value in sorted(markers.items()):
         ...     print("%s - %s" % (key, value))
         Home - James Rowe's home (N52.015°; W000.221°)

@@ -57,6 +57,7 @@ class Location(trigpoints.Trigpoint):
         """
         Initialise a new ``Location`` object
 
+        >>> from dtopt import NORMALIZE_WHITESPACE
         >>> Location(2636782, "Stotfold", "Stotfold", None, 52.0, -0.2166667,
         ...          "P", "PPL", "GB", None, "F8", None, None, None, 6245,
         ...          None, 77, "Europe/London", datetime.date(2007, 6, 15), 0)
@@ -232,14 +233,15 @@ class Locations(point.Points):
                       None, 0, None, 28, "Europe/London",
                       datetime.date(2006, 8, 21))]
 
-        >>> locations = Locations(open("geonames"))
+        >>> locations = Locations(open("test/data/geonames"))
+        >>> from dtopt import NORMALIZE_WHITESPACE
         >>> for location in sorted(locations, key=attrgetter("geonameid")):
         ...     print("%i - %s" % (location.geonameid, location))
         2633441 - Afon Wyre (River Wayrai, River Wyrai, Wyre - N52.317°;
         W004.167°)
         2633442 - Wyre (Viera - N59.117°; W002.967°)
         2633443 - Wraysbury (Wyrardisbury - N51.450°; W000.550°)
-        >>> broken_locations = Locations(open("broken_geonames"))
+        >>> broken_locations = Locations(open("test/data/broken_geonames"))
         Traceback (most recent call last):
             ...
         FileFormatError: Incorrect data format, if you're using a file
@@ -308,18 +310,20 @@ class Locations(point.Points):
              "Asia/Dubai": (240, 240),
              "Asia/Kabul": (270, 270)}
 
-        >>> timezones = Locations(None, open("geonames_timezones")).timezones
+        >>> timezones = Locations(None, open("test/data/geonames_timezones")).timezones
         >>> for key, value in sorted(timezones.items()):
         ...     print("%s - %s" % (key, value))
         Asia/Dubai - [240, 240]
         Asia/Kabul - [270, 270]
         Europe/Andorra - [60, 120]
         >>> header_skip_check = Locations(None,
-        ...                               open("geonames_timezones_header"))
-        >>> print(header_skip_check) # doctest: +ELLIPSIS
+        ...                               open("test/data/geonames_timezones_header"))
+        >>> from dtopt import ELLIPSIS
+        >>> print(header_skip_check)
         Locations(None, <open file ...>)
+        >>> from dtopt import NORMALIZE_WHITESPACE
         >>> broken_file_check = Locations(None,
-        ...                               open("geonames_timezones_broken"))
+        ...                               open("test/data/geonames_timezones_broken"))
         Traceback (most recent call last):
             ...
         FileFormatError: Incorrect data format, if you're using a file

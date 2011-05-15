@@ -426,10 +426,11 @@ class NumberedPoints(point.Points):
         """Calculate sunrise/sunset times for locations
 
         >>> locations = NumberedPoints(["52.015;-0.221", "52.168;0.040"])
-        >>> locations.sun_events("sunrise") # doctest: +ELLIPSIS
+        >>> from dtopt import ELLIPSIS
+        >>> locations.sun_events("sunrise")
         Sunrise at ... in location 1
         Sunrise at ... in location 2
-        >>> locations.sun_events("sunset") # doctest: +ELLIPSIS
+        >>> locations.sun_events("sunset")
         Sunset at ... in location 1
         Sunset at ... in location 2
 

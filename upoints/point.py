@@ -183,6 +183,7 @@ class Point(object):
         """Emulate ``__dict__`` class attribute for class
 
         >>> Home = Point(52.015, -0.221)
+        >>> from dtopt import NORMALIZE_WHITESPACE
         >>> sorted(Home.__dict__.items())
         [('_angle', 'degrees'), ('_latitude', 52.015),
          ('_longitude', -0.221), ('_rad_latitude', 0.9078330104248505),
@@ -762,6 +763,7 @@ class Points(list):
     def __init__(self, points=None, parse=False, units="metric"):
         """Initialise a new ``Points`` object
 
+        >>> from dtopt import NORMALIZE_WHITESPACE
         >>> Points([Point(52.015, -0.221), Point(53.645, -0.284)])
         Points([Point(52.015, -0.221, 'metric', 'degrees', 0),
                 Point(53.645, -0.284, 'metric', 'degrees', 0)],
@@ -792,6 +794,7 @@ class Points(list):
         """Self-documenting string representation
 
         >>> locations = [Point(0, 0)] * 4
+        >>> from dtopt import NORMALIZE_WHITESPACE
         >>> Points(locations)
         Points([Point(0.0, 0.0, 'metric', 'degrees', 0),
                 Point(0.0, 0.0, 'metric', 'degrees', 0),
@@ -810,6 +813,7 @@ class Points(list):
 
         >>> locations = Points()
         >>> locations.import_locations(["0;0", "52.015 -0.221"])
+        >>> from dtopt import NORMALIZE_WHITESPACE
         >>> locations
         Points([Point(0.0, 0.0, 'metric', 'degrees', 0),
                 Point(52.015, -0.221, 'metric', 'degrees', 0)],
@@ -885,6 +889,7 @@ class Points(list):
 
         >>> locations = Points(["52.015;-0.221", "52.168;0.040", "52.855;0.657"],
         ...                    parse=True)
+        >>> from dtopt import NORMALIZE_WHITESPACE
         >>> list(locations.inverse())
         [(46.24239319802467, 24.629669163425465),
          (28.41617384845358, 87.00207583308533)]
@@ -901,6 +906,7 @@ class Points(list):
 
         >>> locations = Points(["52.015;-0.221", "52.168;0.040", "52.855;0.657"],
         ...                    parse=True)
+        >>> from dtopt import NORMALIZE_WHITESPACE
         >>> list(locations.midpoint())
         [Point(52.0915720432, -0.0907237539143, 'metric', 'degrees', 0),
          Point(52.5119010509, 0.346088603087, 'metric', 'degrees', 0)]
@@ -934,6 +940,7 @@ class Points(list):
 
         >>> locations = Points(["52.015;-0.221", "52.168;0.040", "52.855;0.657"],
         ...                    parse=True)
+        >>> from dtopt import NORMALIZE_WHITESPACE
         >>> list(locations.destination(42, 240))
         [Point(53.5956078217, 2.2141813684, 'metric', 'degrees', 0),
          Point(53.7484691495, 2.48403821375, 'metric', 'degrees', 0),
@@ -991,6 +998,7 @@ class Points(list):
 
         >>> locations = Points(["52.015;-0.221", "52.168;0.040", "52.855;0.657"],
         ...                    parse=True)
+        >>> from dtopt import NORMALIZE_WHITESPACE
         >>> list(locations.sun_events(datetime.date(2008, 5, 2)))
         [(datetime.time(4, 28), datetime.time(19, 28)),
          (datetime.time(4, 26), datetime.time(19, 27)),
@@ -1067,6 +1075,7 @@ class KeyedPoints(dict):
     def __init__(self, points=None, parse=False, units="metric"):
         """Initialise a new ``KeyedPoints`` object
 
+        >>> from dtopt import NORMALIZE_WHITESPACE
         >>> KeyedPoints({"a": Point(52.015, -0.221), "b": Point(53.645, -0.284)})
         KeyedPoints({'a': Point(52.015, -0.221, 'metric', 'degrees', 0),
                      'b': Point(53.645, -0.284, 'metric', 'degrees', 0)},
@@ -1097,6 +1106,7 @@ class KeyedPoints(dict):
         """Self-documenting string representation
 
         >>> locations = {"a": Point(0, 0), "b": Point(0,0)}
+        >>> from dtopt import NORMALIZE_WHITESPACE
         >>> KeyedPoints(locations)
         KeyedPoints({'a': Point(0.0, 0.0, 'metric', 'degrees', 0),
                      'b': Point(0.0, 0.0, 'metric', 'degrees', 0)},
@@ -1114,6 +1124,7 @@ class KeyedPoints(dict):
         >>> locations = KeyedPoints()
         >>> locations.import_locations([("prime", "0;0"),
         ...                             ("home", "52.015 -0.221")])
+        >>> from dtopt import NORMALIZE_WHITESPACE
         >>> locations
         KeyedPoints({'prime': Point(0.0, 0.0, 'metric', 'degrees', 0),
                      'home': Point(52.015, -0.221, 'metric', 'degrees', 0)},
@@ -1206,6 +1217,7 @@ class KeyedPoints(dict):
         ...                          ("Carol", "52.168;0.040"),
         ...                          ("Kenny", "52.855;0.657")],
         ...                         parse=True)
+        >>> from dtopt import NORMALIZE_WHITESPACE
         >>> list(locations.inverse(("home", "Carol", "Kenny")))
         [(46.24239319802467, 24.629669163425465),
          (28.41617384845358, 87.00207583308533)]
@@ -1227,6 +1239,7 @@ class KeyedPoints(dict):
         ...                          ("Carol", "52.168;0.040"),
         ...                          ("Kenny", "52.855;0.657")],
         ...                         parse=True)
+        >>> from dtopt import NORMALIZE_WHITESPACE
         >>> list(locations.midpoint(("home", "Carol", "Kenny")))
         [Point(52.0915720432, -0.0907237539143, 'metric', 'degrees', 0),
          Point(52.5119010509, 0.346088603087, 'metric', 'degrees', 0)]
@@ -1266,6 +1279,7 @@ class KeyedPoints(dict):
         ...                          ("Carol", "52.168;0.040"),
         ...                          ("Kenny", "52.855;0.657")],
         ...                         parse=True)
+        >>> from dtopt import NORMALIZE_WHITESPACE
         >>> list(locations.destination(42, 240))
         [('home', Point(53.5956078217, 2.2141813684, 'metric', 'degrees', 0)),
          ('Carol', Point(53.7484691495, 2.48403821375, 'metric', 'degrees', 0)),
@@ -1288,6 +1302,7 @@ class KeyedPoints(dict):
         ...                          ("Carol", "52.168;0.040"),
         ...                          ("Kenny", "52.855;0.657")],
         ...                         parse=True)
+        >>> from dtopt import NORMALIZE_WHITESPACE
         >>> list(locations.sunrise(datetime.date(2008, 5, 2)))
         [('home', datetime.time(4, 28)), ('Carol', datetime.time(4, 26)),
          ('Kenny', datetime.time(4, 21))]
@@ -1309,6 +1324,7 @@ class KeyedPoints(dict):
         ...                          ("Carol", "52.168;0.040"),
         ...                          ("Kenny", "52.855;0.657")],
         ...                         parse=True)
+        >>> from dtopt import NORMALIZE_WHITESPACE
         >>> list(locations.sunset(datetime.date(2008, 5, 2)))
         [('home', datetime.time(19, 28)), ('Carol', datetime.time(19, 27)),
          ('Kenny', datetime.time(19, 27))]
@@ -1330,6 +1346,7 @@ class KeyedPoints(dict):
         ...                          ("Carol", "52.168;0.040"),
         ...                          ("Kenny", "52.855;0.657")],
         ...                         parse=True)
+        >>> from dtopt import NORMALIZE_WHITESPACE
         >>> list(locations.sun_events(datetime.date(2008, 5, 2)))
         [('home', (datetime.time(4, 28), datetime.time(19, 28))),
          ('Carol', (datetime.time(4, 26), datetime.time(19, 27))),

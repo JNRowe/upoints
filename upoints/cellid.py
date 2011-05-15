@@ -40,6 +40,7 @@ class Cell(point.Point):
                  crange, samples, created, updated):
         """Initialise a new ``Cell`` object
 
+        >>> from dtopt import NORMALIZE_WHITESPACE
         >>> Cell(4, 52.015, -0.221, 21, 46, 40000, 10, 0, 1,
         ...      datetime.datetime(2008, 4, 15, 15, 21, 35),
         ...      datetime.datetime(2008, 4, 15, 15, 28, 49))
@@ -124,7 +125,7 @@ class Cells(point.KeyedPoints):
     def __str__(self):
         """``Cells`` objects rendered as export from OpenCellID.org
 
-        >>> cells = Cells(open("cells"))
+        >>> cells = Cells(open("test/data/cells"))
         >>> print(cells)
         22747,52.0438995361328,-0.2246370017529,234,33,2319,647,0,1,2008-04-05 21:32:40,2008-04-05 21:32:40
         22995,52.3305015563965,-0.2255620062351,234,10,20566,4068,0,1,2008-04-05 21:32:59,2008-04-05 21:32:59
@@ -163,7 +164,7 @@ class Cells(point.KeyedPoints):
                          4068, 0, 1, datetime.datetime(2008, 4, 5, 21, 32, 59),
                          datetime.datetime(2008, 4, 5, 21, 32, 59))}
 
-        >>> cells = Cells(open("cells"))
+        >>> cells = Cells(open("test/data/cells"))
         >>> for value in sorted(cells.values(), key=attrgetter("ident")):
         ...     print(value)
         22747,52.0438995361328,-0.2246370017529,234,33,2319,647,0,1,2008-04-05 21:32:40,2008-04-05 21:32:40

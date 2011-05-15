@@ -45,6 +45,7 @@ class Baken(point.Point):
         >>> Baken(14.460, 20.680, None, None, None, 0.000, None, None, None,
         ...       None, None)
         Baken(14.46, 20.68, None, None, None, 0.0, None, None, None, None, None)
+        >>> from dtopt import NORMALIZE_WHITESPACE
         >>> Baken(None, None, "2 x Turnstile", None, 50.000, 460.000, "IO93BF",
         ...       "A1A", None, 25, None)
         Baken(53.2291666667, -1.875, '2 x Turnstile', None, 50.0, 460.0,
@@ -190,13 +191,13 @@ class Bakens(point.KeyedPoints):
              "GB3BUX": : Baken(None, None, "2 x Turnstile", None, 50.000,
                                460.000, "IO93BF", "A1A", None, 25, None)}
 
-        >>> locations = Bakens(open("baken_data"))
+        >>> locations = Bakens(open("test/data/baken_data"))
         >>> for key, value in sorted(locations.items()):
         ...     print("%s - %s" % (key, value))
         Abeche, Chad - 14°27'36"N, 020°40'48"E
         GB3BUX - IO93BF (53°13'45"N, 001°52'30"W)
         IW1RCT - JN44FH (44°18'45"N, 008°27'29"E)
-        >>> locations = Bakens(open("no_valid_baken"))
+        >>> locations = Bakens(open("test/data/no_valid_baken"))
         >>> len(locations)
         0
 

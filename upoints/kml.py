@@ -245,7 +245,7 @@ class Placemarks(point.KeyedPoints):
             {"Home": Placemark(52.015, -0.221, 60),
              "Cambridge": Placemark(52.167, 0.390, None)}
 
-        >>> locations = Placemarks(open("kml"))
+        >>> locations = Placemarks(open("test/data/kml"))
         >>> for value in sorted(locations.values(),
         ...                     key=lambda x: x.name.lower()):
         ...     print(value)
@@ -312,7 +312,7 @@ class Placemarks(point.KeyedPoints):
         """Generate KML element tree from ``Placemarks``
 
         >>> from sys import stdout
-        >>> locations = Placemarks(open("kml"))
+        >>> locations = Placemarks(open("test/data/kml"))
         >>> xml = locations.export_kml_file()
         >>> xml.write(stdout)
         <ns0:kml xmlns:ns0="http://earth.google.com/kml/2.2"><ns0:Document><ns0:Placemark id="Home"><ns0:name>Home</ns0:name><ns0:Point><ns0:coordinates>-0.221,52.015,60</ns0:coordinates></ns0:Point></ns0:Placemark><ns0:Placemark id="Cambridge"><ns0:name>Cambridge</ns0:name><ns0:Point><ns0:coordinates>0.39,52.167</ns0:coordinates></ns0:Point></ns0:Placemark></ns0:Document></ns0:kml>

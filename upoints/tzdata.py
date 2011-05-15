@@ -127,7 +127,8 @@ class Zones(point.Points):
              Zone(None, None, "AO", "Antartica/McMurdo",
                   ["McMurdo Station", "Ross Island"])]
 
-        >>> zones = Zones(open("timezones"))
+        >>> zones = Zones(open("test/data/timezones"))
+        >>> from dtopt import NORMALIZE_WHITESPACE
         >>> for value in sorted(zones, key=attrgetter("zone")):
         ...     print(value)
         Africa/Luanda (AO: 08°48'00"S, 013°14'00"E)
@@ -157,7 +158,8 @@ class Zones(point.Points):
     def dump_zone_file(self):
         """Generate a zoneinfo compatible zone description table
 
-        >>> zones = Zones(open("timezones"))
+        >>> zones = Zones(open("test/data/timezones"))
+        >>> from dtopt import NORMALIZE_WHITESPACE
         >>> Zones.dump_zone_file(zones)
         ['AN\\t+121100-0690000\\tAmerica/Curacao',
          'AO\\t-084800+0131400\\tAfrica/Luanda',

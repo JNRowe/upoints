@@ -440,7 +440,8 @@ class _GpxMeta(object):
         '<ns0:metadata xmlns:ns0="http://www.topografix.com/GPX/1/1"><ns0:time>2008-06-03T16:12:43+0000</ns0:time><ns0:bounds maxlat="54" maxlon="1" minlat="52" minlon="-2" /></ns0:metadata>'
         >>> meta.bounds = [point.Point(52.015, -0.221),
         ...                point.Point(52.167, 0.390)]
-        >>> ET.tostring(meta.togpx()) # doctest: +ELLIPSIS
+        >>> from dtopt import ELLIPSIS
+        >>> ET.tostring(meta.togpx())
         '<ns0:metadata xmlns:ns0="http://www.topografix.com/GPX/1/1"><ns0:time>...</ns0:time><ns0:bounds maxlat="52.167" maxlon="0.39" minlat="52.015" minlon="-0.221" /></ns0:metadata>'
 
         :type gpx_version: ``str``
@@ -647,7 +648,7 @@ class Waypoints(point.TimedPoints):
             [Waypoint(52.015, -0.221, "Home", "My place"),
              Waypoint(52.167, 0.390, "MSR", "Microsoft Research, Cambridge")]
 
-        >>> waypoints = Waypoints(open("gpx"))
+        >>> waypoints = Waypoints(open("test/data/gpx"))
         >>> for value in sorted(waypoints, key=attrgetter("name")):
         ...     print(value)
         Home (52°00'54"N, 000°13'15"W on 2008-07-26T00:00:00+00:00) [My place]
@@ -706,9 +707,10 @@ class Waypoints(point.TimedPoints):
         """Generate GPX element tree from ``Waypoints`` object
 
         >>> from sys import stdout
-        >>> locations = Waypoints(open("gpx"))
+        >>> locations = Waypoints(open("test/data/gpx"))
         >>> xml = locations.export_gpx_file()
-        >>> xml.write(stdout) # doctest: +ELLIPSIS
+        >>> from dtopt import ELLIPSIS
+        >>> xml.write(stdout)
         <ns0:gpx xmlns:ns0="http://www.topografix.com/GPX/1/1"><ns0:metadata><ns0:time>...</ns0:time><ns0:bounds maxlat="52.167" maxlon="0.39" minlat="52.015" minlon="-0.221" /></ns0:metadata><ns0:wpt lat="52.015" lon="-0.221"><ns0:name>Home</ns0:name><ns0:desc>My place</ns0:desc><ns0:time>2008-07-26T00:00:00+00:00</ns0:time></ns0:wpt><ns0:wpt lat="52.167" lon="0.39"><ns0:name>MSR</ns0:name><ns0:desc>Microsoft Research, Cambridge</ns0:desc><ns0:time>2008-07-27T00:00:00+00:00</ns0:time></ns0:wpt></ns0:gpx>
 
         :type gpx_version: ``str``
@@ -795,7 +797,7 @@ class Trackpoints(_SegWrap):
             [[Trackpoint(52.015, -0.221, "Home", "My place"),
               Trackpoint(52.167, 0.390, "MSR", "Microsoft Research, Cambridge")], ]
 
-        >>> trackpoints = Trackpoints(open("gpx_tracks"))
+        >>> trackpoints = Trackpoints(open("test/data/gpx_tracks"))
         >>> for value in sorted(trackpoints[0],
         ...                     key=attrgetter("name")):
         ...     print(value)
@@ -859,9 +861,10 @@ class Trackpoints(_SegWrap):
         """Generate GPX element tree from ``Trackpoints``
 
         >>> from sys import stdout
-        >>> locations = Trackpoints(open("gpx_tracks"))
+        >>> locations = Trackpoints(open("test/data/gpx_tracks"))
         >>> xml = locations.export_gpx_file()
-        >>> xml.write(stdout) # doctest: +ELLIPSIS
+        >>> from dtopt import ELLIPSIS
+        >>> xml.write(stdout)
         <ns0:gpx xmlns:ns0="http://www.topografix.com/GPX/1/1"><ns0:metadata><ns0:time>...</ns0:time><ns0:bounds maxlat="52.167" maxlon="0.39" minlat="52.015" minlon="-0.221" /></ns0:metadata><ns0:trk><ns0:trkseg><ns0:trkpt lat="52.015" lon="-0.221"><ns0:name>Home</ns0:name><ns0:desc>My place</ns0:desc><ns0:time>2008-07-26T00:00:00+00:00</ns0:time></ns0:trkpt><ns0:trkpt lat="52.167" lon="0.39"><ns0:name>MSR</ns0:name><ns0:desc>Microsoft Research, Cambridge</ns0:desc><ns0:time>2008-07-27T00:00:00+00:00</ns0:time></ns0:trkpt></ns0:trkseg></ns0:trk></ns0:gpx>
 
         :type gpx_version: ``str``
@@ -953,7 +956,7 @@ class Routepoints(_SegWrap):
             [[Routepoint(52.015, -0.221, "Home", "My place"),
               Routepoint(52.167, 0.390, "MSR", "Microsoft Research, Cambridge")], ]
 
-        >>> routepoints = Routepoints(open("gpx_routes"))
+        >>> routepoints = Routepoints(open("test/data/gpx_routes"))
         >>> for value in sorted(routepoints[0],
         ...                     key=attrgetter("name")):
         ...     print(value)
@@ -1017,9 +1020,10 @@ class Routepoints(_SegWrap):
         """Generate GPX element tree from :class:`Routepoints`
 
         >>> from sys import stdout
-        >>> locations = Routepoints(open("gpx_routes"))
+        >>> locations = Routepoints(open("test/data/gpx_routes"))
         >>> xml = locations.export_gpx_file()
-        >>> xml.write(stdout) # doctest: +ELLIPSIS
+        >>> from dtopt import ELLIPSIS
+        >>> xml.write(stdout)
         <ns0:gpx xmlns:ns0="http://www.topografix.com/GPX/1/1"><ns0:metadata><ns0:time>...</ns0:time><ns0:bounds maxlat="52.167" maxlon="0.39" minlat="52.015" minlon="-0.221" /></ns0:metadata><ns0:rte><ns0:rtept lat="52.015" lon="-0.221"><ns0:name>Home</ns0:name><ns0:desc>My place</ns0:desc><ns0:time>2008-07-26T00:00:00+00:00</ns0:time></ns0:rtept><ns0:rtept lat="52.167" lon="0.39"><ns0:name>MSR</ns0:name><ns0:desc>Microsoft Research, Cambridge</ns0:desc><ns0:time>2008-07-27T00:00:00+00:00</ns0:time></ns0:rtept></ns0:rte></ns0:gpx>
 
         :type gpx_version: ``str``

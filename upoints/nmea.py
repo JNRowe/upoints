@@ -138,6 +138,7 @@ class LoranPosition(point.Point):
     def __init__(self, latitude, longitude, time, status, mode=None):
         """Initialise a new ``LoranPosition`` object
 
+        >>> from dtopt import NORMALIZE_WHITESPACE
         >>> LoranPosition(53.1440233333, -3.01542833333,
         ...               datetime.time(14, 20, 58, 14), True, None)
         LoranPosition(53.1440233333, -3.01542833333,
@@ -167,6 +168,7 @@ class LoranPosition(point.Point):
     def __str__(self, talker="GP"):
         """Pretty printed position string
 
+        >>> from dtopt import NORMALIZE_WHITESPACE  # For \r handling
         >>> print(LoranPosition(53.1440233333, -3.01542833333,
         ...                     datetime.time(14, 20, 58), True, None))
         $GPGLL,5308.6414,N,00300.9257,W,142058.00,A*1F
@@ -251,6 +253,7 @@ class Position(point.Point):
                  variation, mode=None):
         """Initialise a new ``Position`` object
 
+        >>> from dtopt import NORMALIZE_WHITESPACE
         >>> Position(datetime.time(14, 20, 58), True, 53.1440233333, -3.01542833333,
         ...          109394.7, 202.9, datetime.date(2007, 11, 19), 5.0)
         Position(datetime.time(14, 20, 58), True, 53.1440233333, -3.01542833333,
@@ -288,6 +291,7 @@ class Position(point.Point):
     def __str__(self):
         """Pretty printed position string
 
+        >>> from dtopt import NORMALIZE_WHITESPACE  # For \r handling
         >>> print(Position(datetime.time(14, 20, 58), True, 53.1440233333,
         ...                -3.01542833333, 109394.7, 202.9,
         ...                datetime.date(2007, 11, 19), 5.0))
@@ -337,6 +341,7 @@ class Position(point.Point):
     def parse_elements(elements):
         """Parse position data elements
 
+        >>> from dtopt import NORMALIZE_WHITESPACE
         >>> Position.parse_elements(["142058", "A", "5308.6414", "N",
         ...                          "00300.9257", "W", "109394.7", "202.9",
         ...                          "191107", "5", "E", "A"])
@@ -404,6 +409,7 @@ class Fix(point.Point):
                  mode=None):
         """Initialise a new ``Fix`` object
 
+        >>> from dtopt import NORMALIZE_WHITESPACE
         >>> Fix(datetime.time(14, 20, 27), 52.1380333333, -2.56861166667, 1, 4,
         ...     5.6, 1052.3, 34.5)
         Fix(datetime.time(14, 20, 27), 52.1380333333, -2.56861166667, 1, 4, 5.6,
@@ -451,6 +457,7 @@ class Fix(point.Point):
     def __str__(self):
         """Pretty printed location string
 
+        >>> from dtopt import NORMALIZE_WHITESPACE  # For \r handling
         >>> print(Fix(datetime.time(14, 20, 27), 52.1380333333, -2.56861166667,
         ...           1, 4, 5.6, 1052.3, 34.5))
         $GPGGA,142027,5208.2820,N,00234.1167,W,1,04,5.6,1052.3,M,34.5,M,,*61
@@ -496,6 +503,7 @@ class Fix(point.Point):
     def parse_elements(elements):
         """Parse essential fix's data elements
 
+        >>> from dtopt import NORMALIZE_WHITESPACE
         >>> Fix.parse_elements(["142058", "5308.6414", "N", "00300.9257", "W", "1",
         ...                     "04", "5.6", "1374.6", "M", "34.5", "M", "", ""])
         Fix(datetime.time(14, 20, 58), 53.1440233333, -3.01542833333, 1, 4, 5.6,
@@ -577,6 +585,7 @@ class Waypoint(point.Point):
     def __str__(self):
         """Pretty printed location string
 
+        >>> from dtopt import NORMALIZE_WHITESPACE  # For \r handling
         >>> print(Waypoint(52.015, -0.221, "Home"))
         $GPWPL,5200.9000,N,00013.2600,W,HOME*5E
 
@@ -634,7 +643,7 @@ class Locations(point.Points):
             self.import_locations(gpsdata_file)
 
     def import_locations(self, gpsdata_file, checksum=True):
-        """Import GPS NMEA-formatted data files
+        r"""Import GPS NMEA-formatted data files
 
         ``import_locations()`` returns a list of `Fix` objects representing the
         fix sentences found in the GPS data.
@@ -673,7 +682,8 @@ class Locations(point.Points):
              Position(datetime.time(14, 21), True, 52.015, -3.27766666667,
                       123142.7, 188.1, datetime.date(2007, 11, 19), 5.0, 'A')]
 
-        >>> locations = Locations(open("gpsdata"))
+        >>> locations = Locations(open("test/data/gpsdata"))
+        >>> from dtopt import NORMALIZE_WHITESPACE  # For \r handling
         >>> for value in locations:
         ...     print(value)
         $GPGGA,142058,5308.6414,N,00300.9257,W,1,04,5.6,1374.6,M,34.5,M,,*6B

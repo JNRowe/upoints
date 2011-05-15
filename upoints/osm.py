@@ -131,6 +131,7 @@ class Node(point.Point):
 
         >>> Node(0, 52, 0)
         Node(0, 52.0, 0.0, False, None, None, None)
+        >>> from dtopt import NORMALIZE_WHITESPACE
         >>> Node(0, 52, 0, True, "jnrowe", utils.Timestamp(2008, 1, 25))
         Node(0, 52.0, 0.0, True, 'jnrowe',
              Timestamp(2008, 1, 25, 0, 0), None)
@@ -166,6 +167,7 @@ class Node(point.Point):
 
         >>> print(Node(0, 52, 0))
         Node 0 (52°00'00"N, 000°00'00"E)
+        >>> from dtopt import NORMALIZE_WHITESPACE
         >>> print(Node(0, 52, 0, True, "jnrowe",
         ...            utils.Timestamp(2008, 1, 25)))
         Node 0 (52°00'00"N, 000°00'00"E) [visible, user: jnrowe, timestamp:
@@ -190,7 +192,7 @@ class Node(point.Point):
         """Generate a OSM node element subtree
 
         >>> ET.tostring(Node(0, 52, 0).toosm())
-         '<node id="0" lat="52.0" lon="0.0" visible="false" />'
+        '<node id="0" lat="52.0" lon="0.0" visible="false" />'
         >>> ET.tostring(Node(0, 52, 0, True, "jnrowe",
         ...                  utils.Timestamp(2008, 1, 25)).toosm())
         '<node id="0" lat="52.0" lon="0.0" timestamp="2008-01-25T00:00:00+00:00" user="jnrowe" visible="true" />'
@@ -311,6 +313,7 @@ class Way(point.Points):
 
         >>> Way(0, (0, 1, 2))
         Way(0, [0, 1, 2], False, None, None, None)
+        >>> from dtopt import NORMALIZE_WHITESPACE
         >>> Way(0, (0, 1, 2), True, "jnrowe", utils.Timestamp(2008, 1, 25))
         Way(0, [0, 1, 2], True, 'jnrowe', Timestamp(2008, 1, 25, 0, 0),
             None)
@@ -477,7 +480,7 @@ class Osm(point.Points):
                     {"ref": "My Way", "highway": "primary"})],
                 generator="upoints/0.9.0")
 
-        >>> region = Osm(open("osm"))
+        >>> region = Osm(open("test/data/osm"))
         >>> for node in sorted([x for x in region if isinstance(x, Node)],
         ...                    key=attrgetter("ident")):
         ...     print(node)
@@ -519,9 +522,10 @@ class Osm(point.Points):
         """Generate OpenStreetMap element tree from `Osm`
 
         >>> from sys import stdout
-        >>> region = Osm(open("osm"))
+        >>> region = Osm(open("test/data/osm"))
         >>> xml = region.export_osm_file()
-        >>> xml.write(stdout) # doctest: +ELLIPSIS
+        >>> from dtopt import ELLIPSIS
+        >>> xml.write(stdout)
         <osm generator="upoints/..." version="0.5"><node id="0" lat="52.015749" lon="-0.221765" timestamp="2008-01-25T12:52:11+00:00" user="jnrowe" visible="true" /><node id="1" lat="52.015761" lon="-0.221767" timestamp="2008-01-25T12:53:00+00:00" visible="true"><tag k="highway" v="crossing" /><tag k="created_by" v="hand" /></node><node id="2" lat="52.015754" lon="-0.221766" timestamp="2008-01-25T12:52:30+00:00" user="jnrowe" visible="true"><tag k="amenity" v="pub" /></node><way id="0" timestamp="2008-01-25T13:00:00+00:00" visible="true"><tag k="ref" v="My Way" /><tag k="highway" v="primary" /><nd ref="0" /><nd ref="1" /><nd ref="2" /></way></osm>
 
         """
