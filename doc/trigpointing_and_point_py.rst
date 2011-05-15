@@ -101,11 +101,11 @@ trigpoints above 1000m above sea level::
     >>> f.write("\n".join(dump_xearth_markers(high_markers)))
     >>> f.close()
 
-.. figure:: http://www.jnrowe.ukfsn.org/graphics/Scotland_trigpoints_mini.png
+.. figure:: .static/Scotland_trigpoints_mini.png
    :alt: xearth showing trigpoints higher than 1000m in Scotland
    :width: 192
    :height: 192
-   :target: http://www.jnrowe.ukfsn.org/graphics/Scotland_trigpoints.png
+   :target: .static/Scotland_trigpoints.png
 
 Now we can use xearth_, or xplanet_, to visualise the trigpoints that
 are higher than 1000m.  If you start xearth with the command
@@ -149,11 +149,11 @@ names as labels.
 The result of how that query could be shown with xplanet can be found to the
 right.
 
-.. figure:: http://www.jnrowe.ukfsn.org/graphics/ranged_trigpoints_mini.png
+.. figure:: .static/ranged_trigpoints_mini.png
    :alt: xplanet showing trigpoints with altitudes in the range 900-910m
    :width: 192
    :height: 192
-   :target: http://www.jnrowe.ukfsn.org/graphics/ranged_trigpoints.png
+   :target: .static/ranged_trigpoints.png
 
 The :class:`~upoints.trigpoints.Trigpoint` class inherits from the
 :class:`~upoints.point.Point` class, and therefore has all the same methods it

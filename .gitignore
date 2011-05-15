@@ -1,6 +1,7 @@
 build/
 dist/
 doc/.build/
+doc/.static/*_mini.png
 upoints.egg-info/
 
 .coverage

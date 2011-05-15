@@ -93,7 +93,7 @@ approximation.  And, of course, the locations could be supplemented
 either by hand, or by using one of the other :mod:`upoints` supported
 databases.
 
-.. image:: http://www.jnrowe.ukfsn.org/graphics/merlin_xearth.png
+.. image:: .static/merlin_xearth.png
    :alt: xearth displaying array locations
    :width: 256
    :height: 256

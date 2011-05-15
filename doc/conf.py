@@ -13,6 +13,25 @@
 
 import sys, os
 
+from glob import glob
+
+import Image
+
+
+for image in glob(".static/*.png"):
+    if "_mini.png" in image:
+        continue
+    thumb_name = image.replace(".png", "_mini.png")
+    if not os.path.exists(thumb_name) or os.path.getmtime(image) > os.path.getmtime(thumb_name):
+        print "Creating thumbnail for", image
+        try:
+            image = Image.open(image)
+            image.thumbnail((256, 192))
+            image.save(thumb_name)
+        except IOError:
+            print "cannot create thumbnail for", image
+            sys.exit(1)
+
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
