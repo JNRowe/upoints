@@ -107,5 +107,3 @@ SCM only
 
 .. _geonames: http://www.geonames.org/
 .. _Xearth: http://www.cs.colorado.edu/~tuna/xearth/
-
-.. vim: set ft=rst ts=8 sw=4 tw=80 et:

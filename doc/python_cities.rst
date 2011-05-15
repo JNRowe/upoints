@@ -94,5 +94,3 @@ tarball to see what can be done.
 .. _Trigpointing and point.py: trigpointing_and_point_py.html
 .. _gentoo: http://www.gentoo.org/
 .. _Sphinx: http://sphinx.pocoo.org/
-
-.. vim: set ft=rst ts=8 sw=4 tw=80 et:

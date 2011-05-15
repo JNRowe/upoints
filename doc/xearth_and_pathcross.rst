@@ -80,5 +80,3 @@ uses with attached patches are even better!
 .. _geolocation and path cross: geolocation_and_pathcross.html
 .. _xearth: http://www.cs.colorado.edu/~tuna/xearth/
 .. _Mercurial: http://www.selenic.com/mercurial/
-
-.. vim: set ft=rst ts=8 sw=4 tw=80 et:

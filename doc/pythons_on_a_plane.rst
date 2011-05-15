@@ -149,5 +149,3 @@ modules in :mod:`upoints`.
 .. _xearth: http://www.cs.colorado.edu/~tuna/xearth/
 .. _path cross: http://esw.w3.org/topic/PathCross
 .. _Sphinx: http://sphinx.pocoo.org/
-
-.. vim: set ft=rst ts=8 sw=4 tw=80 et:

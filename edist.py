@@ -1,6 +1,5 @@
 #! /usr/bin/python -tt
-# vim: set sw=4 sts=4 et tw=80 fileencoding=utf-8:
-#
+# coding=utf-8
 """edist - Simple command line coordinate processing"""
 # Copyright (C) 2007-2010  James Rowe
 # All rights reserved.

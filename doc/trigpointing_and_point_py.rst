@@ -186,5 +186,3 @@ the classes and functions in the :mod:`upoints` tarball drop me a mail.
 .. _Bygrave: http://www.trigpointinguk.com/trigs/trig-details.php?t=1830
 .. _TrigpointingUK: http://www.trigpointinguk.com/
 .. _SPhinx: http://sphinx.pocoo.org/
-
-.. vim: set ft=rst ts=8 sw=4 tw=80 et:

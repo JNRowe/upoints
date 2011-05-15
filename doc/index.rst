@@ -43,5 +43,3 @@ Indices and tables
 .. _xearth: http://www.cs.colorado.edu/~tuna/xearth/
 .. _xplanet: http://xplanet.sourceforge.net/
 .. _NOAA: http://weather.noaa.gov/
-
-.. vim: set ft=rst ts=8 sw=4 tw=80 et:

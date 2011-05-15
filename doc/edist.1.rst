@@ -162,5 +162,3 @@ This program is free software: you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
 Free Software Foundation, either version 3 of the License, or (at your
 option) any later version.
-
-.. vim: set ft=rst ts=8 sw=4 tw=80 et:

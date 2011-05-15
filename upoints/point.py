@@ -1,6 +1,5 @@
 #
-# vim: set sw=4 sts=4 et tw=80 fileencoding=utf-8:
-#
+# coding=utf-8
 """point - Classes for working with locations on Earth"""
 # Copyright (C) 2007-2010  James Rowe
 #
