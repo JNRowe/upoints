@@ -1,0 +1,40 @@
+include COPYING
+include NEWS.rst
+include README.rst
+
+recursive-include doc *.rst
+include doc/conf.py
+recursive-include doc/.static *.png
+include doc/.templates/layout.html
+prune doc/.build
+
+include test/*.py
+
+include test/data/baken_data
+include test/data/broken_geonames
+include test/data/broken_ICAO_stations
+include test/data/broken_trigpoints
+include test/data/broken_WMO_stations
+include test/data/cells
+include test/data/city_data
+include test/data/geonames
+include test/data/geonames_timezones
+include test/data/geonames_timezones_broken
+include test/data/geonames_timezones_header
+include test/data/gpsbabel
+include test/data/gpsdata
+include test/data/gpx
+include test/data/gpx_routes
+include test/data/gpx_tracks
+include test/data/ICAO_stations
+include test/data/kml
+include test/data/no_valid_baken
+include test/data/osm
+include test/data/real_file
+include test/data/real_file.csv
+include test/data/real_file.xml
+include test/data/southern_trigpoints
+include test/data/timezones
+include test/data/trigpoints
+include test/data/WMO_stations
+include test/data/xearth
