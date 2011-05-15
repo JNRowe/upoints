@@ -9,7 +9,6 @@ Contents
 
    edist
    setup
-   pkgdata
 
    upoints/index
 
