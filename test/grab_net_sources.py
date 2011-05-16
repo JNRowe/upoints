@@ -32,31 +32,34 @@ except ImportError:
 
 
 SOURCES = [
-    "http://cvs.savannah.gnu.org/viewvc/*checkout*/miscfiles/cities.dat?root=miscfiles",
-    "http://weather.noaa.gov/data/nsd_bbsss.txt",
-    "http://weather.noaa.gov/data/nsd_cccc.txt",
-    "http://www.haroldstreet.org.uk/waypoints/alltrigs-wgs84.txt",
-    "http://myapp.fr/cellsIdData/cells.txt.gz",
-    "http://xplanet.sourceforge.net/Extras/earth-markers-schaumann",
+    ("http://cvs.savannah.gnu.org/viewvc/*checkout*/miscfiles/cities.dat?root=miscfiles", ),
+    ("http://weather.noaa.gov/data/nsd_bbsss.txt", ),
+    ("http://weather.noaa.gov/data/nsd_cccc.txt", ),
+    ("http://www.haroldstreet.org.uk/download.php?file=waypoints/files/alltrigs-wgs84.txt", "alltrigs-wgs84.txt"),
+    ("http://myapp.fr/cellsIdData/cells.txt.gz", ),
+    ("http://xplanet.sourceforge.net/Extras/earth-markers-schaumann", ),
 ]
 
-def data_file(name):
-    """Generate a local filename for the source
+def data_file(resource):
+    """Generate a local filename for the resource
 
     >>> print data_file(SOURCES[0])
     test/data/cities.dat
     >>> print data_file(SOURCES[4])
     test/data/cells.txt
+    >>> print data_file(SOURCES[3])
+    test/data/alltrigs-wgs84.txt
 
-    :Parameters:
-        name : `str`
-            Source filename
+    :Parameters tuple resource: Source, and optional destination
     :rtype: `str`
     :return: Local filename
 
     """
-    filename = os.path.join(os.path.dirname(__file__), "data",
-                            os.path.basename(urlparse(name).path))
+    if len(resource) == 2:
+        filename = os.path.join(os.path.dirname(__file__), "data", resource[1])
+    else:
+        filename = os.path.join(os.path.dirname(__file__), "data",
+                                os.path.basename(urlparse(resource[0]).path))
     if filename.endswith(".gz"):
         return filename[:-3]
     elif filename.endswith(".bz2"):
@@ -84,28 +87,28 @@ def main(argv=None):
         force = False
     cached = 0
     for resource in SOURCES:
+        path = resource[0]
         filename = data_file(resource)
         if not force and os.path.exists(filename):
-            print("`%s' already downloaded." % resource)
+            print("`%s' already downloaded." % path)
             cached += 1
         else:
-            print("Fetching `%s'..." % resource)
-            if resource.endswith(".gz"):
+            print("Fetching `%s'..." % path)
+            if path.endswith(".gz"):
                 temp = tempfile.mkstemp()[1]
                 try:
-                    urlretrieve(resource, temp)
+                    urlretrieve(path, temp)
                     data = gzip.GzipFile(temp).read()
                 finally:
                     os.unlink(temp)
                 open(filename, "w").write(data)
-            elif resource.endswith(".bz2"):
-                data = bz2.decompress(urlopen(resource).read())
+            elif path.endswith(".bz2"):
+                data = bz2.decompress(urlopen(path).read())
                 open(filename, "w").write(data)
             else:
-                urlretrieve(resource, filename)
+                urlretrieve(path, filename)
     if cached > 1:
         print("You can force download with the `-f' option to this script.")
 
 if __name__ == '__main__':
     main(sys.argv)
-
