@@ -1,8 +1,7 @@
 #! /usr/bin/python -tt
 #
 """grab_net_sources - Fetch sources for tests"""
-# Copyright (C) 2007-2010  James Rowe
-# All rights reserved.
+# Copyright (C) 2006-2011  James Rowe <jnrowe@gmail.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by

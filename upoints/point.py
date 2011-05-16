@@ -1,7 +1,7 @@
 #
 # coding=utf-8
 """point - Classes for working with locations on Earth"""
-# Copyright (C) 2007-2010  James Rowe
+# Copyright (C) 2006-2011  James Rowe <jnrowe@gmail.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
