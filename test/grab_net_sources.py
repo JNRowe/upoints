@@ -70,9 +70,7 @@ def data_file(resource):
 def main(argv=None):
     """Main script handler
 
-    :Parameters:
-        argv : `list`
-            Command line arguments
+    :param list argv: Command line arguments
 
     """
     print("*WARNING* This script will fetch some data files that can not be "
