@@ -15,6 +15,7 @@ import sys, os
 
 from glob import glob
 
+import cloud_sptheme as csp
 import Image
 
 
@@ -115,15 +116,17 @@ pygments_style = 'emacs'
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
-html_theme = 'jnrowe'
+html_theme = 'cloud'
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
 # documentation.
-html_theme_options = {}
+html_theme_options = {
+    "externalrefs": True,
+}
 
 # Add any paths that contain custom themes here, relative to this directory.
-html_theme_path = ["."]
+html_theme_path = [csp.get_theme_dir(), ]
 
 # The name for this set of Sphinx documents.  If None, it defaults to
 # "<project> v<release> documentation".
