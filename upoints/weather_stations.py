@@ -28,6 +28,7 @@ import logging
 
 from upoints import (point, trigpoints, utils)
 
+
 class Station(trigpoints.Trigpoint):
     """Class for representing a weather station from a NOAA data file
 
@@ -138,8 +139,8 @@ class Stations(point.KeyedPoints):
         """Parse NOAA weather station data files
 
         ``import_locations()`` returns a dictionary with keys containing either
-        the WMO or ICAO identifier, and values that are ``Station`` objects that
-        describes the large variety of data exported by NOAA_.
+        the WMO or ICAO identifier, and values that are ``Station`` objects
+        that describes the large variety of data exported by NOAA_.
 
         It expects data files in one of the following formats::
 
@@ -153,9 +154,9 @@ class Stations(point.KeyedPoints):
             AYMO;--;---;Manus Island/Momote;;Papua New Guinea;5;02-03-43S;147-25-27E;;;4;;
             AYPY;94;035;Moresby;;Papua New Guinea;5;09-26S;147-13E;09-26S;147-13E;38;49;P
 
-        Files containing the data in this format can be downloaded from
-        the :abbr:`NOAA (National Oceanographic and Atmospheric
-        Administration)`'s site in their `station location page`_.
+        Files containing the data in this format can be downloaded from the
+        :abbr:`NOAA (National Oceanographic and Atmospheric Administration)`'s
+        site in their `station location page`_.
 
         WMO indexed files downloaded from the :abbr:`NOAA (National
         Oceanographic and Atmospheric Administration)` site when processed by
@@ -280,4 +281,3 @@ class Stations(point.KeyedPoints):
                                        latitude, longitude, ua_latitude,
                                        ua_longitude, altitude, ua_altitude,
                                        rbsn)
-

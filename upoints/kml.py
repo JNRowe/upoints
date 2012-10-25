@@ -31,7 +31,7 @@ except ImportError:
         ET = ElementTree
         logging.info("cElementTree is unavailable. XML processing will be "
                      "much slower with ElementTree")
-if not ET.__name__ == "xml.etree.cElementTree":
+if not ET.__name__ in ("xml.etree.cElementTree", 'lxml.etree'):
     logging.warning("You have the fast cElementTree module available, if you "
                     "choose to use the human readable namespace prefixes in "
                     "XML output element generation will use the much slower "
@@ -50,6 +50,7 @@ KML_VERSIONS = {
 #: Default KML version to output
 # Changing this will cause tests to fail.
 DEF_KML_VERSION = "2.2"
+
 
 def create_elem(tag, attr=None, text=None, kml_version=DEF_KML_VERSION,
                 human_namespace=False):
@@ -84,6 +85,7 @@ def create_elem(tag, attr=None, text=None, kml_version=DEF_KML_VERSION,
     if text:
         element.text = text
     return element
+
 
 class Placemark(trigpoints.Trigpoint):
     """Class for representing a Placemark element from KML data files
@@ -239,8 +241,8 @@ class Placemarks(point.KeyedPoints):
             </kml>
 
         The reader uses the :mod:`ElementTree` module, so should be very fast
-        when importing data.  The above file processed by ``import_locations()``
-        will return the following ``dict`` object::
+        when importing data.  The above file processed by
+        ``import_locations()`` will return the following ``dict`` object::
 
             {"Home": Placemark(52.015, -0.221, 60),
              "Cambridge": Placemark(52.167, 0.390, None)}
@@ -338,4 +340,3 @@ class Placemarks(point.KeyedPoints):
         kml.append(doc)
 
         return ET.ElementTree(kml)
-

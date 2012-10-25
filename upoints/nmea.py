@@ -24,6 +24,7 @@ from operator import xor
 
 from upoints import (point, utils)
 
+
 def calc_checksum(sentence):
     """Calculate a NMEA 0183 checksum for the given sentence
 
@@ -48,6 +49,7 @@ def calc_checksum(sentence):
     sentence = sentence.split("*")[0]
     return reduce(xor, map(ord, sentence))
 
+
 def nmea_latitude(latitude):
     """Generate a NMEA-formatted latitude pair
 
@@ -63,6 +65,7 @@ def nmea_latitude(latitude):
     return ("%02i%07.4f" % utils.to_dms(abs(latitude), "dm"),
             "N" if latitude >= 0 else "S")
 
+
 def nmea_longitude(longitude):
     """Generate a NMEA-formatted longitude pair
 
@@ -77,6 +80,7 @@ def nmea_longitude(longitude):
     """
     return ("%03i%07.4f" % utils.to_dms(abs(longitude), "dm"),
             "E" if longitude >= 0 else "W")
+
 
 def parse_latitude(latitude, hemisphere):
     """Parse a NMEA-formatted latitude pair
@@ -98,6 +102,7 @@ def parse_latitude(latitude, hemisphere):
     elif not hemisphere == "N":
         raise ValueError("Incorrect North/South value `%s'" % hemisphere)
     return latitude
+
 
 def parse_longitude(longitude, hemisphere):
     """Parse a NMEA-formatted longitude pair
@@ -129,6 +134,7 @@ MODE_INDICATOR = {
     "S": "Simulated",
     "N": "Invalid",
 }
+
 
 class LoranPosition(point.Point):
     """Class for representing a GPS NMEA-formatted Loran-C position"""
@@ -188,7 +194,7 @@ class LoranPosition(point.Point):
         data.extend(nmea_latitude(self.latitude))
         data.extend(nmea_longitude(self.longitude))
         data.append("%s.%02i" % (self.time.strftime("%H%M%S"),
-                                self.time.microsecond/1000000))
+                                self.time.microsecond / 1000000))
         data.append("A" if self.status else "V")
         if self.mode:
             data.append(self.mode)
@@ -216,9 +222,11 @@ class LoranPosition(point.Point):
     def parse_elements(elements):
         """Parse position data elements
 
+        >>> from dtopt import NORMALIZE_WHITESPACE
         >>> LoranPosition.parse_elements(["52.32144", "N", "00300.9257", "W",
         ...                               "14205914", "A"])
-        LoranPosition(52.0053573333, -3.01542833333, datetime.time(14, 20, 59, 140000), True, None)
+        LoranPosition(52.0053573333, -3.01542833333,
+                      datetime.time(14, 20, 59, 140000), True, None)
 
         :type elements: ``list``
         :param elements: Data values for fix
@@ -231,7 +239,8 @@ class LoranPosition(point.Point):
         # instantiation
         latitude = parse_latitude(elements[0], elements[1])
         longitude = parse_longitude(elements[2], elements[3])
-        hour, minute, second = [int(elements[4][i:i+2]) for i in range(0, 6, 2)]
+        hour, minute, second = [int(elements[4][i:i + 2])
+                                for i in range(0, 6, 2)]
         usecond = int(elements[4][6:8]) * 10000
         time = datetime.time(hour, minute, second, usecond)
         active = True if elements[5] == "A" else False
@@ -254,10 +263,12 @@ class Position(point.Point):
         """Initialise a new ``Position`` object
 
         >>> from dtopt import NORMALIZE_WHITESPACE
-        >>> Position(datetime.time(14, 20, 58), True, 53.1440233333, -3.01542833333,
-        ...          109394.7, 202.9, datetime.date(2007, 11, 19), 5.0)
-        Position(datetime.time(14, 20, 58), True, 53.1440233333, -3.01542833333,
-                 109394.7, 202.9, datetime.date(2007, 11, 19), 5.0, None)
+        >>> Position(datetime.time(14, 20, 58), True, 53.1440233333,
+        ...          -3.01542833333, 109394.7, 202.9,
+        ...          datetime.date(2007, 11, 19), 5.0)
+        Position(datetime.time(14, 20, 58), True, 53.1440233333,
+                 -3.01542833333, 109394.7, 202.9, datetime.date(2007, 11, 19),
+                 5.0, None)
 
         :type time: :class:`datetime.time`
         :param time: Time the fix was taken
@@ -345,8 +356,9 @@ class Position(point.Point):
         >>> Position.parse_elements(["142058", "A", "5308.6414", "N",
         ...                          "00300.9257", "W", "109394.7", "202.9",
         ...                          "191107", "5", "E", "A"])
-        Position(datetime.time(14, 20, 58), True, 53.1440233333, -3.01542833333,
-                 109394.7, 202.9, datetime.date(2007, 11, 19), 5.0, 'A')
+        Position(datetime.time(14, 20, 58), True, 53.1440233333,
+                 -3.01542833333, 109394.7, 202.9, datetime.date(2007, 11, 19),
+                 5.0, 'A')
         >>> Position.parse_elements(["142100", "A", "5200.9000", "N",
         ...                          "00316.6600", "W", "123142.7", "188.1",
         ...                          "191107", "5", "E", "A"])
@@ -361,7 +373,8 @@ class Position(point.Point):
         """
         if not len(elements) in (11, 12):
             raise ValueError("Invalid RMC position data")
-        time = datetime.time(*[int(elements[0][i:i+2]) for i in range(0, 6, 2)])
+        time = datetime.time(*[int(elements[0][i:i + 2])
+                               for i in range(0, 6, 2)])
         active = True if elements[1] == "A" else False
         # Latitude and longitude are checked for validity during Fix
         # instantiation
@@ -369,8 +382,8 @@ class Position(point.Point):
         longitude = parse_longitude(elements[4], elements[5])
         speed = float(elements[6])
         track = float(elements[7])
-        date = datetime.date(2000+int(elements[8][4:6]), int(elements[8][2:4]),
-                             int(elements[8][:2]))
+        date = datetime.date(2000 + int(elements[8][4:6]),
+                             int(elements[8][2:4]), int(elements[8][:2]))
         variation = float(elements[9]) if not elements[9] == "" else None
         if elements[10] == "W":
             variation = -variation
@@ -404,16 +417,16 @@ class Fix(point.Point):
         "Simulation",
     ]
 
-    def __init__(self, time, latitude, longitude, quality, satellites, dilution,
-                 altitude, geoid_delta, dgps_delta=None, dgps_station=None,
-                 mode=None):
+    def __init__(self, time, latitude, longitude, quality, satellites,
+                 dilution, altitude, geoid_delta, dgps_delta=None,
+                 dgps_station=None, mode=None):
         """Initialise a new ``Fix`` object
 
         >>> from dtopt import NORMALIZE_WHITESPACE
         >>> Fix(datetime.time(14, 20, 27), 52.1380333333, -2.56861166667, 1, 4,
         ...     5.6, 1052.3, 34.5)
-        Fix(datetime.time(14, 20, 27), 52.1380333333, -2.56861166667, 1, 4, 5.6,
-            1052.3, 34.5, None, None, None)
+        Fix(datetime.time(14, 20, 27), 52.1380333333, -2.56861166667, 1, 4,
+            5.6, 1052.3, 34.5, None, None, None)
         >>> Fix(datetime.time(14, 20, 27), 52.1380333333, -2.56861166667, 1, 4,
         ...     5.6, 1052.3, 34.5, 12, 4, None)
         Fix(datetime.time(14, 20, 27), 52.1380333333, -2.56861166667, 1, 4,
@@ -504,14 +517,16 @@ class Fix(point.Point):
         """Parse essential fix's data elements
 
         >>> from dtopt import NORMALIZE_WHITESPACE
-        >>> Fix.parse_elements(["142058", "5308.6414", "N", "00300.9257", "W", "1",
-        ...                     "04", "5.6", "1374.6", "M", "34.5", "M", "", ""])
-        Fix(datetime.time(14, 20, 58), 53.1440233333, -3.01542833333, 1, 4, 5.6,
-            1374.6, 34.5, None, None, None)
-        >>> Fix.parse_elements(["142100", "5200.9000", "N", "00316.6600", "W", "1",
-        ...                     "04", "5.6", "1000.0", "M", "34.5", "M", "", ""])
-        Fix(datetime.time(14, 21), 52.015, -3.27766666667, 1, 4, 5.6, 1000.0, 34.5,
-            None, None, None)
+        >>> Fix.parse_elements(["142058", "5308.6414", "N", "00300.9257", "W",
+        ...                     "1", "04", "5.6", "1374.6", "M", "34.5", "M",
+        ...                     "", ""])
+        Fix(datetime.time(14, 20, 58), 53.1440233333, -3.01542833333, 1, 4,
+            5.6, 1374.6, 34.5, None, None, None)
+        >>> Fix.parse_elements(["142100", "5200.9000", "N", "00316.6600", "W",
+        ...                     "1", "04", "5.6", "1000.0", "M", "34.5", "M",
+        ...                     "", ""])
+        Fix(datetime.time(14, 21), 52.015, -3.27766666667, 1, 4, 5.6, 1000.0,
+            34.5, None, None, None)
 
         :type elements: ``list``
                 Data values for fix
@@ -521,7 +536,8 @@ class Fix(point.Point):
         """
         if not len(elements) in (14, 15):
             raise ValueError("Invalid GGA fix data")
-        time = datetime.time(*[int(elements[0][i:i+2]) for i in range(0, 6, 2)])
+        time = datetime.time(*[int(elements[0][i:i + 2])
+                               for i in range(0, 6, 2)])
         # Latitude and longitude are checked for validity during Fix
         # instantiation
         latitude = parse_latitude(elements[1], elements[2])
@@ -648,8 +664,8 @@ class Locations(point.Points):
         ``import_locations()`` returns a list of `Fix` objects representing the
         fix sentences found in the GPS data.
 
-        It expects data files in NMEA 0183 format, as specified in `the official
-        documentation`_, which is ASCII text such as::
+        It expects data files in NMEA 0183 format, as specified in `the
+        official documentation`_, which is ASCII text such as::
 
             $GPGSV,6,6,21,32,65,170,35*48
             $GPGGA,142058,5308.6414,N,00300.9257,W,1,04,5.6,1374.6,M,34.5,M,,*6B
@@ -671,8 +687,8 @@ class Locations(point.Points):
         The above file when processed by ``import_locations()`` will return the
         following ``list`` object::
 
-            [Fix(datetime.time(14, 20, 58), 53.1440233333, -3.01542833333, 1, 4,
-                 5.6, 1374.6, 34.5, None, None),
+            [Fix(datetime.time(14, 20, 58), 53.1440233333, -3.01542833333, 1,
+                 4, 5.6, 1374.6, 34.5, None, None),
              Position(datetime.time(14, 20, 58), True, 53.1440233333,
                       -3.01542833333, 109394.7, 202.9,
                       datetime.date(2007, 11, 19), 5.0, 'A'),
@@ -694,8 +710,8 @@ class Locations(point.Points):
 
         .. note::
            The standard is quite specific in that sentences *must* be less than
-           82 bytes, while it would be nice to add yet another validity check it
-           isn't all that uncommon for devices to break this requirement in
+           82 bytes, while it would be nice to add yet another validity check
+           it isn't all that uncommon for devices to break this requirement in
            their "extensions" to the standard.
         .. todo:: Add optional check for message length, on by default
 
@@ -740,4 +756,3 @@ class Locations(point.Points):
             elements = values.split(",")
             parser = getattr(parsers[elements[0]], "parse_elements")
             self.append(parser(elements[1:]))
-

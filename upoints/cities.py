@@ -44,6 +44,7 @@ Location    : %s
 Date        : %s
 Entered-By  : %s"""
 
+
 class City(trigpoints.Trigpoint):
     """Class for representing an entry from the `GNU miscfiles`_ cities data file
 
@@ -167,8 +168,8 @@ class Cities(point.Points):
 
         ``import_locations()`` returns a list containing :class:`City` objects.
 
-        It expects data files in the same format that `GNU miscfiles`_ provides,
-        that is::
+        It expects data files in the same format that `GNU miscfiles`_
+        provides, that is::
 
             ID          : 1
             Type        : City
@@ -211,8 +212,8 @@ class Cities(point.Points):
         >>> cities_file = open("test/data/city_data")
         >>> cities = Cities(cities_file)
         >>> for city in sorted(cities, key=lambda x: x.identifier):
-        ...     print("%i - %s (%s;%s)" % (city.identifier, city.name, city.latitude,
-        ...                                city.longitude))
+        ...     print("%i - %s (%s;%s)" % (city.identifier, city.name,
+        ...                                city.latitude, city.longitude))
         126 - London (51.5;-0.083)
         127 - Luxembourg (49.617;6.117)
         128 - Lyon (45.767;4.867)
@@ -263,4 +264,3 @@ class Cities(point.Points):
                 entries[i] = float(entries[i]) if entries[i] else None
             entries["date"] = time.strptime(entries["date"], "%Y%m%d")
             self.append(City(**entries))
-

@@ -21,9 +21,8 @@ import ConfigParser
 import logging
 import re
 
-from operator import attrgetter
-
 from upoints import (point, utils)
+
 
 class Baken(point.Point):
     """Class for representing location from baken_ data files
@@ -42,9 +41,11 @@ class Baken(point.Point):
                  operator=None, power=None, qth=None):
         """Initialise a new ``Baken`` object
 
+        >>> from dtopt import NORMALIZE_WHITESPACE
         >>> Baken(14.460, 20.680, None, None, None, 0.000, None, None, None,
         ...       None, None)
-        Baken(14.46, 20.68, None, None, None, 0.0, None, None, None, None, None)
+        Baken(14.46, 20.68, None, None, None, 0.0, None, None, None, None,
+              None)
         >>> from dtopt import NORMALIZE_WHITESPACE
         >>> Baken(None, None, "2 x Turnstile", None, 50.000, 460.000, "IO93BF",
         ...       "A1A", None, 25, None)
@@ -239,8 +240,8 @@ class Bakens(point.KeyedPoints):
                         except ValueError:
                             logging.debug("Multiple frequency workaround for "
                                           "`%s' entry" % name)
-                            elements[item] = map(float,
-                                                 data.get(name, item).split(","))
+                            elements[item] = \
+                                map(float, data.get(name, item).split(","))
                 else:
                     elements[item] = None
             if elements["latitude"] is None \

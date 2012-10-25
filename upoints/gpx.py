@@ -33,7 +33,7 @@ except ImportError:
         ET = ElementTree
         logging.info("cElementTree is unavailable. XML processing will be "
                      "much slower with ElementTree")
-if not ET.__name__ == "xml.etree.cElementTree":
+if not ET.__name__ in ("xml.etree.cElementTree", 'lxml.etree'):
     logging.warning("You have the fast cElementTree module available, if you "
                     "choose to use the human readable namespace prefixes in "
                     "XML output element generation will use the much slower "
@@ -51,6 +51,7 @@ GPX_VERSIONS = {
 #: Default GPX version to output
 # Changing this will cause tests to fail.
 DEF_GPX_VERSION = "1.1"
+
 
 def create_elem(tag, attr=None, text=None, gpx_version=DEF_GPX_VERSION,
                 human_namespace=False):
@@ -85,6 +86,7 @@ def create_elem(tag, attr=None, text=None, gpx_version=DEF_GPX_VERSION,
     if text:
         element.text = text
     return element
+
 
 class _GpxElem(point.TimedPoint):
     """Abstract class for representing an element from GPX data files
@@ -518,7 +520,7 @@ class _GpxMeta(object):
             element = elementise("extensions")
             for i in self.extensions:
                 element.append(i)
-            metadata.append(extensions)
+            metadata.append(self.extensions)
         return metadata
 
     def import_metadata(self, elements, gpx_version=None):
@@ -573,11 +575,12 @@ class _GpxMeta(object):
                     self.copyright["license"] = child.findtext(metadata_elem("license"))
                 elif tag_name == "link":
                     link = {
-                        "href": link.get("href"),
+                        "href": child.get("href"),
                         "type": child.findtext(metadata_elem("type")),
                         "text": child.findtext(metadata_elem("text")),
                     }
                     self.link.append(link)
+
 
 class Waypoint(_GpxElem):
     """Class for representing a waypoint element from GPX data files
@@ -1048,4 +1051,3 @@ class Routepoints(_SegWrap):
                 chunk.append(place.togpx(gpx_version, human_namespace))
 
         return ET.ElementTree(gpx)
-

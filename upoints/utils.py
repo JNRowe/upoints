@@ -34,7 +34,7 @@ try:
     from xml.etree import cElementTree as ET
 except ImportError:
     try:
-        from lxml import etree as ET
+        from lxml import etree as ET  # NOQA
     except ImportError:
         ET = ElementTree
         logging.info("cElementTree is unavailable. XML processing will be "
@@ -553,6 +553,8 @@ class Timestamp(datetime.datetime):
 #{ Coordinate conversion utilities
 
 iso6709_matcher = re.compile(r'^([-+][\d.]+)([-+][\d.]+)([+-][\d.]+)?/$')
+
+
 def from_iso6709(coordinates):
     """Parse ISO 6709 coordinate strings
 
@@ -661,6 +663,7 @@ def from_iso6709(coordinates):
         altitude = float(altitude)
     return latitude, longitude, altitude
 
+
 def to_iso6709(latitude, longitude, altitude=None, format="dd", precision=4):
     """Produce ISO 6709 coordinate strings
 
@@ -674,31 +677,31 @@ def to_iso6709(latitude, longitude, altitude=None, format="dd", precision=4):
     The following tests are from the examples contained in the `wikipedia ISO
     6709 page`:
 
-    >>> to_iso6709(0.0, -25.0, None, "d") # Atlantic Ocean
+    >>> to_iso6709(0.0, -25.0, None, "d")  # Atlantic Ocean
     '+00-025/'
-    >>> to_iso6709(46.0, 2.0, None, "d") # France
+    >>> to_iso6709(46.0, 2.0, None, "d")  # France
     '+46+002/'
-    >>> to_iso6709(48.866666666666667, 2.3333333333333335, None, "dm") # Paris
+    >>> to_iso6709(48.866666666666667, 2.3333333333333335, None, "dm")  # Paris
     '+4852+00220/'
     >>> # The following test is skipped, because the example from wikipedia
     >>> # uses differing precision widths for latitude and longitude. Also,
     >>> # that degree of formatting flexibility is not seen anywhere else and
     >>> # adds very little.
-    >>> to_iso6709(48.857700000000001, 2.2949999999999999, None) # Eiffel Tower # doctest: +SKIP
+    >>> to_iso6709(48.857700000000001, 2.2949999999999999, None)  # Eiffel Tower # doctest: +SKIP
     '+48.8577+002.295/'
-    >>> to_iso6709(27.5916, 86.563999999999993, 8850.0) # Mount Everest
+    >>> to_iso6709(27.5916, 86.563999999999993, 8850.0)  # Mount Everest
     '+27.5916+086.5640+8850/'
-    >>> to_iso6709(90.0, 0.0, None, "d") # North Pole
+    >>> to_iso6709(90.0, 0.0, None, "d")  # North Pole
     '+90+000/'
-    >>> to_iso6709(0.0, -160.0, None, "d") # Pacific Ocean
+    >>> to_iso6709(0.0, -160.0, None, "d")  # Pacific Ocean
     '+00-160/'
-    >>> to_iso6709(-90.0, 0.0, 2800.0, "d") # South Pole
+    >>> to_iso6709(-90.0, 0.0, 2800.0, "d")  # South Pole
     '-90+000+2800/'
-    >>> to_iso6709(38.0, -97.0, None, "d") # United States
+    >>> to_iso6709(38.0, -97.0, None, "d")  # United States
     '+38-097/'
-    >>> to_iso6709(40.75, -74.0, None, precision=2) # New York City
+    >>> to_iso6709(40.75, -74.0, None, precision=2)  # New York City
     '+40.75-074.00/'
-    >>> to_iso6709(40.689399999999999, -74.044700000000006, None) # Statue of Liberty
+    >>> to_iso6709(40.689399999999999, -74.044700000000006, None)  # Statue of Liberty
     '+40.6894-074.0447/'
 
     The following tests are from the `Latitude, Longitude and Altitude format
@@ -710,9 +713,9 @@ def to_iso6709(latitude, longitude, altitude=None, format="dd", precision=4):
     '-90+000+2800/'
     >>> to_iso6709(40.75, -74.0, None, precision=2) # New York City
     '+40.75-074.00/'
-    >>> to_iso6709(35.360833333333332, 138.72749999999999, 3776.0, "dms") # Mount Fuji
+    >>> to_iso6709(35.360833333333332, 138.72749999999999, 3776.0, "dms")  # Mount Fuji
     '+352139+1384339+3776/'
-    >>> to_iso6709(35.658631999999997, 139.74541099999999, None, precision=6) # Tokyo Tower
+    >>> to_iso6709(35.658631999999997, 139.74541099999999, None, precision=6)  # Tokyo Tower
     '+35.658632+139.745411/'
 
     :type latitude: ``float`` or coercible to ``float``
@@ -758,7 +761,8 @@ def to_iso6709(latitude, longitude, altitude=None, format="dd", precision=4):
             text.append("%s%03i%02i" % ((longitude_sign, ) + longitude_dms))
         elif format == "dms":
             text.append("%s%02i%02i%02i" % ((latitude_sign, ) + latitude_dms))
-            text.append("%s%03i%02i%02i" % ((longitude_sign, ) + longitude_dms))
+            text.append("%s%03i%02i%02i"
+                        % ((longitude_sign, ) + longitude_dms))
     else:
         raise ValueError("Unknown format type `%s'" % format)
     if altitude and int(altitude) == altitude:
@@ -767,6 +771,7 @@ def to_iso6709(latitude, longitude, altitude=None, format="dd", precision=4):
         text.append("%+.3f" % altitude)
     text.append("/")
     return "".join(text)
+
 
 def angle_to_distance(angle, units="metric"):
     """Convert angle in to distance along a great circle
@@ -802,6 +807,7 @@ def angle_to_distance(angle, units="metric"):
     else:
         raise ValueError("Unknown units type `%s'" % units)
 
+
 def distance_to_angle(distance, units="metric"):
     """Convert a distance in to an angle along a great circle
 
@@ -831,6 +837,7 @@ def distance_to_angle(distance, units="metric"):
         raise ValueError("Unknown units type `%s'" % units)
 
     return math.degrees(distance / BODY_RADIUS)
+
 
 def from_grid_locator(locator):
     """Calculate geodesic latitude/longitude from Maidenhead locator
@@ -919,6 +926,7 @@ def from_grid_locator(locator):
 
     return latitude, longitude
 
+
 def to_grid_locator(latitude, longitude, precision="square"):
     """Calculate Maidenhead locator from latitude and longitude
 
@@ -987,6 +995,7 @@ def to_grid_locator(latitude, longitude, precision="square"):
         locator.append(str(extsquare))
 
     return "".join(locator)
+
 
 def parse_location(location):
     """Parse latitude and longitude from string location
@@ -1077,8 +1086,8 @@ ZENITH = {
 
     # Sunrise/sunset is defined as the moment the upper limb becomes visible,
     # taking in to account atmospheric refraction.  That is 34' for atmospheric
-    # refraction and 16' for angle between the Sun's centre and it's upper limb,
-    # resulting in a combined 50' below the horizon.
+    # refraction and 16' for angle between the Sun's centre and it's upper
+    # limb, resulting in a combined 50' below the horizon.
     #
     # We're totally ignoring how temperature and pressure change the amount of
     # atmospheric refraction, because their effects are drowned out by rounding
@@ -1091,6 +1100,7 @@ ZENITH = {
     "nautical": -12,
     "astronomical": -18,
 }
+
 
 def sun_rise_set(latitude, longitude, date, mode="rise", timezone=0,
                  zenith=None):
@@ -1137,8 +1147,8 @@ def sun_rise_set(latitude, longitude, date, mode="rise", timezone=0,
     :type zenith: ``None`` or ``str``
     :param zenith: Calculate rise/set events, or twilight times
     :rtype: :class:`datetime.time` or ``None``
-    :return: The time for the given event in the specified timezone, or ``None``
-        if the event doesn't occur on the given date
+    :return: The time for the given event in the specified timezone, or
+        ``None`` if the event doesn't occur on the given date
     :raise ValueError: Unknown value for ``mode``
 
     """
@@ -1225,6 +1235,7 @@ def sun_rise_set(latitude, longitude, date, mode="rise", timezone=0,
         minute += 60
     return datetime.time(hour, minute)
 
+
 def sun_events(latitude, longitude, date, timezone=0, zenith=None):
     """Convenience function for calculating sunrise and sunset
 
@@ -1236,11 +1247,11 @@ def sun_events(latitude, longitude, date, timezone=0, zenith=None):
     (datetime.time(7, 58), datetime.time(15, 49))
     >>> sun_events(52.015, -0.221, datetime.date(2007, 6, 15))
     (datetime.time(3, 40), datetime.time(20, 22))
-    >>> sun_events(40.638611, -73.762222, datetime.date(2007, 6, 15)) # JFK
+    >>> sun_events(40.638611, -73.762222, datetime.date(2007, 6, 15))  # JFK
     (datetime.time(9, 23), datetime.time(0, 27))
-    >>> sun_events(49.016666, -2.5333333, datetime.date(2007, 6, 15)) # CDG
+    >>> sun_events(49.016666, -2.5333333, datetime.date(2007, 6, 15))  # CDG
     (datetime.time(4, 5), datetime.time(20, 15))
-    >>> sun_events(35.549999, 139.78333333, datetime.date(2007, 6, 15)) # TIA
+    >>> sun_events(35.549999, 139.78333333, datetime.date(2007, 6, 15))  # TIA
     (datetime.time(19, 24), datetime.time(9, 57))
 
     Civil twilight starts/ends when the Sun's centre is 6 degrees below
@@ -1308,6 +1319,7 @@ def sun_events(latitude, longitude, date, timezone=0, zenith=None):
             sun_rise_set(latitude, longitude, date, "set", timezone, zenith))
 
 #}
+
 
 def dump_xearth_markers(markers, name="identifier"):
     """Generate an Xearth compatible marker file
@@ -1385,7 +1397,8 @@ def dump_xearth_markers(markers, name="identifier"):
        :func:`upoints.xearth.Xearths.import_locations`
 
     :type markers: ``dict``
-    :param markers: Dictionary of identifer keys, with :class:`Trigpoint` values
+    :param markers: Dictionary of identifer keys, with :class:`Trigpoint`
+        values
     :type name: ``str``
     :param name: Value to use as Xearth display string
     :rtype: ``list``
@@ -1415,6 +1428,7 @@ def dump_xearth_markers(markers, name="identifier"):
         output.append("".join(line))
     # Return the list sorted on the marker name
     return sorted(output, key=lambda x: x.split()[2])
+
 
 def calc_radius(latitude, ellipsoid="WGS84"):
     """Calculate earth radius for a given latitude

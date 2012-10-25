@@ -25,10 +25,10 @@ __doc__ += """.
 .. versionadded:: 0.1.0
 """
 
-import datetime
 import math
 
 from upoints import utils
+
 
 def _manage_location(attr):
     """Build managed property interface
@@ -41,6 +41,7 @@ def _manage_location(attr):
     """
     return property(lambda self: getattr(self, "_%s" % attr),
                     lambda self, value: self._set_location(attr, value))
+
 
 def _dms_formatter(latitude, longitude, mode, unistr=False):
     """Generate a human readable DM/DMS location string
@@ -74,6 +75,7 @@ def _dms_formatter(latitude, longitude, mode, unistr=False):
         text.append(", %%03i%s%%05.2f%s" % chars[:2] % longitude_dms)
     text.append("W" if longitude < 0 else "E")
     return text
+
 
 class Point(object):
     """Simple class for representing a location on a sphere
@@ -294,6 +296,14 @@ class Point(object):
 
         return "".join(text)
 
+    def __format__(self, format_spec=None):
+        if type(format_spec) == unicode:
+            unicode
+        else:
+            str
+        if not format_spec:
+            return str(self)
+
     def __eq__(self, other, accuracy=None):
         """Compare ``Point`` objects for equality with optional accuracy amount
 
@@ -394,9 +404,9 @@ class Point(object):
         ValueError: Unknown method type `Invalid'
 
         As a smoke test this check uses the example from Wikipedia's
-        `Great-circle distance entry`_ of Nashville International Airport to Los
-        Angeles International Airport, and is correct to within 2 kilometres of
-        the calculation there.
+        `Great-circle distance entry`_ of Nashville International Airport to
+        Los Angeles International Airport, and is correct to within
+        2 kilometres of the calculation there.
 
         >>> to_loc = Point(33.9400, -118.4000)
         >>> "%i kM" % Point(36.1200, -86.6700).distance(to_loc)
@@ -429,7 +439,7 @@ class Point(object):
                    math.cos(other.rad_latitude) * \
                    math.sin(longitude_difference / 2) ** 2
             distance = 2 * utils.BODY_RADIUS * math.atan2(math.sqrt(temp),
-                                                          math.sqrt(1-temp))
+                                                          math.sqrt(1 - temp))
         elif method == "sloc":
             distance = math.acos(math.sin(self.rad_latitude) *
                                  math.sin(other.rad_latitude) +
@@ -522,8 +532,8 @@ class Point(object):
         x = math.cos(other.rad_latitude) * math.cos(longitude_difference)
         latitude = math.atan2(math.sin(self.rad_latitude)
                               + math.sin(other.rad_latitude),
-                              math.sqrt((math.cos(self.rad_latitude) + x)**2
-                                        + y**2))
+                              math.sqrt((math.cos(self.rad_latitude) + x) ** 2
+                                        + y ** 2))
         longitude = self.rad_longitude \
                     + math.atan2(y, math.cos(self.rad_latitude) + x)
 
@@ -786,8 +796,8 @@ class Points(list):
                 self.import_locations(points)
             else:
                 if not all([x for x in points if isinstance(x, Point)]):
-                    raise TypeError("All `points` elements must be an instance "
-                                    "of the `Point` class")
+                    raise TypeError("All `points` elements must be an "
+                                    "instance of the `Point` class")
                 self.extend(points)
 
     def __repr__(self):
@@ -834,7 +844,8 @@ class Points(list):
     def distance(self, method="haversine"):
         """Calculate distances between locations
 
-        >>> locations = Points(["52.015;-0.221", "52.168;0.040", "52.855;0.657"],
+        >>> locations = Points(["52.015;-0.221", "52.168;0.040",
+        ...                     "52.855;0.657"],
         ...                    parse=True)
         >>> "%.3f" % sum(locations.distance())
         '111.632'
@@ -847,12 +858,14 @@ class Points(list):
         """
         if not len(self) > 1:
             raise RuntimeError("More than one location is required")
-        return (self[i].distance(self[i+1], method) for i in range(len(self)-1))
+        return (self[i].distance(self[i + 1], method)
+                for i in range(len(self) - 1))
 
     def bearing(self, format="numeric"):
         """Calculate bearing between locations
 
-        >>> locations = Points(["52.015;-0.221", "52.168;0.040", "52.855;0.657"],
+        >>> locations = Points(["52.015;-0.221", "52.168;0.040",
+        ...                     "52.855;0.657"],
         ...                    parse=True)
         >>> ["%.3f" % x for x in locations.bearing()]
         ['46.242', '28.416']
@@ -864,12 +877,14 @@ class Points(list):
         """
         if not len(self) > 1:
             raise RuntimeError("More than one location is required")
-        return (self[i].bearing(self[i+1], format) for i in range(len(self)-1))
+        return (self[i].bearing(self[i + 1], format)
+                for i in range(len(self) - 1))
 
     def final_bearing(self, format="numeric"):
         """Calculate final bearing between locations
 
-        >>> locations = Points(["52.015;-0.221", "52.168;0.040", "52.855;0.657"],
+        >>> locations = Points(["52.015;-0.221", "52.168;0.040",
+        ...                     "52.855;0.657"],
         ...                    parse=True)
         >>> ["%.3f" % x for x in locations.final_bearing()]
         ['46.448', '28.906']
@@ -881,13 +896,14 @@ class Points(list):
         """
         if len(self) == 1:
             raise RuntimeError("More than one location is required")
-        return (self[i].final_bearing(self[i+1], format)
-                for i in range(len(self)-1))
+        return (self[i].final_bearing(self[i + 1], format)
+                for i in range(len(self) - 1))
 
     def inverse(self):
         """Calculate the inverse geodesic between locations
 
-        >>> locations = Points(["52.015;-0.221", "52.168;0.040", "52.855;0.657"],
+        >>> locations = Points(["52.015;-0.221", "52.168;0.040",
+        ...                     "52.855;0.657"],
         ...                    parse=True)
         >>> from dtopt import NORMALIZE_WHITESPACE
         >>> list(locations.inverse())
@@ -898,13 +914,14 @@ class Points(list):
         :return: Bearing and distance between points in series
 
         """
-        return ((self[i].bearing(self[i+1]), self[i].distance(self[i+1]))
-                for i in range(len(self)-1))
+        return ((self[i].bearing(self[i + 1]), self[i].distance(self[i + 1]))
+                for i in range(len(self) - 1))
 
     def midpoint(self):
         """Calculate the midpoint between locations
 
-        >>> locations = Points(["52.015;-0.221", "52.168;0.040", "52.855;0.657"],
+        >>> locations = Points(["52.015;-0.221", "52.168;0.040",
+        ...                     "52.855;0.657"],
         ...                    parse=True)
         >>> from dtopt import NORMALIZE_WHITESPACE
         >>> list(locations.midpoint())
@@ -915,12 +932,13 @@ class Points(list):
         :return: Midpoint between points in series
 
         """
-        return (self[i].midpoint(self[i+1]) for i in range(len(self)-1))
+        return (self[i].midpoint(self[i + 1]) for i in range(len(self) - 1))
 
     def range(self, location, distance):
         """Test whether locations are within a given range of ``location``
 
-        >>> locations = Points(["52.015;-0.221", "52.168;0.040", "52.855;0.657"],
+        >>> locations = Points(["52.015;-0.221", "52.168;0.040",
+        ...                     "52.855;0.657"],
         ...                    parse=True)
         >>> list(locations.range(Point(52.015, -0.221), 20))
         [Point(52.015, -0.221, 'metric', 'degrees', 0)]
@@ -938,7 +956,8 @@ class Points(list):
     def destination(self, bearing, distance):
         """Calculate destination locations for given distance and bearings
 
-        >>> locations = Points(["52.015;-0.221", "52.168;0.040", "52.855;0.657"],
+        >>> locations = Points(["52.015;-0.221", "52.168;0.040",
+        ...                     "52.855;0.657"],
         ...                    parse=True)
         >>> from dtopt import NORMALIZE_WHITESPACE
         >>> list(locations.destination(42, 240))
@@ -960,7 +979,8 @@ class Points(list):
     def sunrise(self, date=None, zenith=None):
         """Calculate sunrise times for locations
 
-        >>> locations = Points(["52.015;-0.221", "52.168;0.040", "52.855;0.657"],
+        >>> locations = Points(["52.015;-0.221", "52.168;0.040",
+        ...                     "52.855;0.657"],
         ...                    parse=True)
         >>> list(locations.sunrise(datetime.date(2008, 5, 2)))
         [datetime.time(4, 28), datetime.time(4, 26), datetime.time(4, 21)]
@@ -978,7 +998,8 @@ class Points(list):
     def sunset(self, date=None, zenith=None):
         """Calculate sunset times for locations
 
-        >>> locations = Points(["52.015;-0.221", "52.168;0.040", "52.855;0.657"],
+        >>> locations = Points(["52.015;-0.221", "52.168;0.040",
+        ...                     "52.855;0.657"],
         ...                    parse=True)
         >>> list(locations.sunset(datetime.date(2008, 5, 2)))
         [datetime.time(19, 28), datetime.time(19, 27), datetime.time(19, 27)]
@@ -996,7 +1017,8 @@ class Points(list):
     def sun_events(self, date=None, zenith=None):
         """Calculate sunrise/sunset times for locations
 
-        >>> locations = Points(["52.015;-0.221", "52.168;0.040", "52.855;0.657"],
+        >>> locations = Points(["52.015;-0.221", "52.168;0.040",
+        ...                     "52.855;0.657"],
         ...                    parse=True)
         >>> from dtopt import NORMALIZE_WHITESPACE
         >>> list(locations.sun_events(datetime.date(2008, 5, 2)))
@@ -1017,7 +1039,8 @@ class Points(list):
     def to_grid_locator(self, precision="square"):
         """Calculate Maidenhead locator for locations
 
-        >>> locations = Points(["52.015;-0.221", "52.168;0.040", "52.855;0.657"],
+        >>> locations = Points(["52.015;-0.221", "52.168;0.040",
+        ...                     "52.855;0.657"],
         ...                    parse=True)
         >>> list(locations.to_grid_locator("extsquare"))
         ['IO92va33', 'JO02ae40', 'JO02hu85']
@@ -1061,7 +1084,7 @@ class TimedPoints(Points):
             raise NotImplementedError("Not all Point objects include time "
                                       "attribute")
 
-        return (distance / ((times[i+1] - times[i]).seconds / 3600)
+        return (distance / ((times[i + 1] - times[i]).seconds / 3600)
                 for i, distance in enumerate(self.distance()))
 
 
@@ -1076,7 +1099,8 @@ class KeyedPoints(dict):
         """Initialise a new ``KeyedPoints`` object
 
         >>> from dtopt import NORMALIZE_WHITESPACE
-        >>> KeyedPoints({"a": Point(52.015, -0.221), "b": Point(53.645, -0.284)})
+        >>> KeyedPoints({"a": Point(52.015, -0.221),
+        ...              "b": Point(53.645, -0.284)})
         KeyedPoints({'a': Point(52.015, -0.221, 'metric', 'degrees', 0),
                      'b': Point(53.645, -0.284, 'metric', 'degrees', 0)},
                     False, 'metric')
@@ -1162,8 +1186,8 @@ class KeyedPoints(dict):
         """
         if not len(self) > 1:
             raise RuntimeError("More than one location is required")
-        return (self[order[i]].distance(self[order[i+1]], method)
-                for i in range(len(order)-1))
+        return (self[order[i]].distance(self[order[i + 1]], method)
+                for i in range(len(order) - 1))
 
     def bearing(self, order, format="numeric"):
         """Calculate bearing between locations
@@ -1184,8 +1208,8 @@ class KeyedPoints(dict):
         """
         if not len(self) > 1:
             raise RuntimeError("More than one location is required")
-        return (self[order[i]].bearing(self[order[i+1]], format)
-                for i in range(len(order)-1))
+        return (self[order[i]].bearing(self[order[i + 1]], format)
+                for i in range(len(order) - 1))
 
     def final_bearing(self, order, format="numeric"):
         """Calculate final bearing between locations
@@ -1207,8 +1231,8 @@ class KeyedPoints(dict):
         """
         if len(self) == 1:
             raise RuntimeError("More than one location is required")
-        return (self[order[i]].final_bearing(self[order[i+1]], format)
-                for i in range(len(order)-1))
+        return (self[order[i]].final_bearing(self[order[i + 1]], format)
+                for i in range(len(order) - 1))
 
     def inverse(self, order):
         """Calculate the inverse geodesic between locations
@@ -1228,9 +1252,9 @@ class KeyedPoints(dict):
         :return: Bearing and distance between points in series
 
         """
-        return ((self[order[i]].bearing(self[order[i+1]]),
-                 self[order[i]].distance(self[order[i+1]]))
-                for i in range(len(order)-1))
+        return ((self[order[i]].bearing(self[order[i + 1]]),
+                 self[order[i]].distance(self[order[i + 1]]))
+                for i in range(len(order) - 1))
 
     def midpoint(self, order):
         """Calculate the midpoint between locations
@@ -1250,8 +1274,8 @@ class KeyedPoints(dict):
         :return: Midpoint between points in series
 
         """
-        return (self[order[i]].midpoint(self[order[i+1]])
-                for i in range(len(order)-1))
+        return (self[order[i]].midpoint(self[order[i + 1]])
+                for i in range(len(order) - 1))
 
     def range(self, location, distance):
         """Test whether locations are within a given range of the first
@@ -1381,4 +1405,3 @@ class KeyedPoints(dict):
 
         """
         return ((x[0], x[1].to_grid_locator(precision)) for x in self.items())
-

@@ -27,13 +27,14 @@ from functools import partial
 
 from upoints import (point, utils)
 
+
 class Trigpoint(point.Point):
     """
     Class for representing a location from a trigpoint marker file
 
     .. warning::
-       Although this class stores and presents the representation of altitude it
-       doesn't take it in to account when making calculations.  For example,
+       Although this class stores and presents the representation of altitude
+       it doesn't take it in to account when making calculations.  For example,
        consider a point at the base of Mount Everest and a point at the peak of
        Mount Everest the actual distance travelled between the two would be
        considerably larger than the reported value calculated at ground level.
@@ -44,7 +45,8 @@ class Trigpoint(point.Point):
 
     __slots__ = ('altitude', 'name', 'identity')
 
-    def __init__(self, latitude, longitude, altitude, name=None, identity=None):
+    def __init__(self, latitude, longitude, altitude, name=None,
+                 identity=None):
         """
         Initialise a new ``Trigpoint`` object
 
@@ -192,4 +194,3 @@ class Trigpoints(point.KeyedPoints):
                 # spurious comma
                 del row[None]
                 self[row['identity']] = Trigpoint(**row)
-

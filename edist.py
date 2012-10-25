@@ -17,9 +17,11 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+
 from email.utils import parseaddr
 
-from upoints import (__version__, __author__, __copyright__, __license__)
+from upoints import (__version__, __author__)
+
 
 __doc__ += """.
 
@@ -172,7 +174,8 @@ class NumberedPoints(point.Points):
         :param str format: Coordinate formatting system to use
         :param bool unistr: Whether to output Unicode results
         :param bool verbose: Whether to generate verbose output
-        :param dict config_locations: Locations imported from user's config file
+        :param dict config_locations: Locations imported from user's config
+            file
         :param str units: Unit type to be used for distances
 
         """
@@ -219,7 +222,8 @@ class NumberedPoints(point.Points):
 
         :type locations: ``list`` of ``str``
         :param locations: Location identifiers
-        :param dict config_locations: Locations imported from user's config file
+        :param dict config_locations: Locations imported from user's config
+            file
 
         """
         for number, location in enumerate(locations):
@@ -698,8 +702,7 @@ def main():
     :return: 0 for success, >1 error code
 
     """
-    logging.basicConfig(format='%(asctime)s %(levelname)s:%(message)s',
-                        datefmt="%Y-%m-%dT%H:%M:%S%z")
+    logging.basicConfig(format='%(asctime)s %(levelname)s:%(message)s')
 
     modes, options, args = process_command_line()
 
@@ -722,7 +725,8 @@ def main():
         sys.exit(1)
 
     locations = NumberedPoints(args, options.format, options.unicode,
-                               options.verbose, config_locations, options.units)
+                               options.verbose, config_locations,
+                               options.units)
 
     if len(modes) > 1:
         logging.warning("Output order for multiple modes is not guaranteed "

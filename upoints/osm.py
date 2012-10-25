@@ -27,13 +27,14 @@ try:
     from xml.etree import cElementTree as ET
 except ImportError:
     try:
-        from lxml import etree as ET
+        from lxml import etree as ET  # NOQA
     except ImportError:
         ET = ElementTree
         logging.info("cElementTree is unavailable XML processing will be much"
                      "slower with ElementTree")
 
 from upoints import (__version__, point, utils)
+
 
 def _parse_flags(element):
     """Parse OSM XML element for generic data
@@ -57,6 +58,7 @@ def _parse_flags(element):
 
     return visible, user, timestamp, tags
 
+
 def _get_flags(osm_obj):
     """Create element independent flags output
 
@@ -77,6 +79,7 @@ def _get_flags(osm_obj):
         flags.append(", ".join("%s: %s" % (k, v)
                                for k, v in osm_obj.tags.items()))
     return flags
+
 
 def get_area_url(location, distance):
     """Generate URL for downloading OSM data within a region
@@ -181,7 +184,8 @@ class Node(point.Point):
         :return: Human readable string representation of ``Node`` object
 
         """
-        text = ["Node %i (%s)" % (self.ident, super(Node, self).__str__(mode)), ]
+        text = ["Node %i (%s)" % (self.ident,
+                                  super(Node, self).__str__(mode)), ]
         flags = _get_flags(self)
 
         if flags:
@@ -329,11 +333,13 @@ class Way(point.Points):
     def __str__(self, nodes=False):
         """Pretty printed location string
 
+        >>> from dtopt import NORMALIZE_WHITESPACE
         >>> print(Way(0, (0, 1, 2)))
         Way 0 (nodes: 0, 1, 2)
         >>> print(Way(0, (0, 1, 2), True, "jnrowe",
         ...           utils.Timestamp(2008, 1, 25)))
-        Way 0 (nodes: 0, 1, 2) [visible, user: jnrowe, timestamp: 2008-01-25T00:00:00+00:00]
+        Way 0 (nodes: 0, 1, 2)
+              [visible, user: jnrowe, timestamp: 2008-01-25T00:00:00+00:00]
         >>> print(Way(0, (0, 1, 2), tags={"key": "value"}))
         Way 0 (nodes: 0, 1, 2) [key: value]
         >>> nodes = [
@@ -348,9 +354,15 @@ class Way(point.Points):
         ... ]
         >>> print(Way(0, (0, 1, 2), tags={"key": "value"}).__str__(nodes))
         Way 0 [key: value]
-            Node 0 (52°00'56"N, 000°13'18"W) [visible, user: jnrowe, timestamp: 2008-01-25T12:52:11+00:00]
-            Node 1 (52°00'56"N, 000°13'18"W) [visible, timestamp: 2008-01-25T12:53:14+00:00, highway: crossing, created_by: hand]
-            Node 2 (52°00'56"N, 000°13'18"W) [visible, user: jnrowe, timestamp: 2008-01-25T12:52:30+00:00, amenity: pub]
+            Node 0 (52°00'56"N, 000°13'18"W)
+                   [visible, user: jnrowe,
+                    timestamp: 2008-01-25T12:52:11+00:00]
+            Node 1 (52°00'56"N, 000°13'18"W)
+                   [visible, timestamp: 2008-01-25T12:53:14+00:00,
+                    highway: crossing, created_by: hand]
+            Node 2 (52°00'56"N, 000°13'18"W)
+                   [visible, user: jnrowe,
+                    timestamp: 2008-01-25T12:52:30+00:00, amenity: pub]
 
         :type nodes: ``list``
         :param nodes: Nodes to be used in expanding references
@@ -463,8 +475,8 @@ class Osm(point.Points):
             </osm>
 
         The reader uses the :mod:`ElementTree` module, so should be very fast
-        when importing data.  The above file processed by ``import_locations()``
-        will return the following `Osm` object::
+        when importing data.  The above file processed by
+        ``import_locations()`` will return the following `Osm` object::
 
             Osm([
                 Node(0, 52.015749, -0.221765, True, "jnrowe",
@@ -480,13 +492,19 @@ class Osm(point.Points):
                     {"ref": "My Way", "highway": "primary"})],
                 generator="upoints/0.9.0")
 
+        >>> from dtopt import NORMALIZE_WHITESPACE
         >>> region = Osm(open("test/data/osm"))
         >>> for node in sorted([x for x in region if isinstance(x, Node)],
         ...                    key=attrgetter("ident")):
         ...     print(node)
-        Node 0 (52°00'56"N, 000°13'18"W) [visible, user: jnrowe, timestamp: 2008-01-25T12:52:11+00:00]
-        Node 1 (52°00'56"N, 000°13'18"W) [visible, timestamp: 2008-01-25T12:53:00+00:00, highway: crossing, created_by: hand]
-        Node 2 (52°00'56"N, 000°13'18"W) [visible, user: jnrowe, timestamp: 2008-01-25T12:52:30+00:00, amenity: pub]
+        Node 0 (52°00'56"N, 000°13'18"W)
+               [visible, user: jnrowe, timestamp: 2008-01-25T12:52:11+00:00]
+        Node 1 (52°00'56"N, 000°13'18"W)
+               [visible, timestamp: 2008-01-25T12:53:00+00:00,
+                highway: crossing, created_by: hand]
+        Node 2 (52°00'56"N, 000°13'18"W)
+               [visible, user: jnrowe, timestamp: 2008-01-25T12:52:30+00:00,
+                amenity: pub]
 
         :type osm_file: ``file``, ``list`` or ``str``
         :param osm_file: OpenStreetMap data to read
@@ -535,4 +553,3 @@ class Osm(point.Points):
             osm.append(obj.toosm())
 
         return ET.ElementTree(osm)
-

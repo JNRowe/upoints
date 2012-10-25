@@ -19,7 +19,7 @@
 try:
     from email.utils import parseaddr
 except ImportError:  # Python2.4
-    from email.Utils import parseaddr
+    from email.Utils import parseaddr  # NOQA
 
 from setuptools import setup
 

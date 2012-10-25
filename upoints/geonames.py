@@ -24,15 +24,16 @@ try:
 except ImportError:
     #: ``dateutil`` module reference if available
     tz = None
-from operator import attrgetter
 
 from upoints import (point, trigpoints, utils)
+
 
 class Location(trigpoints.Trigpoint):
     """
     Class for representing a location from a geonames.org_ data file
 
-    All country codes are specified with their two letter ISO-3166 country code.
+    All country codes are specified with their two letter ISO-3166 country
+    code.
 
     .. versionadded:: 0.3.0
 
@@ -171,7 +172,8 @@ class Location(trigpoints.Trigpoint):
         text = super(Location.__base__, self).__str__(mode)
 
         if self.alt_names:
-            return "%s (%s - %s)" % (self.name, ", ".join(self.alt_names), text)
+            return "%s (%s - %s)" % (self.name, ", ".join(self.alt_names),
+                                     text)
         else:
             return "%s (%s)" % (self.name, text)
 
@@ -260,10 +262,10 @@ class Locations(point.Points):
         """
         self._data = data
         field_names = ("geonameid", "name", "asciiname", "alt_names",
-                       "latitude", "longitude", "feature_class", "feature_code",
-                       "country", "alt_country", "admin1", "admin2", "admin3",
-                       "admin4", "population", "altitude", "gtopo30", "tzname",
-                       "modified_date")
+                       "latitude", "longitude", "feature_class",
+                       "feature_code", "country", "alt_country", "admin1",
+                       "admin2", "admin3", "admin4", "population", "altitude",
+                       "gtopo30", "tzname", "modified_date")
         comma_split = lambda s: s.split(",")
         date_parse = lambda s: datetime.date(*map(int, s.split("-")))
         or_none = lambda x, s: x(s) if s else None
@@ -272,10 +274,10 @@ class Locations(point.Points):
         int_or_none = lambda s: or_none(int, s)
         tz_parse = lambda s: self.timezones[s][0] if self.timezones else None
         field_parsers = (int_or_none, str_or_none, str_or_none, comma_split,
-                         float_or_none, float_or_none, str_or_none, str_or_none,
-                         str_or_none, comma_split, str_or_none, str_or_none,
-                         str_or_none, str_or_none, int_or_none, int_or_none,
-                         int_or_none, tz_parse, date_parse)
+                         float_or_none, float_or_none, str_or_none,
+                         str_or_none, str_or_none, comma_split, str_or_none,
+                         str_or_none, str_or_none, str_or_none, int_or_none,
+                         int_or_none, int_or_none, tz_parse, date_parse)
         data = utils.prepare_csv_read(data, field_names, delimiter=r"	")
         for row in data:
             try:
@@ -303,8 +305,8 @@ class Locations(point.Points):
         geonames site in their `database export page`_
 
         Files downloaded from the geonames site when processed by
-        ``import_timezones_file()`` will return ``dict`` object of the following
-        style::
+        ``import_timezones_file()`` will return ``dict`` object of the
+        following style::
 
             {"Europe/Andorra": (60, 120),
              "Asia/Dubai": (240, 240),
@@ -354,4 +356,3 @@ class Locations(point.Points):
             except ValueError:
                 raise utils.FileFormatError("geonames.org")
             self.timezones[row['ident']] = delta
-

@@ -25,6 +25,7 @@ __doc__ += """.
 
 from upoints import (point, utils)
 
+
 class Xearth(point.Point):
     """Class for representing a location from a Xearth marker
 
@@ -125,8 +126,8 @@ class Xearths(point.KeyedPoints):
 
         Any empty line or line starting with a '#' is ignored.  All data lines
         are whitespace-normalised, so actual layout should have no effect.  The
-        above file processed by ``import_locations()`` will return the following
-        ``dict`` object::
+        above file processed by ``import_locations()`` will return the
+        following ``dict`` object::
 
             {'Home': point.Point(52.015, -0.221, "James Rowe's home"),
              'Telford': point.Point(52.6333, -2.5, None)}
@@ -167,4 +168,3 @@ class Xearths(point.KeyedPoints):
             # Find matching start and end quote, and keep only the contents
             name = name[1:name.find(name[0], 1)]
             self[name.strip()] = Xearth(latitude, longitude, comment)
-

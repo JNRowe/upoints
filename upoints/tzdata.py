@@ -21,6 +21,7 @@ from operator import attrgetter
 
 from upoints import (point, utils)
 
+
 class Zone(point.Point):
     """Class for representing timezone descriptions from zoneinfo data
 
@@ -115,9 +116,10 @@ class Zones(point.Points):
             AO	-0848+01314	Africa/Luanda
             AQ	-7750+16636	Antarctica/McMurdo	McMurdo Station, Ross Island
 
-        Files containing the data in this format can be found in the :file:`zone.tab`
-        file that is normally found in :file:`/usr/share/zoneinfo` on
-        UNIX-like systems, or from the `standard distribution site`_.
+        Files containing the data in this format can be found in the
+        :file:`zone.tab` file that is normally found in
+        :file:`/usr/share/zoneinfo` on UNIX-like systems, or from the `standard
+        distribution site`_.
 
         When processed by ``import_locations()`` a ``list`` object of the
         following style will be returned::
@@ -180,4 +182,3 @@ class Zones(point.Points):
                 text.append("	%s" % ", ".join(zone.comments))
             data.append("".join(text))
         return data
-
