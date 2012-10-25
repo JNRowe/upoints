@@ -28,7 +28,10 @@ __license__ = "GNU General Public License Version 3"
 __credits__ = "Cédric Dufour, Thomas Traber, Kelly Turner, Simon Woods"
 __history__ = "See git repository"
 
-from email.utils import parseaddr
+try:
+    from email.utils import parseaddr
+except ImportError:  # Python2.4
+    from email.Utils import parseaddr  # NOQA
 
 __doc__ += """.
 
