@@ -41,22 +41,6 @@ class Baken(point.Point):
                  operator=None, power=None, qth=None):
         """Initialise a new ``Baken`` object
 
-        >>> from dtopt import NORMALIZE_WHITESPACE
-        >>> Baken(14.460, 20.680, None, None, None, 0.000, None, None, None,
-        ...       None, None)
-        Baken(14.46, 20.68, None, None, None, 0.0, None, None, None, None,
-              None)
-        >>> from dtopt import NORMALIZE_WHITESPACE
-        >>> Baken(None, None, "2 x Turnstile", None, 50.000, 460.000, "IO93BF",
-        ...       "A1A", None, 25, None)
-        Baken(53.2291666667, -1.875, '2 x Turnstile', None, 50.0, 460.0,
-              'IO93BF', 'A1A', None, 25, None)
-        >>> obj = Baken(None, None)
-        Traceback (most recent call last):
-        ...
-        LookupError: Unable to instantiate baken object, no latitude or
-        locator string
-
         :type latitude: ``float`` or coercible to ``float``
         :param latitude: Location's latitude
         :type longitude: ``float`` or coercible to ``float``
@@ -109,13 +93,6 @@ class Baken(point.Point):
     def _set_locator(self, value):
         """Update the locator, and trigger a latitude and longitude update
 
-        >>> test = Baken(None, None, "2 x Turnstile", None, 50.000, 460.000,
-        ...              "IO93BF", "A1A", None, 25, None)
-        >>> test.locator = "JN44FH"
-        >>> test
-        Baken(44.3125, 8.45833333333, '2 x Turnstile', None, 50.0, 460.0,
-              'JN44FH', 'A1A', None, 25, None)
-
         :type value : ``str``
         :param value: New Maidenhead locator string
 
@@ -125,13 +102,6 @@ class Baken(point.Point):
 
     def __str__(self, mode="dms"):
         """Pretty printed location string
-
-        >>> print(Baken(14.460, 20.680, None, None, None, 0.000, None, None,
-        ...             None, None, None))
-        14°27'36"N, 020°40'48"E
-        >>> print(Baken(None, None, "2 x Turnstile", None, 50.000, 460.000,
-        ...             "IO93BF", "A1A", None, 25, None))
-        IO93BF (53°13'45"N, 001°52'30"W)
 
         :type mode: ``str``
         :param mode: Coordinate formatting system to use
@@ -191,16 +161,6 @@ class Bakens(point.KeyedPoints):
                                    None, None, None, None, None),
              "GB3BUX": : Baken(None, None, "2 x Turnstile", None, 50.000,
                                460.000, "IO93BF", "A1A", None, 25, None)}
-
-        >>> locations = Bakens(open("test/data/baken_data"))
-        >>> for key, value in sorted(locations.items()):
-        ...     print("%s - %s" % (key, value))
-        Abeche, Chad - 14°27'36"N, 020°40'48"E
-        GB3BUX - IO93BF (53°13'45"N, 001°52'30"W)
-        IW1RCT - JN44FH (44°18'45"N, 008°27'29"E)
-        >>> locations = Bakens(open("test/data/no_valid_baken"))
-        >>> len(locations)
-        0
 
         :type baken_file: ``file``, ``list`` or ``str``
         :param baken_file: Baken data to read

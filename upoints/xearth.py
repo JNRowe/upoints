@@ -38,9 +38,6 @@ class Xearth(point.Point):
     def __init__(self, latitude, longitude, comment=None):
         """Initialise a new ``Xearth`` object
 
-        >>> Xearth(52.015, -0.221, "James Rowe's house")
-        Xearth(52.015, -0.221, "James Rowe's house")
-
         :type latitude: ``float`` or coercible to ``float``
         :param latitude: Location's latitude
         :type longitude: ``float`` or coercible to ``float``
@@ -58,15 +55,6 @@ class Xearth(point.Point):
         .. seealso:
 
            :class:`point.Point`
-
-        >>> print(Xearth(52.015, -0.221))
-        N52.015°; W000.221°
-        >>> print(Xearth(52.015, -0.221).__str__(mode="dms"))
-        52°00'54"N, 000°13'15"W
-        >>> print(Xearth(52.015, -0.221).__str__(mode="dm"))
-        52°00.90'N, 000°13.26'W
-        >>> print(Xearth(52.015, -0.221, "James Rowe's house"))
-        James Rowe's house (N52.015°; W000.221°)
 
         :type mode: ``str``
         :param mode: Coordinate formatting system to use
@@ -98,11 +86,6 @@ class Xearths(point.KeyedPoints):
 
     def __str__(self):
         """``Xearth`` objects rendered for use with Xearth/Xplanet
-
-        >>> markers = Xearths(open("test/data/xearth"))
-        >>> print(markers)
-        52.015000 -0.221000 "Home"
-        52.633300 -2.500000 "Telford"
 
         :rtype: ``str``
         :return: Xearth/Xplanet marker file formatted output
@@ -136,12 +119,6 @@ class Xearths(point.KeyedPoints):
            This function also handles the extended xplanet_ marker files whose
            points can optionally contain added xplanet specific keywords for
            defining colours and fonts.
-
-        >>> markers = Xearths(open("test/data/xearth"))
-        >>> for key, value in sorted(markers.items()):
-        ...     print("%s - %s" % (key, value))
-        Home - James Rowe's home (N52.015°; W000.221°)
-        Telford - N52.633°; W002.500°
 
         :type marker_file: ``file``, ``list`` or ``str``
         :param marker_file: Xearth marker data to read

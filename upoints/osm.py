@@ -95,11 +95,6 @@ def get_area_url(location, distance):
     is simply because we are applying a flat transformation to a spherical
     object, however for all general cases the difference will be negligible.
 
-    >>> get_area_url(point.Point(52.015, -0.221), 3)
-    'http://api.openstreetmap.org/api/0.5/map?bbox=-0.264864438253,51.9880034021,-0.177135561747,52.0419965979'
-    >>> get_area_url(point.Point(52.015, -0.221), 12)
-    'http://api.openstreetmap.org/api/0.5/map?bbox=-0.396457433591,51.9070136086,-0.045542566409,52.1229863914'
-
     :type location: :class:`Point`-like object
     :param location: Centre of the region
     :type distance: ``int``
@@ -132,15 +127,6 @@ class Node(point.Point):
                  timestamp=None, tags=None):
         """Initialise a new ``Node`` object
 
-        >>> Node(0, 52, 0)
-        Node(0, 52.0, 0.0, False, None, None, None)
-        >>> from dtopt import NORMALIZE_WHITESPACE
-        >>> Node(0, 52, 0, True, "jnrowe", utils.Timestamp(2008, 1, 25))
-        Node(0, 52.0, 0.0, True, 'jnrowe',
-             Timestamp(2008, 1, 25, 0, 0), None)
-        >>> Node(0, 52, 0, tags={"key": "value"})
-        Node(0, 52.0, 0.0, False, None, None, {'key': 'value'})
-
         :type ident: ``int``
         :param ident: Unique identifier for the node
         :type latitude: ``float`` or coercible to ``float``
@@ -168,16 +154,6 @@ class Node(point.Point):
     def __str__(self, mode="dms"):
         """Pretty printed location string
 
-        >>> print(Node(0, 52, 0))
-        Node 0 (52°00'00"N, 000°00'00"E)
-        >>> from dtopt import NORMALIZE_WHITESPACE
-        >>> print(Node(0, 52, 0, True, "jnrowe",
-        ...            utils.Timestamp(2008, 1, 25)))
-        Node 0 (52°00'00"N, 000°00'00"E) [visible, user: jnrowe, timestamp:
-        2008-01-25T00:00:00+00:00]
-        >>> print(Node(0, 52, 0, tags={"key": "value"}))
-        Node 0 (52°00'00"N, 000°00'00"E) [key: value]
-
         :type mode: ``str``
         :param mode: Coordinate formatting system to use
         :rtype: ``str``
@@ -194,14 +170,6 @@ class Node(point.Point):
 
     def toosm(self):
         """Generate a OSM node element subtree
-
-        >>> ET.tostring(Node(0, 52, 0).toosm())
-        '<node id="0" lat="52.0" lon="0.0" visible="false" />'
-        >>> ET.tostring(Node(0, 52, 0, True, "jnrowe",
-        ...                  utils.Timestamp(2008, 1, 25)).toosm())
-        '<node id="0" lat="52.0" lon="0.0" timestamp="2008-01-25T00:00:00+00:00" user="jnrowe" visible="true" />'
-        >>> ET.tostring(Node(0, 52, 0, tags={"key": "value"}).toosm())
-        '<node id="0" lat="52.0" lon="0.0" visible="false"><tag k="key" v="value" /></node>'
 
         :rtype: :class:`ET.Element`
         :return: OSM node element
@@ -225,12 +193,6 @@ class Node(point.Point):
     def get_area_url(self, distance):
         """Generate URL for downloading OSM data within a region
 
-        >>> Home = Node(0, 52, 0)
-        >>> Home.get_area_url(3)
-        'http://api.openstreetmap.org/api/0.5/map?bbox=-0.0438497383115,51.9730034021,0.0438497383115,52.0269965979'
-        >>> Home.get_area_url(12)
-        'http://api.openstreetmap.org/api/0.5/map?bbox=-0.175398634277,51.8920136086,0.175398634277,52.1079863914'
-
         :type distance: ``int``
         :param distance: Boundary distance in kilometres
         :rtype: ``str``
@@ -242,11 +204,6 @@ class Node(point.Point):
 
     def fetch_area_osm(self, distance):
         """Fetch, and import, an OSM region
-
-        >>> Home = Node(0, 52, 0)
-        >>> # The following test is skipped, because the Osm object doesn't
-        >>> # support a reliable way __repr__ method.
-        >>> Home.fetch_area_osm(3) # doctest: +SKIP
 
         :type distance: ``int``
         :param distance: Boundary distance in kilometres
@@ -315,15 +272,6 @@ class Way(point.Points):
     def __repr__(self):
         """Self-documenting string representation
 
-        >>> Way(0, (0, 1, 2))
-        Way(0, [0, 1, 2], False, None, None, None)
-        >>> from dtopt import NORMALIZE_WHITESPACE
-        >>> Way(0, (0, 1, 2), True, "jnrowe", utils.Timestamp(2008, 1, 25))
-        Way(0, [0, 1, 2], True, 'jnrowe', Timestamp(2008, 1, 25, 0, 0),
-            None)
-        >>> Way(0, (0, 1, 2), tags={"key": "value"})
-        Way(0, [0, 1, 2], False, None, None, {'key': 'value'})
-
         :rtype: ``str``
         :return: String to recreate ``Way`` object
 
@@ -332,37 +280,6 @@ class Way(point.Points):
 
     def __str__(self, nodes=False):
         """Pretty printed location string
-
-        >>> from dtopt import NORMALIZE_WHITESPACE
-        >>> print(Way(0, (0, 1, 2)))
-        Way 0 (nodes: 0, 1, 2)
-        >>> print(Way(0, (0, 1, 2), True, "jnrowe",
-        ...           utils.Timestamp(2008, 1, 25)))
-        Way 0 (nodes: 0, 1, 2)
-              [visible, user: jnrowe, timestamp: 2008-01-25T00:00:00+00:00]
-        >>> print(Way(0, (0, 1, 2), tags={"key": "value"}))
-        Way 0 (nodes: 0, 1, 2) [key: value]
-        >>> nodes = [
-        ...     Node(0, 52.015749, -0.221765, True, "jnrowe",
-        ...          utils.Timestamp(2008, 1, 25, 12, 52, 11), None),
-        ...     Node(1, 52.015761, -0.221767, True, None,
-        ...          utils.Timestamp(2008, 1, 25, 12, 53, 14),
-        ...          {"created_by": "hand", "highway": "crossing"}),
-        ...     Node(2, 52.015754, -0.221766, True, "jnrowe",
-        ...          utils.Timestamp(2008, 1, 25, 12, 52, 30),
-        ...          {"amenity": "pub"}),
-        ... ]
-        >>> print(Way(0, (0, 1, 2), tags={"key": "value"}).__str__(nodes))
-        Way 0 [key: value]
-            Node 0 (52°00'56"N, 000°13'18"W)
-                   [visible, user: jnrowe,
-                    timestamp: 2008-01-25T12:52:11+00:00]
-            Node 1 (52°00'56"N, 000°13'18"W)
-                   [visible, timestamp: 2008-01-25T12:53:14+00:00,
-                    highway: crossing, created_by: hand]
-            Node 2 (52°00'56"N, 000°13'18"W)
-                   [visible, user: jnrowe,
-                    timestamp: 2008-01-25T12:52:30+00:00, amenity: pub]
 
         :type nodes: ``list``
         :param nodes: Nodes to be used in expanding references
@@ -385,14 +302,6 @@ class Way(point.Points):
 
     def toosm(self):
         """Generate a OSM way element subtree
-
-        >>> ET.tostring(Way(0, (0, 1, 2)).toosm())
-        '<way id="0" visible="false"><nd ref="0" /><nd ref="1" /><nd ref="2" /></way>'
-        >>> ET.tostring(Way(0, (0, 1, 2), True, "jnrowe",
-        ...                 utils.Timestamp(2008, 1, 25)).toosm())
-        '<way id="0" timestamp="2008-01-25T00:00:00+00:00" user="jnrowe" visible="true"><nd ref="0" /><nd ref="1" /><nd ref="2" /></way>'
-        >>> ET.tostring(Way(0, (0, 1, 2), tags={"key": "value"}).toosm())
-        '<way id="0" visible="false"><tag k="key" v="value" /><nd ref="0" /><nd ref="1" /><nd ref="2" /></way>'
 
         :rtype: :class:`ET.Element`
         :return: OSM way element
@@ -492,20 +401,6 @@ class Osm(point.Points):
                     {"ref": "My Way", "highway": "primary"})],
                 generator="upoints/0.9.0")
 
-        >>> from dtopt import NORMALIZE_WHITESPACE
-        >>> region = Osm(open("test/data/osm"))
-        >>> for node in sorted([x for x in region if isinstance(x, Node)],
-        ...                    key=attrgetter("ident")):
-        ...     print(node)
-        Node 0 (52°00'56"N, 000°13'18"W)
-               [visible, user: jnrowe, timestamp: 2008-01-25T12:52:11+00:00]
-        Node 1 (52°00'56"N, 000°13'18"W)
-               [visible, timestamp: 2008-01-25T12:53:00+00:00,
-                highway: crossing, created_by: hand]
-        Node 2 (52°00'56"N, 000°13'18"W)
-               [visible, user: jnrowe, timestamp: 2008-01-25T12:52:30+00:00,
-                amenity: pub]
-
         :type osm_file: ``file``, ``list`` or ``str``
         :param osm_file: OpenStreetMap data to read
         :rtype: ``Osm``
@@ -537,16 +432,7 @@ class Osm(point.Points):
                 self.append(Way.parse_elem(elem))
 
     def export_osm_file(self):
-        """Generate OpenStreetMap element tree from `Osm`
-
-        >>> from sys import stdout
-        >>> region = Osm(open("test/data/osm"))
-        >>> xml = region.export_osm_file()
-        >>> from dtopt import ELLIPSIS
-        >>> xml.write(stdout)
-        <osm generator="upoints/..." version="0.5"><node id="0" lat="52.015749" lon="-0.221765" timestamp="2008-01-25T12:52:11+00:00" user="jnrowe" visible="true" /><node id="1" lat="52.015761" lon="-0.221767" timestamp="2008-01-25T12:53:00+00:00" visible="true"><tag k="highway" v="crossing" /><tag k="created_by" v="hand" /></node><node id="2" lat="52.015754" lon="-0.221766" timestamp="2008-01-25T12:52:30+00:00" user="jnrowe" visible="true"><tag k="amenity" v="pub" /></node><way id="0" timestamp="2008-01-25T13:00:00+00:00" visible="true"><tag k="ref" v="My Way" /><tag k="highway" v="primary" /><nd ref="0" /><nd ref="1" /><nd ref="2" /></way></osm>
-
-        """
+        """Generate OpenStreetMap element tree from `Osm`"""
         osm = ET.Element('osm', {"generator": self.generator,
                                  "version": self.version})
         for obj in self:

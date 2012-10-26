@@ -91,37 +91,6 @@ class Point(object):
                  angle="degrees", timezone=0):
         """Initialise a new ``Point`` object
 
-        >>> Home = Point(52.015, -0.221)
-        >>> Home = Point(52.015, -0.221, timezone=60) # BST
-        >>> Home = Point(52.015, -0.221, "US customary")
-        >>> Home = Point(52.015, -0.221, "nautical")
-        >>> test = Point(math.pi / 4, math.pi / 2, angle="radians")
-        >>> test.latitude == 45
-        True
-        >>> test.longitude == 90
-        True
-        >>> test = Point((50, 20, 10), (-1, -3, -12))
-        >>> "%.3f" % test.latitude
-        '50.336'
-        >>> "%.3f" % test.longitude
-        '-1.053'
-        >>> bad_angle = Point(52.015, -0.221, angle=None)
-        Traceback (most recent call last):
-        ...
-        ValueError: Unknown angle type `None'
-        >>> bad_latitude = Point(-92, -0.221)
-        Traceback (most recent call last):
-        ...
-        ValueError: Invalid latitude value `-92.000000'
-        >>> bad_longitude = Point(52.015, 185)
-        Traceback (most recent call last):
-        ...
-        ValueError: Invalid longitude value `185.000000'
-        >>> bad_units = Point(52.015, -0.221, units=None)
-        Traceback (most recent call last):
-        ...
-        ValueError: Unknown units type `None'
-
         :type latitude: ``float`` or coercible to ``float``, ``tuple`` or
             ``list``
         :param latitude: Location's latitude
@@ -184,26 +153,6 @@ class Point(object):
     def __dict__(self):
         """Emulate ``__dict__`` class attribute for class
 
-        >>> Home = Point(52.015, -0.221)
-        >>> from dtopt import NORMALIZE_WHITESPACE
-        >>> sorted(Home.__dict__.items())
-        [('_angle', 'degrees'), ('_latitude', 52.015),
-         ('_longitude', -0.221), ('_rad_latitude', 0.9078330104248505),
-         ('_rad_longitude', -0.0038571776469074684), ('timezone', 0),
-         ('units', 'metric')]
-        >>> class Test(Point):
-        ...     __slots__ = ("TEST", )
-        ...     def __init__(self, latitude, longitude):
-        ...         super(Test, self).__init__(latitude, longitude)
-        ...         self.TEST = "tested"
-        >>> a = Test(52.015, -0.221)
-        >>> sorted(a.__dict__.items())
-        [('TEST', 'tested'), ('_angle', 'degrees'),
-         ('_latitude', 52.015), ('_longitude', -0.221),
-         ('_rad_latitude', 0.9078330104248505),
-         ('_rad_longitude', -0.0038571776469074684), ('timezone', 0),
-         ('units', 'metric')]
-
         :rtype: ``dict``
         :return: Object attributes, as would be provided by a class that didn't
             set ``__slots__``
@@ -220,9 +169,6 @@ class Point(object):
     def __repr__(self):
         """Self-documenting string representation
 
-        >>> Point(52.015, -0.221)
-        Point(52.015, -0.221, 'metric', 'degrees', 0)
-
         :rtype: ``str``
         :return: String to recreate ``Point`` object
 
@@ -231,17 +177,6 @@ class Point(object):
 
     def __str__(self, mode="dd"):
         """Pretty printed location string
-
-        >>> print(Point(52.015, -0.221))
-        N52.015°; W000.221°
-        >>> print(Point(52.015, -0.221).__str__(mode="dm"))
-        52°00.90'N, 000°13.26'W
-        >>> print(Point(52.015, -0.221).__str__(mode="dms"))
-        52°00'54"N, 000°13'15"W
-        >>> print(Point(33.9400, -118.4000).__str__(mode="dms"))
-        33°56'23"N, 118°24'00"W
-        >>> print(Point(52.015, -0.221).__str__(mode="locator"))
-        IO92
 
         :type mode: ``str``
         :param mode: Coordinate formatting system to use
@@ -267,17 +202,6 @@ class Point(object):
 
     def __unicode__(self, mode="dd"):
         """Pretty printed Unicode location string
-
-        >>> print(Point(52.015, -0.221))
-        N52.015°; W000.221°
-        >>> print(Point(52.015, -0.221).__unicode__(mode="dm"))
-        52°00.90′N, 000°13.26′W
-        >>> print(Point(52.015, -0.221).__unicode__(mode="dms"))
-        52°00′54″N, 000°13′15″W
-        >>> print(Point(33.9400, -118.4000).__unicode__(mode="dms"))
-        33°56′23″N, 118°24′00″W
-        >>> print(Point(52.015, -0.221).__unicode__(mode="locator"))
-        IO92
 
         :type mode: ``str``
         :param mode: Coordinate formatting system to use
@@ -307,15 +231,6 @@ class Point(object):
     def __eq__(self, other, accuracy=None):
         """Compare ``Point`` objects for equality with optional accuracy amount
 
-        >>> Point(52.015, -0.221) == Point(52.015, -0.221)
-        True
-        >>> Point(52.015, -0.221) == Point(52.6333, -2.5)
-        False
-        >>> Point(52.015, -0.221).__eq__(Point(52.6333, -2.5), 168)
-        False
-        >>> Point(52.015, -0.221).__eq__(Point(52.6333, -2.5), 170)
-        True
-
         :type other: ``Point`` instance
         :param other: Object to test for equality against
         :type accuracy: ``float`` or ``None``
@@ -332,15 +247,6 @@ class Point(object):
 
     def __ne__(self, other, accuracy=None):
         """Compare ``Point`` objects for inequality with optional accuracy amount
-
-        >>> Point(52.015, -0.221) != Point(52.015, -0.221)
-        False
-        >>> Point(52.015, -0.221) != Point(52.6333, -2.5)
-        True
-        >>> Point(52.015, -0.221).__ne__(Point(52.6333, -2.5), 168)
-        True
-        >>> Point(52.015, -0.221).__ne__(Point(52.6333, -2.5), 170)
-        False
 
         :type other: ``Point`` instance
         :param other: Object to test for inequality against
@@ -373,14 +279,6 @@ class Point(object):
     def to_grid_locator(self, precision="square"):
         """Calculate Maidenhead locator from latitude and longitude
 
-        >>> Home = Point(52.015, -0.221)
-        >>> Home.to_grid_locator("extsquare")
-        'IO92va33'
-        >>> Home.to_grid_locator("subsquare")
-        'IO92va'
-        >>> Home.to_grid_locator()
-        'IO92'
-
         :type precision: ``str``
         :param precision: Precision with which generate locator string
         :rtype: ``str``
@@ -392,31 +290,10 @@ class Point(object):
     def distance(self, other, method="haversine"):
         """Calculate the distance from self to other
 
-        >>> "%i kM" % Point(52.015, -0.221).distance(Point(52.6333, -2.5))
-        '169 kM'
-        >>> "%i kM" % Point(52.015, -0.221).distance(Point(52.6333, -2.5),
-        ...                                          method="sloc")
-        '169 kM'
-        >>> "%i kM" % Point(52.015, -0.221).distance(Point(52.6333, -2.5),
-        ...                                          method="Invalid")
-        Traceback (most recent call last):
-        ...
-        ValueError: Unknown method type `Invalid'
-
         As a smoke test this check uses the example from Wikipedia's
         `Great-circle distance entry`_ of Nashville International Airport to
         Los Angeles International Airport, and is correct to within
         2 kilometres of the calculation there.
-
-        >>> to_loc = Point(33.9400, -118.4000)
-        >>> "%i kM" % Point(36.1200, -86.6700).distance(to_loc)
-        '2884 kM'
-        >>> "%i mi" % Point(36.1200, -86.6700, "imperial").distance(to_loc)
-        '1792 mi'
-        >>> "%i nmi" % Point(36.1200, -86.6700, "nautical").distance(to_loc)
-        '1557 nmi'
-        >>> "%i kM" % Point(36.1200, -86.6700).distance(to_loc, method="sloc")
-        '2884 kM'
 
         :type other: ``Point`` instance
         :param other: Location to calculate distance to
@@ -468,20 +345,6 @@ class Point(object):
            doesn't make sense to you when calculating return bearings there are
            plenty of resources on the web that explain spherical geometry.
 
-        >>> "%i" % Point(52.015, -0.221).bearing(Point(52.6333, -2.5))
-        '294'
-        >>> "%i" % Point(52.6333, -2.5).bearing(Point(52.015, -0.221))
-        '113'
-        >>> "%i" % Point(36.1200, -86.6700).bearing(Point(33.9400,
-        ...                                               -118.4000))
-        '274'
-        >>> "%i" % Point(33.9400, -118.4000).bearing(Point(36.1200,
-        ...                                                -86.6700))
-        '76'
-        >>> Point(52.015, -0.221).bearing(Point(52.6333, -2.5),
-        ...                               format="string")
-        'North-west'
-
         .. todo:: Add Rhumb line calculation
 
         :type other: ``Point`` instance
@@ -516,11 +379,6 @@ class Point(object):
 
            :meth:`bearing`
 
-        >>> Point(52.015, -0.221).midpoint(Point(52.6333, -2.5))
-        Point(52.3296314054, -1.35253686056, 'metric', 'degrees', 0)
-        >>> Point(36.1200, -86.6700).midpoint(Point(33.9400, -118.4000))
-        Point(36.082394919, -102.752173705, 'metric', 'degrees', 0)
-
         :type other: ``Point`` instance
         :param other: Location to calculate midpoint to
         :rtype: ``Point`` instance
@@ -546,20 +404,6 @@ class Point(object):
 
            :meth:`bearing`
 
-        >>> "%i" % Point(52.015, -0.221).final_bearing(Point(52.6333, -2.5))
-        '293'
-        >>> "%i" % Point(52.6333, -2.5).final_bearing(Point(52.015, -0.221))
-        '114'
-        >>> "%i" % Point(36.1200, -86.6700).final_bearing(Point(33.9400,
-        ...                                                     -118.4000))
-        '256'
-        >>> "%i" % Point(33.9400, -118.4000).final_bearing(Point(36.1200,
-        ...                                                      -86.6700))
-        '94'
-        >>> Point(52.015, -0.221).bearing(Point(52.6333, -2.5),
-        ...                               format="string")
-        'North-west'
-
         :type other: ``Point`` instance
         :param other: Location to calculate final bearing to
         :type format: ``str``
@@ -579,17 +423,6 @@ class Point(object):
 
     def destination(self, bearing, distance):
         """Calculate the destination from self given bearing and distance
-
-        >>> Point(52.015, -0.221).destination(294, 169)
-        Point(52.6116387502, -2.50937408195, 'metric', 'degrees', 0)
-        >>> Home = Point(52.015, -0.221, "imperial")
-        >>> Home.destination(294, 169 / utils.STATUTE_MILE)
-        Point(52.6116387502, -2.50937408195, 'metric', 'degrees', 0)
-        >>> Home = Point(52.015, -0.221, "nautical")
-        >>> Home.destination(294, 169 / utils.NAUTICAL_MILE)
-        Point(52.6116387502, -2.50937408195, 'metric', 'degrees', 0)
-        >>> Point(36.1200, -86.6700).destination(274, 2885)
-        Point(33.6872799138, -118.327218421, 'metric', 'degrees', 0)
 
         :type bearing: ``float`` or coercible to ``float``
         :param bearing: Bearing from self
@@ -630,16 +463,6 @@ class Point(object):
 
            :func:`utils.sun_rise_set`
 
-        >>> date = datetime.date(2007, 6, 15)
-        >>> Point(52.015, -0.221).sunrise(date)
-        datetime.time(3, 40)
-        >>> Point(52.6333, -2.5).sunrise(date)
-        datetime.time(3, 45)
-        >>> Point(36.1200, -86.6700).sunrise(date)
-        datetime.time(10, 29)
-        >>> Point(33.9400, -118.4000).sunrise(date)
-        datetime.time(12, 41)
-
         :type date: :class:`datetime.date`
         :param date: Calculate rise or set for given date
         :type zenith: ``None`` or ``str``
@@ -657,16 +480,6 @@ class Point(object):
         .. seealso::
 
            :func:`utils.sun_rise_set`
-
-        >>> date = datetime.date(2007, 6, 15)
-        >>> Point(52.015, -0.221).sunset(date)
-        datetime.time(20, 22)
-        >>> Point(52.6333, -2.5).sunset(date)
-        datetime.time(20, 35)
-        >>> Point(36.1200, -86.6700).sunset(date)
-        datetime.time(1, 5)
-        >>> Point(33.9400, -118.4000).sunset(date)
-        datetime.time(3, 6)
 
         :type date: :class:`datetime.date`
         :param date: Calculate rise or set for given date
@@ -686,16 +499,6 @@ class Point(object):
 
            :func:`utils.sun_rise_set`
 
-        >>> date = datetime.date(2007, 6, 15)
-        >>> Point(52.015, -0.221).sun_events(date)
-        (datetime.time(3, 40), datetime.time(20, 22))
-        >>> Point(52.6333, -2.5).sun_events(date)
-        (datetime.time(3, 45), datetime.time(20, 35))
-        >>> Point(36.1200, -86.6700).sun_events(date)
-        (datetime.time(10, 29), datetime.time(1, 5))
-        >>> Point(33.9400, -118.4000).sun_events(date)
-        (datetime.time(12, 41), datetime.time(3, 6))
-
         :type date: :class:`datetime.date`
         :param date: Calculate rise or set for given date
         :type zenith: ``None`` or ``str``
@@ -711,9 +514,6 @@ class Point(object):
     # familiar with geodesics.
     def inverse(self, other):
         """Calculate the inverse geodesic from self to other
-
-        >>> "%i, %i" % Point(52.015, -0.221).inverse(Point(52.6333, -2.5))
-        '294, 169'
 
         :type other: ``Point`` instance
         :param other: Location to calculate inverse geodesic to
@@ -738,9 +538,6 @@ class TimedPoint(Point):
     def __init__(self, latitude, longitude, units="metric",
                  angle="degrees", timezone=0, time=None):
         """Initialise a new ``TimedPoint`` object
-
-        >>> place = TimedPoint(52.015, -0.221,
-        ...                    time=datetime.datetime(2008, 7, 29))
 
         :type latitude: ``float`` or coercible to ``float``, ``tuple`` or
             ``list``
@@ -773,12 +570,6 @@ class Points(list):
     def __init__(self, points=None, parse=False, units="metric"):
         """Initialise a new ``Points`` object
 
-        >>> from dtopt import NORMALIZE_WHITESPACE
-        >>> Points([Point(52.015, -0.221), Point(53.645, -0.284)])
-        Points([Point(52.015, -0.221, 'metric', 'degrees', 0),
-                Point(53.645, -0.284, 'metric', 'degrees', 0)],
-               False, 'metric')
-
         :type points: ``list`` of `Point` objects
         :param points: :class:`Point` objects to wrap
         :type parse: ``bool``
@@ -803,15 +594,6 @@ class Points(list):
     def __repr__(self):
         """Self-documenting string representation
 
-        >>> locations = [Point(0, 0)] * 4
-        >>> from dtopt import NORMALIZE_WHITESPACE
-        >>> Points(locations)
-        Points([Point(0.0, 0.0, 'metric', 'degrees', 0),
-                Point(0.0, 0.0, 'metric', 'degrees', 0),
-                Point(0.0, 0.0, 'metric', 'degrees', 0),
-                Point(0.0, 0.0, 'metric', 'degrees', 0)],
-               False, 'metric')
-
         :rtype: ``str``
         :return: String to recreate ``Points`` object
 
@@ -820,14 +602,6 @@ class Points(list):
 
     def import_locations(self, locations):
         """Import locations from arguments
-
-        >>> locations = Points()
-        >>> locations.import_locations(["0;0", "52.015 -0.221"])
-        >>> from dtopt import NORMALIZE_WHITESPACE
-        >>> locations
-        Points([Point(0.0, 0.0, 'metric', 'degrees', 0),
-                Point(52.015, -0.221, 'metric', 'degrees', 0)],
-                False, 'metric')
 
         :type locations: ``list`` of ``str`` or ``tuple``
         :param locations: Location identifiers
@@ -844,12 +618,6 @@ class Points(list):
     def distance(self, method="haversine"):
         """Calculate distances between locations
 
-        >>> locations = Points(["52.015;-0.221", "52.168;0.040",
-        ...                     "52.855;0.657"],
-        ...                    parse=True)
-        >>> "%.3f" % sum(locations.distance())
-        '111.632'
-
         :type method: ``str``
         :param method: Method used to calculate distance
         :rtype: ``list`` of ``float``
@@ -864,12 +632,6 @@ class Points(list):
     def bearing(self, format="numeric"):
         """Calculate bearing between locations
 
-        >>> locations = Points(["52.015;-0.221", "52.168;0.040",
-        ...                     "52.855;0.657"],
-        ...                    parse=True)
-        >>> ["%.3f" % x for x in locations.bearing()]
-        ['46.242', '28.416']
-
         :type format: ``str``
         :param format: Format of the bearing string to return
         :rtype: ``list`` of ``float``
@@ -882,12 +644,6 @@ class Points(list):
 
     def final_bearing(self, format="numeric"):
         """Calculate final bearing between locations
-
-        >>> locations = Points(["52.015;-0.221", "52.168;0.040",
-        ...                     "52.855;0.657"],
-        ...                    parse=True)
-        >>> ["%.3f" % x for x in locations.final_bearing()]
-        ['46.448', '28.906']
 
         :type format: ``str``
         :param format: Format of the bearing string to return
@@ -902,14 +658,6 @@ class Points(list):
     def inverse(self):
         """Calculate the inverse geodesic between locations
 
-        >>> locations = Points(["52.015;-0.221", "52.168;0.040",
-        ...                     "52.855;0.657"],
-        ...                    parse=True)
-        >>> from dtopt import NORMALIZE_WHITESPACE
-        >>> list(locations.inverse())
-        [(46.24239319802467, 24.629669163425465),
-         (28.41617384845358, 87.00207583308533)]
-
         :rtype: ``list`` of 2 ``tuple`` of ``float``
         :return: Bearing and distance between points in series
 
@@ -920,14 +668,6 @@ class Points(list):
     def midpoint(self):
         """Calculate the midpoint between locations
 
-        >>> locations = Points(["52.015;-0.221", "52.168;0.040",
-        ...                     "52.855;0.657"],
-        ...                    parse=True)
-        >>> from dtopt import NORMALIZE_WHITESPACE
-        >>> list(locations.midpoint())
-        [Point(52.0915720432, -0.0907237539143, 'metric', 'degrees', 0),
-         Point(52.5119010509, 0.346088603087, 'metric', 'degrees', 0)]
-
         :rtype: ``list`` of :class:`Point` instances
         :return: Midpoint between points in series
 
@@ -936,12 +676,6 @@ class Points(list):
 
     def range(self, location, distance):
         """Test whether locations are within a given range of ``location``
-
-        >>> locations = Points(["52.015;-0.221", "52.168;0.040",
-        ...                     "52.855;0.657"],
-        ...                    parse=True)
-        >>> list(locations.range(Point(52.015, -0.221), 20))
-        [Point(52.015, -0.221, 'metric', 'degrees', 0)]
 
         :type location: :class:`Point`
         :param location: Location to test range against
@@ -955,15 +689,6 @@ class Points(list):
 
     def destination(self, bearing, distance):
         """Calculate destination locations for given distance and bearings
-
-        >>> locations = Points(["52.015;-0.221", "52.168;0.040",
-        ...                     "52.855;0.657"],
-        ...                    parse=True)
-        >>> from dtopt import NORMALIZE_WHITESPACE
-        >>> list(locations.destination(42, 240))
-        [Point(53.5956078217, 2.2141813684, 'metric', 'degrees', 0),
-         Point(53.7484691495, 2.48403821375, 'metric', 'degrees', 0),
-         Point(54.4348338045, 3.14183478498, 'metric', 'degrees', 0)]
 
         :type bearing: ``float`` or coercible to ``float``
         :param bearing: Bearing to move on in degrees
@@ -979,12 +704,6 @@ class Points(list):
     def sunrise(self, date=None, zenith=None):
         """Calculate sunrise times for locations
 
-        >>> locations = Points(["52.015;-0.221", "52.168;0.040",
-        ...                     "52.855;0.657"],
-        ...                    parse=True)
-        >>> list(locations.sunrise(datetime.date(2008, 5, 2)))
-        [datetime.time(4, 28), datetime.time(4, 26), datetime.time(4, 21)]
-
         :type date: :class:`datetime.date`
         :param date: Calculate sunrise for given date
         :type zenith: ``None`` or ``str``
@@ -997,12 +716,6 @@ class Points(list):
 
     def sunset(self, date=None, zenith=None):
         """Calculate sunset times for locations
-
-        >>> locations = Points(["52.015;-0.221", "52.168;0.040",
-        ...                     "52.855;0.657"],
-        ...                    parse=True)
-        >>> list(locations.sunset(datetime.date(2008, 5, 2)))
-        [datetime.time(19, 28), datetime.time(19, 27), datetime.time(19, 27)]
 
         :type date: :class:`datetime.date`
         :param date: Calculate sunset for given date
@@ -1017,15 +730,6 @@ class Points(list):
     def sun_events(self, date=None, zenith=None):
         """Calculate sunrise/sunset times for locations
 
-        >>> locations = Points(["52.015;-0.221", "52.168;0.040",
-        ...                     "52.855;0.657"],
-        ...                    parse=True)
-        >>> from dtopt import NORMALIZE_WHITESPACE
-        >>> list(locations.sun_events(datetime.date(2008, 5, 2)))
-        [(datetime.time(4, 28), datetime.time(19, 28)),
-         (datetime.time(4, 26), datetime.time(19, 27)),
-         (datetime.time(4, 21), datetime.time(19, 27))]
-
         :type date: :class:`datetime.date`
         :param date: Calculate rise or set for given date
         :type zenith: ``None`` or ``str``
@@ -1039,14 +743,6 @@ class Points(list):
     def to_grid_locator(self, precision="square"):
         """Calculate Maidenhead locator for locations
 
-        >>> locations = Points(["52.015;-0.221", "52.168;0.040",
-        ...                     "52.855;0.657"],
-        ...                    parse=True)
-        >>> list(locations.to_grid_locator("extsquare"))
-        ['IO92va33', 'JO02ae40', 'JO02hu85']
-        >>> list(locations.to_grid_locator("subsquare"))
-        ['IO92va', 'JO02ae', 'JO02hu']
-
         :type precision: ``str``
         :param precision: Precision with which generate locator string
         :rtype: ``list`` of ``str``
@@ -1059,18 +755,6 @@ class Points(list):
 class TimedPoints(Points):
     def speed(self):
         """Calculate speed between :class:`Points`
-
-        >>> locations = TimedPoints()
-        >>> locations.extend([
-        ...     TimedPoint(52.015, -0.221,
-        ...                time=datetime.datetime(2008, 7, 28, 16, 38)),
-        ...     TimedPoint(52.168, 0.040,
-        ...                time=datetime.datetime(2008, 7, 28, 18, 38)),
-        ...     TimedPoint(52.855, 0.657,
-        ...                time=datetime.datetime(2008, 7, 28, 19, 17)),
-        ... ])
-        >>> map(lambda s: "%.3f" % s, locations.speed())
-        ['12.315', '133.849']
 
         :rtype: ``list`` of ``float``
         :return: Speed between :class:`Point` elements in km/h
@@ -1098,13 +782,6 @@ class KeyedPoints(dict):
     def __init__(self, points=None, parse=False, units="metric"):
         """Initialise a new ``KeyedPoints`` object
 
-        >>> from dtopt import NORMALIZE_WHITESPACE
-        >>> KeyedPoints({"a": Point(52.015, -0.221),
-        ...              "b": Point(53.645, -0.284)})
-        KeyedPoints({'a': Point(52.015, -0.221, 'metric', 'degrees', 0),
-                     'b': Point(53.645, -0.284, 'metric', 'degrees', 0)},
-                    False, 'metric')
-
         :type points: ``dict`` of :class:`Point` objects
         :param points: :class:`Point` objects to wrap
         :type parse: ``bool``
@@ -1129,13 +806,6 @@ class KeyedPoints(dict):
     def __repr__(self):
         """Self-documenting string representation
 
-        >>> locations = {"a": Point(0, 0), "b": Point(0,0)}
-        >>> from dtopt import NORMALIZE_WHITESPACE
-        >>> KeyedPoints(locations)
-        KeyedPoints({'a': Point(0.0, 0.0, 'metric', 'degrees', 0),
-                     'b': Point(0.0, 0.0, 'metric', 'degrees', 0)},
-                    False, 'metric')
-
         :rtype: ``str``
         :return: String to recreate ``KeyedPoints`` object
 
@@ -1144,15 +814,6 @@ class KeyedPoints(dict):
 
     def import_locations(self, locations):
         """Import locations from arguments
-
-        >>> locations = KeyedPoints()
-        >>> locations.import_locations([("prime", "0;0"),
-        ...                             ("home", "52.015 -0.221")])
-        >>> from dtopt import NORMALIZE_WHITESPACE
-        >>> locations
-        KeyedPoints({'prime': Point(0.0, 0.0, 'metric', 'degrees', 0),
-                     'home': Point(52.015, -0.221, 'metric', 'degrees', 0)},
-                     False, 'metric')
 
         :type locations: ``list`` of 2 ``tuple`` of ``str``
         :param locations: Identifiers and locations
@@ -1168,13 +829,6 @@ class KeyedPoints(dict):
 
     def distance(self, order, method="haversine"):
         """Calculate distances between locations
-
-        >>> locations = KeyedPoints([("home", "52.015;-0.221"),
-        ...                          ("Carol", "52.168;0.040"),
-        ...                          ("Kenny", "52.855;0.657")],
-        ...                         parse=True)
-        >>> "%.3f" % sum(locations.distance(("home", "Carol", "Kenny")))
-        '111.632'
 
         :type order: ``list`` of identifiers
         :param order: Order to process elements in
@@ -1192,13 +846,6 @@ class KeyedPoints(dict):
     def bearing(self, order, format="numeric"):
         """Calculate bearing between locations
 
-        >>> locations = KeyedPoints([("home", "52.015;-0.221"),
-        ...                          ("Carol", "52.168;0.040"),
-        ...                          ("Kenny", "52.855;0.657")],
-        ...                         parse=True)
-        >>> ["%.3f" % x for x in locations.bearing(("home", "Carol", "Kenny"))]
-        ['46.242', '28.416']
-
         :type order: ``list`` of identifiers
         :param order: Order to process elements in
         :type format: ``str``
@@ -1213,14 +860,6 @@ class KeyedPoints(dict):
 
     def final_bearing(self, order, format="numeric"):
         """Calculate final bearing between locations
-
-        >>> locations = KeyedPoints([("home", "52.015;-0.221"),
-        ...                          ("Carol", "52.168;0.040"),
-        ...                          ("Kenny", "52.855;0.657")],
-        ...                         parse=True)
-        >>> ["%.3f" % x
-        ...  for x in locations.final_bearing(("home", "Carol", "Kenny"))]
-        ['46.448', '28.906']
 
         :type order: ``list`` of identifiers
         :param order: Order to process elements in
@@ -1237,15 +876,6 @@ class KeyedPoints(dict):
     def inverse(self, order):
         """Calculate the inverse geodesic between locations
 
-        >>> locations = KeyedPoints([("home", "52.015;-0.221"),
-        ...                          ("Carol", "52.168;0.040"),
-        ...                          ("Kenny", "52.855;0.657")],
-        ...                         parse=True)
-        >>> from dtopt import NORMALIZE_WHITESPACE
-        >>> list(locations.inverse(("home", "Carol", "Kenny")))
-        [(46.24239319802467, 24.629669163425465),
-         (28.41617384845358, 87.00207583308533)]
-
         :type order: ``list`` of identifiers
         :param order: Order to process elements in
         :rtype: ``list`` of 2 ``tuple`` of ``float``
@@ -1259,15 +889,6 @@ class KeyedPoints(dict):
     def midpoint(self, order):
         """Calculate the midpoint between locations
 
-        >>> locations = KeyedPoints([("home", "52.015;-0.221"),
-        ...                          ("Carol", "52.168;0.040"),
-        ...                          ("Kenny", "52.855;0.657")],
-        ...                         parse=True)
-        >>> from dtopt import NORMALIZE_WHITESPACE
-        >>> list(locations.midpoint(("home", "Carol", "Kenny")))
-        [Point(52.0915720432, -0.0907237539143, 'metric', 'degrees', 0),
-         Point(52.5119010509, 0.346088603087, 'metric', 'degrees', 0)]
-
         :type order: ``list`` of identifiers
         :param order: Order to process elements in
         :rtype: ``list`` of `Point` instance
@@ -1280,13 +901,6 @@ class KeyedPoints(dict):
     def range(self, location, distance):
         """Test whether locations are within a given range of the first
 
-        >>> locations = KeyedPoints([("home", "52.015;-0.221"),
-        ...                          ("Carol", "52.168;0.040"),
-        ...                          ("Kenny", "52.855;0.657")],
-        ...                         parse=True)
-        >>> list(locations.range(Point(52.015, -0.221), 20))
-        [('home', Point(52.015, -0.221, 'metric', 'degrees', 0))]
-
         :type location: `Point`
         :param location: Location to test range against
         :type distance: ``float``
@@ -1298,16 +912,6 @@ class KeyedPoints(dict):
 
     def destination(self, bearing, distance):
         """Calculate destination locations for given distance and bearings
-
-        >>> locations = KeyedPoints([("home", "52.015;-0.221"),
-        ...                          ("Carol", "52.168;0.040"),
-        ...                          ("Kenny", "52.855;0.657")],
-        ...                         parse=True)
-        >>> from dtopt import NORMALIZE_WHITESPACE
-        >>> list(locations.destination(42, 240))
-        [('home', Point(53.5956078217, 2.2141813684, 'metric', 'degrees', 0)),
-         ('Carol', Point(53.7484691495, 2.48403821375, 'metric', 'degrees', 0)),
-         ('Kenny', Point(54.4348338045, 3.14183478498, 'metric', 'degrees', 0))]
 
         :type bearing: ``float`` or coercible to ``float``
         :param bearing: Bearing to move on in degrees
@@ -1322,15 +926,6 @@ class KeyedPoints(dict):
     def sunrise(self, date=None, zenith=None):
         """Calculate sunrise times for locations
 
-        >>> locations = KeyedPoints([("home", "52.015;-0.221"),
-        ...                          ("Carol", "52.168;0.040"),
-        ...                          ("Kenny", "52.855;0.657")],
-        ...                         parse=True)
-        >>> from dtopt import NORMALIZE_WHITESPACE
-        >>> list(locations.sunrise(datetime.date(2008, 5, 2)))
-        [('home', datetime.time(4, 28)), ('Carol', datetime.time(4, 26)),
-         ('Kenny', datetime.time(4, 21))]
-
         :type date: :class:`datetime.date`
         :param date: Calculate sunrise for given date
         :type zenith: ``None`` or ``str``
@@ -1343,15 +938,6 @@ class KeyedPoints(dict):
 
     def sunset(self, date=None, zenith=None):
         """Calculate sunset times for locations
-
-        >>> locations = KeyedPoints([("home", "52.015;-0.221"),
-        ...                          ("Carol", "52.168;0.040"),
-        ...                          ("Kenny", "52.855;0.657")],
-        ...                         parse=True)
-        >>> from dtopt import NORMALIZE_WHITESPACE
-        >>> list(locations.sunset(datetime.date(2008, 5, 2)))
-        [('home', datetime.time(19, 28)), ('Carol', datetime.time(19, 27)),
-         ('Kenny', datetime.time(19, 27))]
 
         :type date: :class:`datetime.date`
         :param date: Calculate sunset for given date
@@ -1366,16 +952,6 @@ class KeyedPoints(dict):
     def sun_events(self, date=None, zenith=None):
         """Calculate sunrise/sunset times for locations
 
-        >>> locations = KeyedPoints([("home", "52.015;-0.221"),
-        ...                          ("Carol", "52.168;0.040"),
-        ...                          ("Kenny", "52.855;0.657")],
-        ...                         parse=True)
-        >>> from dtopt import NORMALIZE_WHITESPACE
-        >>> list(locations.sun_events(datetime.date(2008, 5, 2)))
-        [('home', (datetime.time(4, 28), datetime.time(19, 28))),
-         ('Carol', (datetime.time(4, 26), datetime.time(19, 27))),
-         ('Kenny', (datetime.time(4, 21), datetime.time(19, 27)))]
-
         :type date: :class:`datetime.date`
         :param date: Calculate rise or set for given date
         :type zenith: ``None`` or ``str``
@@ -1388,15 +964,6 @@ class KeyedPoints(dict):
 
     def to_grid_locator(self, precision="square"):
         """Calculate Maidenhead locator for locations
-
-        >>> locations = KeyedPoints([("home", "52.015;-0.221"),
-        ...                          ("Carol", "52.168;0.040"),
-        ...                          ("Kenny", "52.855;0.657")],
-        ...                         parse=True)
-        >>> list(locations.to_grid_locator("extsquare"))
-        [('home', 'IO92va33'), ('Carol', 'JO02ae40'), ('Kenny', 'JO02hu85')]
-        >>> list(locations.to_grid_locator("subsquare"))
-        [('home', 'IO92va'), ('Carol', 'JO02ae'), ('Kenny', 'JO02hu')]
 
         :type precision: ``str``
         :param precision: Precision with which generate locator string

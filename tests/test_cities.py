@@ -1,0 +1,74 @@
+#
+#
+"""test_cities - Test cities support"""
+# Copyright (C) 2006-2011  James Rowe <jnrowe@gmail.com>
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+
+from upoints.cities import (City, Cities)
+
+
+class TestCity():
+    def test___init__(self):
+        """
+        >>> from dtopt import NORMALIZE_WHITESPACE
+        >>> City(498, "Zwickau", "City", "Sachsen", "DE", "Earth", 108835,
+        ...      None, 12.5, 50.72, None, (1997, 4, 10, 0, 0, 0, 3, 100, -1),
+        ...      "M.Dowling@tu-bs.de")
+        City(498, 'Zwickau', 'City', 'Sachsen', 'DE', 'Earth', 108835, None,
+             12.5, 50.72, None, (1997, 4, 10, 0, 0, 0, 3, 100, -1),
+             'M.Dowling@tu-bs.de')
+
+        """
+
+    def test___str__(self):
+        """
+        >>> t = City(498, "Zwickau", "City", "Sachsen", "DE", "Earth", 108835,
+        ...          None, 50.72, 12.5, None,
+        ...          (1997, 4, 10, 0, 0, 0, 3, 100, -1), "M.Dowling@tu-bs.de")
+        >>> print(t)
+        ID          : 498
+        Type        : City
+        Population  : 108835
+        Size        : 
+        Name        : Zwickau
+         Country    : DE
+         Region     : Sachsen
+        Location    : Earth
+         Longitude  : 12.5
+         Latitude   : 50.72
+         Elevation  : 
+        Date        : 19970410
+        Entered-By  : M.Dowling@tu-bs.de
+
+        """
+
+
+class TestCities():
+    def test_import_locations(self):
+        """
+        >>> cities_file = open("test/data/city_data")
+        >>> cities = Cities(cities_file)
+        >>> for city in sorted(cities, key=lambda x: x.identifier):
+        ...     print("%i - %s (%s;%s)" % (city.identifier, city.name,
+        ...                                city.latitude, city.longitude))
+        126 - London (51.5;-0.083)
+        127 - Luxembourg (49.617;6.117)
+        128 - Lyon (45.767;4.867)
+        >>> cities_file.seek(0)
+        >>> manual_list = cities_file.read().split("//\\n")
+        >>> cities = Cities(manual_list)
+
+        """

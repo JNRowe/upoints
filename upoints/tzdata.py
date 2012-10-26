@@ -34,9 +34,6 @@ class Zone(point.Point):
     def __init__(self, location, country, zone, comments=None):
         """Initialise a new ``Zone`` object
 
-        >>> Zone("+513030-0000731", 'GB', "Europe/London")
-        Zone('+513030-0000730', 'GB', 'Europe/London', None)
-
         :type location: ``str``
         :param location: Primary location in ISO 6709 format
         :type country: ``str``
@@ -57,9 +54,6 @@ class Zone(point.Point):
     def __repr__(self):
         """Self-documenting string representation
 
-        >>> Zone("+513030-0000731", 'GB', "Europe/London")
-        Zone('+513030-0000730', 'GB', 'Europe/London', None)
-
         :rtype: ``str``
         :return: String to recreate ``Zone`` object
 
@@ -70,12 +64,6 @@ class Zone(point.Point):
 
     def __str__(self, mode="dms"):
         """Pretty printed location string
-
-        >>> print(Zone("+513030-0000731", 'GB', "Europe/London"))
-        Europe/London (GB: 51°30'30"N, 000°07'30"W)
-        >>> print(Zone("+0658-15813", "FM", "Pacific/Ponape",
-        ...            ["Ponape (Pohnpei)", ]))
-        Pacific/Ponape (FM: 06°58'00"N, 158°13'00"W also Ponape (Pohnpei))
 
         :type mode: ``str``
         :param mode: Coordinate formatting system to use
@@ -129,15 +117,6 @@ class Zones(point.Points):
              Zone(None, None, "AO", "Antartica/McMurdo",
                   ["McMurdo Station", "Ross Island"])]
 
-        >>> zones = Zones(open("test/data/timezones"))
-        >>> from dtopt import NORMALIZE_WHITESPACE
-        >>> for value in sorted(zones, key=attrgetter("zone")):
-        ...     print(value)
-        Africa/Luanda (AO: 08°48'00"S, 013°14'00"E)
-        America/Curacao (AN: 12°11'00"N, 069°00'00"W)
-        Antarctica/McMurdo (AQ: 77°50'00"S, 166°36'00"E also McMurdo Station,
-        Ross Island)
-
         :type zone_file: ``file``, ``list`` or ``str``
         :param zone_file: ``zone.tab`` data to read
         :rtype: ``list``
@@ -159,13 +138,6 @@ class Zones(point.Points):
 
     def dump_zone_file(self):
         """Generate a zoneinfo compatible zone description table
-
-        >>> zones = Zones(open("test/data/timezones"))
-        >>> from dtopt import NORMALIZE_WHITESPACE
-        >>> Zones.dump_zone_file(zones)
-        ['AN\\t+121100-0690000\\tAmerica/Curacao',
-         'AO\\t-084800+0131400\\tAfrica/Luanda',
-         'AQ\\t-775000+1663600\\tAntarctica/McMurdo\\tMcMurdo Station, Ross Island']
 
         :rtype: ``list``
         :return: zoneinfo descriptions
