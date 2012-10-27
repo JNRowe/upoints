@@ -87,7 +87,8 @@ LATITUDE_EXTSQUARE = LATITUDE_SUBSQUARE / 10
 
 
 class FileFormatError(ValueError):
-    """Error object for data parsing error
+
+    """Error object for data parsing error.
 
     >>> raise FileFormatError
     Traceback (most recent call last):
@@ -103,8 +104,9 @@ class FileFormatError(ValueError):
     .. versionadded:: 0.3.0
 
     """
+
     def __init__(self, site=None):
-        """Initialise a new ``FileFormatError`` object
+        """Initialise a new ``FileFormatError`` object.
 
         :type site: ``str``
         :param site: Remote site name to display in error message
@@ -114,7 +116,7 @@ class FileFormatError(ValueError):
         self.site = site
 
     def __str__(self):
-        """Pretty printed error string
+        """Pretty printed error string.
 
         :rtype: ``str``
         :return: Human readable error string
@@ -130,7 +132,7 @@ class FileFormatError(ValueError):
 
 #{ Implementation utilities
 def value_or_empty(value):
-    """Return an empty string for display when value is ``None``
+    """Return an empty string for display when value is ``None``.
 
     >>> value_or_empty(None)
     ''
@@ -147,12 +149,14 @@ def value_or_empty(value):
 
 
 def repr_assist(obj, remap=None):
-    """Helper function to simplify ``__repr__`` methods
+    """Helper function to simplify ``__repr__`` methods.
 
     :type obj: Any
     :param obj: Object to pull arg values for
     :type remap: ``dict``
     :param remap: Arg pairs to remap before output
+    :rtype: ``str``
+    :return: Self-documenting representation of ``value``
 
     """
     if not remap:
@@ -177,7 +181,7 @@ def repr_assist(obj, remap=None):
 
 
 def prepare_read(data, method="readlines", mode="r"):
-    """Prepare various input types for parsing
+    """Prepare various input types for parsing.
 
     >>> prepare_read(open("test/data/real_file"))
     ['This is a test file-type object\\n']
@@ -211,7 +215,7 @@ def prepare_read(data, method="readlines", mode="r"):
 
 
 def prepare_csv_read(data, field_names, *args, **kwargs):
-    """Prepare various input types for CSV parsing
+    """Prepare various input types for CSV parsing.
 
     >>> list(prepare_csv_read(open("test/data/real_file.csv"),
     ...                       ("type", "bool", "string")))
@@ -239,7 +243,7 @@ def prepare_csv_read(data, field_names, *args, **kwargs):
 
 
 def prepare_xml_read(data):
-    """Prepare various input types for XML parsing
+    """Prepare various input types for XML parsing.
 
     >>> prepare_xml_read(open("test/data/real_file.xml")).find("tag").text
     'This is a test file-type object'
@@ -270,7 +274,7 @@ def prepare_xml_read(data):
 
 #{ Angle conversion utilities
 def to_dms(angle, style="dms"):
-    """Convert decimal angle to degrees, minutes and possibly seconds
+    """Convert decimal angle to degrees, minutes and possibly seconds.
 
     >>> to_dms(52.015)
     (52, 0, 54.0)
@@ -307,7 +311,7 @@ def to_dms(angle, style="dms"):
 
 
 def to_dd(degrees, minutes, seconds=0):
-    """Convert degrees, minutes and optionally seconds to decimal angle
+    """Convert degrees, minutes and optionally seconds to decimal angle.
 
     >>> "%.3f" % to_dd(52, 0, 54)
     '52.015'
@@ -331,7 +335,7 @@ def to_dd(degrees, minutes, seconds=0):
 
 
 def __chunk(segment, abbr=False):
-    """Generate a ``tuple`` of compass direction names
+    """Generate a ``tuple`` of compass direction names.
 
     :type segment: ``int``
     :param segment: Compass segment to generate names for
@@ -366,7 +370,7 @@ COMPASS_NAMES_ABBR = reduce(add, [__chunk(x, True) for x in range(4)])
 
 
 def angle_to_name(angle, segments=8, abbr=False):
-    """Convert angle in to direction name
+    """Convert angle in to direction name.
 
     >>> angle_to_name(0)
     'North'
@@ -415,10 +419,11 @@ def angle_to_name(angle, segments=8, abbr=False):
 
 #{ Date andtime handling utilities
 class TzOffset(datetime.tzinfo):
-    """Time offset from UTC"""
+
+    """Time offset from UTC."""
 
     def __init__(self, tzstring):
-        """Initialise a new ``TzOffset`` object
+        """Initialise a new ``TzOffset`` object.
 
         >>> TzOffset("+00:00").utcoffset()
         datetime.timedelta(0)
@@ -441,7 +446,7 @@ class TzOffset(datetime.tzinfo):
         self.__offset = datetime.timedelta(hours=hours, minutes=minutes)
 
     def __repr__(self):
-        """Self-documenting string representation
+        """Self-documenting string representation.
 
         >>> TzOffset("+00:00")
         TzOffset('+00:00')
@@ -459,7 +464,7 @@ class TzOffset(datetime.tzinfo):
         return repr_assist(self, {"tzstring": self.as_timezone()})
 
     def dst(self, dt=None):
-        """Daylight Savings Time offset
+        """Daylight Savings Time offset.
 
         .. note::
            This method is only for compatibility with the ``tzinfo`` interface,
@@ -472,7 +477,7 @@ class TzOffset(datetime.tzinfo):
         return datetime.timedelta(0)
 
     def as_timezone(self):
-        """Create a human-readable timezone string
+        """Create a human-readable timezone string.
 
         :rtype: ``str``
         :return: Human-readable timezone definition
@@ -486,7 +491,7 @@ class TzOffset(datetime.tzinfo):
         return '%+03i:%02i' % (hours, minutes)
 
     def utcoffset(self, dt=None):
-        """Return the offset in minutes from UTC
+        """Return the offset in minutes from UTC.
 
         :type dt: Any
         :param dt: For compatibility with parent classes
@@ -496,10 +501,11 @@ class TzOffset(datetime.tzinfo):
 
 
 class Timestamp(datetime.datetime):
-    """Class for representing an OSM timestamp value"""
+
+    """Class for representing an OSM timestamp value."""
 
     def isoformat(self):
-        """Generate an ISO 8601 formatted time stamp
+        """Generate an ISO 8601 formatted time stamp.
 
         :rtype: ``str``
         :return: `ISO 8601`_ formatted time stamp
@@ -516,7 +522,7 @@ class Timestamp(datetime.datetime):
 
     @staticmethod
     def parse_isoformat(timestamp):
-        """Parse an ISO 8601 formatted time stamp
+        """Parse an ISO 8601 formatted time stamp.
 
         >>> Timestamp.parse_isoformat("2008-02-06T13:33:26+0000")
         Timestamp(2008, 2, 6, 13, 33, 26, tzinfo=TzOffset('+00:00'))
@@ -556,7 +562,7 @@ iso6709_matcher = re.compile(r'^([-+][\d.]+)([-+][\d.]+)([+-][\d.]+)?/$')
 
 
 def from_iso6709(coordinates):
-    """Parse ISO 6709 coordinate strings
+    """Parse ISO 6709 coordinate strings.
 
     This function will parse ISO 6709-1983(E) "Standard representation of
     latitude, longitude and altitude for geographic point locations" elements.
@@ -665,7 +671,7 @@ def from_iso6709(coordinates):
 
 
 def to_iso6709(latitude, longitude, altitude=None, format="dd", precision=4):
-    """Produce ISO 6709 coordinate strings
+    """Produce ISO 6709 coordinate strings.
 
     This function will produce ISO 6709-1983(E) "Standard representation of
     latitude, longitude and altitude for geographic point locations" elements.
@@ -774,7 +780,7 @@ def to_iso6709(latitude, longitude, altitude=None, format="dd", precision=4):
 
 
 def angle_to_distance(angle, units="metric"):
-    """Convert angle in to distance along a great circle
+    """Convert angle in to distance along a great circle.
 
     >>> "%.3f" % angle_to_distance(1)
     '111.125'
@@ -809,7 +815,7 @@ def angle_to_distance(angle, units="metric"):
 
 
 def distance_to_angle(distance, units="metric"):
-    """Convert a distance in to an angle along a great circle
+    """Convert a distance in to an angle along a great circle.
 
     >>> "%.3f" % round(distance_to_angle(111.212))
     '1.000'
@@ -840,7 +846,7 @@ def distance_to_angle(distance, units="metric"):
 
 
 def from_grid_locator(locator):
-    """Calculate geodesic latitude/longitude from Maidenhead locator
+    """Calculate geodesic latitude/longitude from Maidenhead locator.
 
     >>> "%.3f, %.3f" % from_grid_locator("BL11bh16")
     '21.319, -157.904'
@@ -928,7 +934,7 @@ def from_grid_locator(locator):
 
 
 def to_grid_locator(latitude, longitude, precision="square"):
-    """Calculate Maidenhead locator from latitude and longitude
+    """Calculate Maidenhead locator from latitude and longitude.
 
     >>> to_grid_locator(21.319, -157.904, "extsquare")
     'BL11bh16'
@@ -998,7 +1004,7 @@ def to_grid_locator(latitude, longitude, precision="square"):
 
 
 def parse_location(location):
-    """Parse latitude and longitude from string location
+    """Parse latitude and longitude from string location.
 
     >>> "%.3f;%.3f" % parse_location("52.015;-0.221")
     '52.015;-0.221'
@@ -1025,7 +1031,7 @@ def parse_location(location):
     """
 
     def split_dms(text, hemisphere):
-        """Split degrees, minutes and seconds string
+        """Split degrees, minutes and seconds string.
 
         :type text: ``str``
         :param text: Text to split
@@ -1104,7 +1110,7 @@ ZENITH = {
 
 def sun_rise_set(latitude, longitude, date, mode="rise", timezone=0,
                  zenith=None):
-    """Calculate sunrise or sunset for a specific location
+    """Calculate sunrise or sunset for a specific location.
 
     This function calculates the time sunrise or sunset, or optionally the
     beginning or end of a specified twilight period.
@@ -1237,7 +1243,7 @@ def sun_rise_set(latitude, longitude, date, mode="rise", timezone=0,
 
 
 def sun_events(latitude, longitude, date, timezone=0, zenith=None):
-    """Convenience function for calculating sunrise and sunset
+    """Convenience function for calculating sunrise and sunset.
 
     >>> sun_events(52.015, -0.221, datetime.date(2007, 6, 15))
     (datetime.time(3, 40), datetime.time(20, 22))
@@ -1322,7 +1328,7 @@ def sun_events(latitude, longitude, date, timezone=0, zenith=None):
 
 
 def dump_xearth_markers(markers, name="identifier"):
-    """Generate an Xearth compatible marker file
+    """Generate an Xearth compatible marker file.
 
     ``dump_xearth_markers()`` writes a simple Xearth_ marker file from
     a dictionary of :class:`trigpoints.Trigpoint` objects.
@@ -1431,7 +1437,7 @@ def dump_xearth_markers(markers, name="identifier"):
 
 
 def calc_radius(latitude, ellipsoid="WGS84"):
-    """Calculate earth radius for a given latitude
+    """Calculate earth radius for a given latitude.
 
     This function is most useful when dealing with datasets that are very
     localised and require the accuracy of an ellipsoid model without the

@@ -40,7 +40,7 @@ SOURCES = [
 ]
 
 def data_file(resource):
-    """Generate a local filename for the resource
+    """Generate a local filename for the resource.
 
     >>> print data_file(SOURCES[0])
     test/data/cities.dat
@@ -67,7 +67,7 @@ def data_file(resource):
         return filename
 
 def main(argv=None):
-    """Main script handler
+    """Main script handler.
 
     :param list argv: Command line arguments
 

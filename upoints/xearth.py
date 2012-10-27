@@ -27,7 +27,8 @@ from upoints import (point, utils)
 
 
 class Xearth(point.Point):
-    """Class for representing a location from a Xearth marker
+
+    """Class for representing a location from a Xearth marker.
 
     .. versionadded:: 0.2.0
 
@@ -36,7 +37,7 @@ class Xearth(point.Point):
     __slots__ = ('comment', )
 
     def __init__(self, latitude, longitude, comment=None):
-        """Initialise a new ``Xearth`` object
+        """Initialise a new ``Xearth`` object.
 
         >>> Xearth(52.015, -0.221, "James Rowe's house")
         Xearth(52.015, -0.221, "James Rowe's house")
@@ -53,7 +54,7 @@ class Xearth(point.Point):
         self.comment = comment
 
     def __str__(self, mode="dd"):
-        """Pretty printed location string
+        """Pretty printed location string.
 
         .. seealso:
 
@@ -83,21 +84,22 @@ class Xearth(point.Point):
 
 
 class Xearths(point.KeyedPoints):
-    """Class for representing a group of :class:`Xearth` objects
+
+    """Class for representing a group of :class:`Xearth` objects.
 
     .. versionadded:: 0.5.1
 
     """
 
     def __init__(self, marker_file=None):
-        """Initialise a new ``Xearths`` object"""
+        """Initialise a new ``Xearths`` object."""
         super(Xearths, self).__init__()
         self._marker_file = marker_file
         if marker_file:
             self.import_locations(marker_file)
 
     def __str__(self):
-        """``Xearth`` objects rendered for use with Xearth/Xplanet
+        """``Xearth`` objects rendered for use with Xearth/Xplanet.
 
         >>> markers = Xearths(open("test/data/xearth"))
         >>> print(markers)
@@ -111,7 +113,7 @@ class Xearths(point.KeyedPoints):
         return "\n".join(utils.dump_xearth_markers(self, "comment"))
 
     def import_locations(self, marker_file):
-        """Parse Xearth data files
+        """Parse Xearth data files.
 
         ``import_locations()`` returns a dictionary with keys containing the
         xearth_ name, and values consisting of a :class:`Xearth` object and

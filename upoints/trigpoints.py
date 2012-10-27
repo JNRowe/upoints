@@ -29,8 +29,8 @@ from upoints import (point, utils)
 
 
 class Trigpoint(point.Point):
-    """
-    Class for representing a location from a trigpoint marker file
+
+    """Class for representing a location from a trigpoint marker file.
 
     .. warning::
        Although this class stores and presents the representation of altitude
@@ -47,8 +47,7 @@ class Trigpoint(point.Point):
 
     def __init__(self, latitude, longitude, altitude, name=None,
                  identity=None):
-        """
-        Initialise a new ``Trigpoint`` object
+        """Initialise a new ``Trigpoint`` object.
 
         >>> Trigpoint(52.010585, -0.173443, 97.0, "Bygrave")
         Trigpoint(52.010585, -0.173443, 97.0, 'Bygrave', None)
@@ -71,8 +70,7 @@ class Trigpoint(point.Point):
         self.identity = identity
 
     def __str__(self, mode="dms"):
-        """
-        Pretty printed location string
+        """Pretty printed location string.
 
         >>> print(Trigpoint(52.010585, -0.173443, 97.0))
         52°00'38"N, 000°10'24"W alt 97m
@@ -100,25 +98,22 @@ class Trigpoint(point.Point):
 
 
 class Trigpoints(point.KeyedPoints):
-    """
-    Class for representing a group of :class:`Trigpoint` objects
+
+    """Class for representing a group of :class:`Trigpoint` objects.
 
     .. versionadded:: 0.5.1
 
     """
 
     def __init__(self, marker_file=None):
-        """
-        Initialise a new ``Trigpoints`` object
-        """
+        """Initialise a new ``Trigpoints`` object."""
         super(Trigpoints, self).__init__()
         self._marker_file = marker_file
         if marker_file:
             self.import_locations(marker_file)
 
     def import_locations(self, marker_file):
-        """
-        Import trigpoint database files
+        """Import trigpoint database files.
 
         ``import_locations()`` returns a dictionary with keys containing the
         trigpoint identifier, and values that are :class:`Trigpoint` objects.

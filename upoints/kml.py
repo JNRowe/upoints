@@ -54,7 +54,7 @@ DEF_KML_VERSION = "2.2"
 
 def create_elem(tag, attr=None, text=None, kml_version=DEF_KML_VERSION,
                 human_namespace=False):
-    """Create a partial :class:`ET.Element` wrapper with namespace defined
+    """Create a partial :class:`ET.Element` wrapper with namespace defined.
 
     :type tag: ``str``
     :param tag: Tag name
@@ -88,7 +88,8 @@ def create_elem(tag, attr=None, text=None, kml_version=DEF_KML_VERSION,
 
 
 class Placemark(trigpoints.Trigpoint):
-    """Class for representing a Placemark element from KML data files
+
+    """Class for representing a Placemark element from KML data files.
 
     .. versionadded:: 0.6.0
 
@@ -98,7 +99,7 @@ class Placemark(trigpoints.Trigpoint):
 
     def __init__(self, latitude, longitude, altitude=None, name=None,
                  description=None):
-        """Initialise a new ``Placemark`` object
+        """Initialise a new ``Placemark`` object.
 
         >>> Placemark(52, 0, 4)
         Placemark(52.0, 0.0, 4.0, None, None)
@@ -126,7 +127,7 @@ class Placemark(trigpoints.Trigpoint):
         self.description = description
 
     def __str__(self, mode="dms"):
-        """Pretty printed location string
+        """Pretty printed location string.
 
         >>> print(Placemark(52, 0, 4))
         52°00'00"N, 000°00'00"E alt 4m
@@ -150,7 +151,7 @@ class Placemark(trigpoints.Trigpoint):
             return location
 
     def tokml(self, kml_version=DEF_KML_VERSION, human_namespace=False):
-        """Generate a KML Placemark element subtree
+        """Generate a KML Placemark element subtree.
 
         >>> ET.tostring(Placemark(52, 0, 4).tokml())
         '<ns0:Placemark xmlns:ns0="http://earth.google.com/kml/2.2"><ns0:Point><ns0:coordinates>0.0,52.0,4</ns0:coordinates></ns0:Point></ns0:Placemark>'
@@ -200,21 +201,22 @@ class Placemark(trigpoints.Trigpoint):
 
 
 class Placemarks(point.KeyedPoints):
-    """Class for representing a group of :class:`Placemark` objects
+
+    """Class for representing a group of :class:`Placemark` objects.
 
     .. versionadded:: 0.6.0
 
     """
 
     def __init__(self, kml_file=None):
-        """Initialise a new ``Placemarks`` object"""
+        """Initialise a new ``Placemarks`` object."""
         super(Placemarks, self).__init__()
         self._kml_file = kml_file
         if kml_file:
             self.import_locations(kml_file)
 
     def import_locations(self, kml_file, kml_version=None):
-        """Import KML data files
+        """Import KML data files.
 
         ``import_locations()`` returns a dictionary with keys containing the
         section title, and values consisting of :class:`Placemark` objects.
@@ -311,7 +313,7 @@ class Placemarks(point.KeyedPoints):
 
     def export_kml_file(self, kml_version=DEF_KML_VERSION,
                         human_namespace=False):
-        """Generate KML element tree from ``Placemarks``
+        """Generate KML element tree from ``Placemarks``.
 
         >>> from sys import stdout
         >>> locations = Placemarks(open("test/data/kml"))

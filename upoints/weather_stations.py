@@ -30,7 +30,8 @@ from upoints import (point, trigpoints, utils)
 
 
 class Station(trigpoints.Trigpoint):
-    """Class for representing a weather station from a NOAA data file
+
+    """Class for representing a weather station from a NOAA data file.
 
     .. versionadded:: 0.2.0
 
@@ -41,7 +42,7 @@ class Station(trigpoints.Trigpoint):
 
     def __init__(self, alt_id, name, state, country, wmo, latitude, longitude,
                  ua_latitude, ua_longitude, altitude, ua_altitude, rbsn):
-        """Initialise a new ``Station`` object
+        """Initialise a new ``Station`` object.
 
         >>> from dtopt import NORMALIZE_WHITESPACE
         >>> Station('EGLL', 'London / Heathrow Airport', None,
@@ -87,7 +88,7 @@ class Station(trigpoints.Trigpoint):
         self.rbsn = rbsn
 
     def __str__(self, mode="dd"):
-        """Pretty printed location string
+        """Pretty printed location string.
 
         .. seealso::
 
@@ -121,14 +122,15 @@ class Station(trigpoints.Trigpoint):
 
 
 class Stations(point.KeyedPoints):
-    """Class for representing a group of `Station` objects
+
+    """Class for representing a group of `Station` objects.
 
     .. versionadded:: 0.5.1
 
     """
 
     def __init__(self, data=None, index="WMO"):
-        """Initialise a new `Stations` object"""
+        """Initialise a new `Stations` object."""
         super(Stations, self).__init__()
         self._data = data
         self._index = index
@@ -136,7 +138,7 @@ class Stations(point.KeyedPoints):
             self.import_locations(data, index)
 
     def import_locations(self, data, index="WMO"):
-        """Parse NOAA weather station data files
+        """Parse NOAA weather station data files.
 
         ``import_locations()`` returns a dictionary with keys containing either
         the WMO or ICAO identifier, and values that are ``Station`` objects

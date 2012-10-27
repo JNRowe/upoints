@@ -26,6 +26,7 @@ from upoints import (point, utils)
 
 
 class Cell(point.Point):
+
     """Class for representing a cellular cite from OpenCellID.org_
 
     .. versionadded:: 0.11.0
@@ -39,7 +40,7 @@ class Cell(point.Point):
 
     def __init__(self, ident, latitude, longitude, mcc, mnc, lac, cellid,
                  crange, samples, created, updated):
-        """Initialise a new ``Cell`` object
+        """Initialise a new ``Cell`` object.
 
         >>> from dtopt import NORMALIZE_WHITESPACE
         >>> Cell(4, 52.015, -0.221, 21, 46, 40000, 10, 0, 1,
@@ -85,7 +86,7 @@ class Cell(point.Point):
         self.updated = updated
 
     def __str__(self, mode=None):
-        """OpenCellID.org-style location string
+        """OpenCellID.org-style location string.
 
         .. seealso::
 
@@ -112,21 +113,22 @@ class Cell(point.Point):
 
 
 class Cells(point.KeyedPoints):
-    """Class for representing a group of :class:`Cell` objects
+
+    """Class for representing a group of :class:`Cell` objects.
 
     .. versionadded:: 0.11.0
 
     """
 
     def __init__(self, cells_file=None):
-        """Initialise a new ``Cells`` object"""
+        """Initialise a new ``Cells`` object."""
         super(Cells, self).__init__()
         self._cells_file = cells_file
         if cells_file:
             self.import_locations(cells_file)
 
     def __str__(self):
-        """``Cells`` objects rendered as export from OpenCellID.org
+        """``Cells`` objects rendered as export from OpenCellID.org.
 
         >>> cells = Cells(open("test/data/cells"))
         >>> print(cells)
@@ -145,7 +147,7 @@ class Cells(point.KeyedPoints):
                                          key=attrgetter("ident"))))
 
     def import_locations(self, cells_file):
-        """Parse OpenCellID.org data files
+        """Parse OpenCellID.org data files.
 
         ``import_locations()`` returns a dictionary with keys containing the
         OpenCellID.org_ database identifier, and values consisting of

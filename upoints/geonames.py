@@ -29,8 +29,8 @@ from upoints import (point, trigpoints, utils)
 
 
 class Location(trigpoints.Trigpoint):
-    """
-    Class for representing a location from a geonames.org_ data file
+
+    """Class for representing a location from a geonames.org_ data file.
 
     All country codes are specified with their two letter ISO-3166 country
     code.
@@ -55,8 +55,7 @@ class Location(trigpoints.Trigpoint):
                  longitude, feature_class, feature_code, country, alt_country,
                  admin1, admin2, admin3, admin4, population, altitude, gtopo30,
                  tzname, modified_date, timezone=None):
-        """
-        Initialise a new ``Location`` object
+        """Initialise a new ``Location`` object.
 
         >>> from dtopt import NORMALIZE_WHITESPACE
         >>> Location(2636782, "Stotfold", "Stotfold", None, 52.0, -0.2166667,
@@ -110,6 +109,7 @@ class Location(trigpoints.Trigpoint):
             databases
         :type timezone: ``int``
         :param timezone: The non-DST timezone offset from UTC in minutes
+
         """
         super(Location, self).__init__(latitude, longitude, altitude, name)
         self.geonameid = geonameid
@@ -143,8 +143,7 @@ class Location(trigpoints.Trigpoint):
             self.timezone = None
 
     def __str__(self, mode="dd"):
-        """
-        Pretty printed location string
+        """Pretty printed location string.
 
         .. seealso::
 
@@ -168,6 +167,7 @@ class Location(trigpoints.Trigpoint):
         :param mode: Coordinate formatting system to use
         :rtype: ``str``
         :return: Human readable string representation of ``Location`` object
+
         """
         text = super(Location.__base__, self).__str__(mode)
 
@@ -179,16 +179,15 @@ class Location(trigpoints.Trigpoint):
 
 
 class Locations(point.Points):
-    """
-    Class for representing a group of :class:`Location` objects
+
+    """Class for representing a group of :class:`Location` objects.
 
     .. versionadded:: 0.5.1
+
     """
 
     def __init__(self, data=None, tzfile=None):
-        """
-        Initialise a new ``Locations`` object
-        """
+        """Initialise a new ``Locations`` object."""
         super(Locations, self).__init__()
         if tzfile:
             self.import_timezones_file(tzfile)
@@ -202,8 +201,7 @@ class Locations(point.Points):
             self.import_locations(data)
 
     def import_locations(self, data):
-        """
-        Parse geonames.org country database exports
+        """Parse geonames.org country database exports.
 
         ``import_locations()`` returns a list of :class:`trigpoints.Trigpoint`
         objects generated from the data exported by geonames.org_.
@@ -288,8 +286,7 @@ class Locations(point.Points):
             self.append(Location(**row))
 
     def import_timezones_file(self, data):
-        """
-        Parse geonames.org_ timezone exports
+        """Parse geonames.org_ timezone exports.
 
         ``import_timezones_file()`` returns a dictionary with keys containing
         the timezone identifier, and values consisting of a UTC offset and UTC

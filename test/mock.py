@@ -33,7 +33,7 @@ SOURCES = dict([(os.path.basename(i), i) for i in grab_net_sources.SOURCES])
 BASEDIR = os.path.dirname(__file__)
 
 def isfile(path):
-    """Mock `isfile` to check existence of test files
+    """Mock `isfile` to check existence of test files.
 
     :Parameters:
         path : `str`
@@ -50,7 +50,7 @@ def isfile(path):
     return True
 
 def _get_test_file(filename):
-    """Open a test data file
+    """Open a test data file.
 
     :Parameters:
         filename : `str`
@@ -71,7 +71,7 @@ def _get_test_file(filename):
             raise IOError("Can not open `%s'" % filename)
 
 def open(filename, mode="rb"):
-    """Mock `open` function to open test data files
+    """Mock `open` function to open test data files.
 
     :Parameters:
         filename : `str`
@@ -92,7 +92,7 @@ def open(filename, mode="rb"):
         raise NotImplementedError
 
 def urlopen(url, data=None, proxies=None):
-    """Mock `urlopen` to open test data files
+    """Mock `urlopen` to open test data files.
 
     :Parameters:
         url : `str`
@@ -109,7 +109,7 @@ def urlopen(url, data=None, proxies=None):
 urllib.urlopen = urlopen
 
 class pymetar(ModuleType):
-    """Mock `pymetar` infrastructure for tests
+    """Mock `pymetar` infrastructure for tests.
 
     :since: 0.6.0
 
@@ -118,7 +118,7 @@ class pymetar(ModuleType):
     """
     class ReportFetcher(object):
         def __init__(self, StationCode=None):
-            """Mock `ReportFetcher` initialisation for tests
+            """Mock `ReportFetcher` initialisation for tests.
 
             :Parameters:
                 StationCode : any
@@ -130,14 +130,14 @@ class pymetar(ModuleType):
 
         @staticmethod
         def FetchReport():
-            """Mock ``FetchReport`` function to pass tests"""
+            """Mock ``FetchReport`` function to pass tests."""
             pass
 
 
     class ReportParser(object):
         class ParseReport(object):
             def __init__(self, MetarReport=None):
-                """Mock ``ParseReport`` object to return test data
+                """Mock ``ParseReport`` object to return test data.
 
                 :Parameters:
                     MetarReport : any

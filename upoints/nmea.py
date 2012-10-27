@@ -26,7 +26,7 @@ from upoints import (point, utils)
 
 
 def calc_checksum(sentence):
-    """Calculate a NMEA 0183 checksum for the given sentence
+    """Calculate a NMEA 0183 checksum for the given sentence.
 
     NMEA checksums are a simple XOR of all the characters in the sentence
     between the leading "$" symbol, and the "*" checksum separator.
@@ -51,7 +51,7 @@ def calc_checksum(sentence):
 
 
 def nmea_latitude(latitude):
-    """Generate a NMEA-formatted latitude pair
+    """Generate a NMEA-formatted latitude pair.
 
     >>> nmea_latitude(53.144023333333337)
     ('5308.6414', 'N')
@@ -67,7 +67,7 @@ def nmea_latitude(latitude):
 
 
 def nmea_longitude(longitude):
-    """Generate a NMEA-formatted longitude pair
+    """Generate a NMEA-formatted longitude pair.
 
     >>> nmea_longitude(-3.0154283333333334)
     ('00300.9257', 'W')
@@ -83,7 +83,7 @@ def nmea_longitude(longitude):
 
 
 def parse_latitude(latitude, hemisphere):
-    """Parse a NMEA-formatted latitude pair
+    """Parse a NMEA-formatted latitude pair.
 
     >>> parse_latitude("5308.6414", "N")
     53.14402333333334
@@ -105,7 +105,7 @@ def parse_latitude(latitude, hemisphere):
 
 
 def parse_longitude(longitude, hemisphere):
-    """Parse a NMEA-formatted longitude pair
+    """Parse a NMEA-formatted longitude pair.
 
     >>> parse_longitude("00300.9257", "W")
     -3.0154283333333334
@@ -137,12 +137,13 @@ MODE_INDICATOR = {
 
 
 class LoranPosition(point.Point):
-    """Class for representing a GPS NMEA-formatted Loran-C position"""
+
+    """Class for representing a GPS NMEA-formatted Loran-C position."""
 
     __slots__ = ('time', 'status', 'mode')
 
     def __init__(self, latitude, longitude, time, status, mode=None):
-        """Initialise a new ``LoranPosition`` object
+        """Initialise a new ``LoranPosition`` object.
 
         >>> from dtopt import NORMALIZE_WHITESPACE
         >>> LoranPosition(53.1440233333, -3.01542833333,
@@ -172,7 +173,7 @@ class LoranPosition(point.Point):
         self.mode = mode
 
     def __str__(self, talker="GP"):
-        """Pretty printed position string
+        """Pretty printed position string.
 
         >>> from dtopt import NORMALIZE_WHITESPACE  # For \r handling
         >>> print(LoranPosition(53.1440233333, -3.01542833333,
@@ -202,7 +203,7 @@ class LoranPosition(point.Point):
         return "$%s*%02X\r" % (data, calc_checksum(data))
 
     def mode_string(self):
-        """Return a string version of the reading mode information
+        """Return a string version of the reading mode information.
 
         >>> position = LoranPosition(53.1440233333, -3.01542833333,
         ...                          datetime.time(14, 20, 58), True, None)
@@ -220,7 +221,7 @@ class LoranPosition(point.Point):
 
     @staticmethod
     def parse_elements(elements):
-        """Parse position data elements
+        """Parse position data elements.
 
         >>> from dtopt import NORMALIZE_WHITESPACE
         >>> LoranPosition.parse_elements(["52.32144", "N", "00300.9257", "W",
@@ -232,6 +233,7 @@ class LoranPosition(point.Point):
         :param elements: Data values for fix
         :rtype: ``Fix``
         :return: Fix object representing data
+
         """
         if not len(elements) in (6, 7):
             raise ValueError("Invalid GLL position data")
@@ -249,7 +251,8 @@ class LoranPosition(point.Point):
 
 
 class Position(point.Point):
-    """Class for representing a GPS NMEA-formatted position
+
+    """Class for representing a GPS NMEA-formatted position.
 
     .. versionadded:: 0.8.0
 
@@ -260,7 +263,7 @@ class Position(point.Point):
 
     def __init__(self, time, status, latitude, longitude, speed, track, date,
                  variation, mode=None):
-        """Initialise a new ``Position`` object
+        """Initialise a new ``Position`` object.
 
         >>> from dtopt import NORMALIZE_WHITESPACE
         >>> Position(datetime.time(14, 20, 58), True, 53.1440233333,
@@ -300,7 +303,7 @@ class Position(point.Point):
         self.mode = mode
 
     def __str__(self):
-        """Pretty printed position string
+        """Pretty printed position string.
 
         >>> from dtopt import NORMALIZE_WHITESPACE  # For \r handling
         >>> print(Position(datetime.time(14, 20, 58), True, 53.1440233333,
@@ -331,7 +334,7 @@ class Position(point.Point):
         return "$%s*%02X\r" % (data, calc_checksum(data))
 
     def mode_string(self):
-        """Return a string version of the reading mode information
+        """Return a string version of the reading mode information.
 
         >>> position = Position(datetime.time(14, 20, 58), True, 53.1440233333,
         ...                     -3.01542833333, 109394.7, 202.9,
@@ -350,7 +353,7 @@ class Position(point.Point):
 
     @staticmethod
     def parse_elements(elements):
-        """Parse position data elements
+        """Parse position data elements.
 
         >>> from dtopt import NORMALIZE_WHITESPACE
         >>> Position.parse_elements(["142058", "A", "5308.6414", "N",
@@ -396,7 +399,8 @@ class Position(point.Point):
 
 
 class Fix(point.Point):
-    """Class for representing a GPS NMEA-formatted system fix
+
+    """Class for representing a GPS NMEA-formatted system fix.
 
     .. versionadded:: 0.8.0
 
@@ -420,7 +424,7 @@ class Fix(point.Point):
     def __init__(self, time, latitude, longitude, quality, satellites,
                  dilution, altitude, geoid_delta, dgps_delta=None,
                  dgps_station=None, mode=None):
-        """Initialise a new ``Fix`` object
+        """Initialise a new ``Fix`` object.
 
         >>> from dtopt import NORMALIZE_WHITESPACE
         >>> Fix(datetime.time(14, 20, 27), 52.1380333333, -2.56861166667, 1, 4,
@@ -468,7 +472,7 @@ class Fix(point.Point):
         self.mode = mode
 
     def __str__(self):
-        """Pretty printed location string
+        """Pretty printed location string.
 
         >>> from dtopt import NORMALIZE_WHITESPACE  # For \r handling
         >>> print(Fix(datetime.time(14, 20, 27), 52.1380333333, -2.56861166667,
@@ -499,7 +503,7 @@ class Fix(point.Point):
         return "$%s*%02X\r" % (data, calc_checksum(data))
 
     def quality_string(self):
-        """Return a string version of the quality information
+        """Return a string version of the quality information.
 
         >>> fix = Fix(datetime.time(14, 20, 58), 53.1440233333, -3.01542833333,
         ...           1, 4, 5.6, 1374.6, 34.5, None, None)
@@ -514,7 +518,7 @@ class Fix(point.Point):
 
     @staticmethod
     def parse_elements(elements):
-        """Parse essential fix's data elements
+        """Parse essential fix's data elements.
 
         >>> from dtopt import NORMALIZE_WHITESPACE
         >>> Fix.parse_elements(["142058", "5308.6414", "N", "00300.9257", "W",
@@ -573,7 +577,8 @@ class Fix(point.Point):
 
 
 class Waypoint(point.Point):
-    """Class for representing a NMEA-formatted waypoint
+
+    """Class for representing a NMEA-formatted waypoint.
 
     .. versionadded:: 0.8.0
 
@@ -582,7 +587,7 @@ class Waypoint(point.Point):
     __slots__ = ('name', )
 
     def __init__(self, latitude, longitude, name):
-        """Initialise a new ``Waypoint`` object
+        """Initialise a new ``Waypoint`` object.
 
         >>> Waypoint(52.015, -0.221, "Home")
         Waypoint(52.015, -0.221, 'HOME')
@@ -599,7 +604,7 @@ class Waypoint(point.Point):
         self.name = name.upper()
 
     def __str__(self):
-        """Pretty printed location string
+        """Pretty printed location string.
 
         >>> from dtopt import NORMALIZE_WHITESPACE  # For \r handling
         >>> print(Waypoint(52.015, -0.221, "Home"))
@@ -622,7 +627,7 @@ class Waypoint(point.Point):
 
     @staticmethod
     def parse_elements(elements):
-        """Parse waypoint data elements
+        """Parse waypoint data elements.
 
         >>> Waypoint.parse_elements(["5200.9000", "N", "00013.2600", "W",
         ...                          "HOME"])
@@ -645,14 +650,15 @@ class Waypoint(point.Point):
 
 
 class Locations(point.Points):
-    """Class for representing a group of GPS location objects
+
+    """Class for representing a group of GPS location objects.
 
     .. versionadded:: 0.8.0
 
     """
 
     def __init__(self, gpsdata_file=None):
-        """Initialise a new ``Locations`` object"""
+        """Initialise a new ``Locations`` object."""
         super(Locations, self).__init__()
         self._gpsdata_file = gpsdata_file
         if gpsdata_file:

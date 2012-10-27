@@ -25,7 +25,8 @@ from upoints import (point, utils)
 
 
 class Baken(point.Point):
-    """Class for representing location from baken_ data files
+
+    """Class for representing location from baken_ data files.
 
     .. versionadded:: 0.4.0
 
@@ -39,7 +40,7 @@ class Baken(point.Point):
     def __init__(self, latitude, longitude, antenna=None, direction=None,
                  frequency=None, height=None, locator=None, mode=None,
                  operator=None, power=None, qth=None):
-        """Initialise a new ``Baken`` object
+        """Initialise a new ``Baken`` object.
 
         >>> from dtopt import NORMALIZE_WHITESPACE
         >>> Baken(14.460, 20.680, None, None, None, 0.000, None, None, None,
@@ -107,7 +108,7 @@ class Baken(point.Point):
 
     @locator.setter
     def _set_locator(self, value):
-        """Update the locator, and trigger a latitude and longitude update
+        """Update the locator, and trigger a latitude and longitude update.
 
         >>> test = Baken(None, None, "2 x Turnstile", None, 50.000, 460.000,
         ...              "IO93BF", "A1A", None, 25, None)
@@ -124,7 +125,7 @@ class Baken(point.Point):
         self._latitude, self._longitude = utils.from_grid_locator(value)
 
     def __str__(self, mode="dms"):
-        """Pretty printed location string
+        """Pretty printed location string.
 
         >>> print(Baken(14.460, 20.680, None, None, None, 0.000, None, None,
         ...             None, None, None))
@@ -146,20 +147,21 @@ class Baken(point.Point):
 
 
 class Bakens(point.KeyedPoints):
-    """Class for representing a group of :class:`Baken` objects
+
+    """Class for representing a group of :class:`Baken` objects.
 
     .. versionadded:: 0.5.1
 
     """
 
     def __init__(self, baken_file=None):
-        """Initialise a new `Bakens` object"""
+        """Initialise a new `Bakens` object."""
         super(Bakens, self).__init__()
         if baken_file:
             self.import_locations(baken_file)
 
     def import_locations(self, baken_file):
-        """Import baken data files
+        """Import baken data files.
 
         ``import_locations()`` returns a dictionary with keys containing the
         section title, and values consisting of a collection :class:`Baken`

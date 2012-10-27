@@ -23,7 +23,8 @@ from upoints import (point, utils)
 
 
 class Zone(point.Point):
-    """Class for representing timezone descriptions from zoneinfo data
+
+    """Class for representing timezone descriptions from zoneinfo data.
 
     .. versionadded:: 0.6.0
 
@@ -32,7 +33,7 @@ class Zone(point.Point):
     __slots__ = ('country', 'zone', 'comments')
 
     def __init__(self, location, country, zone, comments=None):
-        """Initialise a new ``Zone`` object
+        """Initialise a new ``Zone`` object.
 
         >>> Zone("+513030-0000731", 'GB', "Europe/London")
         Zone('+513030-0000730', 'GB', 'Europe/London', None)
@@ -55,7 +56,7 @@ class Zone(point.Point):
         self.comments = comments
 
     def __repr__(self):
-        """Self-documenting string representation
+        """Self-documenting string representation.
 
         >>> Zone("+513030-0000731", 'GB', "Europe/London")
         Zone('+513030-0000730', 'GB', 'Europe/London', None)
@@ -68,8 +69,8 @@ class Zone(point.Point):
                                     format="dms")[:-1]
         return utils.repr_assist(self, {"location": location})
 
-    def __str__(self, mode="dms"):
-        """Pretty printed location string
+    def u__str__(self, mode="dms"):
+        """Pretty printed location string.
 
         >>> print(Zone("+513030-0000731", 'GB', "Europe/London"))
         Europe/London (GB: 51°30'30"N, 000°07'30"W)
@@ -92,21 +93,22 @@ class Zone(point.Point):
 
 
 class Zones(point.Points):
-    """Class for representing a group of :class:`Zone` objects
+
+    """Class for representing a group of :class:`Zone` objects.
 
     .. versionadded:: 0.6.0
 
     """
 
     def __init__(self, zone_file=None):
-        """Initialise a new Zones object"""
+        """Initialise a new Zones object."""
         super(Zones, self).__init__()
         self._zone_file = zone_file
         if zone_file:
             self.import_locations(zone_file)
 
     def import_locations(self, zone_file):
-        """Parse zoneinfo zone description data files
+        """Parse zoneinfo zone description data files.
 
         ``import_locations()`` returns a list of :class:`Zone` objects.
 
@@ -158,7 +160,7 @@ class Zones(point.Points):
             self.append(Zone(**row))
 
     def dump_zone_file(self):
-        """Generate a zoneinfo compatible zone description table
+        """Generate a zoneinfo compatible zone description table.
 
         >>> zones = Zones(open("test/data/timezones"))
         >>> from dtopt import NORMALIZE_WHITESPACE

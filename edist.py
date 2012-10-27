@@ -64,7 +64,7 @@ from upoints import (point, utils)
 
 
 class LocationsError(ValueError):
-    """Error object for data parsing error
+    """Error object for data parsing error.
 
     >>> raise LocationsError
     Traceback (most recent call last):
@@ -91,7 +91,7 @@ class LocationsError(ValueError):
 
     """
     def __init__(self, function=None, data=None):
-        """Initialise a new ``LocationsError`` object
+        """Initialise a new ``LocationsError`` object.
 
         :param str function: Function where error is raised
         :param tuple data: Location number and data
@@ -102,7 +102,7 @@ class LocationsError(ValueError):
         self.data = data
 
     def __str__(self):
-        """Pretty printed error string
+        """Pretty printed error string.
 
         :rtype: ``str``
         :return: Human readable error string
@@ -117,7 +117,7 @@ class LocationsError(ValueError):
 
 
 class NumberedPoint(point.Point):
-    """Class for representing locations from command line
+    """Class for representing locations from command line.
 
     .. seealso::
 
@@ -138,7 +138,7 @@ class NumberedPoint(point.Point):
     __slots__ = ("name")
 
     def __init__(self, latitude, longitude, name, units="km"):
-        """Initialise a new ``NumberedPoint`` object
+        """Initialise a new ``NumberedPoint`` object.
 
         >>> NumberedPoint(52.015, -0.221, 4)
         NumberedPoint(52.015, -0.221, 4, 'metric')
@@ -159,7 +159,7 @@ class NumberedPoint(point.Point):
 
 
 class NumberedPoints(point.Points):
-    """Class for representing a group of :class:`NumberedPoint` objects
+    """Class for representing a group of :class:`NumberedPoint` objects.
 
     .. versionadded:: 0.6.0
 
@@ -167,7 +167,7 @@ class NumberedPoints(point.Points):
 
     def __init__(self, locations=None, format="dd", unistr=True,
                  verbose=True, config_locations=None, units="km"):
-        """Initialise a new ``NumberedPoints`` object
+        """Initialise a new ``NumberedPoints`` object.
 
         :type locations: ``list`` of ``str`` objects
         :param locations: Location identifiers
@@ -193,7 +193,7 @@ class NumberedPoints(point.Points):
             self.import_locations(locations, config_locations)
 
     def __repr__(self):
-        """Self-documenting string representation
+        """Self-documenting string representation.
 
         >>> locations = ["0;0"] * 4
         >>> NumberedPoints(locations)
@@ -210,7 +210,7 @@ class NumberedPoints(point.Points):
         return utils.repr_assist(self, {"locations": self[:]})
 
     def import_locations(self, locations, config_locations):
-        """Import locations from arguments
+        """Import locations from arguments.
 
         >>> NumberedPoints(["0;0", "Home", "0;0"],
         ...                config_locations={"Home": (52.015, -0.221)})
@@ -244,7 +244,7 @@ class NumberedPoints(point.Points):
                     raise LocationsError(data=(number, location))
 
     def display(self, locator):
-        """Pretty print locations
+        """Pretty print locations.
 
         >>> locs = NumberedPoints(["Home", "52.168;0.040"],
         ...                       config_locations={"Home": (52.015, -0.221)})
@@ -274,7 +274,7 @@ class NumberedPoints(point.Points):
                 print(output)
 
     def distance(self):
-        """Calculate distances between locations
+        """Calculate distances between locations.
 
         >>> locations = NumberedPoints(["52.015;-0.221", "52.168;0.040"])
         >>> locations.distance()
@@ -319,7 +319,7 @@ class NumberedPoints(point.Points):
             print(sum(distances))
 
     def bearing(self, mode, string):
-        """Calculate bearing/final bearing between locations
+        """Calculate bearing/final bearing between locations.
 
         >>> locations = NumberedPoints(["52.015;-0.221", "52.168;0.040"])
         >>> locations.bearing("bearing", False)
@@ -358,7 +358,7 @@ class NumberedPoints(point.Points):
                 print(bearing)
 
     def range(self, distance):
-        """Test whether locations are within a given range of the first
+        """Test whether locations are within a given range of the first.
 
         >>> locations = NumberedPoints(["52.015;-0.221", "52.168;0.040"])
         >>> locations.range(20)
@@ -392,7 +392,7 @@ class NumberedPoints(point.Points):
                 print(in_range)
 
     def destination(self, options, locator):
-        """Calculate destination locations for given distance and bearings
+        """Calculate destination locations for given distance and bearings.
 
         >>> locations = NumberedPoints(["52.015;-0.221", "52.168;0.040"])
         >>> locations.destination((42, 240), False)
@@ -426,7 +426,7 @@ class NumberedPoints(point.Points):
                 print(output)
 
     def sun_events(self, mode):
-        """Calculate sunrise/sunset times for locations
+        """Calculate sunrise/sunset times for locations.
 
         >>> locations = NumberedPoints(["52.015;-0.221", "52.168;0.040"])
         >>> from dtopt import ELLIPSIS
@@ -454,7 +454,7 @@ class NumberedPoints(point.Points):
                 print(time)
 
     def flight_plan(self, speed, time):
-        """Output the flight plan corresponding to the given locations
+        """Output the flight plan corresponding to the given locations.
 
         .. todo:: Description
 
@@ -517,7 +517,7 @@ class NumberedPoints(point.Points):
 
 
 def process_command_line():
-    """Main command line interface
+    """Main command line interface.
 
     >>> saved_args = sys.argv[1:]
     >>> sys.argv[1:] = ["-p", "52.015;-0.221"]
@@ -628,7 +628,7 @@ def process_command_line():
 
 
 def read_locations(filename):
-    """Pull locations from a user's config file
+    """Pull locations from a user's config file.
 
     :param str filename: Config file to parse
     :rtype: ``dict``
@@ -654,7 +654,7 @@ def read_locations(filename):
 
 
 def read_csv(filename):
-    """Pull locations from a user's CSV file
+    """Pull locations from a user's CSV file.
 
     Read gpsbabel_'s CSV output format
 
@@ -670,6 +670,7 @@ def read_csv(filename):
     :param str filename: CSV file to parse (STDIN if '-')
     :rtype: ``tuple`` of ``dict`` and ``list``
     :return: List of locations as ``str`` objects
+
     """
     if filename == "-":
         filename = sys.stdin
@@ -687,7 +688,7 @@ def read_csv(filename):
 
 
 def main():
-    """Main script handler
+    """Main script handler.
 
     >>> saved_args = sys.argv[1:]
     >>> sys.argv[1:] = ["-p", "52.015;-0.221"]

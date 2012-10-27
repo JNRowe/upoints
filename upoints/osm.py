@@ -37,7 +37,7 @@ from upoints import (__version__, point, utils)
 
 
 def _parse_flags(element):
-    """Parse OSM XML element for generic data
+    """Parse OSM XML element for generic data.
 
     :type element: :class:`ET.Element`
     :param element: Element to parse
@@ -60,7 +60,7 @@ def _parse_flags(element):
 
 
 def _get_flags(osm_obj):
-    """Create element independent flags output
+    """Create element independent flags output.
 
     :type osm_obj: :class:`Node`
     :param osm_obj: Object with OSM-style metadata
@@ -82,7 +82,7 @@ def _get_flags(osm_obj):
 
 
 def get_area_url(location, distance):
-    """Generate URL for downloading OSM data within a region
+    """Generate URL for downloading OSM data within a region.
 
     This function defines a boundary box where the edges touch a circle of
     ``distance`` kilometres in radius.  It is important to note that the box is
@@ -120,7 +120,8 @@ def get_area_url(location, distance):
 
 
 class Node(point.Point):
-    """Class for representing a node element from OSM data files
+
+    """Class for representing a node element from OSM data files.
 
     .. versionadded:: 0.9.0
 
@@ -130,7 +131,7 @@ class Node(point.Point):
 
     def __init__(self, ident, latitude, longitude, visible=False, user=None,
                  timestamp=None, tags=None):
-        """Initialise a new ``Node`` object
+        """Initialise a new ``Node`` object.
 
         >>> Node(0, 52, 0)
         Node(0, 52.0, 0.0, False, None, None, None)
@@ -166,7 +167,7 @@ class Node(point.Point):
         self.tags = tags
 
     def __str__(self, mode="dms"):
-        """Pretty printed location string
+        """Pretty printed location string.
 
         >>> print(Node(0, 52, 0))
         Node 0 (52°00'00"N, 000°00'00"E)
@@ -193,7 +194,7 @@ class Node(point.Point):
         return " ".join(text)
 
     def toosm(self):
-        """Generate a OSM node element subtree
+        """Generate a OSM node element subtree.
 
         >>> ET.tostring(Node(0, 52, 0).toosm())
         '<node id="0" lat="52.0" lon="0.0" visible="false" />'
@@ -223,7 +224,7 @@ class Node(point.Point):
         return node
 
     def get_area_url(self, distance):
-        """Generate URL for downloading OSM data within a region
+        """Generate URL for downloading OSM data within a region.
 
         >>> Home = Node(0, 52, 0)
         >>> Home.get_area_url(3)
@@ -241,7 +242,7 @@ class Node(point.Point):
         return get_area_url(self, distance)
 
     def fetch_area_osm(self, distance):
-        """Fetch, and import, an OSM region
+        """Fetch, and import, an OSM region.
 
         >>> Home = Node(0, 52, 0)
         >>> # The following test is skipped, because the Osm object doesn't
@@ -258,7 +259,7 @@ class Node(point.Point):
 
     @staticmethod
     def parse_elem(element):
-        """Parse a OSM node XML element
+        """Parse a OSM node XML element.
 
         :type element: :class:`ET.Element`
         :param element: XML Element to parse
@@ -276,7 +277,8 @@ class Node(point.Point):
 
 
 class Way(point.Points):
-    """Class for representing a way element from OSM data files
+
+    """Class for representing a way element from OSM data files.
 
     .. versionadded:: 0.9.0
 
@@ -286,7 +288,7 @@ class Way(point.Points):
 
     def __init__(self, ident, nodes, visible=False, user=None, timestamp=None,
                  tags=None):
-        """Initialise a new ``Way`` object
+        """Initialise a new ``Way`` object.
 
         :type ident: ``int``
         :param ident: Unique identifier for the way
@@ -313,7 +315,7 @@ class Way(point.Points):
         self.tags = tags
 
     def __repr__(self):
-        """Self-documenting string representation
+        """Self-documenting string representation.
 
         >>> Way(0, (0, 1, 2))
         Way(0, [0, 1, 2], False, None, None, None)
@@ -331,7 +333,7 @@ class Way(point.Points):
         return utils.repr_assist(self, {"nodes": self[:]})
 
     def __str__(self, nodes=False):
-        """Pretty printed location string
+        """Pretty printed location string.
 
         >>> from dtopt import NORMALIZE_WHITESPACE
         >>> print(Way(0, (0, 1, 2)))
@@ -384,7 +386,7 @@ class Way(point.Points):
         return "".join(text)
 
     def toosm(self):
-        """Generate a OSM way element subtree
+        """Generate a OSM way element subtree.
 
         >>> ET.tostring(Way(0, (0, 1, 2)).toosm())
         '<way id="0" visible="false"><nd ref="0" /><nd ref="1" /><nd ref="2" /></way>'
@@ -417,7 +419,7 @@ class Way(point.Points):
 
     @staticmethod
     def parse_elem(element):
-        """Parse a OSM way XML element
+        """Parse a OSM way XML element.
 
         :type element: :class:`ET.Element`
         :param element: XML Element to parse
@@ -432,14 +434,15 @@ class Way(point.Points):
 
 
 class Osm(point.Points):
-    """Class for representing an OSM region
+
+    """Class for representing an OSM region.
 
     .. versionadded:: 0.9.0
 
     """
 
     def __init__(self, osm_file=None):
-        """Initialise a new ``Osm`` object"""
+        """Initialise a new ``Osm`` object."""
         super(Osm, self).__init__()
         self._osm_file = osm_file
         if osm_file:
@@ -448,7 +451,7 @@ class Osm(point.Points):
         self.version = "0.5"
 
     def import_locations(self, osm_file):
-        """Import OSM data files
+        """Import OSM data files.
 
         ``import_locations()`` returns a list of ``Node`` and ``Way`` objects.
 

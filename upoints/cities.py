@@ -46,7 +46,8 @@ Entered-By  : %s"""
 
 
 class City(trigpoints.Trigpoint):
-    """Class for representing an entry from the `GNU miscfiles`_ cities data file
+
+    """Class for representing an entry from the `GNU miscfiles`_ cities data file.
 
     .. versionadded:: 0.2.0
 
@@ -60,7 +61,7 @@ class City(trigpoints.Trigpoint):
     def __init__(self, identifier, name, ptype, region, country, location,
                  population, size, latitude, longitude, altitude, date,
                  entered):
-        """Initialise a new ``City`` object
+        """Initialise a new ``City`` object.
 
         >>> from dtopt import NORMALIZE_WHITESPACE
         >>> City(498, "Zwickau", "City", "Sachsen", "DE", "Earth", 108835,
@@ -110,7 +111,7 @@ class City(trigpoints.Trigpoint):
         self.entered = entered
 
     def __str__(self, mode=None):
-        """Pretty printed location string
+        """Pretty printed location string.
 
         >>> t = City(498, "Zwickau", "City", "Sachsen", "DE", "Earth", 108835,
         ...          None, 50.72, 12.5, None,
@@ -150,21 +151,22 @@ class City(trigpoints.Trigpoint):
 
 
 class Cities(point.Points):
-    """Class for representing a group of :class:`City` objects
+
+    """Class for representing a group of :class:`City` objects.
 
     .. versionadded:: 0.5.1
 
     """
 
     def __init__(self, data=None):
-        """Initialise a new ``Cities`` object"""
+        """Initialise a new ``Cities`` object."""
         super(Cities, self).__init__()
         self._data = data
         if data:
             self.import_locations(data)
 
     def import_locations(self, data):
-        """Parse `GNU miscfiles`_ cities data files
+        """Parse `GNU miscfiles`_ cities data files.
 
         ``import_locations()`` returns a list containing :class:`City` objects.
 
