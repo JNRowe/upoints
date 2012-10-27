@@ -48,7 +48,7 @@ a hyphen(such as anywhere in the Southern hemisphere).
 """ % parseaddr(__author__)
 
 # Pull the first paragraph from the docstring
-USAGE = __doc__[:__doc__.find('\n\n', 100)].splitlines()[2:]
+USAGE = __doc__[:__doc__.find('\n\n', 100)].replace('``', "'").splitlines()[2:]
 # Replace script name with optparse's substitution var, and rebuild string
 USAGE = "\n".join(USAGE).replace("edist", "%prog")
 
