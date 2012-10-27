@@ -682,10 +682,10 @@ class Waypoints(point.TimedPoints):
             logging.info("Searching for GPX v%s entries" % version)
 
             gpx_elem = lambda name: ET.QName(namespace, name).text
-            metadata = data.find("//" + gpx_elem("metadata"))
+            metadata = data.find(".//" + gpx_elem("metadata"))
             if metadata:
                 self.metadata.import_metadata(metadata)
-            waypoint_elem = "//" + gpx_elem("wpt")
+            waypoint_elem = ".//" + gpx_elem("wpt")
             name_elem = gpx_elem("name")
             desc_elem = gpx_elem("desc")
             elev_elem = gpx_elem("ele")
@@ -832,10 +832,10 @@ class Trackpoints(_SegWrap):
             logging.info("Searching for GPX v%s entries" % version)
 
             gpx_elem = lambda name: ET.QName(namespace, name).text
-            metadata = data.find("//" + gpx_elem("metadata"))
+            metadata = data.find(".//" + gpx_elem("metadata"))
             if metadata:
                 self.metadata.import_metadata(metadata)
-            segment_elem = "//" + gpx_elem("trkseg")
+            segment_elem = ".//" + gpx_elem("trkseg")
             trackpoint_elem = gpx_elem("trkpt")
             name_elem = gpx_elem("name")
             desc_elem = gpx_elem("desc")
@@ -991,10 +991,10 @@ class Routepoints(_SegWrap):
             logging.info("Searching for GPX v%s entries" % version)
 
             gpx_elem = lambda name: ET.QName(namespace, name).text
-            metadata = data.find("//" + gpx_elem("metadata"))
+            metadata = data.find(".//" + gpx_elem("metadata"))
             if metadata:
                 self.metadata.import_metadata(metadata)
-            route_elem = "//" + gpx_elem("rte")
+            route_elem = ".//" + gpx_elem("rte")
             routepoint_elem = gpx_elem("rtept")
             name_elem = gpx_elem("name")
             desc_elem = gpx_elem("desc")

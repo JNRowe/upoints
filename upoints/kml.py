@@ -285,7 +285,7 @@ class Placemarks(point.KeyedPoints):
         for version, namespace in accepted_kml.items():
             logging.info("Searching for KML v%s entries" % version)
             kml_elem = lambda name: ET.QName(namespace, name).text
-            placemark_elem = "//" + kml_elem("Placemark")
+            placemark_elem = ".//" + kml_elem("Placemark")
             name_elem = kml_elem("name")
             coords_elem = kml_elem("Point") + "/" + kml_elem("coordinates")
             desc_elem = kml_elem("description")
