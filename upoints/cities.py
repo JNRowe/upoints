@@ -142,7 +142,7 @@ class City(trigpoints.Trigpoint):
                       self.population, self.size,
                       self.name, self.country,
                       self.region, self.location,
-                      self.longitude, self.latitude,
+                      self.latitude, self.longitude,
                       self.altitude,
                       time.strftime("%Y%m%d", self.date) if self.date else "",
                       self.entered))
