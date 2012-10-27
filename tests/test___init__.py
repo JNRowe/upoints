@@ -17,25 +17,23 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+import datetime
+
+from expecter import expect
+
 from upoints import point
 
 
 def test_base():
-    """
-    >>> Home = point.Point(52.015, -0.221)
-    >>> Telford = point.Point(52.6333, -2.5000)
-    >>> int(Home.distance(Telford))
-    169
-    >>> int(Home.bearing(Telford))
-    294
-    >>> int(Home.final_bearing(Telford))
-    293
-    >>> import datetime
-    >>> Home.sun_events(datetime.date(2007, 6, 28))
-    (datetime.time(3, 42), datetime.time(20, 24))
-    >>> Home.sunrise(datetime.date(2007, 6, 28))
-    datetime.time(3, 42)
-    >>> Home.sunset(datetime.date(2007, 6, 28))
-    datetime.time(20, 24)
+    Home = point.Point(52.015, -0.221)
+    Telford = point.Point(52.6333, -2.5000)
+    expect(int(Home.distance(Telford))) == 169
+    expect(int(Home.bearing(Telford))) == 294
+    expect(int(Home.final_bearing(Telford))) == 293
 
-    """
+    expect(Home.sun_events(datetime.date(2007, 6, 28))) == \
+        (datetime.time(3, 42), datetime.time(20, 24))
+    expect(Home.sunrise(datetime.date(2007, 6, 28))) == \
+        datetime.time(3, 42)
+    expect(Home.sunset(datetime.date(2007, 6, 28))) == \
+        datetime.time(20, 24)

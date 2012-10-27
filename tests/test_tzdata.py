@@ -17,57 +17,39 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+from operator import attrgetter
+from unittest import TestCase
+
+from expecter import expect
+
 from upoints.tzdata import (Zone, Zones)
 
 
-class TestZone():
-    def test___init__(self):
-        """
-        >>> Zone("+513030-0000731", 'GB', "Europe/London")
-        Zone('+513030-0000730', 'GB', 'Europe/London', None)
-
-        """
-
+class TestZone(TestCase):
     def test___repr__(self):
-        """
-        >>> Zone("+513030-0000731", 'GB', "Europe/London")
-        Zone('+513030-0000730', 'GB', 'Europe/London', None)
-
-        """
+        expect(repr(Zone("+513030-0000731", 'GB', "Europe/London"))) == \
+            "Zone('+513030-0000730', 'GB', 'Europe/London', None)"
 
     def test___str__(self):
-        """
-        >>> print(Zone("+513030-0000731", 'GB', "Europe/London"))
-        Europe/London (GB: 51°30'30"N, 000°07'30"W)
-        >>> print(Zone("+0658-15813", "FM", "Pacific/Ponape",
-        ...            ["Ponape (Pohnpei)", ]))
-        Pacific/Ponape (FM: 06°58'00"N, 158°13'00"W also Ponape (Pohnpei))
-
-        """
+        expect(str(Zone("+513030-0000731", 'GB', "Europe/London"))) == \
+            """Europe/London (GB: 51°30'30"N, 000°07'30"W)"""
+        expect(str(Zone("+0658-15813", "FM", "Pacific/Ponape",
+                        ["Ponape (Pohnpei)", ]))) == \
+            """Pacific/Ponape (FM: 06°58'00"N, 158°13'00"W also Ponape (Pohnpei))"""
 
 
-class TestZones():
+class TestZones(TestCase):
     def test_import_locations(self):
-        """
-        >>> from operator import attrgetter
-        >>> zones = Zones(open("test/data/timezones"))
-        >>> from dtopt import NORMALIZE_WHITESPACE
-        >>> for value in sorted(zones, key=attrgetter("zone")):
-        ...     print(value)
-        Africa/Luanda (AO: 08°48'00"S, 013°14'00"E)
-        America/Curacao (AN: 12°11'00"N, 069°00'00"W)
-        Antarctica/McMurdo (AQ: 77°50'00"S, 166°36'00"E also McMurdo Station,
-        Ross Island)
-
-        """
+        zones = Zones(open("test/data/timezones"))
+        data = [str(v) for v in sorted(zones, key=attrgetter("zone"))]
+        expect(data[0]) == """Africa/Luanda (AO: 08°48'00"S, 013°14'00"E)"""
+        expect(data[1]) == """America/Curacao (AN: 12°11'00"N, 069°00'00"W)"""
+        expect(data[2]) == \
+            """Antarctica/McMurdo (AQ: 77°50'00"S, 166°36'00"E also McMurdo Station, Ross Island)"""
 
     def test_dump_zone_file(self):
-        """
-        >>> zones = Zones(open("test/data/timezones"))
-        >>> from dtopt import NORMALIZE_WHITESPACE
-        >>> Zones.dump_zone_file(zones)
-        ['AN\\t+121100-0690000\\tAmerica/Curacao',
-         'AO\\t-084800+0131400\\tAfrica/Luanda',
-         'AQ\\t-775000+1663600\\tAntarctica/McMurdo\\tMcMurdo Station, Ross Island']
-
-        """
+        zones = Zones(open("test/data/timezones"))
+        expect(Zones.dump_zone_file(zones)) == \
+            ['AN\t+121100-0690000\tAmerica/Curacao',
+             'AO\t-084800+0131400\tAfrica/Luanda',
+             'AQ\t-775000+1663600\tAntarctica/McMurdo\tMcMurdo Station, Ross Island']

@@ -19,81 +19,66 @@
 
 import datetime
 
+from unittest import TestCase
+
+from expecter import expect
+
 from upoints.geonames import (Location, Locations)
+from upoints.utils import FileFormatError
 
-class TestLocation():
-    def test___init__(self):
-        """
-        >>> from dtopt import NORMALIZE_WHITESPACE
-        >>> Location(2636782, "Stotfold", "Stotfold", None, 52.0, -0.2166667,
-        ...          "P", "PPL", "GB", None, "F8", None, None, None, 6245,
-        ...          None, 77, "Europe/London", datetime.date(2007, 6, 15), 0)
-        Location(2636782, 'Stotfold', 'Stotfold', None, 52.0, -0.2166667, 'P',
-                 'PPL', 'GB', None, 'F8', None, None, None, 6245, None, 77,
-                 'Europe/London', datetime.date(2007, 6, 15), 0)
 
-        """
+class TestLocation(TestCase):
+    def setUp(self):
+        self.x = Location(2636782, "Stotfold", "Stotfold", None, 52.0,
+                          -0.2166667, "P", "PPL", "GB", None, "F8", None, None,
+                          None, 6245, None, 77, "Europe/London",
+                          datetime.date(2007, 6, 15), 0)
+
+    def test___repr__(self):
+        expect(repr(self.x)) == \
+            ("Location(2636782, 'Stotfold', 'Stotfold', None, 52.0, "
+             "-0.2166667, 'P', 'PPL', 'GB', None, 'F8', None, None, None, "
+             "6245, None, 77, 'Europe/London', datetime.date(2007, 6, 15), 0)")
 
     def test___str__(self):
-        """
-        >>> Stotfold = Location(2636782, "Stotfold", "Stotfold", None, 52.0,
-        ...                     -0.2166667, "P", "PPL", "GB", None, "F8", None,
-        ...                     None, None, 6245, None, 77, "Europe/London",
-        ...                     datetime.date(2007, 6, 15))
-        >>> print(Stotfold)
-        Stotfold (N52.000°; W000.217°)
-        >>> print(Stotfold.__str__(mode="dms"))
-        Stotfold (52°00'00"N, 000°13'00"W)
-        >>> print(Stotfold.__str__(mode="dm"))
-        Stotfold (52°00.00'N, 000°13.00'W)
-        >>> Stotfold.alt_names = ["Home", "Target"]
-        >>> print(Stotfold)
-        Stotfold (Home, Target - N52.000°; W000.217°)
-
-        """
+        expect(str(self.x)) == 'Stotfold (N52.000°; W000.217°)'
+        expect(str(self.x.__str__(mode="dms"))) == \
+            """Stotfold (52°00'00"N, 000°13'00"W)"""
+        expect(str(self.x.__str__(mode="dm"))) == \
+            "Stotfold (52°00.00'N, 000°13.00'W)"
+        self.x.alt_names = ["Home", "Target"]
+        expect(str(self.x)) == 'Stotfold (Home, Target - N52.000°; W000.217°)'
 
 
-class TestLocations():
+class TestLocations(TestCase):
     def test_import_locations(self):
-        """
-        >>> from operator import attrgetter
-        >>> locations = Locations(open("test/data/geonames"))
-        >>> from dtopt import NORMALIZE_WHITESPACE
-        >>> for location in sorted(locations, key=attrgetter("geonameid")):
-        ...     print("%i - %s" % (location.geonameid, location))
-        2633441 - Afon Wyre (River Wayrai, River Wyrai, Wyre - N52.317°;
-        W004.167°)
-        2633442 - Wyre (Viera - N59.117°; W002.967°)
-        2633443 - Wraysbury (Wyrardisbury - N51.450°; W000.550°)
-        >>> broken_locations = Locations(open("test/data/broken_geonames"))
-        Traceback (most recent call last):
-            ...
-        FileFormatError: Incorrect data format, if you're using a file
-        downloaded from geonames.org please report this to James Rowe
-        <jnrowe@gmail.com>
+        locations = Locations(open("test/data/geonames"))
+        expect(str(locations[0])) == \
+            'Afon Wyre (River Wayrai, River Wyrai, Wyre - N52.317°; W004.167°)'
+        expect(str(locations[1])) == \
+            'Wyre (Viera - N59.117°; W002.967°)'
+        expect(str(locations[2])) == \
+            'Wraysbury (Wyrardisbury - N51.450°; W000.550°)'
 
-        """
+        with expect.raises(FileFormatError,
+                           "Incorrect data format, if you're using a file "
+                           "downloaded from geonames.org please report this "
+                           "to James Rowe <jnrowe@gmail.com>"):
+            Locations(open("test/data/broken_geonames"))
 
     def test_import_timezones_file(self):
-        """
-        >>> timezones = Locations(None, open("test/data/geonames_timezones")).timezones
-        >>> for key, value in sorted(timezones.items()):
-        ...     print("%s - %s" % (key, value))
-        Asia/Dubai - [240, 240]
-        Asia/Kabul - [270, 270]
-        Europe/Andorra - [60, 120]
-        >>> header_skip_check = Locations(None,
-        ...                               open("test/data/geonames_timezones_header"))
-        >>> from dtopt import ELLIPSIS
-        >>> print(header_skip_check)
-        Locations(None, <open file ...>)
-        >>> from dtopt import NORMALIZE_WHITESPACE
-        >>> broken_file_check = Locations(None,
-        ...                               open("test/data/geonames_timezones_broken"))
-        Traceback (most recent call last):
-            ...
-        FileFormatError: Incorrect data format, if you're using a file
-        downloaded from geonames.org please report this to James Rowe
-        <jnrowe@gmail.com>
+        locations = Locations(None, open("test/data/geonames_timezones"))
+        timezones = locations.timezones
+        expect(timezones['Asia/Dubai']) == [240, 240]
+        expect(timezones['Asia/Kabul']) == [270, 270]
+        expect(timezones['Europe/Andorra']) == [60, 120]
 
-        """
+        header_skip_check = Locations(None,
+                                      open("test/data/geonames_timezones_header"))
+        expect(header_skip_check) == Locations()
+
+        with expect.raises(FileFormatError,
+                           "Incorrect data format, if you're using a file "
+                           "downloaded from geonames.org please report this "
+                           "to James Rowe <jnrowe@gmail.com>"):
+            Locations(None, open("test/data/geonames_timezones_broken"))

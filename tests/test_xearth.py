@@ -17,47 +17,36 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+from unittest import TestCase
+
+from expecter import expect
+
 from upoints.xearth import (Xearth, Xearths)
 
 
-class TestXearth():
-    def test___init__(self):
-        """
-        >>> Xearth(52.015, -0.221, "James Rowe's house")
-        Xearth(52.015, -0.221, "James Rowe's house")
-
-        """
+class TestXearth(TestCase):
+    def test___repr__(self):
+        expect(repr(Xearth(52.015, -0.221, "James Rowe's house"))) == \
+            """Xearth(52.015, -0.221, "James Rowe's house")"""
 
     def test___str__(self):
-        """
-        >>> print(Xearth(52.015, -0.221))
-        N52.015°; W000.221°
-        >>> print(Xearth(52.015, -0.221).__str__(mode="dms"))
-        52°00'54"N, 000°13'15"W
-        >>> print(Xearth(52.015, -0.221).__str__(mode="dm"))
-        52°00.90'N, 000°13.26'W
-        >>> print(Xearth(52.015, -0.221, "James Rowe's house"))
-        James Rowe's house (N52.015°; W000.221°)
-
-        """
+        expect(str(Xearth(52.015, -0.221))) == 'N52.015°; W000.221°'
+        expect(str(Xearth(52.015, -0.221).__str__(mode="dms"))) == \
+            """52°00'54"N, 000°13'15"W"""
+        expect(str(Xearth(52.015, -0.221).__str__(mode="dm"))) == \
+            "52°00.90'N, 000°13.26'W"
+        expect(str(Xearth(52.015, -0.221, "James Rowe's house"))) == \
+            "James Rowe's house (N52.015°; W000.221°)"
 
 
-class TestXearths():
+class TestXearths(TestCase):
     def test___str__(self):
-        """
-        >>> markers = Xearths(open("test/data/xearth"))
-        >>> print(markers)
-        52.015000 -0.221000 "Home"
-        52.633300 -2.500000 "Telford"
-
-        """
+        markers = Xearths(open("test/data/xearth"))
+        expect(markers.__str__().splitlines()) == \
+            ['52.015000 -0.221000 "Home"', '52.633300 -2.500000 "Telford"']
 
     def test_import_locations(self):
-        """
-        >>> markers = Xearths(open("test/data/xearth"))
-        >>> for key, value in sorted(markers.items()):
-        ...     print("%s - %s" % (key, value))
-        Home - James Rowe's home (N52.015°; W000.221°)
-        Telford - N52.633°; W002.500°
-
-        """
+        markers = Xearths(open("test/data/xearth"))
+        expect(str(markers['Home'])) == \
+            "James Rowe's home (N52.015°; W000.221°)"
+        expect(str(markers['Telford'])) == "N52.633°; W002.500°"
