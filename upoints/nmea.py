@@ -481,7 +481,7 @@ class Fix(point.Point):
         :rtype: ``str``
         :return: Human readable string representation of ``Fix`` object
 
-       """
+        """
         data = ["GPGGA"]
         data.append(self.time.strftime("%H%M%S"))
         data.extend(nmea_latitude(self.latitude))
