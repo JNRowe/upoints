@@ -50,11 +50,11 @@ a hyphen(such as anywhere in the Southern hemisphere).
 # Pull the first paragraph from the docstring
 USAGE = __doc__[:__doc__.find('\n\n', 100)].replace('``', "'").splitlines()[2:]
 # Replace script name with optparse's substitution var, and rebuild string
-USAGE = "\n".join(USAGE).replace("edist", "%prog")
+USAGE = "\n".join(USAGE).replace("edist", "%(prog)s")
 
 import ConfigParser
+import argparse
 import logging
-import optparse
 import os
 import sys
 
@@ -385,97 +385,101 @@ def process_command_line():
     :return: Modes, options, list of locations as ``str`` objects
 
     """
-    parser = optparse.OptionParser(usage="%prog [options...] <location>...",
-                                   version="%prog v" + __version__,
-                                   description=USAGE)
+    epilog = "Please report bugs at https://github.com/JNRowe/upoints/"
+    parser = argparse.ArgumentParser(description=USAGE, epilog=epilog)
 
     parser.set_defaults(config_file=os.path.expanduser("~/.edist.conf"),
                         speed=0, format="dms", locator="subsquare",
                         verbose=True, units="km", time="h")
 
-    parser.add_option("--config-file", action="store",
-                      metavar=os.path.expanduser("~/.edist.conf"),
-                      help="Config file to read custom locations from")
-    parser.add_option("--csv-file", action="store",
-                      help="CSV file (gpsbabel format) to read " \
-                           "route/locations from ('-' for STDIN)")
+    parser.add_argument('--version', action='version',
+                        version="%%(prog)s v%s" % __version__)
 
-    mode_opts = optparse.OptionGroup(parser, "Calculation modes")
-    parser.add_option_group(mode_opts)
-    mode_opts.add_option("-p", "--print", action="store_true", dest="display",
-                         help="pretty print the location(s)")
-    mode_opts.add_option("-d", "--distance", action="store_true",
-                         help="calculate the distance between locations")
-    mode_opts.add_option("-b", "--bearing", action="store_true",
-                         help="calculate the initial bearing between locations")
-    mode_opts.add_option("-f", "--final-bearing", action="store_true",
-                         help="calculate the final bearing between locations")
-    mode_opts.add_option("-r", "--range", type="float", metavar="range",
-                         help="calculate whether locations are within a " \
-                              "given range")
-    mode_opts.add_option("-s", "--destination", metavar="distance@bearing",
-                         help="calculate the destination for a given " \
-                              "distance and bearing")
-    mode_opts.add_option("-y", "--sunrise", action="store_true",
-                         help="calculate the sunrise time for a given "
-                              "location")
-    mode_opts.add_option("-z", "--sunset", action="store_true",
-                         help="calculate the sunset time for a given location")
-    mode_opts.add_option("-F", "--flight-plan", action="store_true",
-                         help="calculate the flight plan corresponding to " \
-                              "locations (route)")
-    mode_opts.add_option("-S", "--speed", type="float",
-                         help="speed to calculate elapsed time")
+    parser.add_argument("--config-file", metavar="~/.edist.conf",
+                        help="config file to read custom locations from")
+    parser.add_argument("--csv-file",
+                        help="CSV file (gpsbabel format) to read "
+                            "route/locations from ('-' for STDIN)")
 
-    output_opts = optparse.OptionGroup(parser, "Output options")
-    output_opts.add_option("--unicode", action="store_true",
-                           help="produce Unicode output")
-    output_opts.add_option("--ascii", action="store_true",
-                           help="produce ASCII output")
-    output_opts.add_option("-o", "--format",
-                           choices=("dms", "dm", "dd", "locator"),
-                           help="produce output in dms, dm, d format or " \
+    mode_opts = parser.add_argument_group("Calculation modes")
+    mode_opts.add_argument("-p", "--print", action="store_true",
+                           dest="display", help="pretty print the location(s)")
+    mode_opts.add_argument("-d", "--distance", action="store_true",
+                           help="calculate the distance between locations")
+    mode_opts.add_argument("-b", "--bearing", action="store_true",
+                           help="calculate the initial bearing between "
+                            "locations")
+    mode_opts.add_argument("-f", "--final-bearing", action="store_true",
+                           help="calculate the final bearing between "
+                            "locations")
+    mode_opts.add_argument("-r", "--range", type=float, metavar="range",
+                           help="calculate whether locations are within a "
+                            "given range")
+    mode_opts.add_argument("-s", "--destination", metavar="distance@bearing",
+                           help="calculate the destination for a given "
+                            "distance and bearing")
+    mode_opts.add_argument("-y", "--sunrise", action="store_true",
+                           help="calculate the sunrise time for a given "
+                            "location")
+    mode_opts.add_argument("-z", "--sunset", action="store_true",
+                           help="calculate the sunset time for a given "
+                            "location")
+    mode_opts.add_argument("-F", "--flight-plan", action="store_true",
+                           help="calculate the flight plan corresponding to "
+                            "locations (route)")
+    mode_opts.add_argument("-S", "--speed", type=float, metavar="speed",
+                           help="speed to calculate elapsed time")
+
+    output_opts = parser.add_argument_group("Output options")
+    output_opts.add_argument("--unicode", action="store_true",
+                             help="produce Unicode output")
+    output_opts.add_argument("--ascii", action="store_true",
+                             help="produce ASCII output")
+    output_opts.add_argument("-o", "--format",
+                             choices=("dms", "dm", "dd", "locator"),
+                             help="produce output in dms, dm, d format or "
                                 "Maidenhead locator")
-    output_opts.add_option("-l", "--locator",
-                           choices=("square", "subsquare", "extsquare"),
-                           help="accuracy of Maidenhead locator output")
-    output_opts.add_option("-g", "--string", action="store_true",
-                           help="display named bearings")
-    output_opts.add_option("-v", "--verbose", action="store_true",
-                           dest="verbose", help="produce verbose output")
-    output_opts.add_option("-q", "--quiet", action="store_false",
-                           dest="verbose",
-                           help="output only results and errors")
-    output_opts.add_option("-u", "--units",
-                           choices=("km", "sm", "nm"), metavar="km",
-                           help="display distances in kilometres(default), " \
+    output_opts.add_argument("-l", "--locator",
+                             choices=("square", "subsquare", "extsquare"),
+                             help="accuracy of Maidenhead locator output")
+    output_opts.add_argument("-g", "--string", action="store_true",
+                             help="display named bearings")
+    output_opts.add_argument("-v", "--verbose", action="store_true",
+                             dest="verbose", help="produce verbose output")
+    output_opts.add_argument("-q", "--quiet", action="store_false",
+                             dest="verbose",
+                             help="output only results and errors")
+    output_opts.add_argument("-u", "--units", choices=("km", "sm", "nm"),
+                             metavar="km",
+                             help="display distances in kilometres(default), "
                                 "statute miles or nautical miles")
-    output_opts.add_option("-t", "--time",
-                           choices=("h", "m", "s"), metavar="h",
-                           help="display time in hours(default), minutes or " \
+    output_opts.add_argument("-t", "--time", choices=("h", "m", "s"),
+                             metavar="h",
+                             help="display time in hours(default), minutes or "
                                 "seconds")
 
-    parser.add_option_group(output_opts)
-    options, args = parser.parse_args()
+    parser.add_argument("location", nargs="+", help="Locations to operate on")
+
+    args = parser.parse_args()
 
     # This could be done with a new Option subclass directly, but the cost
     # outweighs the benefit significantly
-    if options.destination:
+    if args.destination:
         try:
-            distance, bearing = options.destination.split("@")
+            distance, bearing = args.destination.split("@")
             distance = float(distance)
             bearing = float(bearing)
         except ValueError:
             parser.error("Invalid format for destination option!")
-        options.destination = distance, bearing
+        args.destination = distance, bearing
 
-    modes = []
+    args.modes = []
     for mode in ("display", "distance", "bearing", "final_bearing",
                  "flight_plan", "range", "destination", "sunrise", "sunset"):
-        if getattr(options, mode):
-            modes.append(mode)
+        if getattr(args, mode):
+            args.modes.append(mode)
 
-    return modes, options, args
+    return args
 
 
 def read_locations(filename):
@@ -540,47 +544,46 @@ def main():
     """
     logging.basicConfig(format='%(asctime)s %(levelname)s:%(message)s')
 
-    modes, options, args = process_command_line()
+    args = process_command_line()
 
-    if not options.unicode and not options.ascii:
+    if not args.unicode and not args.ascii:
         logging.debug("Neither ASCII nor Unicode is set, guessing")
         if "utf8" in os.getenv("LC_ALL", "").lower().replace("-", ""):
-            options.unicode = True
+            args.unicode = True
             logging.debug("Setting output to Unicode")
         else:
-            options.unicode = False
+            args.unicode = False
             logging.debug("Setting output to ASCII")
 
-    if options.csv_file:
-        config_locations, args = read_csv(options.csv_file)
+    if args.csv_file:
+        config_locations, args.location = read_csv(args.csv_file)
     else:
-        config_locations = read_locations(options.config_file)
+        config_locations = read_locations(args.config_file)
 
-    if len(args) == 0:
+    if len(args.location) == 0:
         print("No locations specified!")
         sys.exit(1)
 
-    locations = NumberedPoints(args, options.format, options.unicode,
-                               options.verbose, config_locations,
-                               options.units)
+    locations = NumberedPoints(args.location, args.format, args.unicode,
+                               args.verbose, config_locations, args.units)
 
-    if len(modes) > 1:
+    if len(args.modes) > 1:
         logging.warning("Output order for multiple modes is not guaranteed "
                         "to remain stable across future versions")
 
-    for mode in modes:
+    for mode in args.modes:
         if mode == "display":
-            locations.display(options.locator)
+            locations.display(args.locator)
         elif mode == "distance":
             locations.distance()
         elif mode in ("bearing", "final_bearing"):
-            locations.bearing(mode, options.string)
+            locations.bearing(mode, args.string)
         elif mode in ("flight_plan"):
-            locations.flight_plan(options.speed, options.time)
+            locations.flight_plan(args.speed, args.time)
         elif mode == "range":
-            locations.range(options.range)
+            locations.range(args.range)
         elif mode == "destination":
-            locations.destination(options.destination, options.locator)
+            locations.destination(args.destination, args.locator)
         elif mode in ("sunrise", "sunset"):
             locations.sun_events(mode)
 
