@@ -16,36 +16,29 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-try:
-    from email.utils import parseaddr
-except ImportError:  # Python2.4
-    from email.Utils import parseaddr  # NOQA
-
 from setuptools import setup
 
-import upoints
-
-
-author, author_email = parseaddr(upoints.__author__)
-
-paras = upoints.__doc__.split("\n\n")
-long_description = "\n\n".join(paras[1:3])
+# Hack to import _version file without importing upoints/__init__.py, its
+# purpose is to allow import without requiring dependencies at this point.
+_version = {}
+execfile('upoints/_version.py', {}, _version)
 
 setup(
     name='upoints',
-    version=upoints.__version__,
-    description=upoints.__doc__.splitlines()[0][:-1],
-    long_description=long_description,
-    author=author,
-    author_email=author_email,
-    maintainer=author,
-    maintainer_email=author_email,
-    url="https://github.com/JNRowe/upoints/",
-    packages=['upoints', ],
-    entry_points={'console_scripts': ['edist = upoints.edist:main', ]},
-    license=upoints.__license__,
+    version=_version['dotted'],
+    description='Modules for working with points on Earth',
+    long_description=open('README.rst').read(),
+    author='James Rowe',
+    author_email='jnrowe@gmail.com',
+    url='https://github.com/JNRowe/upoints/',
+    license='GPL-3',
     keywords=['baken', 'cities', 'geonames', 'gis', 'gps', 'gpx', 'navigation',
               'nmea', 'openstreetmap', 'trigpointing', 'weather', 'xearth'],
+    packages=['upoints', ],
+    include_package_data=True,
+    package_data={},
+    entry_points={'console_scripts': ['edist = upoints.edist:main', ]},
+    zip_safe=False,
     classifiers=[
         'Development Status :: 5 - Production/Stable',
         'Environment :: Console',
