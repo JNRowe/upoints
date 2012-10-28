@@ -52,16 +52,11 @@ class Trigpoint(point.Point):
         >>> Trigpoint(52.010585, -0.173443, 97.0, "Bygrave")
         Trigpoint(52.010585, -0.173443, 97.0, 'Bygrave', None)
 
-        :type latitude: ``float`` or coercible to ``float``
-        :param latitude: Location's latitude
-        :type longitude: ``float`` or coercible to ``float``
-        :param longitude: Location's longitude
-        :type altitude: ``float`` or coercible to ``float``
-        :param altitude: Location's altitude
-        :type name: ``str``
-        :param name: Name for location
-        :type identity: ``int``
-        :param identity: Database identifier, if known
+        :param float latitude: Location's latitude
+        :param float longitude: Location's longitude
+        :param float altitude: Location's altitude
+        :param str name: Name for location
+        :param int identity: Database identifier, if known
 
         """
         super(Trigpoint, self).__init__(latitude, longitude)
@@ -81,8 +76,7 @@ class Trigpoint(point.Point):
         >>> print(Trigpoint(52.010585, -0.173443, 97.0, "Bygrave"))
         Bygrave (52°00'38"N, 000°10'24"W alt 97m)
 
-        :type mode: ``str``
-        :param mode: Coordinate formatting system to use
+        :param str mode: Coordinate formatting system to use
         :rtype: ``str``
         :return: Human readable string representation of ``Trigpoint`` object
 

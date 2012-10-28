@@ -39,8 +39,7 @@ from upoints import (__version__, point, utils)
 def _parse_flags(element):
     """Parse OSM XML element for generic data.
 
-    :type element: :class:`ET.Element`
-    :param element: Element to parse
+    :param ET.Element element: Element to parse
     :rtype: ``tuple``
     :return: Generic OSM data for object instantiation
 
@@ -62,8 +61,7 @@ def _parse_flags(element):
 def _get_flags(osm_obj):
     """Create element independent flags output.
 
-    :type osm_obj: :class:`Node`
-    :param osm_obj: Object with OSM-style metadata
+    :param Node osm_obj: Object with OSM-style metadata
     :rtype: ``list``
     :return: Human readable flags output
 
@@ -100,10 +98,8 @@ def get_area_url(location, distance):
     >>> get_area_url(point.Point(52.015, -0.221), 12)
     'http://api.openstreetmap.org/api/0.5/map?bbox=-0.396457433591,51.9070136086,-0.045542566409,52.1229863914'
 
-    :type location: :class:`Point`-like object
-    :param location: Centre of the region
-    :type distance: ``int``
-    :param distance: Boundary distance in kilometres
+    :param Point location: Centre of the region
+    :param int distance: Boundary distance in kilometres
     :rtype: ``str``
     :return: URL that can be used to fetch the OSM data within ``distance`` of
         ``location``
@@ -142,20 +138,13 @@ class Node(point.Point):
         >>> Node(0, 52, 0, tags={"key": "value"})
         Node(0, 52.0, 0.0, False, None, None, {'key': 'value'})
 
-        :type ident: ``int``
-        :param ident: Unique identifier for the node
-        :type latitude: ``float`` or coercible to ``float``
-        :param latitude: Nodes's latitude
-        :type longitude: ``float`` or coercible to ``float``
-        :param longitude: Node's longitude
-        :type visible: ``bool``
-        :param visible: Whether the node is visible
-        :type user: ``str``
-        :param user: User who logged the node
-        :type timestamp: ``str``
-        :param timestamp: The date and time a node was logged
-        :type tags: ``dict``
-        :param tags: Tags associated with the node
+        :param int ident: Unique identifier for the node
+        :param float latitude: Nodes's latitude
+        :param float longitude: Node's longitude
+        :param bool visible: Whether the node is visible
+        :param str user: User who logged the node
+        :param str timestamp: The date and time a node was logged
+        :param dict tags: Tags associated with the node
 
         """
         super(Node, self).__init__(latitude, longitude)
@@ -179,8 +168,7 @@ class Node(point.Point):
         >>> print(Node(0, 52, 0, tags={"key": "value"}))
         Node 0 (52°00'00"N, 000°00'00"E) [key: value]
 
-        :type mode: ``str``
-        :param mode: Coordinate formatting system to use
+        :param str mode: Coordinate formatting system to use
         :rtype: ``str``
         :return: Human readable string representation of ``Node`` object
 
@@ -232,8 +220,7 @@ class Node(point.Point):
         >>> Home.get_area_url(12)
         'http://api.openstreetmap.org/api/0.5/map?bbox=-0.175398634277,51.8920136086,0.175398634277,52.1079863914'
 
-        :type distance: ``int``
-        :param distance: Boundary distance in kilometres
+        :param int distance: Boundary distance in kilometres
         :rtype: ``str``
         :return: URL that can be used to fetch the OSM data within ``distance``
             of ``location``
@@ -249,8 +236,7 @@ class Node(point.Point):
         >>> # support a reliable way __repr__ method.
         >>> Home.fetch_area_osm(3) # doctest: +SKIP
 
-        :type distance: ``int``
-        :param distance: Boundary distance in kilometres
+        :param int distance: Boundary distance in kilometres
         :rtype: :class:`Osm`
         :return: All the data OSM has on a region imported for use
 
@@ -261,8 +247,7 @@ class Node(point.Point):
     def parse_elem(element):
         """Parse a OSM node XML element.
 
-        :type element: :class:`ET.Element`
-        :param element: XML Element to parse
+        :param ET.Element element: XML Element to parse
         :rtype: ``Node``
         :return: ``Node`` object representing parsed element
 
@@ -290,18 +275,13 @@ class Way(point.Points):
                  tags=None):
         """Initialise a new ``Way`` object.
 
-        :type ident: ``int``
-        :param ident: Unique identifier for the way
+        :param int ident: Unique identifier for the way
         :type nodes: ``list`` of ``str`` objects
         :param nodes: Identifiers of the nodes that form this way
-        :type visible: ``bool``
-        :param visible: Whether the way is visible
-        :type user: ``str``
-        :param user: User who logged the way
-        :type timestamp: ``str``
-        :param timestamp: The date and time a way was logged
-        :type tags: ``dict``
-        :param tags: Tags associated with the way
+        :param bool visible: Whether the way is visible
+        :param str user: User who logged the way
+        :param str timestamp: The date and time a way was logged
+        :param dict tags: Tags associated with the way
 
         """
         super(Way, self).__init__()
@@ -366,8 +346,7 @@ class Way(point.Points):
                    [visible, user: jnrowe,
                     timestamp: 2008-01-25T12:52:30+00:00, amenity: pub]
 
-        :type nodes: ``list``
-        :param nodes: Nodes to be used in expanding references
+        :param list nodes: Nodes to be used in expanding references
         :rtype: ``str``
         :return: Human readable string representation of ``Way`` object
 
@@ -421,8 +400,7 @@ class Way(point.Points):
     def parse_elem(element):
         """Parse a OSM way XML element.
 
-        :type element: :class:`ET.Element`
-        :param element: XML Element to parse
+        :param ET.Element element: XML Element to parse
         :rtype: ``Way``
         :return: `Way` object representing parsed element
 

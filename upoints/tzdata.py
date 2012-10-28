@@ -38,14 +38,10 @@ class Zone(point.Point):
         >>> Zone("+513030-0000731", 'GB', "Europe/London")
         Zone('+513030-0000730', 'GB', 'Europe/London', None)
 
-        :type location: ``str``
-        :param location: Primary location in ISO 6709 format
-        :type country: ``str``
-        :param country: Location's ISO 3166 country code
-        :type zone: ``str``
-        :param zone: Location's zone name as used in zoneinfo databse
-        :type comments: ``list``
-        :param comments: Location's alternate names
+        :param str location: Primary location in ISO 6709 format
+        :param str country: Location's ISO 3166 country code
+        :param str zone: Location's zone name as used in zoneinfo databse
+        :param list comments: Location's alternate names
 
         """
         latitude, longitude = utils.from_iso6709(location + "/")[:2]
@@ -78,8 +74,7 @@ class Zone(point.Point):
         ...            ["Ponape (Pohnpei)", ]))
         Pacific/Ponape (FM: 06°58'00"N, 158°13'00"W also Ponape (Pohnpei))
 
-        :type mode: ``str``
-        :param mode: Coordinate formatting system to use
+        :param str mode: Coordinate formatting system to use
         :rtype: ``str``
         :return: Human readable string representation of ``Zone`` object
 

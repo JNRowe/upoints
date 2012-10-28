@@ -51,30 +51,18 @@ class Station(trigpoints.Trigpoint):
         Station('EGLL', 'London / Heathrow Airport', None, 'United Kingdom', 6,
                 51.4833333333, -0.45, None, None, 24, 0, True)
 
-        :type alt_id: ``str`` or ``None``
-        :param alt_id: Alternate location identifier
-        :type name: ``str``
-        :param name: Station's name
-        :type state: ``str`` or ``None``
-        :param state: State name, if station is in the US
-        :type country: ``str``
-        :param country: Country name
-        :type wmo: ``int``
-        :param wmo: WMO region code
-        :type latitude: ``float``
-        :param latitude: Station's latitude
-        :type longitude: ``float``
-        :param longitude: Station's longitude
-        :type ua_latitude: ``float`` or ``None``
-        :param ua_latitude: Station's upper air latitude
-        :type ua_longitude: ``float`` or ``None``
-        :param ua_longitude: Station's upper air longitude
-        :type altitude: ``int`` or ``None``
-        :param altitude: Station's elevation
-        :type ua_altitude: ``int`` or ``None``
-        :param ua_altitude: Station's upper air elevation
-        :type rbsn: ``bool``
-        :param rbsn: True if station belongs to RSBN
+        :param str alt_id: Alternate location identifier
+        :param str name: Station's name
+        :param str state: State name, if station is in the US
+        :param str country: Country name
+        :param int wmo: WMO region code
+        :param float latitude: Station's latitude
+        :param float longitude: Station's longitude
+        :param float ua_latitude: Station's upper air latitude
+        :param float ua_longitude: Station's upper air longitude
+        :param int altitude: Station's elevation
+        :param int ua_altitude: Station's upper air elevation
+        :param bool rbsn: True if station belongs to RSBN
 
         """
         super(Station, self).__init__(latitude, longitude, altitude, name)
@@ -107,8 +95,7 @@ class Station(trigpoints.Trigpoint):
         >>> print(Heathrow)
         London / Heathrow Airport (N51.048°; W000.450°)
 
-        :type mode: ``str``
-        :param mode: Coordinate formatting system to use
+        :param str mode: Coordinate formatting system to use
         :rtype: ``str``
         :return: Human readable string representation of ``Station`` object
 
@@ -212,8 +199,7 @@ class Stations(point.KeyedPoints):
 
         :type data: ``file``, ``list`` or ``str``
         :param data: NOAA station data to read
-        :type index: ``str``
-        :param index: The identifier type used in the file
+        :param str index: The identifier type used in the file
         :rtype: ``dict``
         :return: WMO locations with `Station` objects
         :raise FileFormatError: Unknown file format

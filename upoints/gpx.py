@@ -57,16 +57,11 @@ def create_elem(tag, attr=None, text=None, gpx_version=DEF_GPX_VERSION,
                 human_namespace=False):
     """Create a partial :class:`ET.Element` wrapper with namespace defined.
 
-    :type tag: ``str``
-    :param tag:    Tag name
-    :type attr: ``dict``
-    :param attr: Default attributes for tag
-    :type text: ``str``
-    :param text: Text content for the tag
-    :type gpx_version: ``str``
-    :param gpx_version: GPX version to use
-    :type human_namespace: ``bool``
-    :param human_namespace: Whether to generate output using human readable
+    :param str tag:    Tag name
+    :param dict attr: Default attributes for tag
+    :param str text: Text content for the tag
+    :param str gpx_version: GPX version to use
+    :param bool human_namespace: Whether to generate output using human readable
         namespace prefixes
     :rtype: ``function``
     :return: :class:`ET.Element` wrapper with predefined namespace
@@ -111,18 +106,12 @@ class _GpxElem(point.TimedPoint):
         >>> _GpxElem(52, 0, "name", "desc")
         _GpxElem(52.0, 0.0, 'name', 'desc', None, None)
 
-        :type latitude: ``float`` or coercible to ``float``
-        :param latitude: Element's latitude
-        :type longitude: ``float`` or coercible to ``float``
-        :param longitude: Element's longitude
-        :type name: ``str``
-        :param name: Name for Element
-        :type description: ``str``
-        :param description: Element's description
-        :type elevation: ``float``
-        :param elevation: Element's elevation
-        :type time: :class:`utils.Timestamp`
-        :param time: Time the data was generated
+        :param float latitude: Element's latitude
+        :param float longitude: Element's longitude
+        :param str name: Name for Element
+        :param str description: Element's description
+        :param float elevation: Element's elevation
+        :param utils.Timestamp time: Time the data was generated
 
         """
         super(_GpxElem, self).__init__(latitude, longitude, time=time)
@@ -141,8 +130,7 @@ class _GpxElem(point.TimedPoint):
         ...                utils.Timestamp(2008, 7, 25)))
         name (52°00'00"N, 000°00'00"E @ 40m on 2008-07-25T00:00:00+00:00) [desc]
 
-        :type mode: ``str``
-        :param mode: Coordinate formatting system to use
+        :param str mode: Coordinate formatting system to use
         :rtype: ``str``
         :return: Human readable string representation of :class:`_GpxElem`
             object
@@ -176,11 +164,9 @@ class _GpxElem(point.TimedPoint):
         ...                      utils.Timestamp(2008, 7, 25)).togpx())
         '<ns0:None xmlns:ns0="http://www.topografix.com/GPX/1/1" lat="52.0" lon="0.0"><ns0:name>name</ns0:name><ns0:desc>desc</ns0:desc><ns0:ele>40</ns0:ele><ns0:time>2008-07-25T00:00:00+00:00</ns0:time></ns0:None>'
 
-        :type gpx_version: ``str``
-        :param gpx_version: GPX version to generate
-        :type human_namespace: ``bool``
-        :param human_namespace: Whether to generate output using human readable
-            namespace prefixes
+        :param str gpx_version: GPX version to generate
+        :param bool human_namespace: Whether to generate output using human
+            readable namespace prefixes
         :rtype: :class:`ET.Element`
         :return: GPX element
 
@@ -239,8 +225,7 @@ class _SegWrap(list):
     def bearing(self, format="numeric"):
         """Calculate bearing between locations in segments.
 
-        :type format: ``str``
-        :param format: Format of the bearing string to return
+        :param str format: Format of the bearing string to return
         :rtype: ``list`` of ``list`` of ``float``
         :return: Groups of bearings between points in segments
 
@@ -256,8 +241,7 @@ class _SegWrap(list):
     def final_bearing(self, format="numeric"):
         """Calculate final bearing between locations in segments.
 
-        :type format: ``str``
-        :param format: Format of the bearing string to return
+        :param str format: Format of the bearing string to return
         :rtype: ``list`` of ``list`` of ``float``
         :return: Groups of bearings between points in segments
 
@@ -303,10 +287,8 @@ class _SegWrap(list):
     def range(self, location, distance):
         """Test whether locations are within a given range of ``location``.
 
-        :type location: ``Point``
-        :param location: Location to test range against
-        :type distance: ``float``
-        :param distance: Distance to test location is within
+        :param Point location: Location to test range against
+        :param float distance: Distance to test location is within
         :rtype: ``list`` of ``list`` of ``Point`` objects within specified range
         :return: Groups of points in range per segment
 
@@ -316,10 +298,8 @@ class _SegWrap(list):
     def destination(self, bearing, distance):
         """Calculate destination locations for given distance and bearings.
 
-        :type bearing: ``float`` or coercible to ``float``
-        :param bearing: Bearing to move on in degrees
-        :type distance: ``float`` or coercible to ``float``
-        :param distance: Distance in kilometres
+        :param float bearing: Bearing to move on in degrees
+        :param float distance: Distance in kilometres
         :rtype: ``list`` of ``list`` of ``Point``
         :return: Groups of points shifted by ``distance`` and ``bearing``
 
@@ -330,10 +310,8 @@ class _SegWrap(list):
     def sunrise(self, date=None, zenith=None):
         """Calculate sunrise times for locations.
 
-        :type date: :class:`datetime.date`
-        :param date: Calculate rise or set for given date
-        :type zenith: ``None`` or ``str``
-        :param zenith: Calculate sunrise events, or end of twilight
+        :param datetime.date date: Calculate rise or set for given date
+        :param str zenith: Calculate sunrise events, or end of twilight
         :rtype: ``list`` of ``list`` of :class:`datetime.datetime`
         :return: The time for the sunrise for each point in each segment
 
@@ -343,10 +321,8 @@ class _SegWrap(list):
     def sunset(self, date=None, zenith=None):
         """Calculate sunset times for locations.
 
-        :type date: :class:`datetime.date`
-        :param date: Calculate rise or set for given date
-        :type zenith: ``None`` or ``str``
-        :param zenith: Calculate sunset events, or start of twilight times
+        :param datetime.date date: Calculate rise or set for given date
+        :param str zenith: Calculate sunset events, or start of twilight times
         :rtype: ``list`` of ``list`` of :class:`datetime.datetime`
         :return: The time for the sunset for each point in each segment
 
@@ -356,10 +332,8 @@ class _SegWrap(list):
     def sun_events(self, date=None, zenith=None):
         """Calculate sunrise/sunset times for locations.
 
-        :type date: :class:`datetime.date`
-        :param date: Calculate rise or set for given date
-        :type zenith: ``None`` or ``str``
-        :param zenith: Calculate rise/set events, or twilight times
+        :param datetime.date date: Calculate rise or set for given date
+        :param str zenith: Calculate rise/set events, or twilight times
         :rtype: ``list`` of ``list`` of 2 ``tuple`` of
             :class:`datetime.datetime`
         :return: The time for the sunrise and sunset events for each point in
@@ -371,8 +345,7 @@ class _SegWrap(list):
     def to_grid_locator(self, precision="square"):
         """Calculate Maidenhead locator for locations.
 
-        :type precision: ``str``
-        :param precision: Precision with which generate locator string
+        :param str precision: Precision with which generate locator string
         :rtype: ``list`` of ``list`` of ``str``
         :return: Groups of Maidenhead locator for each point in segments
 
@@ -405,20 +378,14 @@ class _GpxMeta(object):
                  extensions=None):
         """Initialise a new `_GpxMeta` object.
 
-        :type name: ``str``
-        :param name: Name for the export
-        :type desc: ``str``
-        :param desc: Description for the GPX export
-        :type author: ``dict``
-        :param author: Author of the entire GPX data
-        :type copyright: ``dict``
-        :param copyright: Copyright data for the exported data
+        :param str name: Name for the export
+        :param str desc: Description for the GPX export
+        :param dict author: Author of the entire GPX data
+        :param dict copyright: Copyright data for the exported data
         :type link: ``list`` of ``str`` or ``dict``
         :param link: Links associated with the data
-        :type time: :class:`utils.Timestamp`
-        :param time:Time the data was generated
-        :type keywords: ``str``
-        :param keywords: Keywords associated with the data
+        :param utils.Timestamp time:Time the data was generated
+        :param str keywords: Keywords associated with the data
         :type bounds: ``dict`` or ``list`` of ``Point`` objects
         :param bounds: Area used in the data
         :type extensions: ``list`` of :class:`ET.Element` objects
@@ -452,11 +419,9 @@ class _GpxMeta(object):
         >>> ET.tostring(meta.togpx())
         '<ns0:metadata xmlns:ns0="http://www.topografix.com/GPX/1/1"><ns0:time>...</ns0:time><ns0:bounds maxlat="52.167" maxlon="0.39" minlat="52.015" minlon="-0.221" /></ns0:metadata>'
 
-        :type gpx_version: ``str``
-        :param gpx_version: GPX version to generate
-        :type human_namespace: ``bool``
-        :param human_namespace: Whether to generate output using human readable
-            namespace prefixes
+        :param str gpx_version: GPX version to generate
+        :param bool human_namespace: Whether to generate output using human
+            readable namespace prefixes
         :rtype: :class:`ET.Element`
         :return: GPX metadata element
 
@@ -532,10 +497,8 @@ class _GpxMeta(object):
     def import_metadata(self, elements, gpx_version=None):
         """Import information from GPX metadata.
 
-        :type elements: :class:`ET.Element`
-        :param elements: GPX metadata subtree
-        :type gpx_version: ``str``
-        :param gpx_version: Specific GPX version entities to import
+        :param ET.Element elements: GPX metadata subtree
+        :param str gpx_version: Specific GPX version entities to import
 
         """
         if gpx_version:
@@ -667,8 +630,7 @@ class Waypoints(point.TimedPoints):
 
         :type gpx_file: ``file``, ``list`` or ``str``
         :param gpx_file: GPX data to read
-        :type gpx_version: ``str``
-        :param gpx_version: Specific GPX version entities to import
+        :param str gpx_version: Specific GPX version entities to import
         :rtype: ``list``
         :return: Locations with optional comments
 
@@ -724,11 +686,9 @@ class Waypoints(point.TimedPoints):
         >>> xml.write(stdout)
         <ns0:gpx xmlns:ns0="http://www.topografix.com/GPX/1/1"><ns0:metadata><ns0:time>...</ns0:time><ns0:bounds maxlat="52.167" maxlon="0.39" minlat="52.015" minlon="-0.221" /></ns0:metadata><ns0:wpt lat="52.015" lon="-0.221"><ns0:name>Home</ns0:name><ns0:desc>My place</ns0:desc><ns0:time>2008-07-26T00:00:00+00:00</ns0:time></ns0:wpt><ns0:wpt lat="52.167" lon="0.39"><ns0:name>MSR</ns0:name><ns0:desc>Microsoft Research, Cambridge</ns0:desc><ns0:time>2008-07-27T00:00:00+00:00</ns0:time></ns0:wpt></ns0:gpx>
 
-        :type gpx_version: ``str``
-        :param gpx_version: GPX version to generate
-        :type human_namespace: ``bool``
-        :param human_namespace: Whether to generate output using human readable
-            namespace prefixes
+        :param str gpx_version: GPX version to generate
+        :param bool human_namespace: Whether to generate output using human
+            readable namespace prefixes
         :rtype: :class:`ET.ElementTree`
         :return: GPX element tree depicting ``Waypoints`` object
 
@@ -819,8 +779,7 @@ class Trackpoints(_SegWrap):
 
         :type gpx_file: ``file``, ``list`` or ``str``
         :param gpx_file: GPX data to read
-        :type gpx_version: ``str``
-        :param gpx_version: Specific GPX version entities to import
+        :param str gpx_version: Specific GPX version entities to import
         :rtype: ``list``
         :return: Locations with optional comments
 
@@ -880,11 +839,9 @@ class Trackpoints(_SegWrap):
         >>> xml.write(stdout)
         <ns0:gpx xmlns:ns0="http://www.topografix.com/GPX/1/1"><ns0:metadata><ns0:time>...</ns0:time><ns0:bounds maxlat="52.167" maxlon="0.39" minlat="52.015" minlon="-0.221" /></ns0:metadata><ns0:trk><ns0:trkseg><ns0:trkpt lat="52.015" lon="-0.221"><ns0:name>Home</ns0:name><ns0:desc>My place</ns0:desc><ns0:time>2008-07-26T00:00:00+00:00</ns0:time></ns0:trkpt><ns0:trkpt lat="52.167" lon="0.39"><ns0:name>MSR</ns0:name><ns0:desc>Microsoft Research, Cambridge</ns0:desc><ns0:time>2008-07-27T00:00:00+00:00</ns0:time></ns0:trkpt></ns0:trkseg></ns0:trk></ns0:gpx>
 
-        :type gpx_version: ``str``
-        :param gpx_version: GPX version to generate
-        :type human_namespace: ``bool``
-        :param human_namespace: Whether to generate output using human readable
-            namespace prefixes
+        :param str gpx_version: GPX version to generate
+        :param bool human_namespace: Whether to generate output using human
+            readable namespace prefixes
         :rtype: :class:`ET.ElementTree`
         :return: GPX element tree depicting ``Trackpoints`` objects
 
@@ -980,8 +937,7 @@ class Routepoints(_SegWrap):
 
         :type gpx_file: ``file``, ``list`` or ``str``
         :param gpx_file: GPX data to read
-        :type gpx_version: ``str``
-        :param gpx_version: Specific GPX version entities to import
+        :param str gpx_version: Specific GPX version entities to import
         :rtype: ``list``
         :return: Locations with optional comments
 
@@ -1041,11 +997,9 @@ class Routepoints(_SegWrap):
         >>> xml.write(stdout)
         <ns0:gpx xmlns:ns0="http://www.topografix.com/GPX/1/1"><ns0:metadata><ns0:time>...</ns0:time><ns0:bounds maxlat="52.167" maxlon="0.39" minlat="52.015" minlon="-0.221" /></ns0:metadata><ns0:rte><ns0:rtept lat="52.015" lon="-0.221"><ns0:name>Home</ns0:name><ns0:desc>My place</ns0:desc><ns0:time>2008-07-26T00:00:00+00:00</ns0:time></ns0:rtept><ns0:rtept lat="52.167" lon="0.39"><ns0:name>MSR</ns0:name><ns0:desc>Microsoft Research, Cambridge</ns0:desc><ns0:time>2008-07-27T00:00:00+00:00</ns0:time></ns0:rtept></ns0:rte></ns0:gpx>
 
-        :type gpx_version: ``str``
-        :param gpx_version: GPX version to generate
-        :type human_namespace: ``bool``
-        :param human_namespace: Whether to generate output using human readable
-            namespace prefixes
+        :param str gpx_version: GPX version to generate
+        :param bool human_namespace: Whether to generate output using human
+            readable namespace prefixes
         :rtype: :class:`ET.ElementTree`
         :return: GPX element tree depicting :class:`Routepoints` objects
 

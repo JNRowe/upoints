@@ -71,32 +71,19 @@ class City(trigpoints.Trigpoint):
              12.5, 50.72, None, (1997, 4, 10, 0, 0, 0, 3, 100, -1),
              'M.Dowling@tu-bs.de')
 
-        :type identifier: ``int``
-        :param identifier: Numeric identifier for object
-        :type name: ``str``
-        :param name: Place name
-        :type ptype: ``str``
-        :param ptype: Type of place
-        :type region: ``str`` or ``None``
-        :param region: Region place can be found
-        :type country: ``str`` or ``None``
-        :param country: Country name place can be found
-        :type location: ``str``
-        :param location: Body place can be found
-        :type population: ``int`` or ``None``
-        :param population: Place's population
-        :type size: ``int`` or ``None``
-        :param size: Place's area
-        :type latitude: ``float``
-        :param latitude: Station's latitude
-        :type longitude: ``float``
-        :param longitude: Station's longitude
-        :type altitude: ``int`` or ``None``
-        :param altitude: Station's elevation
-        :type date: ``time.struct_time``
-        :param date: Date the entry was added
-        :type entered: ``str`` or ``None``
-        :param entered: Entry's author
+        :param int identifier: Numeric identifier for object
+        :param str name: Place name
+        :param str ptype: Type of place
+        :param str region: Region place can be found
+        :param str country: Country name place can be found
+        :param str location: Body place can be found
+        :param int population: Place's population
+        :param int size: Place's area
+        :param float latitude: Station's latitude
+        :param float longitude: Station's longitude
+        :param int altitude: Station's elevation
+        :param time.struct_time date: Date the entry was added
+        :param str entered: Entry's author
 
         """
         super(City, self).__init__(latitude, longitude, altitude, name)
@@ -131,7 +118,6 @@ class City(trigpoints.Trigpoint):
         Date        : 19970410
         Entered-By  : M.Dowling@tu-bs.de
 
-        :type mode: ``None``
         :param mode: Dummy parameter to maintain signature of
             ``trigpoints.Trigpoint.__str__``
         :rtype: ``str``

@@ -42,12 +42,9 @@ class Xearth(point.Point):
         >>> Xearth(52.015, -0.221, "James Rowe's house")
         Xearth(52.015, -0.221, "James Rowe's house")
 
-        :type latitude: ``float`` or coercible to ``float``
-        :param latitude: Location's latitude
-        :type longitude: ``float`` or coercible to ``float``
-        :param longitude: Location's longitude
-        :type comment: ``str``
-        :param comment: Comment for location
+        :param float latitude: Location's latitude
+        :param float longitude: Location's longitude
+        :param str comment: Comment for location
 
         """
         super(Xearth, self).__init__(latitude, longitude)
@@ -69,8 +66,7 @@ class Xearth(point.Point):
         >>> print(Xearth(52.015, -0.221, "James Rowe's house"))
         James Rowe's house (N52.015°; W000.221°)
 
-        :type mode: ``str``
-        :param mode: Coordinate formatting system to use
+        :param str mode: Coordinate formatting system to use
         :rtype: ``str``
         :return: Human readable string representation of ``Xearth`` object
 

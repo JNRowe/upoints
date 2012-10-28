@@ -65,50 +65,30 @@ class Location(trigpoints.Trigpoint):
                  'PPL', 'GB', None, 'F8', None, None, None, 6245, None, 77,
                  'Europe/London', datetime.date(2007, 6, 15), 0)
 
-        :type geonameid: ``int``
-        :param geonameid: ID of record in geonames database
-        :type name: ``unicode``
-        :param name: Name of geographical location
-        :type asciiname: ``str``
-        :param asciiname: Name of geographical location in ASCII encoding
-        :type alt_names: ``list`` of ``unicode``
+        :param int geonameid: ID of record in geonames database
+        :param unicode name: Name of geographical location
+        :param str asciiname: Name of geographical location in ASCII encoding
         :param alt_names: Alternate names for the location
-        :type latitude: ``float``
-        :param latitude: Location's latitude
-        :type longitude: ``float``
-        :param longitude: Location's longitude
-        :type feature_class: ``str``
-        :param feature_class: Location's type
-        :type feature_code: ``str``
-        :param feature_code: Location's code
-        :type country: ``str``
-        :param country: Location's country
-        :type alt_country: ``str``
-        :param alt_country: Alternate country codes for location
-        :type admin1: ``str``
-        :param admin1: FIPS code (subject to change to ISO code), ISO code for
-            the US and CH
-        :type admin2: ``str``
-        :param admin2: Code for the second administrative division, a county in
-            the US
-        :type admin3: ``str``
-        :param admin3: Code for third level administrative division
-        :type admin4: ``str``
-        :param admin4: Code for fourth level administrative division
-        :type population: ``int``
-        :param population: Location's population, if applicable
-        :type altitude: ``int``
-        :param altitude: Location's elevation
-        :type gtopo30: ``int``
-        :param gtopo30: Average elevation of 900 square metre region, if
+        :param float latitude: Location's latitude
+        :param float longitude: Location's longitude
+        :param str feature_class: Location's type
+        :param str feature_code: Location's code
+        :param str country: Location's country
+        :param str alt_country: Alternate country codes for location
+        :param str admin1: FIPS code (subject to change to ISO code), ISO code
+            for the US and CH
+        :param str admin2: Code for the second administrative division, a county
+        in the US
+        :param str admin3: Code for third level administrative division
+        :param str admin4: Code for fourth level administrative division
+        :param int population: Location's population, if applicable
+        :param int altitude: Location's elevation
+        :param int gtopo30: Average elevation of 900 square metre region, if
             available
-        :type tzname: ``str``
-        :param tzname: The timezone identifier using POSIX timezone names
-        :type modified_date: :class:`datetime.date`
-        :param modified_date: Location's last modification date in the geonames
-            databases
-        :type timezone: ``int``
-        :param timezone: The non-DST timezone offset from UTC in minutes
+        :param str tzname: The timezone identifier using POSIX timezone names
+        :param datetime.date modified_date: Location's last modification date in
+            the geonames databases
+        :param int timezone: The non-DST timezone offset from UTC in minutes
 
         """
         super(Location, self).__init__(latitude, longitude, altitude, name)
@@ -163,8 +143,7 @@ class Location(trigpoints.Trigpoint):
         >>> print(Stotfold)
         Stotfold (Home, Target - N52.000°; W000.217°)
 
-        :type mode: ``str``
-        :param mode: Coordinate formatting system to use
+        :param str mode: Coordinate formatting system to use
         :rtype: ``str``
         :return: Human readable string representation of ``Location`` object
 

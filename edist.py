@@ -145,10 +145,8 @@ class NumberedPoint(point.Point):
         >>> NumberedPoint(52.015, -0.221, "Home")
         NumberedPoint(52.015, -0.221, 'Home', 'metric')
 
-        :type latitude: ``float`` or coercible to ``float``
-        :param latitude: Location's latitude
-        :type longitude: ``float`` or coercible to ``float``
-        :param longitude: Location's longitude
+        :param float latitude: Location's latitude
+        :param float longitude: Location's longitude
         :param str name: Location's name or command line position
         :param str units: Unit type to be used for distances
 

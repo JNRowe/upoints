@@ -40,8 +40,7 @@ def calc_checksum(sentence):
     >>> calc_checksum("GPGGA,142058,5308.6414,N,00300.9257,W,1,04,5.6,1374.6,M,34.5,M,,")
     107
 
-    :type sentence: ``str``
-    :param sentence: NMEA 0183 formatted sentence
+    :param str sentence: NMEA 0183 formatted sentence
 
     """
     if sentence.startswith("$"):
@@ -56,8 +55,7 @@ def nmea_latitude(latitude):
     >>> nmea_latitude(53.144023333333337)
     ('5308.6414', 'N')
 
-    :type latitude: ``float`` or coercible to ``float``
-    :param latitude: Latitude to convert
+    :param float latitude: Latitude to convert
     :rtype: ``tuple``
     :return: NMEA-formatted latitude values
 
@@ -72,8 +70,7 @@ def nmea_longitude(longitude):
     >>> nmea_longitude(-3.0154283333333334)
     ('00300.9257', 'W')
 
-    :type longitude: ``float`` or coercible to ``float``
-    :param longitude: Longitude to convert
+    :param float longitude: Longitude to convert
     :rtype: ``tuple``
     :return: NMEA-formatted longitude values
 
@@ -88,10 +85,8 @@ def parse_latitude(latitude, hemisphere):
     >>> parse_latitude("5308.6414", "N")
     53.14402333333334
 
-    :type latitude: ``str``
-    :param latitude: Latitude in DDMM.MMMM
-    :type hemisphere: ``str``
-    :param hemisphere: North or South
+    :param str latitude: Latitude in DDMM.MMMM
+    :param str hemisphere: North or South
     :rtype: ``float``
     :return: Decimal representation of latitude
 
@@ -110,10 +105,8 @@ def parse_longitude(longitude, hemisphere):
     >>> parse_longitude("00300.9257", "W")
     -3.0154283333333334
 
-    :type longitude: ``str``
-    :param longitude: Longitude in DDDMM.MMMM
-    :type hemisphere: ``str``
-    :param hemisphere: East or West
+    :param str longitude: Longitude in DDDMM.MMMM
+    :param str hemisphere: East or West
     :rtype: ``float``
     :return: Decimal representation of longitude
 
@@ -155,16 +148,11 @@ class LoranPosition(point.Point):
         LoranPosition(53.1440233333, -3.01542833333,
                       datetime.time(14, 20, 58, 14), True, 'A')
 
-        :type latitude: ``float`` or coercible to ``float``
-        :param latitude: Fix's latitude
-        :type longitude: ``float`` or coercible to ``float``
-        :param longitude: Fix's longitude
-        :type time: :class:`datetime.time`
-        :param time: Time the fix was taken
-        :type status: ``bool``
-        :param status: Whether the data is active
-        :type mode: ``str``
-        :param mode: Type of reading
+        :param float latitude: Fix's latitude
+        :param float longitude: Fix's longitude
+        :param datetime.time time: Time the fix was taken
+        :param bool status: Whether the data is active
+        :param str mode: Type of reading
 
         """
         super(LoranPosition, self).__init__(latitude, longitude)
@@ -183,8 +171,7 @@ class LoranPosition(point.Point):
         ...                     datetime.time(14, 20, 58), True, "A"))
         $GPGLL,5308.6414,N,00300.9257,W,142058.00,A,A*72
 
-        :type talker: ``str``
-        :param talker: Talker ID
+        :param str talker: Talker ID
         :rtype: ``str``
         :return: Human readable string representation of ``Position`` object
 
@@ -229,8 +216,7 @@ class LoranPosition(point.Point):
         LoranPosition(52.0053573333, -3.01542833333,
                       datetime.time(14, 20, 59, 140000), True, None)
 
-        :type elements: ``list``
-        :param elements: Data values for fix
+        :param list elements: Data values for fix
         :rtype: ``Fix``
         :return: Fix object representing data
 
@@ -273,24 +259,15 @@ class Position(point.Point):
                  -3.01542833333, 109394.7, 202.9, datetime.date(2007, 11, 19),
                  5.0, None)
 
-        :type time: :class:`datetime.time`
-        :param time: Time the fix was taken
-        :type status: ``bool``
-        :param status: Whether the data is active
-        :type latitude: ``float`` or coercible to ``float``
-        :param latitude: Fix's latitude
-        :type longitude: ``float`` or coercible to ``float``
-        :param longitude: Fix's longitude
-        :type speed: ``float`` or coercible to ``float``
-        :param speed: Ground speed
-        :type track: ``float`` or coercible to ``float``
-        :param track: Track angle
-        :type date: :class:`datetime.date`
-        :param date: Date when position was taken
-        :type variation: ``float`` or coercible to ``float``
-        :param variation: Magnetic variation
-        :type mode: ``str``
-        :param mode: Type of reading
+        :param datetime.time time: Time the fix was taken
+        :param bool status: Whether the data is active
+        :param float latitude: Fix's latitude
+        :param float longitude: Fix's longitude
+        :param float speed: Ground speed
+        :param float track: Track angle
+        :param datetime.date date: Date when position was taken
+        :param float variation: Magnetic variation
+        :param str mode: Type of reading
 
         """
         super(Position, self).__init__(latitude, longitude)
@@ -368,8 +345,7 @@ class Position(point.Point):
         Position(datetime.time(14, 21), True, 52.015, -3.27766666667, 123142.7,
                  188.1, datetime.date(2007, 11, 19), 5.0, 'A')
 
-        :type elements: ``list``
-        :param elements: Data values for position
+        :param list elements: Data values for position
         :rtype: ``Position``
         :return: Position object representing data
 
@@ -436,28 +412,17 @@ class Fix(point.Point):
         Fix(datetime.time(14, 20, 27), 52.1380333333, -2.56861166667, 1, 4,
             5.6, 1052.3, 34.5, 12, 4, None)
 
-        :type time: :class:`datetime.time`
-        :param time: Time the fix was taken
-        :type latitude: ``float`` or coercible to ``float``
-        :param latitude: Fix's latitude
-        :type longitude: ``float`` or coercible to ``float``
-        :param longitude: Fix's longitude
-        :type quality: ``int``
-        :param quality: Mode under which the fix was taken
-        :type satellites: ``int``
-        :param satellites: Number of tracked satellites
-        :type dilution: ``float``
-        :param dilution: Horizontal dilution at reported position
-        :type altitude: ``float`` or coercible to ``float``
-        :param altitude: Altitude above MSL
-        :type geoid_delta: ``float`` or coercible to ``float``
-        :param geoid_delta: Height of geoid's MSL above WGS84 ellipsoid
-        :type dgps_delta: ``float`` or coercible to ``float``
-        :param dgps_delta: Number of seconds since last DGPS sync
-        :type dgps_station: ``int``
-        :param dgps_station: Identifier of the last synced DGPS station
-        :type mode: ``str``
-        :param mode: Type of reading
+        :param datetime.time time: Time the fix was taken
+        :param float latitude: Fix's latitude
+        :param float longitude: Fix's longitude
+        :param int quality: Mode under which the fix was taken
+        :param int satellites: Number of tracked satellites
+        :param float dilution: Horizontal dilution at reported position
+        :param float altitude: Altitude above MSL
+        :param float geoid_delta: Height of geoid's MSL above WGS84 ellipsoid
+        :param float dgps_delta: Number of seconds since last DGPS sync
+        :param int dgps_station: Identifier of the last synced DGPS station
+        :param str mode: Type of reading
 
         """
         super(Fix, self).__init__(latitude, longitude)
@@ -532,8 +497,7 @@ class Fix(point.Point):
         Fix(datetime.time(14, 21), 52.015, -3.27766666667, 1, 4, 5.6, 1000.0,
             34.5, None, None, None)
 
-        :type elements: ``list``
-                Data values for fix
+        :param list elements: Data values for fix
         :rtype: ``Fix``
         :return: Fix object representing data
 
@@ -592,12 +556,9 @@ class Waypoint(point.Point):
         >>> Waypoint(52.015, -0.221, "Home")
         Waypoint(52.015, -0.221, 'HOME')
 
-        :type latitude: ``float`` or coercible to ``float``
-        :param latitude: Waypoint's latitude
-        :type longitude: ``float`` or coercible to ``float``
-        :param longitude: Waypoint's longitude
-        :type name: ``str``
-        :param name: Comment for waypoint
+        :param float latitude: Waypoint's latitude
+        :param float longitude: Waypoint's longitude
+        :param str name: Comment for waypoint
 
         """
         super(Waypoint, self).__init__(latitude, longitude)
@@ -633,8 +594,7 @@ class Waypoint(point.Point):
         ...                          "HOME"])
         Waypoint(52.015, -0.221, 'HOME')
 
-        :type elements: ``list``
-        :param elements: Data values for fix
+        :param list elements: Data values for fix
         :rtype: ``Waypoint``
         :return: ``Waypoint`` object representing data
 
@@ -723,8 +683,7 @@ class Locations(point.Points):
 
         :type gpsdata_file: ``file``, ``list`` or ``str``
         :param gpsdata_file: NMEA data to read
-        :type checksum: ``bool``
-        :param checksum: Whether checksums should be tested
+        :param bool checksum: Whether checksums should be tested
         :rtype: ``list``
         :return: Series of locations taken from the data
 

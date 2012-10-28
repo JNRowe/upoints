@@ -50,28 +50,17 @@ class Cell(point.Point):
              datetime.datetime(2008, 4, 15, 15, 21, 35),
              datetime.datetime(2008, 4, 15, 15, 28, 49))
 
-        :type ident : ``int``
-        :param OpenCellID database identifier
-        :type latitude : ``float``
-        :param Cell's latitude
-        :type longitude : ``float``
-        :param Cell's longitude
-        :type mcc : ``int``
-        :param Cell's country code
-        :type mnc : ``int``
-        :param Cell's network code
-        :type lac : ``int``
-        :param Cell's local area code
-        :type cellid : ``int``
-        :param Cell's identifier
-        :type crange : ``int``
-        :param Cell's range
-        :type samples : ``int``
-        :param Number of samples for the cell
-        :type created : :class:`datetime.datetime`
-        :param Date the cell was first entered
-        :type updated : :class:`datetime.datetime`
-        :param Date of the last update
+        :param int ident: OpenCellID database identifier
+        :param float latitude: Cell's latitude
+        :param float longitude: Cell's longitude
+        :param int mcc: Cell's country code
+        :param int mnc: Cell's network code
+        :param int lac: Cell's local area code
+        :param int cellid: Cell's identifier
+        :param int crange: Cell's range
+        :param int samples: Number of samples for the cell
+        :param datetime.datetime created: Date the cell was first entered
+        :param datetime.datetime updated: Date of the last update
 
         """
         super(Cell, self).__init__(latitude, longitude)
@@ -99,7 +88,6 @@ class Cell(point.Point):
         4,52.0150000000000,-0.2210000000000,21,46,40000,10,0,1,
         2008-04-15 15:21:35,2008-04-15 15:28:49
 
-        :type mode: any
         :param mode: For compatibility with parent class
         :rtype: ``str``
         :return: OpenCellID.org-style string representation of ``Cell`` object

@@ -58,28 +58,19 @@ class Baken(point.Point):
         LookupError: Unable to instantiate baken object, no latitude or
         locator string
 
-        :type latitude: ``float`` or coercible to ``float``
-        :param latitude: Location's latitude
-        :type longitude: ``float`` or coercible to ``float``
-        :param longitude: Location's longitude
-        :type antenna: ``str``
-        :param antenna: Location's antenna type
+        :param float latitude: Location's latitude
+        :param float longitude: Location's longitude
+        :param str antenna: Location's antenna type
         :type direction: ``tuple`` of ``int``
         :param direction: Antenna's direction
-        :type frequency: ``float``
-        :param frequency: Transmitter's frequency
-        :type height: ``float``
-        :param height: Antenna's height
-        :type locator: ``str``
-        :param locator: Location's Maidenhead locator string
-        :type mode: ``str``
-        :param mode: Transmitter's mode
+        :param float frequency: Transmitter's frequency
+        :param float height: Antenna's height
+        :param str locator: Location's Maidenhead locator string
+        :param str mode: Transmitter's mode
         :type operator: ``tuple`` of ``str``
         :param operator: Transmitter's operator
-        :type power: ``float``
-        :param power: Transmitter's power
-        :type qth: ``str``
-        :param qth: Location's qth
+        :param float power: Transmitter's power
+        :param str qth: Location's qth
         :raise LookupError: No position data to use
 
         """
@@ -117,8 +108,7 @@ class Baken(point.Point):
         Baken(44.3125, 8.45833333333, '2 x Turnstile', None, 50.0, 460.0,
               'JN44FH', 'A1A', None, 25, None)
 
-        :type value : ``str``
-        :param value: New Maidenhead locator string
+        :param str value: New Maidenhead locator string
 
         """
         self._locator = value
@@ -134,8 +124,7 @@ class Baken(point.Point):
         ...             "IO93BF", "A1A", None, 25, None))
         IO93BF (53°13'45"N, 001°52'30"W)
 
-        :type mode: ``str``
-        :param mode: Coordinate formatting system to use
+        :param str mode: Coordinate formatting system to use
         :rtype: ``str``
         :return: Human readable string representation of ``Baken`` object
 

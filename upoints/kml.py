@@ -56,16 +56,11 @@ def create_elem(tag, attr=None, text=None, kml_version=DEF_KML_VERSION,
                 human_namespace=False):
     """Create a partial :class:`ET.Element` wrapper with namespace defined.
 
-    :type tag: ``str``
-    :param tag: Tag name
-    :type attr: ``dict``
-    :param attr: Default attributes for tag
-    :type text: ``str``
-    :param text: Text content for the tag
-    :type kml_version: ``str``
-    :param kml_version: KML version to use
-    :type human_namespace: ``bool``
-    :param human_namespace: Whether to generate output using human readable
+    :param str tag: Tag name
+    :param dict attr: Default attributes for tag
+    :param str text: Text content for the tag
+    :param str kml_version: KML version to use
+    :param bool human_namespace: Whether to generate output using human readable
         namespace prefixes
     :rtype: ``function``
     :return: :class:`ET.Element` wrapper with predefined namespace
@@ -108,16 +103,11 @@ class Placemark(trigpoints.Trigpoint):
         >>> Placemark(52, 0, None, "name", "desc")
         Placemark(52.0, 0.0, None, 'name', 'desc')
 
-        :type latitude: ``float`` or coercible to ``float``
-        :param latitude: Placemarks's latitude
-        :type longitude: ``float`` or coercible to ``float``
-        :param longitude: Placemark's longitude
-        :type altitude: ``float`` or coercible to ``float``
-        :param altitude: Placemark's altitude
-        :type name: ``str``
-        :param name: Name for placemark
-        :type description: ``str``
-        :param description: Placemark's description
+        :param float latitude: Placemarks's latitude
+        :param float longitude: Placemark's longitude
+        :param float altitude: Placemark's altitude
+        :param str name: Name for placemark
+        :param str description: Placemark's description
 
         """
         super(Placemark, self).__init__(latitude, longitude, altitude, name)
@@ -138,8 +128,7 @@ class Placemark(trigpoints.Trigpoint):
         >>> print(Placemark(52, 0, 42, "name", "desc"))
         name (52°00'00"N, 000°00'00"E alt 42m) [desc]
 
-        :type mode: ``str``
-        :param mode: Coordinate formatting system to use
+        :param str mode: Coordinate formatting system to use
         :rtype: ``str``
         :return: Human readable string representation of ``Placemark`` object
 
@@ -162,11 +151,9 @@ class Placemark(trigpoints.Trigpoint):
         >>> ET.tostring(Placemark(52, 0, 4, "Cambridge", "in the UK").tokml())
         '<ns0:Placemark xmlns:ns0="http://earth.google.com/kml/2.2" id="Cambridge"><ns0:name>Cambridge</ns0:name><ns0:description>in the UK</ns0:description><ns0:Point><ns0:coordinates>0.0,52.0,4</ns0:coordinates></ns0:Point></ns0:Placemark>'
 
-        :type kml_version: ``str``
-        :param kml_version: KML version to generate
-        :type human_namespace: ``bool``
-        :param human_namespace: Whether to generate output using human readable
-            namespace prefixes
+        :param str kml_version: KML version to generate
+        :param bool human_namespace: Whether to generate output using human
+            readable namespace prefixes
         :rtype: :class:`ET.Element`
         :return: KML Placemark element
 
@@ -264,8 +251,7 @@ class Placemarks(point.KeyedPoints):
 
         :type kml_file: ``file``, ``list`` or ``str``
         :param kml_file: KML data to read
-        :type kml_version: ``str``
-        :param kml_version: Specific KML version entities to import
+        :param str kml_version: Specific KML version entities to import
         :rtype: ``dict``
         :return: Named locations with optional comments
 
@@ -324,10 +310,8 @@ class Placemarks(point.KeyedPoints):
         >>> xml.write(stdout)
         <ns0:kml xmlns:ns0="http://earth.google.com/kml/2.0"><ns0:Document><ns0:Placemark id="Home"><ns0:name>Home</ns0:name><ns0:Point><ns0:coordinates>-0.221,52.015,60</ns0:coordinates></ns0:Point></ns0:Placemark><ns0:Placemark id="Cambridge"><ns0:name>Cambridge</ns0:name><ns0:Point><ns0:coordinates>0.39,52.167</ns0:coordinates></ns0:Point></ns0:Placemark></ns0:Document></ns0:kml>
 
-        :type kml_version: ``str``
-        :param kml_version: KML version to generate
-        :type human_namespace: ``bool``
-        :param kml_version: Whether to generate output using human readable
+        :param str kml_version: KML version to generate
+        :param bool kml_version: Whether to generate output using human readable
             namespace prefixes
         :rtype: :class:`ET.ElementTree`
         :return: KML element tree depicting ``Placemarks``
