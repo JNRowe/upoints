@@ -1,0 +1,11 @@
+language:
+    python
+python:
+  - 2.5
+  - 2.6
+  - 2.7
+install:
+  - pip install --use-mirrors expect nose2 nose2-cov
+  - pip install --use-mirrors .
+script:
+    nose2 -vv tests
