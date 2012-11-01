@@ -1,6 +1,6 @@
 #! /usr/bin/python -tt
 """setup.py - Setuptools tasks and config for upoints"""
-# Copyright (C) 2006-2011  James Rowe <jnrowe@gmail.com>
+# Copyright (C) 2006-2012  James Rowe <jnrowe@gmail.com>
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
