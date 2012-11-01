@@ -30,6 +30,7 @@ Contents
    api/index
 
    glossary
+   release
    todo
 
 Indices and tables
