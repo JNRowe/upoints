@@ -96,13 +96,6 @@ class Placemark(trigpoints.Trigpoint):
                  description=None):
         """Initialise a new ``Placemark`` object.
 
-        >>> Placemark(52, 0, 4)
-        Placemark(52.0, 0.0, 4.0, None, None)
-        >>> Placemark(52, 0, None)
-        Placemark(52.0, 0.0, None, None, None)
-        >>> Placemark(52, 0, None, "name", "desc")
-        Placemark(52.0, 0.0, None, 'name', 'desc')
-
         :param float latitude: Placemarks's latitude
         :param float longitude: Placemark's longitude
         :param float altitude: Placemark's altitude
@@ -119,15 +112,6 @@ class Placemark(trigpoints.Trigpoint):
     def __str__(self, mode="dms"):
         """Pretty printed location string.
 
-        >>> print(Placemark(52, 0, 4))
-        52°00'00"N, 000°00'00"E alt 4m
-        >>> print(Placemark(52, 0, None))
-        52°00'00"N, 000°00'00"E
-        >>> print(Placemark(52, 0, None, "name", "desc"))
-        name (52°00'00"N, 000°00'00"E) [desc]
-        >>> print(Placemark(52, 0, 42, "name", "desc"))
-        name (52°00'00"N, 000°00'00"E alt 42m) [desc]
-
         :param str mode: Coordinate formatting system to use
         :rtype: ``str``
         :return: Human readable string representation of ``Placemark`` object
@@ -141,15 +125,6 @@ class Placemark(trigpoints.Trigpoint):
 
     def tokml(self, kml_version=DEF_KML_VERSION, human_namespace=False):
         """Generate a KML Placemark element subtree.
-
-        >>> ET.tostring(Placemark(52, 0, 4).tokml())
-        '<ns0:Placemark xmlns:ns0="http://earth.google.com/kml/2.2"><ns0:Point><ns0:coordinates>0.0,52.0,4</ns0:coordinates></ns0:Point></ns0:Placemark>'
-        >>> ET.tostring(Placemark(52, 0, 4, "Cambridge").tokml())
-        '<ns0:Placemark xmlns:ns0="http://earth.google.com/kml/2.2" id="Cambridge"><ns0:name>Cambridge</ns0:name><ns0:Point><ns0:coordinates>0.0,52.0,4</ns0:coordinates></ns0:Point></ns0:Placemark>'
-        >>> ET.tostring(Placemark(52, 0, 4).tokml(kml_version="2.0"))
-        '<ns0:Placemark xmlns:ns0="http://earth.google.com/kml/2.0"><ns0:Point><ns0:coordinates>0.0,52.0,4</ns0:coordinates></ns0:Point></ns0:Placemark>'
-        >>> ET.tostring(Placemark(52, 0, 4, "Cambridge", "in the UK").tokml())
-        '<ns0:Placemark xmlns:ns0="http://earth.google.com/kml/2.2" id="Cambridge"><ns0:name>Cambridge</ns0:name><ns0:description>in the UK</ns0:description><ns0:Point><ns0:coordinates>0.0,52.0,4</ns0:coordinates></ns0:Point></ns0:Placemark>'
 
         :param str kml_version: KML version to generate
         :param bool human_namespace: Whether to generate output using human
@@ -236,13 +211,6 @@ class Placemarks(point.KeyedPoints):
             {"Home": Placemark(52.015, -0.221, 60),
              "Cambridge": Placemark(52.167, 0.390, None)}
 
-        >>> locations = Placemarks(open("test/data/kml"))
-        >>> for value in sorted(locations.values(),
-        ...                     key=lambda x: x.name.lower()):
-        ...     print(value)
-        Cambridge (52°10'01"N, 000°23'24"E)
-        Home (52°00'54"N, 000°13'15"W alt 60m)
-
         The ``kml_version`` parameter allows the caller to specify the specific
         KML version that should be processed, this allows the caller to process
         inputs which contain entries in more than one namespace without
@@ -301,18 +269,9 @@ class Placemarks(point.KeyedPoints):
                         human_namespace=False):
         """Generate KML element tree from ``Placemarks``.
 
-        >>> from sys import stdout
-        >>> locations = Placemarks(open("test/data/kml"))
-        >>> xml = locations.export_kml_file()
-        >>> xml.write(stdout)
-        <ns0:kml xmlns:ns0="http://earth.google.com/kml/2.2"><ns0:Document><ns0:Placemark id="Home"><ns0:name>Home</ns0:name><ns0:Point><ns0:coordinates>-0.221,52.015,60</ns0:coordinates></ns0:Point></ns0:Placemark><ns0:Placemark id="Cambridge"><ns0:name>Cambridge</ns0:name><ns0:Point><ns0:coordinates>0.39,52.167</ns0:coordinates></ns0:Point></ns0:Placemark></ns0:Document></ns0:kml>
-        >>> xml = locations.export_kml_file("2.0")
-        >>> xml.write(stdout)
-        <ns0:kml xmlns:ns0="http://earth.google.com/kml/2.0"><ns0:Document><ns0:Placemark id="Home"><ns0:name>Home</ns0:name><ns0:Point><ns0:coordinates>-0.221,52.015,60</ns0:coordinates></ns0:Point></ns0:Placemark><ns0:Placemark id="Cambridge"><ns0:name>Cambridge</ns0:name><ns0:Point><ns0:coordinates>0.39,52.167</ns0:coordinates></ns0:Point></ns0:Placemark></ns0:Document></ns0:kml>
-
         :param str kml_version: KML version to generate
-        :param bool kml_version: Whether to generate output using human readable
-            namespace prefixes
+        :param bool human_namespace: Whether to generate output using human
+            readable namespace prefixes
         :rtype: :class:`ET.ElementTree`
         :return: KML element tree depicting ``Placemarks``
 

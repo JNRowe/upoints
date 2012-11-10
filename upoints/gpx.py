@@ -99,13 +99,6 @@ class _GpxElem(point.TimedPoint):
                  elevation=None, time=None):
         """Initialise a new ``_GpxElem`` object.
 
-        >>> _GpxElem(52, 0)
-        _GpxElem(52.0, 0.0, None, None, None, None)
-        >>> _GpxElem(52, 0, None)
-        _GpxElem(52.0, 0.0, None, None, None, None)
-        >>> _GpxElem(52, 0, "name", "desc")
-        _GpxElem(52.0, 0.0, 'name', 'desc', None, None)
-
         :param float latitude: Element's latitude
         :param float longitude: Element's longitude
         :param str name: Name for Element
@@ -121,14 +114,6 @@ class _GpxElem(point.TimedPoint):
 
     def __str__(self, mode="dms"):
         """Pretty printed location string.
-
-        >>> print(_GpxElem(52, 0))
-        52°00'00"N, 000°00'00"E
-        >>> print(_GpxElem(52, 0, "name", "desc", 40))
-        name (52°00'00"N, 000°00'00"E @ 40m) [desc]
-        >>> print(_GpxElem(52, 0, "name", "desc", 40,
-        ...                utils.Timestamp(2008, 7, 25)))
-        name (52°00'00"N, 000°00'00"E @ 40m on 2008-07-25T00:00:00+00:00) [desc]
 
         :param str mode: Coordinate formatting system to use
         :rtype: ``str``
@@ -151,18 +136,6 @@ class _GpxElem(point.TimedPoint):
 
     def togpx(self, gpx_version=DEF_GPX_VERSION, human_namespace=False):
         """Generate a GPX waypoint element subtree.
-
-        >>> ET.tostring(_GpxElem(52, 0).togpx())
-        '<ns0:None xmlns:ns0="http://www.topografix.com/GPX/1/1" lat="52.0" lon="0.0" />'
-        >>> ET.tostring(_GpxElem(52, 0, "Cambridge").togpx())
-        '<ns0:None xmlns:ns0="http://www.topografix.com/GPX/1/1" lat="52.0" lon="0.0"><ns0:name>Cambridge</ns0:name></ns0:None>'
-        >>> ET.tostring(_GpxElem(52, 0, "Cambridge", "in the UK").togpx())
-        '<ns0:None xmlns:ns0="http://www.topografix.com/GPX/1/1" lat="52.0" lon="0.0"><ns0:name>Cambridge</ns0:name><ns0:desc>in the UK</ns0:desc></ns0:None>'
-        >>> ET.tostring(_GpxElem(52, 0, "Cambridge", "in the UK").togpx())
-        '<ns0:None xmlns:ns0="http://www.topografix.com/GPX/1/1" lat="52.0" lon="0.0"><ns0:name>Cambridge</ns0:name><ns0:desc>in the UK</ns0:desc></ns0:None>'
-        >>> ET.tostring(_GpxElem(52, 0, "name", "desc", 40,
-        ...                      utils.Timestamp(2008, 7, 25)).togpx())
-        '<ns0:None xmlns:ns0="http://www.topografix.com/GPX/1/1" lat="52.0" lon="0.0"><ns0:name>name</ns0:name><ns0:desc>desc</ns0:desc><ns0:ele>40</ns0:ele><ns0:time>2008-07-25T00:00:00+00:00</ns0:time></ns0:None>'
 
         :param str gpx_version: GPX version to generate
         :param bool human_namespace: Whether to generate output using human
@@ -406,19 +379,6 @@ class _GpxMeta(object):
     def togpx(self, gpx_version=DEF_GPX_VERSION, human_namespace=False):
         """Generate a GPX metadata element subtree.
 
-        >>> meta = _GpxMeta(time=(2008, 6, 3, 16, 12, 43, 1, 155, 0))
-        >>> ET.tostring(meta.togpx())
-        '<ns0:metadata xmlns:ns0="http://www.topografix.com/GPX/1/1"><ns0:time>2008-06-03T16:12:43+0000</ns0:time></ns0:metadata>'
-        >>> meta.bounds = {"minlat": 52, "maxlat": 54, "minlon": -2,
-        ...                "maxlon": 1}
-        >>> ET.tostring(meta.togpx())
-        '<ns0:metadata xmlns:ns0="http://www.topografix.com/GPX/1/1"><ns0:time>2008-06-03T16:12:43+0000</ns0:time><ns0:bounds maxlat="54" maxlon="1" minlat="52" minlon="-2" /></ns0:metadata>'
-        >>> meta.bounds = [point.Point(52.015, -0.221),
-        ...                point.Point(52.167, 0.390)]
-        >>> from dtopt import ELLIPSIS
-        >>> ET.tostring(meta.togpx())
-        '<ns0:metadata xmlns:ns0="http://www.topografix.com/GPX/1/1"><ns0:time>...</ns0:time><ns0:bounds maxlat="52.167" maxlon="0.39" minlat="52.015" minlon="-0.221" /></ns0:metadata>'
-
         :param str gpx_version: GPX version to generate
         :param bool human_namespace: Whether to generate output using human
             readable namespace prefixes
@@ -561,13 +521,6 @@ class Waypoint(_GpxElem):
 
         :class:`_GpxElem`
 
-    >>> Waypoint(52, 0)
-    Waypoint(52.0, 0.0, None, None, None, None)
-    >>> Waypoint(52, 0, None)
-    Waypoint(52.0, 0.0, None, None, None, None)
-    >>> Waypoint(52, 0, "name", "desc")
-    Waypoint(52.0, 0.0, 'name', 'desc', None, None)
-
     """
 
     __slots__ = ('name', 'description', )
@@ -622,12 +575,6 @@ class Waypoints(point.TimedPoints):
             [Waypoint(52.015, -0.221, "Home", "My place"),
              Waypoint(52.167, 0.390, "MSR", "Microsoft Research, Cambridge")]
 
-        >>> waypoints = Waypoints(open("test/data/gpx"))
-        >>> for value in sorted(waypoints, key=attrgetter("name")):
-        ...     print(value)
-        Home (52°00'54"N, 000°13'15"W on 2008-07-26T00:00:00+00:00) [My place]
-        MSR (52°10'01"N, 000°23'24"E on 2008-07-27T00:00:00+00:00) [Microsoft Research, Cambridge]
-
         :type gpx_file: ``file``, ``list`` or ``str``
         :param gpx_file: GPX data to read
         :param str gpx_version: Specific GPX version entities to import
@@ -679,13 +626,6 @@ class Waypoints(point.TimedPoints):
                         human_namespace=False):
         """Generate GPX element tree from ``Waypoints`` object.
 
-        >>> from sys import stdout
-        >>> locations = Waypoints(open("test/data/gpx"))
-        >>> xml = locations.export_gpx_file()
-        >>> from dtopt import ELLIPSIS
-        >>> xml.write(stdout)
-        <ns0:gpx xmlns:ns0="http://www.topografix.com/GPX/1/1"><ns0:metadata><ns0:time>...</ns0:time><ns0:bounds maxlat="52.167" maxlon="0.39" minlat="52.015" minlon="-0.221" /></ns0:metadata><ns0:wpt lat="52.015" lon="-0.221"><ns0:name>Home</ns0:name><ns0:desc>My place</ns0:desc><ns0:time>2008-07-26T00:00:00+00:00</ns0:time></ns0:wpt><ns0:wpt lat="52.167" lon="0.39"><ns0:name>MSR</ns0:name><ns0:desc>Microsoft Research, Cambridge</ns0:desc><ns0:time>2008-07-27T00:00:00+00:00</ns0:time></ns0:wpt></ns0:gpx>
-
         :param str gpx_version: GPX version to generate
         :param bool human_namespace: Whether to generate output using human
             readable namespace prefixes
@@ -708,13 +648,6 @@ class Trackpoint(_GpxElem):
     """Class for representing a trackpoint element from GPX data files.
 
     .. versionadded:: 0.10.0
-
-    >>> Trackpoint(52, 0)
-    Trackpoint(52.0, 0.0, None, None, None, None)
-    >>> Trackpoint(52, 0, None)
-    Trackpoint(52.0, 0.0, None, None, None, None)
-    >>> Trackpoint(52, 0, "name", "desc")
-    Trackpoint(52.0, 0.0, 'name', 'desc', None, None)
 
     .. seealso::
 
@@ -769,13 +702,6 @@ class Trackpoints(_SegWrap):
 
             [[Trackpoint(52.015, -0.221, "Home", "My place"),
               Trackpoint(52.167, 0.390, "MSR", "Microsoft Research, Cambridge")], ]
-
-        >>> trackpoints = Trackpoints(open("test/data/gpx_tracks"))
-        >>> for value in sorted(trackpoints[0],
-        ...                     key=attrgetter("name")):
-        ...     print(value)
-        Home (52°00'54"N, 000°13'15"W on 2008-07-26T00:00:00+00:00) [My place]
-        MSR (52°10'01"N, 000°23'24"E on 2008-07-27T00:00:00+00:00) [Microsoft Research, Cambridge]
 
         :type gpx_file: ``file``, ``list`` or ``str``
         :param gpx_file: GPX data to read
@@ -832,13 +758,6 @@ class Trackpoints(_SegWrap):
                         human_namespace=False):
         """Generate GPX element tree from ``Trackpoints``.
 
-        >>> from sys import stdout
-        >>> locations = Trackpoints(open("test/data/gpx_tracks"))
-        >>> xml = locations.export_gpx_file()
-        >>> from dtopt import ELLIPSIS
-        >>> xml.write(stdout)
-        <ns0:gpx xmlns:ns0="http://www.topografix.com/GPX/1/1"><ns0:metadata><ns0:time>...</ns0:time><ns0:bounds maxlat="52.167" maxlon="0.39" minlat="52.015" minlon="-0.221" /></ns0:metadata><ns0:trk><ns0:trkseg><ns0:trkpt lat="52.015" lon="-0.221"><ns0:name>Home</ns0:name><ns0:desc>My place</ns0:desc><ns0:time>2008-07-26T00:00:00+00:00</ns0:time></ns0:trkpt><ns0:trkpt lat="52.167" lon="0.39"><ns0:name>MSR</ns0:name><ns0:desc>Microsoft Research, Cambridge</ns0:desc><ns0:time>2008-07-27T00:00:00+00:00</ns0:time></ns0:trkpt></ns0:trkseg></ns0:trk></ns0:gpx>
-
         :param str gpx_version: GPX version to generate
         :param bool human_namespace: Whether to generate output using human
             readable namespace prefixes
@@ -872,13 +791,6 @@ class Routepoint(_GpxElem):
     .. seealso:
 
          :class:`_GpxElem`
-
-    >>> Routepoint(52, 0)
-    Routepoint(52.0, 0.0, None, None, None, None)
-    >>> Routepoint(52, 0, None)
-    Routepoint(52.0, 0.0, None, None, None, None)
-    >>> Routepoint(52, 0, "name", "desc")
-    Routepoint(52.0, 0.0, 'name', 'desc', None, None)
 
     """
 
@@ -927,13 +839,6 @@ class Routepoints(_SegWrap):
 
             [[Routepoint(52.015, -0.221, "Home", "My place"),
               Routepoint(52.167, 0.390, "MSR", "Microsoft Research, Cambridge")], ]
-
-        >>> routepoints = Routepoints(open("test/data/gpx_routes"))
-        >>> for value in sorted(routepoints[0],
-        ...                     key=attrgetter("name")):
-        ...     print(value)
-        Home (52°00'54"N, 000°13'15"W on 2008-07-26T00:00:00+00:00) [My place]
-        MSR (52°10'01"N, 000°23'24"E on 2008-07-27T00:00:00+00:00) [Microsoft Research, Cambridge]
 
         :type gpx_file: ``file``, ``list`` or ``str``
         :param gpx_file: GPX data to read
@@ -989,13 +894,6 @@ class Routepoints(_SegWrap):
     def export_gpx_file(self, gpx_version=DEF_GPX_VERSION,
                         human_namespace=False):
         """Generate GPX element tree from :class:`Routepoints`
-
-        >>> from sys import stdout
-        >>> locations = Routepoints(open("test/data/gpx_routes"))
-        >>> xml = locations.export_gpx_file()
-        >>> from dtopt import ELLIPSIS
-        >>> xml.write(stdout)
-        <ns0:gpx xmlns:ns0="http://www.topografix.com/GPX/1/1"><ns0:metadata><ns0:time>...</ns0:time><ns0:bounds maxlat="52.167" maxlon="0.39" minlat="52.015" minlon="-0.221" /></ns0:metadata><ns0:rte><ns0:rtept lat="52.015" lon="-0.221"><ns0:name>Home</ns0:name><ns0:desc>My place</ns0:desc><ns0:time>2008-07-26T00:00:00+00:00</ns0:time></ns0:rtept><ns0:rtept lat="52.167" lon="0.39"><ns0:name>MSR</ns0:name><ns0:desc>Microsoft Research, Cambridge</ns0:desc><ns0:time>2008-07-27T00:00:00+00:00</ns0:time></ns0:rtept></ns0:rte></ns0:gpx>
 
         :param str gpx_version: GPX version to generate
         :param bool human_namespace: Whether to generate output using human

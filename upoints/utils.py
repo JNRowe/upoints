@@ -90,17 +90,6 @@ class FileFormatError(ValueError):
 
     """Error object for data parsing error.
 
-    >>> raise FileFormatError
-    Traceback (most recent call last):
-        ...
-    FileFormatError: Unsupported data format.
-    >>> from dtopt import NORMALIZE_WHITESPACE
-    >>> raise FileFormatError("test site")
-    Traceback (most recent call last):
-        ...
-    FileFormatError: Incorrect data format, if you're using a file downloaded
-    from test site please report this to James Rowe <jnrowe@gmail.com>
-
     .. versionadded:: 0.3.0
 
     """
@@ -132,11 +121,6 @@ class FileFormatError(ValueError):
 #{ Implementation utilities
 def value_or_empty(value):
     """Return an empty string for display when value is ``None``.
-
-    >>> value_or_empty(None)
-    ''
-    >>> value_or_empty("test")
-    'test'
 
     :param str value: Value to prepare for display
     :rtype: ``str``
@@ -179,14 +163,6 @@ def repr_assist(obj, remap=None):
 def prepare_read(data, method="readlines", mode="r"):
     """Prepare various input types for parsing.
 
-    >>> prepare_read(open("test/data/real_file"))
-    ['This is a test file-type object\\n']
-    >>> test_list = ['This is a test list-type object', 'with two elements']
-    >>> prepare_read(test_list)
-    ['This is a test list-type object', 'with two elements']
-    >>> prepare_read(open("test/data/real_file"), "read")
-    'This is a test file-type object\\n'
-
     :type data: ``file`` like object, ``list``, ``str``
     :param data: Data to read
     :param str method: Method to process data with
@@ -211,13 +187,6 @@ def prepare_read(data, method="readlines", mode="r"):
 def prepare_csv_read(data, field_names, *args, **kwargs):
     """Prepare various input types for CSV parsing.
 
-    >>> list(prepare_csv_read(open("test/data/real_file.csv"),
-    ...                       ("type", "bool", "string")))
-    [{'bool': 'true', 'type': 'file', 'string': 'test'}]
-    >>> test_list = ['James,Rowe', 'ell,caro']
-    >>> list(prepare_csv_read(test_list, ("first", "last")))
-    [{'last': 'Rowe', 'first': 'James'}, {'last': 'caro', 'first': 'ell'}]
-
     :type data: ``file`` like object, ``list``, ``str``
     :param data: Data to read
     :type field_names: ``tuple`` of ``str``
@@ -238,12 +207,6 @@ def prepare_csv_read(data, field_names, *args, **kwargs):
 
 def prepare_xml_read(data):
     """Prepare various input types for XML parsing.
-
-    >>> prepare_xml_read(open("test/data/real_file.xml")).find("tag").text
-    'This is a test file-type object'
-    >>> test_list = ['<xml>', '<tag>This is a test list</tag>', '</xml>']
-    >>> prepare_xml_read(test_list).find("tag").text
-    'This is a test list'
 
     :type data: ``file`` like object, ``list``, ``str``
     :param data: Data to read
@@ -270,17 +233,6 @@ def prepare_xml_read(data):
 def to_dms(angle, style="dms"):
     """Convert decimal angle to degrees, minutes and possibly seconds.
 
-    >>> to_dms(52.015)
-    (52, 0, 54.0)
-    >>> to_dms(-0.221)
-    (0, -13, -15.600000000000023)
-    >>> to_dms(-0.221, style="dm")
-    (0, -13.26)
-    >>> to_dms(-0.221, style=None)
-    Traceback (most recent call last):
-        ...
-    ValueError: Unknown style type `None'
-
     :param float angle: Angle to convert
     :param str style: Return fractional or whole minutes values
     :rtype: ``tuple`` of ``int`` objects for values
@@ -304,13 +256,6 @@ def to_dms(angle, style="dms"):
 
 def to_dd(degrees, minutes, seconds=0):
     """Convert degrees, minutes and optionally seconds to decimal angle.
-
-    >>> "%.3f" % to_dd(52, 0, 54)
-    '52.015'
-    >>> "%.3f" % to_dd(0, -13, -15)
-    '-0.221'
-    >>> "%.3f" % to_dd(0, -13.25)
-    '-0.221'
 
     :param float degrees: Number of degrees
     :param float minutes: Number of minutes
@@ -359,25 +304,6 @@ COMPASS_NAMES_ABBR = reduce(add, [__chunk(x, True) for x in range(4)])
 def angle_to_name(angle, segments=8, abbr=False):
     """Convert angle in to direction name.
 
-    >>> angle_to_name(0)
-    'North'
-    >>> angle_to_name(360)
-    'North'
-    >>> angle_to_name(45)
-    'North-east'
-    >>> angle_to_name(292)
-    'West'
-    >>> angle_to_name(293)
-    'North-west'
-    >>> angle_to_name(0, 4)
-    'North'
-    >>> angle_to_name(360, 16)
-    'North'
-    >>> angle_to_name(45, 4, True)
-    'NE'
-    >>> angle_to_name(292, 16, True)
-    'WNW'
-
     :param float angle: Angle in degrees to convert to direction name
     :param int segments: Number of segments to split compass in to
     :param bool abbr: Whether to return abbreviated direction string
@@ -409,15 +335,6 @@ class TzOffset(datetime.tzinfo):
     def __init__(self, tzstring):
         """Initialise a new ``TzOffset`` object.
 
-        >>> TzOffset("+00:00").utcoffset()
-        datetime.timedelta(0)
-        >>> TzOffset("-00:00").utcoffset()
-        datetime.timedelta(0)
-        >>> TzOffset("+05:30").utcoffset()
-        datetime.timedelta(0, 19800)
-        >>> TzOffset("-08:00").utcoffset()
-        datetime.timedelta(-1, 57600)
-
         :param str tzstring: `ISO 8601`_ style timezone definition
 
         .. _ISO 8601: http://www.cl.cam.ac.uk/~mgk25/iso-time.html
@@ -430,15 +347,6 @@ class TzOffset(datetime.tzinfo):
 
     def __repr__(self):
         """Self-documenting string representation.
-
-        >>> TzOffset("+00:00")
-        TzOffset('+00:00')
-        >>> TzOffset("-00:00")
-        TzOffset('+00:00')
-        >>> TzOffset("+05:30")
-        TzOffset('+05:30')
-        >>> TzOffset("-08:00")
-        TzOffset('-08:00')
 
         :rtype: ``str``
         :return: String to recreate ``TzOffset`` object
@@ -505,17 +413,6 @@ class Timestamp(datetime.datetime):
     def parse_isoformat(timestamp):
         """Parse an ISO 8601 formatted time stamp.
 
-        >>> Timestamp.parse_isoformat("2008-02-06T13:33:26+0000")
-        Timestamp(2008, 2, 6, 13, 33, 26, tzinfo=TzOffset('+00:00'))
-        >>> Timestamp.parse_isoformat("2008-02-06T13:33:26+00:00")
-        Timestamp(2008, 2, 6, 13, 33, 26, tzinfo=TzOffset('+00:00'))
-        >>> Timestamp.parse_isoformat("2008-02-06T13:33:26+05:30")
-        Timestamp(2008, 2, 6, 13, 33, 26, tzinfo=TzOffset('+05:30'))
-        >>> Timestamp.parse_isoformat("2008-02-06T13:33:26-08:00")
-        Timestamp(2008, 2, 6, 13, 33, 26, tzinfo=TzOffset('-08:00'))
-        >>> Timestamp.parse_isoformat("2008-02-06T13:33:26z")
-        Timestamp(2008, 2, 6, 13, 33, 26, tzinfo=TzOffset('+00:00'))
-
         :param str timestamp: Timestamp to parse
         :rtype: ``Timestamp``
         :return: Parsed timestamp
@@ -558,50 +455,6 @@ def from_iso6709(coordinates):
 
        :func:`to_iso6709`
 
-    The following tests are from the examples contained in the `wikipedia
-    ISO 6709 page`_:
-
-    >>> from_iso6709("+00-025/") # Atlantic Ocean
-    (0.0, -25.0, None)
-    >>> from_iso6709("+46+002/") # France
-    (46.0, 2.0, None)
-    >>> from_iso6709("+4852+00220/") # Paris
-    (48.86666666666667, 2.3333333333333335, None)
-    >>> from_iso6709("+48.8577+002.295/") # Eiffel Tower
-    (48.8577, 2.295, None)
-    >>> from_iso6709("+27.5916+086.5640+8850/") # Mount Everest
-    (27.5916, 86.564, 8850.0)
-    >>> from_iso6709("+90+000/") # North Pole
-    (90.0, 0.0, None)
-    >>> from_iso6709("+00-160/") # Pacific Ocean
-    (0.0, -160.0, None)
-    >>> from_iso6709("-90+000+2800/") # South Pole
-    (-90.0, 0.0, 2800.0)
-    >>> from_iso6709("+38-097/") # United States
-    (38.0, -97.0, None)
-    >>> from_iso6709("+40.75-074.00/") # New York City
-    (40.75, -74.0, None)
-    >>> from_iso6709("+40.6894-074.0447/") # Statue of Liberty
-    (40.6894, -74.0447, None)
-
-    The following tests are from the `Latitude, Longitude and Altitude format
-    for geospatial information`_ page:
-
-    >>> from_iso6709("+27.5916+086.5640+8850/") # Mount Everest
-    (27.5916, 86.564, 8850.0)
-    >>> from_iso6709("-90+000+2800/") # South Pole
-    (-90.0, 0.0, 2800.0)
-    >>> from_iso6709("+40.75-074.00/") # New York City
-    (40.75, -74.0, None)
-    >>> from_iso6709("+352139+1384339+3776/") # Mount Fuji
-    (35.36083333333333, 138.7275, 3776.0)
-    >>> from_iso6709("+35.658632+139.745411/") # Tokyo Tower
-    (35.658632, 139.745411, None)
-    >>> from_iso6709("+35.658632+1/") # Broken
-    Traceback (most recent call last):
-        ...
-    ValueError: Incorrect format for longitude `+1'
-
     :page str coordinates: ISO 6709 coordinates string
     :rtype: ``tuple``
     :return: A tuple consisting of latitude and longitude in degrees, along
@@ -610,10 +463,7 @@ def from_iso6709(coordinates):
     :raise ValueError: Invalid value for latitude
     :raise ValueError: Invalid value for longitude
 
-    .. _Latitude, Longitude and Altitude format for geospatial information:
-       http://www.w3.org/2005/Incubator/geo/Wiki/LatitudeLongitudeAltitude
     .. _simplified ISO 8601 profile: http://www.w3.org/TR/NOTE-datetime
-    .. _wikipedia ISO 6709 page: http://en.wikipedia.org/wiki/ISO_6709
 
     """
     matches = iso6709_matcher.match(coordinates)
@@ -658,50 +508,6 @@ def to_iso6709(latitude, longitude, altitude=None, format="dd", precision=4):
     .. seealso::
 
        :func:`from_iso6709`
-
-    The following tests are from the examples contained in the `wikipedia ISO
-    6709 page`:
-
-    >>> to_iso6709(0.0, -25.0, None, "d")  # Atlantic Ocean
-    '+00-025/'
-    >>> to_iso6709(46.0, 2.0, None, "d")  # France
-    '+46+002/'
-    >>> to_iso6709(48.866666666666667, 2.3333333333333335, None, "dm")  # Paris
-    '+4852+00220/'
-    >>> # The following test is skipped, because the example from wikipedia
-    >>> # uses differing precision widths for latitude and longitude. Also,
-    >>> # that degree of formatting flexibility is not seen anywhere else and
-    >>> # adds very little.
-    >>> to_iso6709(48.857700000000001, 2.2949999999999999, None)  # Eiffel Tower # doctest: +SKIP
-    '+48.8577+002.295/'
-    >>> to_iso6709(27.5916, 86.563999999999993, 8850.0)  # Mount Everest
-    '+27.5916+086.5640+8850/'
-    >>> to_iso6709(90.0, 0.0, None, "d")  # North Pole
-    '+90+000/'
-    >>> to_iso6709(0.0, -160.0, None, "d")  # Pacific Ocean
-    '+00-160/'
-    >>> to_iso6709(-90.0, 0.0, 2800.0, "d")  # South Pole
-    '-90+000+2800/'
-    >>> to_iso6709(38.0, -97.0, None, "d")  # United States
-    '+38-097/'
-    >>> to_iso6709(40.75, -74.0, None, precision=2)  # New York City
-    '+40.75-074.00/'
-    >>> to_iso6709(40.689399999999999, -74.044700000000006, None)  # Statue of Liberty
-    '+40.6894-074.0447/'
-
-    The following tests are from the `Latitude, Longitude and Altitude format
-    for geospatial information`_ page:
-
-    >>> to_iso6709(27.5916, 86.563999999999993, 8850.0) # Mount Everest
-    '+27.5916+086.5640+8850/'
-    >>> to_iso6709(-90.0, 0.0, 2800.0, "d") # South Pole
-    '-90+000+2800/'
-    >>> to_iso6709(40.75, -74.0, None, precision=2) # New York City
-    '+40.75-074.00/'
-    >>> to_iso6709(35.360833333333332, 138.72749999999999, 3776.0, "dms")  # Mount Fuji
-    '+352139+1384339+3776/'
-    >>> to_iso6709(35.658631999999997, 139.74541099999999, None, precision=6)  # Tokyo Tower
-    '+35.658632+139.745411/'
 
     :param float latitude: Location's latitude
     :param float longitude: Location's longitude
@@ -756,17 +562,6 @@ def to_iso6709(latitude, longitude, altitude=None, format="dd", precision=4):
 def angle_to_distance(angle, units="metric"):
     """Convert angle in to distance along a great circle.
 
-    >>> "%.3f" % angle_to_distance(1)
-    '111.125'
-    >>> "%i" % angle_to_distance(360, "imperial")
-    '24863'
-    >>> "%i" % angle_to_distance(1.0/60, "nautical")
-    '1'
-    >>> "%i" % angle_to_distance(10, "baseless")
-    Traceback (most recent call last):
-        ...
-    ValueError: Unknown units type `baseless'
-
     :param float angle: Angle in degrees to convert to distance
     :param str units: Unit type to be used for distances
     :rtype: ``float``
@@ -789,13 +584,6 @@ def angle_to_distance(angle, units="metric"):
 def distance_to_angle(distance, units="metric"):
     """Convert a distance in to an angle along a great circle.
 
-    >>> "%.3f" % round(distance_to_angle(111.212))
-    '1.000'
-    >>> "%i" % round(distance_to_angle(24882, "imperial"))
-    '360'
-    >>> "%i" % round(distance_to_angle(60, "nautical"))
-    '1'
-
     :param float distance: Distance to convert to degrees
     :param str units: Unit type to be used for distances
     :rtype: ``float``
@@ -817,13 +605,6 @@ def distance_to_angle(distance, units="metric"):
 
 def from_grid_locator(locator):
     """Calculate geodesic latitude/longitude from Maidenhead locator.
-
-    >>> "%.3f, %.3f" % from_grid_locator("BL11bh16")
-    '21.319, -157.904'
-    >>> "%.3f, %.3f" % from_grid_locator("IO92va")
-    '52.021, -0.208'
-    >>> "%.3f, %.3f" % from_grid_locator("IO92")
-    '52.021, -1.958'
 
     :param str locator: Maidenhead locator string
     :rtype: ``tuple`` of ``float`` objects
@@ -905,13 +686,6 @@ def from_grid_locator(locator):
 def to_grid_locator(latitude, longitude, precision="square"):
     """Calculate Maidenhead locator from latitude and longitude.
 
-    >>> to_grid_locator(21.319, -157.904, "extsquare")
-    'BL11bh16'
-    >>> to_grid_locator(52.021, -0.208, "subsquare")
-    'IO92va'
-    >>> to_grid_locator(52.021, -1.958)
-    'IO92'
-
     :param float latitude: Position's latitude
     :param float longitude: Position's longitude
     :param str precision: Precision with which generate locator string
@@ -971,23 +745,6 @@ def to_grid_locator(latitude, longitude, precision="square"):
 
 def parse_location(location):
     """Parse latitude and longitude from string location.
-
-    >>> "%.3f;%.3f" % parse_location("52.015;-0.221")
-    '52.015;-0.221'
-    >>> "%.3f;%.3f" % parse_location("52.015,-0.221")
-    '52.015;-0.221'
-    >>> "%.3f;%.3f" % parse_location("52.015 -0.221")
-    '52.015;-0.221'
-    >>> "%.3f;%.3f" % parse_location("52.015N 0.221W")
-    '52.015;-0.221'
-    >>> "%.3f;%.3f" % parse_location("52.015 N 0.221 W")
-    '52.015;-0.221'
-    >>> "%.3f;%.3f" % parse_location("52d00m54s N 0d13m15s W")
-    '52.015;-0.221'
-    >>> "%.3f;%.3f" % parse_location("52d0m54s N 000d13m15s W")
-    '52.015;-0.221'
-    >>> "%.3f;%.3f" % parse_location('''52d0'54" N 000d13'15" W''')
-    '52.015;-0.221'
 
     :param str location: String to parse
     :rtype: ``tuple`` of ``float`` objects
@@ -1085,24 +842,6 @@ def sun_rise_set(latitude, longitude, date, mode="rise", timezone=0,
         published by Nautical Almanac Office
         United States Naval Observatory
         Washington, DC 20392
-
-    >>> sun_rise_set(52.015, -0.221, datetime.date(2007, 6, 15))
-    datetime.time(3, 40)
-    >>> sun_rise_set(52.015, -0.221, datetime.date(2007, 6, 15), "set")
-    datetime.time(20, 22)
-    >>> sun_rise_set(52.015, -0.221, datetime.date(2007, 6, 15), timezone=60)
-    datetime.time(4, 40)
-    >>> sun_rise_set(52.015, -0.221, datetime.date(2007, 6, 15), "set", 60)
-    datetime.time(21, 22)
-    >>> sun_rise_set(52.015, -0.221, datetime.date(1993, 12, 11))
-    datetime.time(7, 58)
-    >>> sun_rise_set(52.015, -0.221, datetime.date(1993, 12, 11), "set")
-    datetime.time(15, 49)
-    >>> sun_rise_set(89, 0, datetime.date(2007, 12, 21))
-    >>> sun_rise_set(52.015, -0.221, datetime.date(2007, 2, 21))
-    datetime.time(7, 4)
-    >>> sun_rise_set(52.015, -0.221, datetime.date(2007, 1, 21))
-    datetime.time(7, 56)
 
     :param float latitude: Location's latitude
     :param float longitude: Location's longitude
@@ -1203,67 +942,14 @@ def sun_rise_set(latitude, longitude, date, mode="rise", timezone=0,
 def sun_events(latitude, longitude, date, timezone=0, zenith=None):
     """Convenience function for calculating sunrise and sunset.
 
-    >>> sun_events(52.015, -0.221, datetime.date(2007, 6, 15))
-    (datetime.time(3, 40), datetime.time(20, 22))
-    >>> sun_events(52.015, -0.221, datetime.date(2007, 6, 15), 60)
-    (datetime.time(4, 40), datetime.time(21, 22))
-    >>> sun_events(52.015, -0.221, datetime.date(1993, 12, 11))
-    (datetime.time(7, 58), datetime.time(15, 49))
-    >>> sun_events(52.015, -0.221, datetime.date(2007, 6, 15))
-    (datetime.time(3, 40), datetime.time(20, 22))
-    >>> sun_events(40.638611, -73.762222, datetime.date(2007, 6, 15))  # JFK
-    (datetime.time(9, 23), datetime.time(0, 27))
-    >>> sun_events(49.016666, -2.5333333, datetime.date(2007, 6, 15))  # CDG
-    (datetime.time(4, 5), datetime.time(20, 15))
-    >>> sun_events(35.549999, 139.78333333, datetime.date(2007, 6, 15))  # TIA
-    (datetime.time(19, 24), datetime.time(9, 57))
-
     Civil twilight starts/ends when the Sun's centre is 6 degrees below
     the horizon.
-
-    >>> sun_events(52.015, -0.221, datetime.date(2007, 6, 15), zenith="civil")
-    (datetime.time(2, 51), datetime.time(21, 11))
-    >>> sun_events(40.638611, -73.762222, datetime.date(2007, 6, 15),
-    ...            zenith="civil") # JFK
-    (datetime.time(8, 50), datetime.time(1, 0))
-    >>> sun_events(49.016666, -2.5333333, datetime.date(2007, 6, 15),
-    ...            zenith="civil") # CDG
-    (datetime.time(3, 22), datetime.time(20, 58))
-    >>> sun_events(35.549999, 139.78333333, datetime.date(2007, 6, 15),
-    ...            zenith="civil") # TIA
-    (datetime.time(18, 54), datetime.time(10, 27))
 
     Nautical twilight starts/ends when the Sun's centre is 12 degrees
     below the horizon.
 
-    >>> sun_events(52.015, -0.221, datetime.date(2007, 6, 15),
-    ...            zenith="nautical")
-    (datetime.time(1, 32), datetime.time(22, 30))
-    >>> sun_events(40.638611, -73.762222, datetime.date(2007, 6, 15),
-    ...            zenith="nautical") # JFK
-    (datetime.time(8, 7), datetime.time(1, 44))
-    >>> sun_events(49.016666, -2.5333333, datetime.date(2007, 6, 15),
-    ...            zenith="nautical") # CDG
-    (datetime.time(2, 20), datetime.time(22, 0))
-    >>> sun_events(35.549999, 139.78333333, datetime.date(2007, 6, 15),
-    ...            zenith="nautical") # TIA
-    (datetime.time(18, 17), datetime.time(11, 5))
-
     Astronomical twilight starts/ends when the Sun's centre is 18 degrees below
     the horizon.
-
-    >>> sun_events(52.015, -0.221, datetime.date(2007, 6, 15),
-    ...            zenith="astronomical")
-    (None, None)
-    >>> sun_events(40.638611, -73.762222, datetime.date(2007, 6, 15),
-    ...            zenith="astronomical") # JFK
-    (datetime.time(7, 14), datetime.time(2, 36))
-    >>> sun_events(49.016666, -2.5333333, datetime.date(2007, 6, 15),
-    ...            zenith="astronomical") # CDG
-    (None, None)
-    >>> sun_events(35.549999, 139.78333333, datetime.date(2007, 6, 15),
-    ...            zenith="astronomical") # TIA
-    (datetime.time(17, 34), datetime.time(11, 48))
 
     :param float latitude: Location's latitude
     :param float longitude: Location's longitude
@@ -1321,36 +1007,6 @@ def dump_xearth_markers(markers, name="identifier"):
        xplanet_ also supports xearth marker files, and as such can use the
        output from this function.
 
-    >>> from upoints.trigpoints import Trigpoint
-    >>> markers = {
-    ...     500936: Trigpoint(52.066035, -0.281449, 37.000000, "Broom Farm"),
-    ...     501097: Trigpoint(52.010585, -0.173443, 97.000000, "Bygrave"),
-    ...     505392: Trigpoint(51.910886, -0.186462, 136.000000, "Sish Lane")
-    ... }
-    >>> print("\\n".join(dump_xearth_markers(markers)))
-    52.066035 -0.281449 "500936" # Broom Farm, alt 37m
-    52.010585 -0.173443 "501097" # Bygrave, alt 97m
-    51.910886 -0.186462 "505392" # Sish Lane, alt 136m
-    >>> print("\\n".join(dump_xearth_markers(markers, "name")))
-    52.066035 -0.281449 "Broom Farm" # 500936, alt 37m
-    52.010585 -0.173443 "Bygrave" # 501097, alt 97m
-    51.910886 -0.186462 "Sish Lane" # 505392, alt 136m
-    >>> print("\\n".join(dump_xearth_markers(markers, "falseKey")))
-    Traceback (most recent call last):
-        ...
-    ValueError: Unknown name type `falseKey'
-
-    >>> from upoints.point import Point
-    >>> points = {
-    ...     "Broom Farm": Point(52.066035, -0.281449),
-    ...     "Bygrave": Point(52.010585, -0.173443),
-    ...     "Sish Lane": Point(51.910886, -0.186462)
-    ... }
-    >>> print("\\n".join(dump_xearth_markers(points)))
-    52.066035 -0.281449 "Broom Farm"
-    52.010585 -0.173443 "Bygrave"
-    51.910886 -0.186462 "Sish Lane"
-
     .. seealso:
 
        :func:`upoints.xearth.Xearths.import_locations`
@@ -1399,19 +1055,6 @@ def calc_radius(latitude, ellipsoid="WGS84"):
     The original use for ``calc_radius`` is to set a more accurate radius value
     for use with trigpointing databases that are keyed on the OSGB36 datum, but
     it has been expanded to cover other ellipsoids.
-
-    >>> calc_radius(52.015)
-    6375.166025311857
-    >>> calc_radius(0)
-    6335.438700909687
-    >>> calc_radius(90)
-    6399.593942121543
-    >>> calc_radius(52.015, "FAI sphere")
-    6371.0
-    >>> calc_radius(0, "Airy (1830)")
-    6335.022178542022
-    >>> calc_radius(90, "International")
-    6399.936553871439
 
     :param float latitude: Latitude to calculate earth radius for
     :type ellipsoid: ``tuple`` of ``float`` objects

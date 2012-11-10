@@ -44,13 +44,6 @@ class Station(trigpoints.Trigpoint):
                  ua_latitude, ua_longitude, altitude, ua_altitude, rbsn):
         """Initialise a new ``Station`` object.
 
-        >>> from dtopt import NORMALIZE_WHITESPACE
-        >>> Station('EGLL', 'London / Heathrow Airport', None,
-        ...         'United Kingdom', 6, 51.4833333333, -0.45, None, None, 24,
-        ...         0, True)
-        Station('EGLL', 'London / Heathrow Airport', None, 'United Kingdom', 6,
-                51.4833333333, -0.45, None, None, 24, 0, True)
-
         :param str alt_id: Alternate location identifier
         :param str name: Station's name
         :param str state: State name, if station is in the US
@@ -81,19 +74,6 @@ class Station(trigpoints.Trigpoint):
         .. seealso::
 
            :type :class:`trigpoints.point.Point`
-
-        >>> Heathrow = Station("EGLL", "London / Heathrow Airport", None,
-        ...                    "United Kingdom", 6, 51.048333, -0.450000, None,
-        ...                    None, 24, 0, True)
-        >>> print(Heathrow)
-        London / Heathrow Airport (EGLL - N51.048°; W000.450°)
-        >>> print(Heathrow.__str__(mode="dms"))
-        London / Heathrow Airport (EGLL - 51°02'53"N, 000°27'00"W)
-        >>> print(Heathrow.__str__(mode="dm"))
-        London / Heathrow Airport (EGLL - 51°02.90'N, 000°27.00'W)
-        >>> Heathrow.alt_id = None
-        >>> print(Heathrow)
-        London / Heathrow Airport (N51.048°; W000.450°)
 
         :param str mode: Coordinate formatting system to use
         :rtype: ``str``
@@ -172,30 +152,6 @@ class Stations(point.KeyedPoints):
              'AYPY': Station("94", "035", "Moresby", None, "Papua New Guinea",
                              5, -9.433333, 147.216667, -9.433333, 147.216667,
                              38, 49, True}
-
-        >>> stations = Stations(open("test/data/WMO_stations"))
-        >>> for key, value in sorted(stations.items()):
-        ...     print("%s - %s" % (key, value))
-        00000 - Buckland, Buckland Airport (PABL - N65.982°; W161.152°)
-        01001 - Jan Mayen (ENJA - N70.933°; W008.667°)
-        01002 - Grahuken (N79.783°; E014.467°)
-        >>> stations = Stations(open("test/data/ICAO_stations"), "ICAO")
-        >>> for key, value in sorted(stations.items()):
-        ...     print("%s - %s" % (key, value))
-        AYMD - Madang (94014 - S05.217°; E145.783°)
-        AYMO - Manus Island/Momote (S02.062°; E147.424°)
-        AYPY - Moresby (94035 - S09.433°; E147.217°)
-        >>> stations = Stations(open("test/data/broken_WMO_stations"))
-        >>> for key, value in sorted(stations.items()):
-        ...     print("%s - %s" % (key, value))
-        71046 - Komakuk Beach, Y. T. (CWKM - N69.617°; W140.200°)
-        71899 - Langara, B. C. (CWLA - N54.250°; W133.133°)
-        >>> stations = Stations(open("test/data/broken_ICAO_stations"), "ICAO")
-        >>> for key, value in sorted(stations.items()):
-        ...     print("%s - %s" % (key, value))
-        KBRX - Bordeaux (N41.933°; W104.950°)
-        KCQB - Chandler, Chandler Municipal Airport (N35.724°; W096.820°)
-        KTYR - Tyler, Tyler Pounds Field (N32.359°; W095.404°)
 
         :type data: ``file``, ``list`` or ``str``
         :param data: NOAA station data to read

@@ -57,17 +57,10 @@ class Location(trigpoints.Trigpoint):
                  tzname, modified_date, timezone=None):
         """Initialise a new ``Location`` object.
 
-        >>> from dtopt import NORMALIZE_WHITESPACE
-        >>> Location(2636782, "Stotfold", "Stotfold", None, 52.0, -0.2166667,
-        ...          "P", "PPL", "GB", None, "F8", None, None, None, 6245,
-        ...          None, 77, "Europe/London", datetime.date(2007, 6, 15), 0)
-        Location(2636782, 'Stotfold', 'Stotfold', None, 52.0, -0.2166667, 'P',
-                 'PPL', 'GB', None, 'F8', None, None, None, 6245, None, 77,
-                 'Europe/London', datetime.date(2007, 6, 15), 0)
-
         :param int geonameid: ID of record in geonames database
         :param unicode name: Name of geographical location
         :param str asciiname: Name of geographical location in ASCII encoding
+        :type alt_names: ``list`` of ``unicode``
         :param alt_names: Alternate names for the location
         :param float latitude: Location's latitude
         :param float longitude: Location's longitude
@@ -128,20 +121,6 @@ class Location(trigpoints.Trigpoint):
         .. seealso::
 
            :class:`trigpoints.point.Point`
-
-        >>> Stotfold = Location(2636782, "Stotfold", "Stotfold", None, 52.0,
-        ...                     -0.2166667, "P", "PPL", "GB", None, "F8", None,
-        ...                     None, None, 6245, None, 77, "Europe/London",
-        ...                     datetime.date(2007, 6, 15))
-        >>> print(Stotfold)
-        Stotfold (N52.000°; W000.217°)
-        >>> print(Stotfold.__str__(mode="dms"))
-        Stotfold (52°00'00"N, 000°13'00"W)
-        >>> print(Stotfold.__str__(mode="dm"))
-        Stotfold (52°00.00'N, 000°13.00'W)
-        >>> Stotfold.alt_names = ["Home", "Target"]
-        >>> print(Stotfold)
-        Stotfold (Home, Target - N52.000°; W000.217°)
 
         :param str mode: Coordinate formatting system to use
         :rtype: ``str``
@@ -212,21 +191,6 @@ class Locations(point.Points):
                       None, 0, None, 28, "Europe/London",
                       datetime.date(2006, 8, 21))]
 
-        >>> locations = Locations(open("test/data/geonames"))
-        >>> from dtopt import NORMALIZE_WHITESPACE
-        >>> for location in sorted(locations, key=attrgetter("geonameid")):
-        ...     print("%i - %s" % (location.geonameid, location))
-        2633441 - Afon Wyre (River Wayrai, River Wyrai, Wyre - N52.317°;
-        W004.167°)
-        2633442 - Wyre (Viera - N59.117°; W002.967°)
-        2633443 - Wraysbury (Wyrardisbury - N51.450°; W000.550°)
-        >>> broken_locations = Locations(open("test/data/broken_geonames"))
-        Traceback (most recent call last):
-            ...
-        FileFormatError: Incorrect data format, if you're using a file
-        downloaded from geonames.org please report this to James Rowe
-        <jnrowe@gmail.com>
-
         :type data: ``file``, ``list`` or ``str``
         :param data: geonames.org locations data to read
         :rtype: ``list``
@@ -287,26 +251,6 @@ class Locations(point.Points):
             {"Europe/Andorra": (60, 120),
              "Asia/Dubai": (240, 240),
              "Asia/Kabul": (270, 270)}
-
-        >>> timezones = Locations(None, open("test/data/geonames_timezones")).timezones
-        >>> for key, value in sorted(timezones.items()):
-        ...     print("%s - %s" % (key, value))
-        Asia/Dubai - [240, 240]
-        Asia/Kabul - [270, 270]
-        Europe/Andorra - [60, 120]
-        >>> header_skip_check = Locations(None,
-        ...                               open("test/data/geonames_timezones_header"))
-        >>> from dtopt import ELLIPSIS
-        >>> print(header_skip_check)
-        Locations(None, <open file ...>)
-        >>> from dtopt import NORMALIZE_WHITESPACE
-        >>> broken_file_check = Locations(None,
-        ...                               open("test/data/geonames_timezones_broken"))
-        Traceback (most recent call last):
-            ...
-        FileFormatError: Incorrect data format, if you're using a file
-        downloaded from geonames.org please report this to James Rowe
-        <jnrowe@gmail.com>
 
         :type data: ``file``, ``list`` or ``str``
         :param data: geonames.org timezones data to read
