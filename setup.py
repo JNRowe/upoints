@@ -69,5 +69,5 @@ setup(
         'Topic :: Utilities',
     ],
     obsoletes=['earth_distance'],
-    tests_require=['nose2', 'expect'],
+    tests_require=['nose2', 'expecter'],
 )
