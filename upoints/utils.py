@@ -25,20 +25,10 @@ __bug_report__ = "James Rowe <jnrowe@gmail.com>"
 import csv
 import datetime
 import inspect
-import logging
 import math
 import re
 
-from xml.etree import ElementTree
-try:
-    from xml.etree import cElementTree as ET
-except ImportError:
-    try:
-        from lxml import etree as ET  # NOQA
-    except ImportError:
-        ET = ElementTree
-        logging.info("cElementTree is unavailable. XML processing will be "
-                     "much slower with ElementTree")
+from lxml import etree as ET
 
 from operator import add
 

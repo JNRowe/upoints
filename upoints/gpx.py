@@ -24,21 +24,7 @@ from functools import partial
 from operator import attrgetter
 from xml.etree import ElementTree
 
-try:
-    from xml.etree import cElementTree as ET
-except ImportError:
-    try:
-        from lxml import etree as ET
-    except ImportError:
-        ET = ElementTree
-        logging.info("cElementTree is unavailable. XML processing will be "
-                     "much slower with ElementTree")
-if not ET.__name__ in ("xml.etree.cElementTree", 'lxml.etree'):
-    logging.warning("You have the fast cElementTree module available, if you "
-                    "choose to use the human readable namespace prefixes in "
-                    "XML output element generation will use the much slower "
-                    "ElementTree code.  Slowdown can be in excess of five "
-                    "times.")
+from lxml import etree as ET
 
 from upoints import (point, utils)
 

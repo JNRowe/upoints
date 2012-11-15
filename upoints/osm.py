@@ -17,21 +17,11 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-import logging
 import urllib
 
 from operator import attrgetter
-from xml.etree import ElementTree
 
-try:
-    from xml.etree import cElementTree as ET
-except ImportError:
-    try:
-        from lxml import etree as ET  # NOQA
-    except ImportError:
-        ET = ElementTree
-        logging.info("cElementTree is unavailable XML processing will be much"
-                     "slower with ElementTree")
+from lxml import etree as ET
 
 from upoints import (__version__, point, utils)
 
