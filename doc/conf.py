@@ -250,6 +250,7 @@ todo_include_todos = True
 autoclass_content = "both"
 
 
+intersphinx_mapping = {
+    'python': ('http://docs.python.org/', os.getenv('SPHINX_PYTHON_OBJECTS')),
+}
 
-# Example configuration for intersphinx: refer to the Python standard library.
-intersphinx_mapping = {'http://docs.python.org/': None}
