@@ -43,7 +43,7 @@ for image in glob(".static/*.png"):
 # -- General configuration ----------------------------------------------------
 
 # If your documentation needs a minimal Sphinx version, state it here.
-needs_sphinx = '1.0'
+#needs_sphinx = '1.0'
 
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
@@ -86,15 +86,15 @@ release = _version.dotted
 # non-false value, then it is used:
 #today = ''
 # Else, today_fmt is used as the format for a strftime call.
-today_fmt = '%Y-%m-%d'
+#today_fmt = '%B %d, %Y'
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
-exclude_patterns = ['jnrowe']
+exclude_patterns = ['.build']
 
 # The reST default role (used for this markup: `text`) to use for all
 # documents.
-#default_role = None
+default_role = 'py:obj'
 
 # If true, '()' will be appended to :func: etc. cross-reference text.
 #add_function_parentheses = True
@@ -128,7 +128,7 @@ html_theme_options = {
 }
 
 # Add any paths that contain custom themes here, relative to this directory.
-html_theme_path = []
+#html_theme_path = []
 
 # The name for this set of Sphinx documents.  If None, it defaults to
 # "<project> v<release> documentation".
@@ -149,11 +149,11 @@ html_theme_path = []
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = ['.static']
+html_static_path = []
 
 # If not '', a 'Last updated on:' timestamp is inserted at every page bottom,
 # using the given strftime format.
-html_last_updated_fmt = '%Y-%m-%d'
+#html_last_updated_fmt = '%b %d, %Y'
 
 # If true, SmartyPants will be used to convert quotes and dashes to
 # typographically correct entities.
@@ -176,10 +176,7 @@ html_last_updated_fmt = '%Y-%m-%d'
 #html_split_index = False
 
 # If true, links to the reST sources are added to the pages.
-html_show_sourcelink = False
-
-# If true, the reST sources are included in the HTML build as _sources/<name>.
-html_copy_source = False
+#html_show_sourcelink = True
 
 # If true, "Created using Sphinx" is shown in the HTML footer. Default is True.
 #html_show_sphinx = True
@@ -238,7 +235,6 @@ latex_documents = [
 # If false, no module index is generated.
 #latex_domain_indices = True
 
-# -- Extensions configuration -------------------------------------------------
 
 # -- Options for manual page output -------------------------------------------
 
