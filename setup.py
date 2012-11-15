@@ -23,6 +23,8 @@ from setuptools import setup
 _version = {}
 execfile('upoints/_version.py', {}, _version)
 
+install_requires = map(str.strip, open('extra/requirements.txt').readlines())
+
 setup(
     name='upoints',
     version=_version['dotted'],
@@ -62,6 +64,6 @@ setup(
         'Topic :: Utilities',
     ],
     obsoletes=['earth_distance'],
-    install_requires=['aaargh', ],
+    install_requires=install_requires,
     tests_require=['nose2', 'expecter'],
 )
