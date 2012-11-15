@@ -42,7 +42,7 @@ setup(
     maintainer_email=author_email,
     url="https://github.com/JNRowe/upoints/",
     packages=['upoints', ],
-    scripts=['edist.py', ],
+    entry_points={'console_scripts': ['edist = upoints.edist:main', ]},
     license=upoints.__license__,
     keywords=['baken', 'cities', 'geonames', 'gis', 'gps', 'gpx', 'navigation',
               'nmea', 'openstreetmap', 'trigpointing', 'weather', 'xearth'],

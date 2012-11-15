@@ -1,5 +1,5 @@
-edist.py
-========
+edist
+=====
 
 Simple command line coordinate processing
 -----------------------------------------
@@ -18,7 +18,7 @@ SYNOPSIS
 DESCRIPTION
 -----------
 
-**edist.py** operates on one, or more, locations specified in various
+**edist** operates on one, or more, locations specified in various
 formats.  For example, a location string of "52.015;\-0.221" would be
 interpreted as 52.015 degrees North by 0.221 degrees West, as would
 "52d0m54s N 000d13m15s W".  Positive values can be specified with a "+"
@@ -174,7 +174,7 @@ For example::
     locator = IO92
 
 With the above configuration file one could find the distance from
-**Home** to **Cambridge** using **edist.py --distance Home Cambridge**.
+**Home** to **Cambridge** using **edist --distance Home Cambridge**.
 
 BUGS
 ----
