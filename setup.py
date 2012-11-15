@@ -31,6 +31,8 @@ author, author_email = parseaddr(upoints.__author__)
 paras = upoints.__doc__.split("\n\n")
 long_description = "\n\n".join(paras[1:3])
 
+install_requires = map(str.strip, open('extra/requirements.txt').readlines())
+
 setup(
     name='upoints',
     version=upoints.__version__,
@@ -69,6 +71,6 @@ setup(
         'Topic :: Utilities',
     ],
     obsoletes=['earth_distance'],
-    install_requires=['aaargh', 'lxml'],
+    install_requires=install_requires,
     tests_require=['nose2', 'expecter'],
 )
