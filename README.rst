@@ -17,10 +17,10 @@ targeted at.
 Requirements
 ------------
 
-``upoints`` does not strictly depend on any modules that aren't included in
-Python_'s standard library, and as such should run with Python 2.6 or newer
-[#]_.  If ``upoints`` doesn't work with the version of Python you have
-installed, drop me a mail_ and I'll endeavour to fix it.
+``upoints``'s only strict requirement beyond the Python_ standard library is
+aaargh_, and as such should run with Python 2.6 or newer [#]_.  If ``upoints``
+doesn't work with the version of Python you have installed, drop me a mail_ and
+I'll endeavour to fix it.
 
 However, ``upoints`` can make use of lxml_ if it is installed on systems that
 don't have the ``cElementTree`` module.  If neither ``cElementTree`` nor
@@ -125,6 +125,7 @@ a minimal testcase, or even better a patch!
 .. _Pythons on a plane: doc/pythons_on_a_plane.html
 .. _NOAA: http://weather.noaa.gov/
 .. _mail: jnrowe@gmail.com
+.. _aaargh: http://pypi.python.org/pypi/aaargh/
 .. _lxml: http://codespeak.net/lxml/
 .. _Sphinx: http://sphinx.pocoo.org/
 .. _nose2: http://pypi.python.org/pypi/nose2/

@@ -23,8 +23,7 @@ from unittest import TestCase
 
 from expecter import expect
 
-from edist import (LocationsError, NumberedPoint, NumberedPoints,
-                   process_command_line, read_csv)
+from upoints.edist import (LocationsError, NumberedPoint, read_csv)
 
 
 class TestLocationsError(TestCase):
@@ -191,19 +190,6 @@ class TestNumberedPoints(TestCase):
         -- DIRECT --,47,43.1,2.2,,
 
         """
-
-
-def test_process_command_line():
-    saved_args = sys.argv[1:]
-    sys.argv[1:] = ["-p", "52.015;-0.221"]
-    modes, opts, args = process_command_line()
-    expect(modes) == ['display']
-    expect(args) == ['52.015;-0.221']
-    sys.argv[1:] = ["-d", "-b", "52.015;-0.221", "52.168;0.040"]
-    modes, opts, args = process_command_line()
-    expect(modes) == ['distance', 'bearing']
-    expect(args) == ['52.015;-0.221', '52.168;0.040']
-    sys.argv[1:] = saved_args
 
 
 def test_read_csv():

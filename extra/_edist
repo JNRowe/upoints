@@ -1,0 +1,97 @@
+#compdef edist edist.py
+# coding=utf-8
+# edist - ZSH completion support for edist
+# Copyright (C) 2006-2012  James Rowe <jnrowe@gmail.com>
+#
+# This program is free software: you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation, either version 3 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program.  If not, see <http://www.gnu.org/licenses/>.
+#
+
+# Most of this file is generated from upoints/edist.py, but feel free to
+# customise it!  If you make improvements, open a pull request against
+# `JNRowe/upoints' with your super changes attached.
+
+(( $+functions[__list_locations] )) ||
+__list_locations() {
+    if [ ! -s ~/.edist.conf ]; then
+        _message "Config file not found!"
+    else
+        compadd $(sed -n 's/^\[\(.*\)\]/\1/p' ~/.edist.conf)
+    fi
+}
+
+_arguments '--help[show help message and exit]' \
+    "--version[show program's version number and exit]" \
+    '--verbose[produce verbose output]' \
+    '--quiet[output only results and errors]' \
+    '--config-file=[config file to read custom locations from]:select file:_files' \
+    '--csv-file=[CSV file (gpsbabel format) to read route/locations from]:select file:_files' \
+    '--unicode[produce Unicode output]' \
+    '--ascii[produce ASCII output]' \
+    '--output=[produce output in dms, dm, d format or Maidenhead locator]:select format:(dms dm dd locator)' \
+    '--string[display named bearings]' \
+    '--units=[display distances in kilometres(default), statute miles or nautical miles]:select unit:(km sm nm)' \
+    ':edist command:(display distance bearing final-bearing range destination sunrise sunset flight-plan)' \
+    '*::subcmd:->subcmd' && return 0
+
+### DGEN_TAG: Generated from upoints/edist.py {{{
+case "$words[1]" in
+(bearing)
+    _arguments '--help[show help message and exit]' \
+        '--string[display named bearings]' \
+        '*:select locations:__list_locations'
+    ;;
+(destination)
+    _arguments '--help[show help message and exit]' \
+        '--locator=[accuracy of Maidenhead locator output]:select accuracy:(square subsquare extsquare)' \
+        '--distance=[distance from start point]' \
+        '--bearing=[bearing from start point]' \
+        '*:select locations:__list_locations'
+    ;;
+(display)
+    _arguments '--help[show help message and exit]' \
+        '--locator=[accuracy of Maidenhead locator output]:select accuracy:(square subsquare extsquare)' \
+        '*:select locations:__list_locations'
+    ;;
+(distance)
+    _arguments '--help[show help message and exit]' \
+        '*:select locations:__list_locations'
+    ;;
+(final-bearing)
+    _arguments '--help[show help message and exit]' \
+        '--string[display named bearings]' \
+        '*:select locations:__list_locations'
+    ;;
+(flight-plan)
+    _arguments '--help[show help message and exit]' \
+        '--speed=[speed to calculate elapsed time]' \
+        '--time=[display time in hours, minutes or seconds]:select unit:(h m s)' \
+        '*:select locations:__list_locations'
+    ;;
+(range)
+    _arguments '--help[show help message and exit]' \
+        '--distance=[range radius]' \
+        '*:select locations:__list_locations'
+    ;;
+(sunrise)
+    _arguments '--help[show help message and exit]' \
+        '*:select locations:__list_locations'
+    ;;
+(sunset)
+    _arguments '--help[show help message and exit]' \
+        '*:select locations:__list_locations'
+    ;;
+(*)
+    ;;
+esac
+### DGEN_TAG: Generated from upoints/edist.py }}}

@@ -1,6 +1,7 @@
 include COPYING
 include NEWS.rst
 include README.rst
+include edist.py
 
 recursive-include doc *.rst
 include doc/conf.py
