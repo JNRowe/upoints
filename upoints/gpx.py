@@ -17,53 +17,33 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-import logging
 import time
 
 from functools import partial
 from operator import attrgetter
-from xml.etree import ElementTree
 
 from lxml import etree as ET
 
 from upoints import (point, utils)
 
-#: Supported GPX namespace version to URI mapping
-GPX_VERSIONS = {
-  "1.0": "http://www.topografix.com/GPX/1/0",
-  "1.1": "http://www.topografix.com/GPX/1/1",
-}
 
-#: Default GPX version to output
-# Changing this will cause tests to fail.
-DEF_GPX_VERSION = "1.1"
+GPX_NS = "http://www.topografix.com/GPX/1/1"
+ET.register_namespace('gpx', GPX_NS)
 
 
-def create_elem(tag, attr=None, text=None, gpx_version=DEF_GPX_VERSION,
-                human_namespace=False):
+def create_elem(tag, attr=None, text=None):
     """Create a partial :class:`ET.Element` wrapper with namespace defined.
 
     :param str tag:    Tag name
     :param dict attr: Default attributes for tag
     :param str text: Text content for the tag
-    :param str gpx_version: GPX version to use
-    :param bool human_namespace: Whether to generate output using human readable
-        namespace prefixes
     :rtype: ``function``
     :return: :class:`ET.Element` wrapper with predefined namespace
 
     """
     if not attr:
         attr = {}
-    try:
-        gpx_ns = GPX_VERSIONS[gpx_version]
-    except KeyError:
-        raise KeyError("Unknown GPX version `%s'" % gpx_version)
-    if human_namespace:
-        ElementTree._namespace_map[gpx_ns] = "gpx"
-        element = ElementTree.Element("{%s}%s" % (gpx_ns, tag), attr)
-    else:
-        element = ET.Element("{%s}%s" % (gpx_ns, tag), attr)
+    element = ET.Element("{%s}%s" % (GPX_NS, tag), attr)
     if text:
         element.text = text
     return element
@@ -120,18 +100,14 @@ class _GpxElem(point.TimedPoint):
             text.append("[%s]" % self.description)
         return " ".join(text)
 
-    def togpx(self, gpx_version=DEF_GPX_VERSION, human_namespace=False):
+    def togpx(self):
         """Generate a GPX waypoint element subtree.
 
-        :param str gpx_version: GPX version to generate
-        :param bool human_namespace: Whether to generate output using human
-            readable namespace prefixes
         :rtype: :class:`ET.Element`
         :return: GPX element
 
         """
-        elementise = partial(create_elem, gpx_version=gpx_version,
-                             human_namespace=human_namespace)
+        elementise = partial(create_elem)
         element = elementise(self.__class__._elem_name,
                              {"lat": str(self.latitude),
                               "lon": str(self.longitude)})
@@ -362,18 +338,14 @@ class _GpxMeta(object):
         self.bounds = bounds
         self.extensions = extensions
 
-    def togpx(self, gpx_version=DEF_GPX_VERSION, human_namespace=False):
+    def togpx(self):
         """Generate a GPX metadata element subtree.
 
-        :param str gpx_version: GPX version to generate
-        :param bool human_namespace: Whether to generate output using human
-            readable namespace prefixes
         :rtype: :class:`ET.Element`
         :return: GPX metadata element
 
         """
-        elementise = partial(create_elem, gpx_version=gpx_version,
-                             human_namespace=human_namespace)
+        elementise = partial(create_elem)
         metadata = elementise("metadata", None)
         if self.name:
             metadata.append(elementise("name", None, self.name))
@@ -440,61 +412,50 @@ class _GpxMeta(object):
             metadata.append(self.extensions)
         return metadata
 
-    def import_metadata(self, elements, gpx_version=None):
+    def import_metadata(self, elements):
         """Import information from GPX metadata.
 
         :param ET.Element elements: GPX metadata subtree
-        :param str gpx_version: Specific GPX version entities to import
 
         """
-        if gpx_version:
-            try:
-                accepted_gpx = {gpx_version: GPX_VERSIONS[gpx_version]}
-            except KeyError:
-                raise KeyError("Unknown GPX version `%s'" % gpx_version)
-        else:
-            accepted_gpx = GPX_VERSIONS
+        metadata_elem = lambda name: ET.QName(GPX_NS, name)
 
-        for version, namespace in accepted_gpx.items():
-            logging.info("Searching for GPX v%s entries" % version)
-            metadata_elem = lambda name: ET.QName(namespace, name)
-
-            for child in elements.getchildren():
-                tag_ns, tag_name = child.tag[1:].split("}")
-                if not tag_ns == namespace:
-                    continue
-                if tag_name in ("name", "desc", "keywords"):
-                    setattr(self, tag_name, child.text)
-                elif tag_name == "time":
-                    self.time = utils.Timestamp.parse_isoformat(child.text)
-                elif tag_name == "author":
-                    self.author["name"] = child.findtext(metadata_elem("name"))
-                    aemail = child.find(metadata_elem("email"))
-                    if aemail:
-                        self.author["email"] = "%s@%s" % (aemail.get("id"),
-                                                          aemail.get("domain"))
-                    self.author["link"] = child.findtext(metadata_elem("link"))
-                elif tag_name == "bounds":
-                    self.bounds = {
-                        "minlat": child.get("minlat"),
-                        "maxlat": child.get("maxlat"),
-                        "minlon": child.get("minlon"),
-                        "maxlon": child.get("maxlon"),
-                    }
-                elif tag_name == "extensions":
-                    self.extensions = child.getchildren()
-                elif tag_name == "copyright":
-                    if child.get("author"):
-                        self.copyright["name"] = child.get("author")
-                    self.copyright["year"] = child.findtext(metadata_elem("year"))
-                    self.copyright["license"] = child.findtext(metadata_elem("license"))
-                elif tag_name == "link":
-                    link = {
-                        "href": child.get("href"),
-                        "type": child.findtext(metadata_elem("type")),
-                        "text": child.findtext(metadata_elem("text")),
-                    }
-                    self.link.append(link)
+        for child in elements.getchildren():
+            tag_ns, tag_name = child.tag[1:].split("}")
+            if not tag_ns == GPX_NS:
+                continue
+            if tag_name in ("name", "desc", "keywords"):
+                setattr(self, tag_name, child.text)
+            elif tag_name == "time":
+                self.time = utils.Timestamp.parse_isoformat(child.text)
+            elif tag_name == "author":
+                self.author["name"] = child.findtext(metadata_elem("name"))
+                aemail = child.find(metadata_elem("email"))
+                if aemail:
+                    self.author["email"] = "%s@%s" % (aemail.get("id"),
+                                                        aemail.get("domain"))
+                self.author["link"] = child.findtext(metadata_elem("link"))
+            elif tag_name == "bounds":
+                self.bounds = {
+                    "minlat": child.get("minlat"),
+                    "maxlat": child.get("maxlat"),
+                    "minlon": child.get("minlon"),
+                    "maxlon": child.get("maxlon"),
+                }
+            elif tag_name == "extensions":
+                self.extensions = child.getchildren()
+            elif tag_name == "copyright":
+                if child.get("author"):
+                    self.copyright["name"] = child.get("author")
+                self.copyright["year"] = child.findtext(metadata_elem("year"))
+                self.copyright["license"] = child.findtext(metadata_elem("license"))
+            elif tag_name == "link":
+                link = {
+                    "href": child.get("href"),
+                    "type": child.findtext(metadata_elem("type")),
+                    "text": child.findtext(metadata_elem("text")),
+                }
+                self.link.append(link)
 
 
 class Waypoint(_GpxElem):
@@ -530,7 +491,7 @@ class Waypoints(point.TimedPoints):
         if gpx_file:
             self.import_locations(gpx_file)
 
-    def import_locations(self, gpx_file, gpx_version=None):
+    def import_locations(self, gpx_file):
         """Import GPX data files.
 
         ``import_locations()`` returns a list with :class:`Waypoint` objects.
@@ -563,7 +524,6 @@ class Waypoints(point.TimedPoints):
 
         :type gpx_file: ``file``, ``list`` or ``str``
         :param gpx_file: GPX data to read
-        :param str gpx_version: Specific GPX version entities to import
         :rtype: ``list``
         :return: Locations with optional comments
 
@@ -573,58 +533,43 @@ class Waypoints(point.TimedPoints):
         self._gpx_file = gpx_file
         data = utils.prepare_xml_read(gpx_file)
 
-        if gpx_version:
-            try:
-                accepted_gpx = {gpx_version: GPX_VERSIONS[gpx_version]}
-            except KeyError:
-                raise KeyError("Unknown GPX version `%s'" % gpx_version)
-        else:
-            accepted_gpx = GPX_VERSIONS
+        gpx_elem = lambda name: ET.QName(GPX_NS, name).text
+        metadata = data.find(".//" + gpx_elem("metadata"))
+        if metadata:
+            self.metadata.import_metadata(metadata)
+        waypoint_elem = ".//" + gpx_elem("wpt")
+        name_elem = gpx_elem("name")
+        desc_elem = gpx_elem("desc")
+        elev_elem = gpx_elem("ele")
+        time_elem = gpx_elem("time")
 
-        for version, namespace in accepted_gpx.items():
-            logging.info("Searching for GPX v%s entries" % version)
+        for waypoint in data.findall(waypoint_elem):
+            latitude = waypoint.get("lat")
+            longitude = waypoint.get("lon")
+            name = waypoint.findtext(name_elem)
+            description = waypoint.findtext(desc_elem)
+            elevation = waypoint.findtext(elev_elem)
+            if elevation:
+                elevation = float(elevation)
+            time = waypoint.findtext(time_elem)
+            if time:
+                time = utils.Timestamp.parse_isoformat(time)
+            self.append(Waypoint(latitude, longitude, name, description,
+                                    elevation, time))
 
-            gpx_elem = lambda name: ET.QName(namespace, name).text
-            metadata = data.find(".//" + gpx_elem("metadata"))
-            if metadata:
-                self.metadata.import_metadata(metadata)
-            waypoint_elem = ".//" + gpx_elem("wpt")
-            name_elem = gpx_elem("name")
-            desc_elem = gpx_elem("desc")
-            elev_elem = gpx_elem("ele")
-            time_elem = gpx_elem("time")
-
-            for waypoint in data.findall(waypoint_elem):
-                latitude = waypoint.get("lat")
-                longitude = waypoint.get("lon")
-                name = waypoint.findtext(name_elem)
-                description = waypoint.findtext(desc_elem)
-                elevation = waypoint.findtext(elev_elem)
-                if elevation:
-                    elevation = float(elevation)
-                time = waypoint.findtext(time_elem)
-                if time:
-                    time = utils.Timestamp.parse_isoformat(time)
-                self.append(Waypoint(latitude, longitude, name, description,
-                                     elevation, time))
-
-    def export_gpx_file(self, gpx_version=DEF_GPX_VERSION,
-                        human_namespace=False):
+    def export_gpx_file(self):
         """Generate GPX element tree from ``Waypoints`` object.
 
-        :param str gpx_version: GPX version to generate
-        :param bool human_namespace: Whether to generate output using human
-            readable namespace prefixes
         :rtype: :class:`ET.ElementTree`
         :return: GPX element tree depicting ``Waypoints`` object
 
         """
-        gpx = create_elem('gpx', None, None, gpx_version, human_namespace)
+        gpx = create_elem('gpx', None, None)
         if not self.metadata.bounds:
             self.metadata.bounds = self[:]
         gpx.append(self.metadata.togpx())
         for place in self:
-            gpx.append(place.togpx(gpx_version, human_namespace))
+            gpx.append(place.togpx())
 
         return ET.ElementTree(gpx)
 
@@ -654,7 +599,7 @@ class Trackpoints(_SegWrap):
 
     """
 
-    def import_locations(self, gpx_file, gpx_version=None):
+    def import_locations(self, gpx_file):
         """Import GPX data files.
 
         ``import_locations()`` returns a series of lists representing track
@@ -691,7 +636,6 @@ class Trackpoints(_SegWrap):
 
         :type gpx_file: ``file``, ``list`` or ``str``
         :param gpx_file: GPX data to read
-        :param str gpx_version: Specific GPX version entities to import
         :rtype: ``list``
         :return: Locations with optional comments
 
@@ -701,58 +645,42 @@ class Trackpoints(_SegWrap):
         self._gpx_file = gpx_file
         data = utils.prepare_xml_read(gpx_file)
 
-        if gpx_version:
-            try:
-                accepted_gpx = {gpx_version: GPX_VERSIONS[gpx_version]}
-            except KeyError:
-                raise KeyError("Unknown GPX version `%s'" % gpx_version)
-        else:
-            accepted_gpx = GPX_VERSIONS
+        gpx_elem = lambda name: ET.QName(GPX_NS, name).text
+        metadata = data.find(".//" + gpx_elem("metadata"))
+        if metadata:
+            self.metadata.import_metadata(metadata)
+        segment_elem = ".//" + gpx_elem("trkseg")
+        trackpoint_elem = gpx_elem("trkpt")
+        name_elem = gpx_elem("name")
+        desc_elem = gpx_elem("desc")
+        elev_elem = gpx_elem("ele")
+        time_elem = gpx_elem("time")
 
-        for version, namespace in accepted_gpx.items():
-            logging.info("Searching for GPX v%s entries" % version)
+        for segment in data.findall(segment_elem):
+            points = point.TimedPoints()
+            for trackpoint in segment.findall(trackpoint_elem):
+                latitude = trackpoint.get("lat")
+                longitude = trackpoint.get("lon")
+                name = trackpoint.findtext(name_elem)
+                description = trackpoint.findtext(desc_elem)
+                elevation = trackpoint.findtext(elev_elem)
+                if elevation:
+                    elevation = float(elevation)
+                time = trackpoint.findtext(time_elem)
+                if time:
+                    time = utils.Timestamp.parse_isoformat(time)
+                points.append(Trackpoint(latitude, longitude, name,
+                                            description, elevation, time))
+            self.append(points)
 
-            gpx_elem = lambda name: ET.QName(namespace, name).text
-            metadata = data.find(".//" + gpx_elem("metadata"))
-            if metadata:
-                self.metadata.import_metadata(metadata)
-            segment_elem = ".//" + gpx_elem("trkseg")
-            trackpoint_elem = gpx_elem("trkpt")
-            name_elem = gpx_elem("name")
-            desc_elem = gpx_elem("desc")
-            elev_elem = gpx_elem("ele")
-            time_elem = gpx_elem("time")
-
-            for segment in data.findall(segment_elem):
-                points = point.TimedPoints()
-                for trackpoint in segment.findall(trackpoint_elem):
-                    latitude = trackpoint.get("lat")
-                    longitude = trackpoint.get("lon")
-                    name = trackpoint.findtext(name_elem)
-                    description = trackpoint.findtext(desc_elem)
-                    elevation = trackpoint.findtext(elev_elem)
-                    if elevation:
-                        elevation = float(elevation)
-                    time = trackpoint.findtext(time_elem)
-                    if time:
-                        time = utils.Timestamp.parse_isoformat(time)
-                    points.append(Trackpoint(latitude, longitude, name,
-                                             description, elevation, time))
-                self.append(points)
-
-    def export_gpx_file(self, gpx_version=DEF_GPX_VERSION,
-                        human_namespace=False):
+    def export_gpx_file(self):
         """Generate GPX element tree from ``Trackpoints``.
 
-        :param str gpx_version: GPX version to generate
-        :param bool human_namespace: Whether to generate output using human
-            readable namespace prefixes
         :rtype: :class:`ET.ElementTree`
         :return: GPX element tree depicting ``Trackpoints`` objects
 
         """
-        elementise = partial(create_elem, gpx_version=gpx_version,
-                             human_namespace=human_namespace)
+        elementise = partial(create_elem)
         gpx = elementise('gpx', None)
         if not self.metadata.bounds:
             self.metadata.bounds = [j for i in self for j in i]
@@ -763,7 +691,7 @@ class Trackpoints(_SegWrap):
             chunk = elementise('trkseg', None)
             track.append(chunk)
             for place in segment:
-                chunk.append(place.togpx(gpx_version, human_namespace))
+                chunk.append(place.togpx())
 
         return ET.ElementTree(gpx)
 
@@ -793,7 +721,7 @@ class Routepoints(_SegWrap):
 
     """
 
-    def import_locations(self, gpx_file, gpx_version=None):
+    def import_locations(self, gpx_file):
         """Import GPX data files.
 
         ``import_locations()`` returns a series of lists representing track
@@ -828,7 +756,6 @@ class Routepoints(_SegWrap):
 
         :type gpx_file: ``file``, ``list`` or ``str``
         :param gpx_file: GPX data to read
-        :param str gpx_version: Specific GPX version entities to import
         :rtype: ``list``
         :return: Locations with optional comments
 
@@ -838,58 +765,42 @@ class Routepoints(_SegWrap):
         self._gpx_file = gpx_file
         data = utils.prepare_xml_read(gpx_file)
 
-        if gpx_version:
-            try:
-                accepted_gpx = {gpx_version: GPX_VERSIONS[gpx_version]}
-            except KeyError:
-                raise KeyError("Unknown GPX version `%s'" % gpx_version)
-        else:
-            accepted_gpx = GPX_VERSIONS
+        gpx_elem = lambda name: ET.QName(GPX_NS, name).text
+        metadata = data.find(".//" + gpx_elem("metadata"))
+        if metadata:
+            self.metadata.import_metadata(metadata)
+        route_elem = ".//" + gpx_elem("rte")
+        routepoint_elem = gpx_elem("rtept")
+        name_elem = gpx_elem("name")
+        desc_elem = gpx_elem("desc")
+        elev_elem = gpx_elem("ele")
+        time_elem = gpx_elem("time")
 
-        for version, namespace in accepted_gpx.items():
-            logging.info("Searching for GPX v%s entries" % version)
+        for route in data.findall(route_elem):
+            points = point.TimedPoints()
+            for routepoint in route.findall(routepoint_elem):
+                latitude = routepoint.get("lat")
+                longitude = routepoint.get("lon")
+                name = routepoint.findtext(name_elem)
+                description = routepoint.findtext(desc_elem)
+                elevation = routepoint.findtext(elev_elem)
+                if elevation:
+                    elevation = float(elevation)
+                time = routepoint.findtext(time_elem)
+                if time:
+                    time = utils.Timestamp.parse_isoformat(time)
+                points.append(Routepoint(latitude, longitude, name,
+                                            description, elevation, time))
+            self.append(points)
 
-            gpx_elem = lambda name: ET.QName(namespace, name).text
-            metadata = data.find(".//" + gpx_elem("metadata"))
-            if metadata:
-                self.metadata.import_metadata(metadata)
-            route_elem = ".//" + gpx_elem("rte")
-            routepoint_elem = gpx_elem("rtept")
-            name_elem = gpx_elem("name")
-            desc_elem = gpx_elem("desc")
-            elev_elem = gpx_elem("ele")
-            time_elem = gpx_elem("time")
-
-            for route in data.findall(route_elem):
-                points = point.TimedPoints()
-                for routepoint in route.findall(routepoint_elem):
-                    latitude = routepoint.get("lat")
-                    longitude = routepoint.get("lon")
-                    name = routepoint.findtext(name_elem)
-                    description = routepoint.findtext(desc_elem)
-                    elevation = routepoint.findtext(elev_elem)
-                    if elevation:
-                        elevation = float(elevation)
-                    time = routepoint.findtext(time_elem)
-                    if time:
-                        time = utils.Timestamp.parse_isoformat(time)
-                    points.append(Routepoint(latitude, longitude, name,
-                                             description, elevation, time))
-                self.append(points)
-
-    def export_gpx_file(self, gpx_version=DEF_GPX_VERSION,
-                        human_namespace=False):
+    def export_gpx_file(self):
         """Generate GPX element tree from :class:`Routepoints`
 
-        :param str gpx_version: GPX version to generate
-        :param bool human_namespace: Whether to generate output using human
-            readable namespace prefixes
         :rtype: :class:`ET.ElementTree`
         :return: GPX element tree depicting :class:`Routepoints` objects
 
         """
-        elementise = partial(create_elem, gpx_version=gpx_version,
-                             human_namespace=human_namespace)
+        elementise = partial(create_elem)
         gpx = elementise('gpx', None)
         if not self.metadata.bounds:
             self.metadata.bounds = [j for i in self for j in i]
@@ -898,6 +809,6 @@ class Routepoints(_SegWrap):
             chunk = elementise('rte', None)
             gpx.append(chunk)
             for place in rte:
-                chunk.append(place.togpx(gpx_version, human_namespace))
+                chunk.append(place.togpx())
 
         return ET.ElementTree(gpx)
