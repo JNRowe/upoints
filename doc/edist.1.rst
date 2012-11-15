@@ -2,7 +2,7 @@ edist.py
 ========
 
 Simple command line coordinate processing
-"""""""""""""""""""""""""""""""""""""""""
+-----------------------------------------
 
 :Author: James Rowe <jnrowe@gmail.com>
 :Date: 2008-01-22
@@ -13,7 +13,7 @@ Simple command line coordinate processing
 SYNOPSIS
 --------
 
-    edist.py [OPTIONS] location...
+    edist [option]... <command> <location...>
 
 DESCRIPTION
 -----------
@@ -47,41 +47,11 @@ OPTIONS
 --csv-file = **csv_file**
     CSV file (gpsbabel format) to read route/locations from
 
-Calculation modes
-'''''''''''''''''
+-v, --verbose
+    produce verbose output
 
--p, --print
-    pretty print the location(s)
-
--d, --distance
-    calculate the distance between locations
-
--b, --bearing
-    calculate the initial bearing between locations
-
--f, --final-bearing
-    calculate the final bearing between locations
-
--r **range**, --range **range**
-    calculate whether locations are within a given **range**
-
--s **distance@bearing**, --destination **distance@bearing**
-    calculate the destination for a given distance and bearing
-
--y, --sunrise
-    calculate the sunrise time for a given location
-
--z, --sunset
-    calculate the sunset time for a given location
-
--F, --flight-plan
-    calculate the flight plan corresponding to locations (route)
-
--S **speed**, --speed **speed**
-    speed to calculate elapsed time
-
-Output options
-''''''''''''''
+-q, --quiet
+    output only results and errors
 
 --unicode
     produce Unicode output
@@ -92,27 +62,95 @@ Output options
 -o **FORMAT**, --format **FORMAT**
     produce output in dms, dm, d format or Maidenhead locator
 
--l **LOCATOR**, --locator **LOCATOR**
-    accuracy of Maidenhead locator output
-
 -g, --string
     display named bearings
-
--v, --verbose
-    produce verbose output
-
--q, --quiet
-    output only results and errors
 
 -u **km**, --units **km**
     display distances in km(default), mile or nm
 
--u **km**, --units **km**
-   display distances in kilometres(default), statute miles or nautical miles
+COMMANDS
+--------
 
--t **h**, --time **h**
-   display time in hours(default), minutes or seconds
+``bearing``
+'''''''''''
 
+Calculate the initial bearing between locations bearing
+
+g, --string
+
+    display named bearings
+
+``destination``
+'''''''''''''''
+
+Calculate the destination for a given distance and
+
+-l {square,subsquare,extsquare}, --locator {square,subsquare,extsquare}
+
+    accuracy of Maidenhead locator output
+
+-d DISTANCE, --distance DISTANCE
+
+    distance from start point
+
+-b BEARING, --bearing BEARING
+
+    bearing from start point
+
+``display``
+'''''''''''
+
+Pretty print the location(s)
+
+-l {square,subsquare,extsquare}, --locator {square,subsquare,extsquare}
+
+    accuracy of Maidenhead locator output
+
+``distance``
+''''''''''''
+
+Calculate the distance between locations
+
+``final-bearing``
+'''''''''''''''''
+
+Calculate the final bearing between locations
+
+g, --string
+
+    display named bearings
+
+``flight-plan``
+'''''''''''''''
+
+Calculate the flight plan corresponding to locations
+
+-s SPEED, --speed SPEED
+
+    speed to calculate elapsed time
+
+-t {h,m,s}, --time {h,m,s}
+
+    display time in hours, minutes or seconds
+
+``range``
+'''''''''
+
+Calculate whether locations are within a given range
+
+-d DISTANCE, --distance DISTANCE
+
+    range radius
+
+``sunrise``
+'''''''''''
+
+Calculate the sunrise time for a given location
+
+``sunset``
+''''''''''
+
+Calculate the sunset time for a given location
 
 CONFIGURATION FILE
 ------------------

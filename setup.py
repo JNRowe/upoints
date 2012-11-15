@@ -69,5 +69,6 @@ setup(
         'Topic :: Utilities',
     ],
     obsoletes=['earth_distance'],
+    install_requires=['aaargh', ],
     tests_require=['nose2', 'expect'],
 )

@@ -53,14 +53,25 @@ USAGE = __doc__[:__doc__.find('\n\n', 100)].replace('``', "'").splitlines()[2:]
 USAGE = "\n".join(USAGE).replace("edist", "%(prog)s")
 
 import ConfigParser
-import argparse
 import logging
 import os
 import sys
 
 from operator import itemgetter
 
+import aaargh
+
 from upoints import (point, utils)
+
+
+# Pull the first paragraph from the docstring
+USAGE = __doc__[:__doc__.find('\n\n', 100)].splitlines()[2:]
+# Replace script name with optparse's substitution var, and rebuild string
+USAGE = "\n".join(USAGE).replace("edist", "%(prog)s")
+
+EPILOG = 'Please report bugs at https://github.com/JNRowe/upoints/'
+
+APP = aaargh.App(description=USAGE, epilog=EPILOG)
 
 
 class LocationsError(ValueError):
@@ -297,14 +308,14 @@ class NumberedPoints(point.Points):
             else:
                 print(in_range)
 
-    def destination(self, options, locator):
+    def destination(self, distance, bearing, locator):
         """Calculate destination locations for given distance and bearings.
 
-        :param tuple options: Distance and bearing
+        :param float distance: Distance to travel
+        :param float bearing: Direction of travel
         :param str locator: Accuracy of Maidenhead locator output
 
         """
-        distance, bearing = options
         destinations = super(NumberedPoints, self).destination(bearing,
                                                                distance)
         for location, destination in zip(self, destinations):
@@ -378,108 +389,79 @@ class NumberedPoints(point.Points):
                      direct_speed))
 
 
-def process_command_line():
-    """Main command line interface.
+@APP.cmd(help="pretty print the location(s)")
+@APP.cmd_arg("-l", "--locator", choices=("square", "subsquare", "extsquare"),
+             default="subsquare",
+             help="accuracy of Maidenhead locator output")
+@APP.cmd_arg("location", nargs="+", help="Locations to operate on")
+def display(args):
+    args.locations.display(args.locator)
 
-    :rtype: ``tuple`` of ``list``, ``dict`` and ``list``
-    :return: Modes, options, list of locations as ``str`` objects
 
-    """
-    epilog = "Please report bugs at https://github.com/JNRowe/upoints/"
-    parser = argparse.ArgumentParser(description=USAGE, epilog=epilog)
+@APP.cmd(help="calculate the distance between locations")
+@APP.cmd_arg("location", nargs="+", help="Locations to operate on")
+def distance(args):
+    args.locations.distance()
 
-    parser.set_defaults(config_file=os.path.expanduser("~/.edist.conf"),
-                        speed=0, format="dms", locator="subsquare",
-                        verbose=True, units="km", time="h")
 
-    parser.add_argument('--version', action='version',
-                        version="%%(prog)s v%s" % __version__)
+@APP.cmd(help="calculate the initial bearing between locations")
+@APP.cmd_arg("-g", "--string", action="store_true",
+             help="display named bearings")
+@APP.cmd_arg("location", nargs="+", help="Locations to operate on")
+def bearing(args):
+    args.locations.bearing('bearing', args.string)
 
-    parser.add_argument("--config-file", metavar="~/.edist.conf",
-                        help="config file to read custom locations from")
-    parser.add_argument("--csv-file",
-                        help="CSV file (gpsbabel format) to read "
-                            "route/locations from ('-' for STDIN)")
 
-    mode_opts = parser.add_argument_group("Calculation modes")
-    mode_opts.add_argument("-p", "--print", action="store_true",
-                           dest="display", help="pretty print the location(s)")
-    mode_opts.add_argument("-d", "--distance", action="store_true",
-                           help="calculate the distance between locations")
-    mode_opts.add_argument("-b", "--bearing", action="store_true",
-                           help="calculate the initial bearing between "
-                            "locations")
-    mode_opts.add_argument("-f", "--final-bearing", action="store_true",
-                           help="calculate the final bearing between "
-                            "locations")
-    mode_opts.add_argument("-r", "--range", type=float, metavar="range",
-                           help="calculate whether locations are within a "
-                            "given range")
-    mode_opts.add_argument("-s", "--destination", metavar="distance@bearing",
-                           help="calculate the destination for a given "
-                            "distance and bearing")
-    mode_opts.add_argument("-y", "--sunrise", action="store_true",
-                           help="calculate the sunrise time for a given "
-                            "location")
-    mode_opts.add_argument("-z", "--sunset", action="store_true",
-                           help="calculate the sunset time for a given "
-                            "location")
-    mode_opts.add_argument("-F", "--flight-plan", action="store_true",
-                           help="calculate the flight plan corresponding to "
-                            "locations (route)")
-    mode_opts.add_argument("-S", "--speed", type=float, metavar="speed",
-                           help="speed to calculate elapsed time")
+@APP.cmd(name="final-bearing",
+         help="calculate the final bearing between locations")
+@APP.cmd_arg("-g", "--string", action="store_true",
+             help="display named bearings")
+@APP.cmd_arg("location", nargs="+", help="Locations to operate on")
+def final_bearing(args):
+    args.locations.bearing('final_bearing', args.string)
 
-    output_opts = parser.add_argument_group("Output options")
-    output_opts.add_argument("--unicode", action="store_true",
-                             help="produce Unicode output")
-    output_opts.add_argument("--ascii", action="store_true",
-                             help="produce ASCII output")
-    output_opts.add_argument("-o", "--format",
-                             choices=("dms", "dm", "dd", "locator"),
-                             help="produce output in dms, dm, d format or "
-                                "Maidenhead locator")
-    output_opts.add_argument("-l", "--locator",
-                             choices=("square", "subsquare", "extsquare"),
-                             help="accuracy of Maidenhead locator output")
-    output_opts.add_argument("-g", "--string", action="store_true",
-                             help="display named bearings")
-    output_opts.add_argument("-v", "--verbose", action="store_true",
-                             dest="verbose", help="produce verbose output")
-    output_opts.add_argument("-q", "--quiet", action="store_false",
-                             dest="verbose",
-                             help="output only results and errors")
-    output_opts.add_argument("-u", "--units", choices=("km", "sm", "nm"),
-                             metavar="km",
-                             help="display distances in kilometres(default), "
-                                "statute miles or nautical miles")
-    output_opts.add_argument("-t", "--time", choices=("h", "m", "s"),
-                             metavar="h",
-                             help="display time in hours(default), minutes or "
-                                "seconds")
 
-    parser.add_argument("location", nargs="+", help="Locations to operate on")
+@APP.cmd(help="calculate whether locations are within a given range")
+@APP.cmd_arg("-d", "--distance", type=float, help="range radius")
+@APP.cmd_arg("location", nargs="+", help="Locations to operate on")
+def range(args):
+    args.locations.range(args.distance)
 
-    args = parser.parse_args()
 
-    # This could be done with a new Option subclass directly, but the cost
-    # outweighs the benefit significantly
-    if args.destination:
-        try:
-            distance, bearing = args.destination.split("@")
-            distance = float(distance)
-            bearing = float(bearing)
-        except ValueError:
-            parser.error("Invalid format for destination option!")
-        args.destination = distance, bearing
+@APP.cmd(help="calculate the destination for a given distance and bearing")
+@APP.cmd_arg("-l", "--locator", choices=("square", "subsquare", "extsquare"),
+             default="subsquare",
+             help="accuracy of Maidenhead locator output")
+@APP.cmd_arg("-d", "--distance", required=True, type=float,
+             help="distance from start point")
+@APP.cmd_arg("-b", "--bearing", required=True, type=float,
+             help="bearing from start point")
+@APP.cmd_arg("location", nargs="+", help="Locations to operate on")
+def destination(args):
+    args.locations.destination(args.distance, args.bearing, args.locator)
 
-    args.modes = []
-    for mode in ("display", "distance", "bearing", "final_bearing",
-                 "flight_plan", "range", "destination", "sunrise", "sunset"):
-        if getattr(args, mode):
-            args.modes.append(mode)
 
-    return args
+@APP.cmd(help="calculate the sunrise time for a given location")
+@APP.cmd_arg("location", nargs="+", help="Locations to operate on")
+def sunrise(args):
+    args.locations.sun_events('sunrise')
+
+
+@APP.cmd(help="calculate the sunset time for a given location")
+@APP.cmd_arg("location", nargs="+", help="Locations to operate on")
+def sunset(args):
+    args.locations.sun_events('sunset')
+
+
+@APP.cmd(name="flight-plan",
+         help="calculate the flight plan corresponding to locations (route)")
+@APP.cmd_arg("-s", "--speed", default=0, type=float,
+             help="speed to calculate elapsed time")
+@APP.cmd_arg("-t", "--time", choices=("h", "m", "s"),
+             help="display time in hours, minutes or seconds")
+@APP.cmd_arg("location", nargs="+", help="Locations to operate on")
+def flight_plan(args):
+    args.locations.flight_plan(args.speed, args.time)
 
 
 def read_locations(filename):
@@ -544,7 +526,38 @@ def main():
     """
     logging.basicConfig(format='%(asctime)s %(levelname)s:%(message)s')
 
-    args = process_command_line()
+    APP.arg('--version', action='version',
+            version="%%(prog)s v%s" % __version__)
+
+    APP.arg("-v", "--verbose", action="store_true", dest="verbose",
+            default=True,
+            help="produce verbose output")
+    APP.arg("-q", "--quiet", action="store_false", dest="verbose",
+            help="output only results and errors")
+
+    APP.arg("--config-file", metavar="~/.edist.conf",
+            default=os.path.expanduser("~/.edist.conf"),
+            help="config file to read custom locations from")
+    APP.arg("--csv-file",
+            help="CSV file (gpsbabel format) to read route/locations from "
+                 "('-' for STDIN)")
+
+    APP.arg("--unicode", action="store_true", help="produce Unicode output")
+    APP.arg("--ascii", action="store_true", help="produce ASCII output")
+    APP.arg("-o", "--format", choices=("dms", "dm", "dd", "locator"),
+            default="dms",
+            help="produce output in dms, dm, d format or Maidenhead locator")
+    APP.arg("-g", "--string", action="store_true",
+            help="display named bearings")
+    APP.arg("-u", "--units", choices=("km", "sm", "nm"), metavar="km",
+            default="km",
+            help="display distances in kilometres(default), statute miles or "
+                 "nautical miles")
+    APP.arg("-t", "--time", choices=("h", "m", "s"), metavar="h", default="h",
+            help="display time in hours(default), minutes or seconds")
+
+    args = APP._parser.parse_args()
+    func = args._func
 
     if not args.unicode and not args.ascii:
         logging.debug("Neither ASCII nor Unicode is set, guessing")
@@ -560,32 +573,18 @@ def main():
     else:
         config_locations = read_locations(args.config_file)
 
-    if len(args.location) == 0:
-        print("No locations specified!")
-        sys.exit(1)
+    try:
+        args.locations = NumberedPoints(args.location, args.format,
+                                        args.unicode, args.verbose,
+                                        config_locations, args.units)
+    except (LocationsError, ), error:
+        APP._parser.error(error)
 
-    locations = NumberedPoints(args.location, args.format, args.unicode,
-                               args.verbose, config_locations, args.units)
+    try:
+        return func(args)
+    except (RuntimeError, ), error:
+        APP._parser.error(error)
 
-    if len(args.modes) > 1:
-        logging.warning("Output order for multiple modes is not guaranteed "
-                        "to remain stable across future versions")
-
-    for mode in args.modes:
-        if mode == "display":
-            locations.display(args.locator)
-        elif mode == "distance":
-            locations.distance()
-        elif mode in ("bearing", "final_bearing"):
-            locations.bearing(mode, args.string)
-        elif mode in ("flight_plan"):
-            locations.flight_plan(args.speed, args.time)
-        elif mode == "range":
-            locations.range(args.range)
-        elif mode == "destination":
-            locations.destination(args.destination, args.locator)
-        elif mode in ("sunrise", "sunset"):
-            locations.sun_events(mode)
 
 if __name__ == '__main__':
     sys.exit(main())
