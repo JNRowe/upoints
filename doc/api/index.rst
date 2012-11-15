@@ -8,6 +8,5 @@ Contents
    :maxdepth: 2
 
    edist
-   setup
 
    upoints/index
