@@ -25,6 +25,8 @@ from expecter import expect
 from upoints import (point, utils)
 from upoints.osm import (ET, Node, Osm, Way, get_area_url)
 
+from utils import xml_str_compare
+
 
 def test_get_area_url():
     expect(get_area_url(point.Point(52.015, -0.221), 3)) == \
@@ -116,31 +118,36 @@ class TestWay(TestCase):
              'jnrowe, timestamp: 2008-01-25T12:52:11+00:00]')
         expect(data[2]) == \
             ("""    Node 1 (52°00'56"N, 000°13'18"W) [visible, timestamp: """
-             '2008-01-25T12:53:14+00:00, highway: crossing, created_by: hand]')
+             '2008-01-25T12:53:14+00:00, created_by: hand, highway: crossing]')
         expect(data[3]) == \
             ("""    Node 2 (52°00'56"N, 000°13'18"W) [visible, user: """
              'jnrowe, timestamp: 2008-01-25T12:52:30+00:00, amenity: pub]')
 
     def test_toosm(self):
-        expect(ET.tostring(self.bare.toosm())) == \
-            '<way id="0" visible="false"><nd ref="0" /><nd ref="1" /><nd ref="2" /></way>'
-        expect(ET.tostring(self.named.toosm())) == \
-            '<way id="0" timestamp="2008-01-25T00:00:00+00:00" user="jnrowe" visible="true"><nd ref="0" /><nd ref="1" /><nd ref="2" /></way>'
-        expect(ET.tostring(self.tagged.toosm())) == \
-            '<way id="0" visible="false"><tag k="key" v="value" /><nd ref="0" /><nd ref="1" /><nd ref="2" /></way>'
+        xml_str_compare(
+            '<way id="0" visible="false"><nd ref="0"/><nd ref="1"/><nd ref="2"/></way>',
+            ET.tostring(self.bare.toosm())
+        )
+        xml_str_compare(
+            '<way id="0" timestamp="2008-01-25T00:00:00+00:00" user="jnrowe" visible="true"><nd ref="0"/><nd ref="1"/><nd ref="2"/></way>',
+            ET.tostring(self.named.toosm()))
+        xml_str_compare(
+            '<way id="0" visible="false"><tag k="key" v="value"/><nd ref="0"/><nd ref="1"/><nd ref="2"/></way>',
+            ET.tostring(self.tagged.toosm()))
 
 class TestOsm(TestCase):
     def setUp(self):
         self.region = Osm(open("test/data/osm"))
 
     def test_import_locations(self):
-        data = map(str, sorted([x for x in self.region if isinstance(x, Node)]))
+        data = map(str, sorted([x for x in self.region if isinstance(x, Node)],
+                               key=lambda x: x.ident))
         expect(data[0]) == \
             ("""Node 0 (52°00'56"N, 000°13'18"W) [visible, user: jnrowe, """
              'timestamp: 2008-01-25T12:52:11+00:00]')
         expect(data[1]) == \
             ("""Node 1 (52°00'56"N, 000°13'18"W) [visible, timestamp: """
-             '2008-01-25T12:53:00+00:00, highway: crossing, created_by: hand]')
+             '2008-01-25T12:53:00+00:00, created_by: hand, highway: crossing]')
         expect(data[2]) == \
             ("""Node 2 (52°00'56"N, 000°13'18"W) [visible, user: jnrowe, """
              'timestamp: 2008-01-25T12:52:30+00:00, amenity: pub]')

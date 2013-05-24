@@ -219,7 +219,7 @@ class Placemarks(point.KeyedPoints):
         element = partial(create_elem)
         kml = element('kml')
         doc = element('Document')
-        for place in self.values():
+        for place in sorted(self.values()):
             doc.append(place.tokml())
         kml.append(doc)
 

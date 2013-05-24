@@ -65,7 +65,7 @@ def _get_flags(osm_obj):
         flags.append("timestamp: %s" % osm_obj.timestamp.isoformat())
     if osm_obj.tags:
         flags.append(", ".join("%s: %s" % (k, v)
-                               for k, v in osm_obj.tags.items()))
+                               for k, v in sorted(osm_obj.tags.items())))
     return flags
 
 
@@ -163,7 +163,7 @@ class Node(point.Point):
         if self.timestamp:
             node.set("timestamp", self.timestamp.isoformat())
         if self.tags:
-            for key, value in self.tags.items():
+            for key, value in sorted(self.tags.items()):
                 tag = ET.Element("tag", {"k": key, "v": value})
                 node.append(tag)
 
@@ -285,7 +285,7 @@ class Way(point.Points):
         if self.timestamp:
             way.set("timestamp", self.timestamp.isoformat())
         if self.tags:
-            for key, value in self.tags.items():
+            for key, value in sorted(self.tags.items()):
                 tag = ET.Element("tag", {"k": key, "v": value})
                 way.append(tag)
 
