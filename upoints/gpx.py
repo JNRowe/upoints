@@ -433,7 +433,7 @@ class _GpxMeta(object):
                 aemail = child.find(metadata_elem("email"))
                 if aemail:
                     self.author["email"] = "%s@%s" % (aemail.get("id"),
-                                                        aemail.get("domain"))
+                                                      aemail.get("domain"))
                 self.author["link"] = child.findtext(metadata_elem("link"))
             elif tag_name == "bounds":
                 self.bounds = {
@@ -555,7 +555,7 @@ class Waypoints(point.TimedPoints):
             if time:
                 time = utils.Timestamp.parse_isoformat(time)
             self.append(Waypoint(latitude, longitude, name, description,
-                                    elevation, time))
+                                 elevation, time))
 
     def export_gpx_file(self):
         """Generate GPX element tree from ``Waypoints`` object.
@@ -670,7 +670,7 @@ class Trackpoints(_SegWrap):
                 if time:
                     time = utils.Timestamp.parse_isoformat(time)
                 points.append(Trackpoint(latitude, longitude, name,
-                                            description, elevation, time))
+                                         description, elevation, time))
             self.append(points)
 
     def export_gpx_file(self):
@@ -790,7 +790,7 @@ class Routepoints(_SegWrap):
                 if time:
                     time = utils.Timestamp.parse_isoformat(time)
                 points.append(Routepoint(latitude, longitude, name,
-                                            description, elevation, time))
+                                         description, elevation, time))
             self.append(points)
 
     def export_gpx_file(self):

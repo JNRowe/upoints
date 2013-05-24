@@ -469,7 +469,7 @@ def from_iso6709(coordinates):
         latitude = float(latitude[:3]) + (sign * (float(latitude[3:]) / 60))
     elif latitude_head == 7:  # ±DDMMSS(.S{1,4})?
         latitude = float(latitude[:3]) + (sign * (float(latitude[3:5]) / 60)) \
-                   + (sign * (float(latitude[5:]) / 3600))
+            + (sign * (float(latitude[5:]) / 3600))
     else:
         raise ValueError("Incorrect format for latitude `%s'" % latitude)
     sign = 1 if longitude[0] == "+" else -1
@@ -480,8 +480,8 @@ def from_iso6709(coordinates):
         longitude = float(longitude[:4]) + (sign * (float(longitude[4:]) / 60))
     elif longitude_head == 8:  # ±DDDMMSS(.S{1,4})?
         longitude = float(longitude[:4]) \
-                    + (sign * (float(longitude[4:6]) / 60)) \
-                    + (sign * (float(longitude[6:]) / 3600))
+            + (sign * (float(longitude[4:6]) / 60)) \
+            + (sign * (float(longitude[6:]) / 3600))
     else:
         raise ValueError("Incorrect format for longitude `%s'" % longitude)
     if altitude:
@@ -651,9 +651,9 @@ def from_grid_locator(locator):
             raise ValueError("Invalid values in locator `%s'" % locator)
 
     longitude = LONGITUDE_FIELD * locator[0] \
-                + LONGITUDE_SQUARE * locator[2]
+        + LONGITUDE_SQUARE * locator[2]
     latitude = LATITUDE_FIELD * locator[1] \
-               + LATITUDE_SQUARE * locator[3]
+        + LATITUDE_SQUARE * locator[3]
 
     if len(locator) >= 6:
         longitude += LONGITUDE_SUBSQUARE * locator[4]
@@ -855,12 +855,12 @@ def sun_rise_set(latitude, longitude, date, mode="rise", timezone=0,
     n = (date - datetime.date(date.year - 1, 12, 31)).days
 
     # Convert the longitude to hour value and calculate an approximate time
-    lngHour = longitude / 15
+    lng_hour = longitude / 15
 
     if mode == "rise":
-        t = n + ((6 - lngHour) / 24)
+        t = n + ((6 - lng_hour) / 24)
     elif mode == "set":
-        t = n + ((18 - lngHour) / 24)
+        t = n + ((18 - lng_hour) / 24)
     else:
         raise ValueError("Unknown mode value `%s'" % mode)
 
@@ -876,54 +876,54 @@ def sun_rise_set(latitude, longitude, date, mode="rise", timezone=0,
     ra = math.degrees(math.atan(0.91764 * math.tan(math.radians(l))))
 
     # Right ascension value needs to be in the same quadrant as L
-    lQuandrant = (math.floor(l / 90)) * 90
-    raQuandrant = (math.floor(ra / 90)) * 90
-    ra = ra + (lQuandrant - raQuandrant)
+    l_quandrant = (math.floor(l / 90)) * 90
+    ra_quandrant = (math.floor(ra / 90)) * 90
+    ra = ra + (l_quandrant - ra_quandrant)
 
     # Right ascension value needs to be converted into hours
     ra = ra / 15
 
     # Calculate the Sun's declination
-    sinDec = 0.39782 * math.sin(math.radians(l))
-    cosDec = math.cos(math.asin(sinDec))
+    sin_dec = 0.39782 * math.sin(math.radians(l))
+    cos_dec = math.cos(math.asin(sin_dec))
 
     # Calculate the Sun's local hour angle
-    cosH = (math.radians(zenith) -
-            (sinDec * math.sin(math.radians(latitude)))) \
-           / (cosDec * math.cos(math.radians(latitude)))
+    cos_h = (math.radians(zenith) -
+             (sin_dec * math.sin(math.radians(latitude)))) \
+        / (cos_dec * math.cos(math.radians(latitude)))
 
-    if cosH > 1:
+    if cos_h > 1:
         # The sun never rises on this location (on the specified date)
         return None
-    elif cosH < -1:
+    elif cos_h < -1:
         # The sun never sets on this location (on the specified date)
         return None
 
     # Finish calculating H and convert into hours
     if mode == "rise":
-        h = 360 - math.degrees(math.acos(cosH))
+        h = 360 - math.degrees(math.acos(cos_h))
     else:
-        h = math.degrees(math.acos(cosH))
+        h = math.degrees(math.acos(cos_h))
     h = h / 15
 
     # Calculate local mean time of rising/setting
-    T = h + ra - (0.06571 * t) - 6.622
+    t = h + ra - (0.06571 * t) - 6.622
 
     # Adjust back to UTC
-    UT = T - lngHour
+    utc = t - lng_hour
 
     # Convert UT value to local time zone of latitude/longitude
-    localT = UT + timezone / 60
-    if localT < 0:
-        localT += 24
-    elif localT > 23:
-        localT -= 24
+    local_t = utc + timezone / 60
+    if local_t < 0:
+        local_t += 24
+    elif local_t > 23:
+        local_t -= 24
 
-    hour = int(localT)
+    hour = int(local_t)
     if hour == 0:
-        minute = int(60 * localT)
+        minute = int(60 * local_t)
     else:
-        minute = int(60 * (localT % hour))
+        minute = int(60 * (local_t % hour))
     if minute < 0:
         minute += 60
     return datetime.time(hour, minute)

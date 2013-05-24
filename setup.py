@@ -24,7 +24,8 @@ from setuptools import setup
 _version = {}
 execfile('upoints/_version.py', {}, _version)
 
-install_requires = map(str.strip, open('extra/requirements.txt').readlines())
+install_requires = list(map(str.strip,
+                            open('extra/requirements.txt').readlines()))
 
 setup(
     name='upoints',

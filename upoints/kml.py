@@ -207,7 +207,7 @@ class Placemarks(point.KeyedPoints):
                                     % coords)
             description = place.findtext(desc_elem)
             self[name] = Placemark(latitude, longitude, altitude, name,
-                                    description)
+                                   description)
 
     def export_kml_file(self):
         """Generate KML element tree from ``Placemarks``.

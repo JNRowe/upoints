@@ -143,7 +143,7 @@ class LoranPosition(point.Point):
         data.extend(nmea_latitude(self.latitude))
         data.extend(nmea_longitude(self.longitude))
         data.append("%s.%02i" % (self.time.strftime("%H%M%S"),
-                                self.time.microsecond / 1000000))
+                                 self.time.microsecond / 1000000))
         data.append("A" if self.status else "V")
         if self.mode:
             data.append(self.mode)
@@ -558,8 +558,8 @@ class Locations(point.Points):
 
         if not checksum:
             logging.warning("Disabling the checksum tests should only be used"
-                           "when the device is incapable of emitting the "
-                           "correct values!")
+                            "when the device is incapable of emitting the "
+                            "correct values!")
         for line in data:
             # The standard tells us lines should end in \r\n even though some
             # devices break this, but Python's standard file object solves this

@@ -294,9 +294,9 @@ class Point(object):
 
         if method == "haversine":
             temp = math.sin(latitude_difference / 2) ** 2 + \
-                   math.cos(self.rad_latitude) * \
-                   math.cos(other.rad_latitude) * \
-                   math.sin(longitude_difference / 2) ** 2
+                math.cos(self.rad_latitude) * \
+                math.cos(other.rad_latitude) * \
+                math.sin(longitude_difference / 2) ** 2
             distance = 2 * utils.BODY_RADIUS * math.atan2(math.sqrt(temp),
                                                           math.sqrt(1 - temp))
         elif method == "sloc":
@@ -305,7 +305,7 @@ class Point(object):
                                  math.cos(self.rad_latitude) *
                                  math.cos(other.rad_latitude) *
                                  math.cos(longitude_difference)) * \
-                       utils.BODY_RADIUS
+                utils.BODY_RADIUS
         else:
             raise ValueError("Unknown method type `%s'" % method)
 
@@ -372,7 +372,7 @@ class Point(object):
                               math.sqrt((math.cos(self.rad_latitude) + x) ** 2
                                         + y ** 2))
         longitude = self.rad_longitude \
-                    + math.atan2(y, math.cos(self.rad_latitude) + x)
+            + math.atan2(y, math.cos(self.rad_latitude) + x)
 
         return Point(latitude, longitude, angle="radians")
 
@@ -422,12 +422,12 @@ class Point(object):
                                   math.sin(angular_distance) *
                                   math.cos(bearing))
         dest_longitude = self.rad_longitude + \
-                         math.atan2(math.sin(bearing) *
-                                    math.sin(angular_distance) *
-                                    math.cos(self.rad_latitude),
-                                    math.cos(angular_distance) -
-                                    math.sin(self.rad_latitude) *
-                                    math.sin(dest_latitude))
+            math.atan2(math.sin(bearing) *
+                       math.sin(angular_distance) *
+                       math.cos(self.rad_latitude),
+                       math.cos(angular_distance) -
+                       math.sin(self.rad_latitude) *
+                       math.sin(dest_latitude))
 
         return Point(dest_latitude, dest_longitude, angle="radians")
 

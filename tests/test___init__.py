@@ -25,15 +25,15 @@ from upoints import point
 
 
 def test_base():
-    Home = point.Point(52.015, -0.221)
-    Telford = point.Point(52.6333, -2.5000)
-    expect(int(Home.distance(Telford))) == 169
-    expect(int(Home.bearing(Telford))) == 294
-    expect(int(Home.final_bearing(Telford))) == 293
+    home = point.Point(52.015, -0.221)
+    telford = point.Point(52.6333, -2.5000)
+    expect(int(home.distance(telford))) == 169
+    expect(int(home.bearing(telford))) == 294
+    expect(int(home.final_bearing(telford))) == 293
 
-    expect(Home.sun_events(datetime.date(2007, 6, 28))) == \
+    expect(home.sun_events(datetime.date(2007, 6, 28))) == \
         (datetime.time(3, 42), datetime.time(20, 24))
-    expect(Home.sunrise(datetime.date(2007, 6, 28))) == \
+    expect(home.sunrise(datetime.date(2007, 6, 28))) == \
         datetime.time(3, 42)
-    expect(Home.sunset(datetime.date(2007, 6, 28))) == \
+    expect(home.sunset(datetime.date(2007, 6, 28))) == \
         datetime.time(20, 24)

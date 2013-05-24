@@ -37,7 +37,8 @@ from upoints.utils import (FileFormatError, Timestamp, TzOffset,
 class TestFileFormatError(TestCase):
     with expect.raises(FileFormatError, 'Unsupported data format.'):
         raise FileFormatError
-    with expect.raises(FileFormatError,
+    with expect.raises(
+        FileFormatError,
         ("Incorrect data format, if you're using a file downloaded "
          "from test site please report this to James Rowe "
          "<jnrowe@gmail.com>")):
@@ -229,7 +230,7 @@ def test_to_iso6709_location_page():
 
     #  Mount Everest
     expect(to_iso6709(27.5916, 86.563999999999993, 8850.0)) == \
-    '+27.5916+086.5640+8850/'
+        '+27.5916+086.5640+8850/'
     #  South Pole
     expect(to_iso6709(-90.0, 0.0, 2800.0, "d")) == '-90+000+2800/'
     #  New York City
@@ -287,7 +288,7 @@ def test_sun_rise_set():
     expect(sun_rise_set(52.015, -0.221, datetime.date(2007, 6, 15))) == \
         datetime.time(3, 40)
     expect(sun_rise_set(52.015, -0.221, datetime.date(2007, 6, 15),
-                       "set")) == \
+                        "set")) == \
         datetime.time(20, 22)
     expect(sun_rise_set(52.015, -0.221, datetime.date(2007, 6, 15),
                         timezone=60)) == datetime.time(4, 40)
@@ -387,7 +388,7 @@ def test_dump_xearth_markers():
     points = {
         "Broom Farm": Point(52.066035, -0.281449),
         "Bygrave": Point(52.010585, -0.173443),
-         "Sish Lane": Point(51.910886, -0.186462)
+        "Sish Lane": Point(51.910886, -0.186462)
     }
     data = dump_xearth_markers(points)
     expect(data[0]) == '52.066035 -0.281449 "Broom Farm"'

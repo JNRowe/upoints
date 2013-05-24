@@ -93,7 +93,7 @@ class TestPlacemarks(TestCase):
         xml.write(f)
         f.seek(0)
         expect(f.read()) == \
-             ('<ns0:kml xmlns:ns0="http://earth.google.com/kml/2.0">'
+            ('<ns0:kml xmlns:ns0="http://earth.google.com/kml/2.0">'
              '<ns0:Document>'
              '<ns0:Placemark id="Home"><ns0:name>Home</ns0:name>'
              '<ns0:Point><ns0:coordinates>-0.221,52.015,60</ns0:coordinates></ns0:Point>'

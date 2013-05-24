@@ -30,7 +30,7 @@ def test_get_area_url():
     expect(get_area_url(point.Point(52.015, -0.221), 3)) == \
         'http://api.openstreetmap.org/api/0.5/map?bbox=-0.264864438253,51.9880034021,-0.177135561747,52.0419965979'
     expect(get_area_url(point.Point(52.015, -0.221), 12)) == \
-    'http://api.openstreetmap.org/api/0.5/map?bbox=-0.396457433591,51.9070136086,-0.045542566409,52.1229863914'
+        'http://api.openstreetmap.org/api/0.5/map?bbox=-0.396457433591,51.9070136086,-0.045542566409,52.1229863914'
 
 
 class TestNode(TestCase):

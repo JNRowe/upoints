@@ -48,8 +48,8 @@ class TestPoint(TestCase):
             Point(52.015, -0.221, units=None)
 
     def test___dict__(self):
-        Home = Point(52.015, -0.221)
-        expect(sorted(Home.__dict__.items())) == \
+        home = Point(52.015, -0.221)
+        expect(sorted(home.__dict__.items())) == \
             [('_angle', 'degrees'), ('_latitude', 52.015),
              ('_longitude', -0.221), ('_rad_latitude', 0.9078330104248505),
              ('_rad_longitude', -0.0038571776469074684), ('timezone', 0),
@@ -65,10 +65,10 @@ class TestPoint(TestCase):
         a = Test(52.015, -0.221)
         expect(sorted(a.__dict__.items())) == \
             [('TEST', 'tested'), ('_angle', 'degrees'),
-            ('_latitude', 52.015), ('_longitude', -0.221),
-            ('_rad_latitude', 0.9078330104248505),
-            ('_rad_longitude', -0.0038571776469074684), ('timezone', 0),
-            ('units', 'metric')]
+             ('_latitude', 52.015), ('_longitude', -0.221),
+             ('_rad_latitude', 0.9078330104248505),
+             ('_rad_longitude', -0.0038571776469074684), ('timezone', 0),
+             ('units', 'metric')]
 
     def test___repr__(self):
         expect(repr(Point(52.015, -0.221))) == \
@@ -102,19 +102,19 @@ class TestPoint(TestCase):
         expect(Point(52.015, -0.221)) != Point(52.6333, -2.5)
 
     def test_to_grid_locator(self):
-        Home = Point(52.015, -0.221)
-        expect(Home.to_grid_locator("extsquare")) == 'IO92va33'
-        expect(Home.to_grid_locator("subsquare")) == 'IO92va'
-        expect(Home.to_grid_locator()) == 'IO92'
+        home = Point(52.015, -0.221)
+        expect(home.to_grid_locator("extsquare")) == 'IO92va33'
+        expect(home.to_grid_locator("subsquare")) == 'IO92va'
+        expect(home.to_grid_locator()) == 'IO92'
 
     def test_distance(self):
-        Home = Point(52.015, -0.221)
+        home = Point(52.015, -0.221)
         dest = Point(52.6333, -2.5)
-        expect("%i kM" % Home.distance(dest)) == '169 kM'
-        expect("%i kM" % Home.distance(dest, method="sloc")) == '169 kM'
+        expect("%i kM" % home.distance(dest)) == '169 kM'
+        expect("%i kM" % home.distance(dest, method="sloc")) == '169 kM'
 
         with expect.raises(ValueError, "Unknown method type `Invalid'"):
-            Home.distance(dest, method="Invalid")
+            home.distance(dest, method="Invalid")
 
         start = Point(36.1200, -86.6700)
         dest = Point(33.9400, -118.4000)
@@ -156,11 +156,11 @@ class TestPoint(TestCase):
     def test_destination(self):
         expect(Point(52.015, -0.221).destination(294, 169)) == \
             Point(52.6116387502, -2.50937408195, 'metric', 'degrees', 0)
-        Home = Point(52.015, -0.221, "imperial")
-        expect(Home.destination(294, 169 / utils.STATUTE_MILE)) == \
+        home = Point(52.015, -0.221, "imperial")
+        expect(home.destination(294, 169 / utils.STATUTE_MILE)) == \
             Point(52.6116387502, -2.50937408195, 'metric', 'degrees', 0)
-        Home = Point(52.015, -0.221, "nautical")
-        expect(Home.destination(294, 169 / utils.NAUTICAL_MILE)) == \
+        home = Point(52.015, -0.221, "nautical")
+        expect(home.destination(294, 169 / utils.NAUTICAL_MILE)) == \
             Point(52.6116387502, -2.50937408195, 'metric', 'degrees', 0)
         expect(Point(36.1200, -86.6700).destination(274, 2885)) == \
             Point(33.6872799138, -118.327218421, 'metric', 'degrees', 0)
@@ -237,7 +237,7 @@ class TestPoints(TestCase):
     def test_midpoint(self):
         expect(list(self.locs.midpoint())) == \
             [Point(52.0915720432, -0.0907237539143, 'metric', 'degrees', 0),
-            Point(52.5119010509, 0.346088603087, 'metric', 'degrees', 0)]
+             Point(52.5119010509, 0.346088603087, 'metric', 'degrees', 0)]
 
     def test_range(self):
         expect(list(self.locs.range(Point(52.015, -0.221), 20))) == \
@@ -260,9 +260,9 @@ class TestPoints(TestCase):
 
     def test_sun_events(self):
         expect(list(self.locs.sun_events(datetime.date(2008, 5, 2)))) == \
-        [(datetime.time(4, 28), datetime.time(19, 28)),
-         (datetime.time(4, 26), datetime.time(19, 27)),
-         (datetime.time(4, 21), datetime.time(19, 27))]
+            [(datetime.time(4, 28), datetime.time(19, 28)),
+             (datetime.time(4, 26), datetime.time(19, 27)),
+             (datetime.time(4, 21), datetime.time(19, 27))]
 
     def test_to_grid_locator(self):
         expect(list(self.locs.to_grid_locator("extsquare"))) == \
@@ -276,11 +276,11 @@ class TestTimedPoints(TestCase):
         locations = TimedPoints()
         locations.extend([
             TimedPoint(52.015, -0.221,
-                time=datetime.datetime(2008, 7, 28, 16, 38)),
+                       time=datetime.datetime(2008, 7, 28, 16, 38)),
             TimedPoint(52.168, 0.040,
-                time=datetime.datetime(2008, 7, 28, 18, 38)),
+                       time=datetime.datetime(2008, 7, 28, 18, 38)),
             TimedPoint(52.855, 0.657,
-                time=datetime.datetime(2008, 7, 28, 19, 17)),
+                       time=datetime.datetime(2008, 7, 28, 19, 17)),
         ])
         expect(map(lambda s: "%.3f" % s, locations.speed())) == \
             ['12.315', '133.849']
@@ -295,11 +295,13 @@ class TestKeyedPoints(TestCase):
 
     def test_import_locations(self):
         locations = KeyedPoints()
-        locations.import_locations([("prime", "0;0"), ("home", "52.015 -0.221")])
+        locations.import_locations([("prime", "0;0"),
+                                    ("home", "52.015 -0.221")])
         expect(locations) == \
             KeyedPoints({'prime': Point(0.0, 0.0, 'metric', 'degrees', 0),
-                         'home': Point(52.015, -0.221, 'metric', 'degrees', 0)},
-                         False, 'metric')
+                         'home': Point(52.015, -0.221, 'metric', 'degrees',
+                                       0)},
+                        False, 'metric')
 
     def test_distance(self):
         expect("%.3f" % sum(self.locs.distance(("home", "Carol", "Kenny")))) == '111.632'
@@ -315,7 +317,7 @@ class TestKeyedPoints(TestCase):
     def test_inverse(self):
         expect(list(self.locs.inverse(("home", "Carol", "Kenny")))) == \
             [(46.24239319802467, 24.629669163425465),
-            (28.41617384845358, 87.00207583308533)]
+             (28.41617384845358, 87.00207583308533)]
 
     def test_midpoint(self):
         expect(list(self.locs.midpoint(("home", "Carol", "Kenny")))) == \

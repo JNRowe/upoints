@@ -25,7 +25,7 @@ from upoints.baken import (Baken, Bakens)
 
 
 class TestBaken(TestCase):
-    def test___repr__(test):
+    def test___repr__(self):
         expect(repr(Baken(14.460, 20.680, None, None, None, 0.000, None, None,
                           None, None, None))) == \
             'Baken(14.46, 20.68, None, None, None, 0.0, None, None, None, None, None)'
