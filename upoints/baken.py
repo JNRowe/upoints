@@ -82,7 +82,7 @@ class Baken(point.Point):
         return self._locator
 
     @locator.setter
-    def _set_locator(self, value):
+    def locator(self, value):
         """Update the locator, and trigger a latitude and longitude update.
 
         :param str value: New Maidenhead locator string

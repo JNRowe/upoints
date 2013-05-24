@@ -27,6 +27,8 @@ from upoints.gpx import (_GpxElem, _GpxMeta, Routepoint, Routepoints,
 from upoints import point
 from upoints import utils
 
+from utils import xml_str_compare
+
 
 class Test_GpxElem(TestCase):
     def test___repr__(self):
@@ -48,44 +50,44 @@ class Test_GpxElem(TestCase):
 
     def test_togpx(self):
         expect(etree.tostring(_GpxElem(52, 0).togpx())) == \
-            '<ns0:None xmlns:ns0="http://www.topografix.com/GPX/1/1" lat="52.0" lon="0.0" />'
+            '<gpx:None xmlns:gpx="http://www.topografix.com/GPX/1/1" lat="52.0" lon="0.0"/>'
         expect(etree.tostring(_GpxElem(52, 0, "Cambridge").togpx())) == \
-            ('<ns0:None xmlns:ns0="http://www.topografix.com/GPX/1/1" lat="52.0" lon="0.0">'
-             '<ns0:name>Cambridge</ns0:name>'
-             '</ns0:None>')
+            ('<gpx:None xmlns:gpx="http://www.topografix.com/GPX/1/1" lat="52.0" lon="0.0">'
+             '<gpx:name>Cambridge</gpx:name>'
+             '</gpx:None>')
         expect(etree.tostring(_GpxElem(52, 0, "Cambridge", "in the UK").togpx())) == \
-            ('<ns0:None xmlns:ns0="http://www.topografix.com/GPX/1/1" lat="52.0" lon="0.0">'
-             '<ns0:name>Cambridge</ns0:name><ns0:desc>in the UK</ns0:desc>'
-             '</ns0:None>')
+            ('<gpx:None xmlns:gpx="http://www.topografix.com/GPX/1/1" lat="52.0" lon="0.0">'
+             '<gpx:name>Cambridge</gpx:name><gpx:desc>in the UK</gpx:desc>'
+             '</gpx:None>')
         expect(etree.tostring(_GpxElem(52, 0, "Cambridge", "in the UK").togpx())) == \
-            ('<ns0:None xmlns:ns0="http://www.topografix.com/GPX/1/1" lat="52.0" lon="0.0">'
-             '<ns0:name>Cambridge</ns0:name><ns0:desc>in the UK</ns0:desc>'
-             '</ns0:None>')
+            ('<gpx:None xmlns:gpx="http://www.topografix.com/GPX/1/1" lat="52.0" lon="0.0">'
+             '<gpx:name>Cambridge</gpx:name><gpx:desc>in the UK</gpx:desc>'
+             '</gpx:None>')
         expect(etree.tostring(_GpxElem(52, 0, "name", "desc", 40,
                                     utils.Timestamp(2008, 7, 25)).togpx())) == \
-            ('<ns0:None xmlns:ns0="http://www.topografix.com/GPX/1/1" lat="52.0" lon="0.0">'
-             '<ns0:name>name</ns0:name><ns0:desc>desc</ns0:desc><ns0:ele>40</ns0:ele>'
-             '<ns0:time>2008-07-25T00:00:00+00:00</ns0:time>'
-             '</ns0:None>')
+            ('<gpx:None xmlns:gpx="http://www.topografix.com/GPX/1/1" lat="52.0" lon="0.0">'
+             '<gpx:name>name</gpx:name><gpx:desc>desc</gpx:desc><gpx:ele>40</gpx:ele>'
+             '<gpx:time>2008-07-25T00:00:00+00:00</gpx:time>'
+             '</gpx:None>')
 
 
 class Test_GpxMeta(TestCase):
     def test_togpx(self):
         meta = _GpxMeta(time=(2008, 6, 3, 16, 12, 43, 1, 155, 0))
         expect(etree.tostring(meta.togpx())) == \
-            ('<ns0:metadata xmlns:ns0="http://www.topografix.com/GPX/1/1">'
-             '<ns0:time>2008-06-03T16:12:43+0000</ns0:time>'
-             '</ns0:metadata>')
+            ('<gpx:metadata xmlns:gpx="http://www.topografix.com/GPX/1/1">'
+             '<gpx:time>2008-06-03T16:12:43+0000</gpx:time>'
+             '</gpx:metadata>')
         meta.bounds = {"minlat": 52, "maxlat": 54, "minlon": -2, "maxlon": 1}
         expect(etree.tostring(meta.togpx())) == \
-            ('<ns0:metadata xmlns:ns0="http://www.topografix.com/GPX/1/1">'
-             '<ns0:time>2008-06-03T16:12:43+0000</ns0:time><ns0:bounds maxlat="54" maxlon="1" minlat="52" minlon="-2" />'
-             '</ns0:metadata>')
+            ('<gpx:metadata xmlns:gpx="http://www.topografix.com/GPX/1/1">'
+             '<gpx:time>2008-06-03T16:12:43+0000</gpx:time><gpx:bounds maxlat="54" maxlon="1" minlat="52" minlon="-2"/>'
+             '</gpx:metadata>')
         meta.bounds = [point.Point(52.015, -0.221), point.Point(52.167, 0.390)]
         expect(etree.tostring(meta.togpx())) == \
-            ('<ns0:metadata xmlns:ns0="http://www.topografix.com/GPX/1/1">'
-             '<ns0:time>...</ns0:time><ns0:bounds maxlat="52.167" maxlon="0.39" minlat="52.015" minlon="-0.221" />'
-             '</ns0:metadata>')
+            ('<gpx:metadata xmlns:gpx="http://www.topografix.com/GPX/1/1">'
+                    '<gpx:time>2008-06-03T16:12:43+0000</gpx:time><gpx:bounds maxlat="52.167" maxlon="0.39" minlat="52.015" minlon="-0.221"/>'
+             '</gpx:metadata>')
 
 
 class TestWaypoint(TestCase):
@@ -112,20 +114,22 @@ class TestWaypoints(TestCase):
         f = StringIO()
         xml.write(f)
         f.seek(0)
-        expect(f.read()) == \
-            ('<ns0:gpx xmlns:ns0="http://www.topografix.com/GPX/1/1">'
-             '<ns0:metadata>'
-             '<ns0:time>...</ns0:time>'
-             '<ns0:bounds maxlat="52.167" maxlon="0.39" minlat="52.015" minlon="-0.221" />'
-             '</ns0:metadata>'
-             '<ns0:wpt lat="52.015" lon="-0.221">'
-             '<ns0:name>Home</ns0:name><ns0:desc>My place</ns0:desc><ns0:time>2008-07-26T00:00:00+00:00</ns0:time>'
-             '</ns0:wpt>'
-             '<ns0:wpt lat="52.167" lon="0.39">'
-             '<ns0:name>MSR</ns0:name><ns0:desc>Microsoft Research, Cambridge</ns0:desc>'
-             '<ns0:time>2008-07-27T00:00:00+00:00</ns0:time>'
-             '</ns0:wpt>'
-             '</ns0:gpx>')
+        xml_str_compare(
+            ('<gpx:gpx xmlns:gpx="http://www.topografix.com/GPX/1/1">'
+             '<gpx:metadata>'
+             '<gpx:time>...</gpx:time>'
+             '<gpx:bounds maxlat="52.167" maxlon="0.39" minlat="52.015" minlon="-0.221"/>'
+             '</gpx:metadata>'
+             '<gpx:wpt lat="52.015" lon="-0.221">'
+             '<gpx:name>Home</gpx:name><gpx:desc>My place</gpx:desc><gpx:time>2008-07-26T00:00:00+00:00</gpx:time>'
+             '</gpx:wpt>'
+             '<gpx:wpt lat="52.167" lon="0.39">'
+             '<gpx:name>MSR</gpx:name><gpx:desc>Microsoft Research, Cambridge</gpx:desc>'
+             '<gpx:time>2008-07-27T00:00:00+00:00</gpx:time>'
+             '</gpx:wpt>'
+             '</gpx:gpx>'),
+            f.read(),
+            ellipsis=True)
 
 
 class TestTrackpoint(TestCase):
@@ -153,23 +157,25 @@ class TestTrackpoints(TestCase):
         f = StringIO()
         xml.write(f)
         f.seek(0)
-        expect(f.read()) == \
-            ('<ns0:gpx xmlns:ns0="http://www.topografix.com/GPX/1/1">'
-             '<ns0:metadata>'
-             '<ns0:time>...</ns0:time><ns0:bounds maxlat="52.167" maxlon="0.39" minlat="52.015" minlon="-0.221" />'
-             '</ns0:metadata>'
-             '<ns0:trk>'
-             '<ns0:trkseg>'
-             '<ns0:trkpt lat="52.015" lon="-0.221">'
-             '<ns0:name>Home</ns0:name><ns0:desc>My place</ns0:desc><ns0:time>2008-07-26T00:00:00+00:00</ns0:time>'
-             '</ns0:trkpt>'
-             '<ns0:trkpt lat="52.167" lon="0.39">'
-             '<ns0:name>MSR</ns0:name><ns0:desc>Microsoft Research, Cambridge</ns0:desc>'
-             '<ns0:time>2008-07-27T00:00:00+00:00</ns0:time>'
-             '</ns0:trkpt>'
-             '</ns0:trkseg>'
-             '</ns0:trk>'
-             '</ns0:gpx>')
+        xml_str_compare(
+            ('<gpx:gpx xmlns:gpx="http://www.topografix.com/GPX/1/1">'
+             '<gpx:metadata>'
+             '<gpx:time>...</gpx:time><gpx:bounds maxlat="52.167" maxlon="0.39" minlat="52.015" minlon="-0.221"/>'
+             '</gpx:metadata>'
+             '<gpx:trk>'
+             '<gpx:trkseg>'
+             '<gpx:trkpt lat="52.015" lon="-0.221">'
+             '<gpx:name>Home</gpx:name><gpx:desc>My place</gpx:desc><gpx:time>2008-07-26T00:00:00+00:00</gpx:time>'
+             '</gpx:trkpt>'
+             '<gpx:trkpt lat="52.167" lon="0.39">'
+             '<gpx:name>MSR</gpx:name><gpx:desc>Microsoft Research, Cambridge</gpx:desc>'
+             '<gpx:time>2008-07-27T00:00:00+00:00</gpx:time>'
+             '</gpx:trkpt>'
+             '</gpx:trkseg>'
+             '</gpx:trk>'
+             '</gpx:gpx>'),
+            f.read(),
+            ellipsis=True)
 
 
 class TestRoutepoint(TestCase):
@@ -197,19 +203,21 @@ class TestRoutepoints(TestCase):
         f = StringIO()
         xml.write(f)
         f.seek(0)
-        expect(f.read()) == \
-            ('<ns0:gpx xmlns:ns0="http://www.topografix.com/GPX/1/1">'
-             '<ns0:metadata>'
-             '<ns0:time>...</ns0:time>'
-             '<ns0:bounds maxlat="52.167" maxlon="0.39" minlat="52.015" minlon="-0.221" />'
-             '</ns0:metadata>'
-             '<ns0:rte>'
-             '<ns0:rtept lat="52.015" lon="-0.221">'
-             '<ns0:name>Home</ns0:name><ns0:desc>My place</ns0:desc><ns0:time>2008-07-26T00:00:00+00:00</ns0:time>'
-             '</ns0:rtept>'
-             '<ns0:rtept lat="52.167" lon="0.39">'
-             '<ns0:name>MSR</ns0:name><ns0:desc>Microsoft Research, Cambridge</ns0:desc>'
-             '<ns0:time>2008-07-27T00:00:00+00:00</ns0:time>'
-             '</ns0:rtept>'
-             '</ns0:rte>'
-             '</ns0:gpx>')
+        xml_str_compare(
+            ('<gpx:gpx xmlns:gpx="http://www.topografix.com/GPX/1/1">'
+             '<gpx:metadata>'
+             '<gpx:time>...</gpx:time>'
+             '<gpx:bounds maxlat="52.167" maxlon="0.39" minlat="52.015" minlon="-0.221"/>'
+             '</gpx:metadata>'
+             '<gpx:rte>'
+             '<gpx:rtept lat="52.015" lon="-0.221">'
+             '<gpx:name>Home</gpx:name><gpx:desc>My place</gpx:desc><gpx:time>2008-07-26T00:00:00+00:00</gpx:time>'
+             '</gpx:rtept>'
+             '<gpx:rtept lat="52.167" lon="0.39">'
+             '<gpx:name>MSR</gpx:name><gpx:desc>Microsoft Research, Cambridge</gpx:desc>'
+             '<gpx:time>2008-07-27T00:00:00+00:00</gpx:time>'
+             '</gpx:rtept>'
+             '</gpx:rte>'
+             '</gpx:gpx>'),
+            f.read(),
+            ellipsis=True)
