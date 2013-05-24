@@ -71,7 +71,7 @@ class Location(trigpoints.Trigpoint):
         :param str admin1: FIPS code (subject to change to ISO code), ISO code
             for the US and CH
         :param str admin2: Code for the second administrative division, a county
-        in the US
+            in the US
         :param str admin3: Code for third level administrative division
         :param str admin4: Code for fourth level administrative division
         :param int population: Location's population, if applicable
@@ -79,8 +79,8 @@ class Location(trigpoints.Trigpoint):
         :param int gtopo30: Average elevation of 900 square metre region, if
             available
         :param str tzname: The timezone identifier using POSIX timezone names
-        :param datetime.date modified_date: Location's last modification date in
-            the geonames databases
+        :param datetime.date modified_date: Location's last modification date
+            in the geonames databases
         :param int timezone: The non-DST timezone offset from UTC in minutes
 
         """

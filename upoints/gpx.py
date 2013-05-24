@@ -224,7 +224,8 @@ class _SegWrap(list):
 
         :param Point location: Location to test range against
         :param float distance: Distance to test location is within
-        :rtype: ``list`` of ``list`` of ``Point`` objects within specified range
+        :rtype: ``list`` of ``list`` of ``Point`` objects within specified
+            range
         :return: Groups of points in range per segment
 
         """
