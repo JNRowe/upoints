@@ -296,14 +296,14 @@ class NumberedPoints(point.Points):
                 text = ["Location %s is", ]
                 if not in_range:
                     text.append("not")
-                text.append("within %i ")
+                text.append("within %i")
                 if self.units == "sm":
                     text.append("miles")
                 elif self.units == "nm":
                     text.append("nautical miles")
                 else:
                     text.append("kilometres")
-                text.append(" of location %s")
+                text.append("of location %s")
                 print(" ".join(text) % (location.name, distance, self[0].name))
             else:
                 print(in_range)
