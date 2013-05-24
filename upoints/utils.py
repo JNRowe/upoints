@@ -528,10 +528,10 @@ def to_iso6709(latitude, longitude, altitude=None, format="dd", precision=4):
         elif format == "dms":
             latitude_dms = to_dms(latitude)
             longitude_dms = to_dms(longitude)
-        latitude_sign = "-" if any([i < 0 for i in latitude_dms]) else "+"
-        latitude_dms = tuple([abs(i) for i in latitude_dms])
-        longitude_sign = "-" if any([i < 0 for i in longitude_dms]) else "+"
-        longitude_dms = tuple([abs(i) for i in longitude_dms])
+        latitude_sign = "-" if any(i < 0 for i in latitude_dms) else "+"
+        latitude_dms = tuple(abs(i) for i in latitude_dms)
+        longitude_sign = "-" if any(i < 0 for i in longitude_dms) else "+"
+        longitude_dms = tuple(abs(i) for i in longitude_dms)
         if format == "dm":
             text.append("%s%02i%02i" % ((latitude_sign, ) + latitude_dms))
             text.append("%s%03i%02i" % ((longitude_sign, ) + longitude_dms))

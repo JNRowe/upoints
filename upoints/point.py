@@ -155,7 +155,7 @@ class Point(object):
         while not cls is object:
             slots.extend(cls.__slots__)
             cls = cls.__base__
-        return dict([(item, getattr(self, item)) for item in slots])
+        return dict((item, getattr(self, item)) for item in slots)
 
     def __repr__(self):
         """Self-documenting string representation.
@@ -548,7 +548,7 @@ class Points(list):
             if parse:
                 self.import_locations(points)
             else:
-                if not all([x for x in points if isinstance(x, Point)]):
+                if not all(x for x in points if isinstance(x, Point)):
                     raise TypeError("All `points` elements must be an "
                                     "instance of the `Point` class")
                 self.extend(points)

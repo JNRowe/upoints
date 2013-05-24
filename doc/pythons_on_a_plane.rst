@@ -40,8 +40,8 @@ Another thing to consider because of the size of the database is whether
 you need to operate on all the entries at once.  Maybe you only want to
 work with entries in the UK::
 
-    >>> UK_locations = dict([x for x in ICAO_stations.items()
-    ...                      if x[1].country == "United Kingdom"])
+    >>> UK_locations = dict(x for x in ICAO_stations.items()
+    ...                     if x[1].country == "United Kingdom")
 
 Let us imagine for a minute that next month you're flying from London
 Luton to our office in Toulouse, then dropping by Birmingham for GUADEC,
@@ -52,7 +52,7 @@ easily.
 
 ::
 
-    >>> Europe = dict([x for x in ICAO_stations.items() if x[1].wmo == 6])
+    >>> Europe = dict(x for x in ICAO_stations.items() if x[1].wmo == 6)
     >>> del(ICAO_stations)
     >>> print(len(Europe))
     1130
@@ -81,7 +81,7 @@ above [#]_.
         - 1006 kilometres on a bearing of 347 degrees
       * Birmingham / Airport to Stansted Airport
         - 148 kilometres on a bearing of 114 degrees
-    >>> print("For a total of %i kilometres" % sum([i[1] for i in legs]))
+    >>> print("For a total of %i kilometres" % sum(i[1] for i in legs))
     For a total of 2078 kilometres
 
 The :class:`~upoints.weather_stations.Station` class inherits from

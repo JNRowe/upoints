@@ -76,8 +76,8 @@ of the parent classes.  For example, you could use the
 :func:`~upoints.utils.dump_xearth_markers` function::
 
     >>> from upoints.utils import dump_xearth_markers
-    >>> scottish_markers = dict([(x.identifier, x) for x in Cities
-    ...                          if x.region == "Scotland"])
+    >>> scottish_markers = dict((x.identifier, x) for x in Cities
+    ...                         if x.region == "Scotland")
     >>> print("\n".join(dump_xearth_markers(scottish_markers, "name")))
     57.150000 -2.083000 "Aberdeen" # 1
     55.950000 -3.183000 "Edinburgh" # 83

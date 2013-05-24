@@ -403,7 +403,7 @@ class _GpxMeta(object):
                     "maxlon": str(max(longitudes)),
                 }
             else:
-                bounds = dict([(k, str(v)) for k, v in self.bounds.items()])
+                bounds = dict((k, str(v)) for k, v in self.bounds.items())
             metadata.append(elementise("bounds", bounds))
         if self.extensions:
             element = elementise("extensions")
