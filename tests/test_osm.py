@@ -139,7 +139,7 @@ class TestWay(TestCase):
 
 class TestOsm(TestCase):
     def setUp(self):
-        self.region = Osm(open("test/data/osm"))
+        self.region = Osm(open("tests/data/osm"))
 
     def test_import_locations(self):
         data = map(str, sorted([x for x in self.region if isinstance(x, Node)],

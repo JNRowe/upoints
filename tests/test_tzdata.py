@@ -40,7 +40,7 @@ class TestZone(TestCase):
 
 class TestZones(TestCase):
     def test_import_locations(self):
-        zones = Zones(open("test/data/timezones"))
+        zones = Zones(open("tests/data/timezones"))
         data = [str(v) for v in sorted(zones, key=attrgetter("zone"))]
         expect(data[0]) == """Africa/Luanda (AO: 08°48'00"S, 013°14'00"E)"""
         expect(data[1]) == """America/Curacao (AN: 12°11'00"N, 069°00'00"W)"""
@@ -48,7 +48,7 @@ class TestZones(TestCase):
             """Antarctica/McMurdo (AQ: 77°50'00"S, 166°36'00"E also McMurdo Station, Ross Island)"""
 
     def test_dump_zone_file(self):
-        zones = Zones(open("test/data/timezones"))
+        zones = Zones(open("tests/data/timezones"))
         expect(Zones.dump_zone_file(zones)) == \
             ['AN\t+121100-0690000\tAmerica/Curacao',
              'AO\t-084800+0131400\tAfrica/Luanda',

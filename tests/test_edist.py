@@ -193,7 +193,7 @@ class TestNumberedPoints(TestCase):
 
 
 def test_read_csv():
-    locations, names = read_csv(open("test/data/gpsbabel"))
+    locations, names = read_csv(open("tests/data/gpsbabel"))
     expect(sorted(locations.items())) == \
         [('01:My place', ('52.01500', '-0.22100')),
          ('02:Microsoft Research Cambridge', ('52.16700', '00.39000'))]

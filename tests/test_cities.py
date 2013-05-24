@@ -56,7 +56,7 @@ class TestCity(TestCase):
 
 class TestCities(TestCase):
     def test_import_locations(self):
-        cities_file = open("test/data/city_data")
+        cities_file = open("tests/data/city_data")
         cities = Cities(cities_file)
         data = [("%i - %s (%s;%s)" % (city.identifier, city.name,
                                       city.latitude, city.longitude))

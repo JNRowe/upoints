@@ -101,7 +101,7 @@ class TestWaypoint(TestCase):
 
 class TestWaypoints(TestCase):
     def test_import_locations(self):
-        waypoints = Waypoints(open("test/data/gpx"))
+        waypoints = Waypoints(open("tests/data/gpx"))
         data = map(str, sorted(waypoints, key=lambda x: x.name))
         expect(data[0]) == \
             """Home (52°00'54"N, 000°13'15"W on 2008-07-26T00:00:00+00:00) [My place]"""
@@ -109,7 +109,7 @@ class TestWaypoints(TestCase):
             """MSR (52°10'01"N, 000°23'24"E on 2008-07-27T00:00:00+00:00) [Microsoft Research, Cambridge]"""
 
     def test_export_gpx_file(self):
-        locations = Waypoints(open("test/data/gpx"))
+        locations = Waypoints(open("tests/data/gpx"))
         xml = locations.export_gpx_file()
         f = StringIO()
         xml.write(f)
@@ -144,7 +144,7 @@ class TestTrackpoint(TestCase):
 
 class TestTrackpoints(TestCase):
     def test_import_locations(self):
-        trackpoints = Trackpoints(open("test/data/gpx_tracks"))
+        trackpoints = Trackpoints(open("tests/data/gpx_tracks"))
         data = map(str, sorted(trackpoints[0], key=lambda x: x.name))
         expect(data[0]) == \
             """Home (52°00'54"N, 000°13'15"W on 2008-07-26T00:00:00+00:00) [My place]"""
@@ -152,7 +152,7 @@ class TestTrackpoints(TestCase):
             """MSR (52°10'01"N, 000°23'24"E on 2008-07-27T00:00:00+00:00) [Microsoft Research, Cambridge]"""
 
     def test_export_gpx_file(self):
-        locations = Trackpoints(open("test/data/gpx_tracks"))
+        locations = Trackpoints(open("tests/data/gpx_tracks"))
         xml = locations.export_gpx_file()
         f = StringIO()
         xml.write(f)
@@ -190,7 +190,7 @@ class TestRoutepoint(TestCase):
 
 class TestRoutepoints(TestCase):
     def test_import_locations(self):
-        routepoints = Routepoints(open("test/data/gpx_routes"))
+        routepoints = Routepoints(open("tests/data/gpx_routes"))
         data = map(str, sorted(routepoints[0], key=lambda x: x.name))
         expect(data[0]) == \
             """Home (52°00'54"N, 000°13'15"W on 2008-07-26T00:00:00+00:00) [My place]"""
@@ -198,7 +198,7 @@ class TestRoutepoints(TestCase):
             """MSR (52°10'01"N, 000°23'24"E on 2008-07-27T00:00:00+00:00) [Microsoft Research, Cambridge]"""
 
     def test_export_gpx_file(self):
-        locations = Routepoints(open("test/data/gpx_routes"))
+        locations = Routepoints(open("tests/data/gpx_routes"))
         xml = locations.export_gpx_file()
         f = StringIO()
         xml.write(f)

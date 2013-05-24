@@ -16,7 +16,7 @@ entries.  The file is a simple flat Unicode database, with records
 separated by ``//``, a format that would be as well suited to processing
 with awk_ as it would with Python_.
 
-.. literalinclude:: ../test/data/cities.dat
+.. literalinclude:: ../tests/data/cities.dat
    :lines: 155-181
 
 You don't need to hand process the data though, I've added

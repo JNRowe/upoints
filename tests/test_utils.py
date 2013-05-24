@@ -51,17 +51,17 @@ def test_value_or_empty():
 
 
 def test_prepare_read():
-    expect(prepare_read(open("test/data/real_file"))) == \
+    expect(prepare_read(open("tests/data/real_file"))) == \
         ['This is a test file-type object\n']
     test_list = ['This is a test list-type object', 'with two elements']
     expect(prepare_read(test_list)) == \
         ['This is a test list-type object', 'with two elements']
-    expect(prepare_read(open("test/data/real_file"), "read")) == \
+    expect(prepare_read(open("tests/data/real_file"), "read")) == \
         'This is a test file-type object\n'
 
 
 def test_prepare_csv_read():
-    expect(list(prepare_csv_read(open("test/data/real_file.csv"),
+    expect(list(prepare_csv_read(open("tests/data/real_file.csv"),
                                  ("type", "bool", "string")))) == \
         [{'bool': 'true', 'type': 'file', 'string': 'test'}]
     test_list = ['James,Rowe', 'ell,caro']
@@ -70,7 +70,7 @@ def test_prepare_csv_read():
 
 
 def test_prepare_xml_read():
-    data = prepare_xml_read(open("test/data/real_file.xml"))
+    data = prepare_xml_read(open("tests/data/real_file.xml"))
     expect(data.find("tag").text) == 'This is a test file-type object'
     test_list = ['<xml>', '<tag>This is a test list</tag>', '</xml>']
     expect(prepare_xml_read(test_list).find("tag").text) == \

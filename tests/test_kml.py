@@ -67,14 +67,14 @@ class TestPlacemark(TestCase):
 
 class TestPlacemarks(TestCase):
     def test_import_locations(self):
-        locations = Placemarks(open("test/data/kml"))
+        locations = Placemarks(open("tests/data/kml"))
         expect(str(locations['Cambridge'])) ==  \
             """Cambridge (52°10'01"N, 000°23'24"E)"""
         expect(str(locations['Home'])) == \
             """Home (52°00'54"N, 000°13'15"W alt 60m)"""
 
     def test_export_kml_file(self):
-        locations = Placemarks(open("test/data/kml"))
+        locations = Placemarks(open("tests/data/kml"))
         xml = locations.export_kml_file()
         f = StringIO()
         xml.write(f)

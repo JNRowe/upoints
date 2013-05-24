@@ -52,7 +52,7 @@ class TestLocation(TestCase):
 
 class TestLocations(TestCase):
     def test_import_locations(self):
-        locations = Locations(open("test/data/geonames"))
+        locations = Locations(open("tests/data/geonames"))
         expect(str(locations[0])) == \
             'Afon Wyre (River Wayrai, River Wyrai, Wyre - N52.317°; W004.167°)'
         expect(str(locations[1])) == \
@@ -64,21 +64,21 @@ class TestLocations(TestCase):
                            "Incorrect data format, if you're using a file "
                            "downloaded from geonames.org please report this "
                            "to James Rowe <jnrowe@gmail.com>"):
-            Locations(open("test/data/broken_geonames"))
+            Locations(open("tests/data/broken_geonames"))
 
     def test_import_timezones_file(self):
-        locations = Locations(None, open("test/data/geonames_timezones"))
+        locations = Locations(None, open("tests/data/geonames_timezones"))
         timezones = locations.timezones
         expect(timezones['Asia/Dubai']) == [240, 240]
         expect(timezones['Asia/Kabul']) == [270, 270]
         expect(timezones['Europe/Andorra']) == [60, 120]
 
         header_skip_check = Locations(None,
-                                      open("test/data/geonames_timezones_header"))
+                                      open("tests/data/geonames_timezones_header"))
         expect(header_skip_check) == Locations()
 
         with expect.raises(FileFormatError,
                            "Incorrect data format, if you're using a file "
                            "downloaded from geonames.org please report this "
                            "to James Rowe <jnrowe@gmail.com>"):
-            Locations(None, open("test/data/geonames_timezones_broken"))
+            Locations(None, open("tests/data/geonames_timezones_broken"))

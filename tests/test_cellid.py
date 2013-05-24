@@ -45,7 +45,7 @@ class TestCell(TestCase):
 
 class TestCells(TestCase):
     def setUp(self):
-        self.cells = Cells(open("test/data/cells"))
+        self.cells = Cells(open("tests/data/cells"))
 
     def test___str__(self):
         data = sorted(map(str, self.cells.values()))

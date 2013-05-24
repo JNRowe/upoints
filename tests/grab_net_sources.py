@@ -43,11 +43,11 @@ def data_file(resource):
     """Generate a local filename for the resource.
 
     >>> print data_file(SOURCES[0])
-    test/data/cities.dat
+    tests/data/cities.dat
     >>> print data_file(SOURCES[4])
-    test/data/cells.txt
+    tests/data/cells.txt
     >>> print data_file(SOURCES[3])
-    test/data/alltrigs-wgs84.txt
+    tests/data/alltrigs-wgs84.txt
 
     :Parameters tuple resource: Source, and optional destination
     :rtype: `str`
