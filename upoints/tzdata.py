@@ -59,7 +59,7 @@ class Zone(point.Point):
                                     format="dms")[:-1]
         return utils.repr_assist(self, {"location": location})
 
-    def u__str__(self, mode="dms"):
+    def __str__(self, mode="dms"):
         """Pretty printed location string.
 
         :param str mode: Coordinate formatting system to use

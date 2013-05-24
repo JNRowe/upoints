@@ -44,7 +44,7 @@ class TestBaken(TestCase):
                      "IO93BF", "A1A", None, 25, None)
         test.locator = "JN44FH"
         expect(test.latitude) == 44.3125
-        expect(test.longiture) == 8.45833333333
+        expect(test.longitude) == 8.458333333333314
 
     def test___str__(self):
         expect(str(Baken(14.460, 20.680, None, None, None, 0.000, None, None,
