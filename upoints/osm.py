@@ -387,12 +387,12 @@ class Osm(point.Points):
         # This would be a lot simpler if OSM exports defined a namespace
         root = data.getroot()
         if not root.tag == "osm":
-            raise ValueError("Root element `%s' is not `osm'" % root.tag)
+            raise ValueError("Root element %r is not `osm'" % root.tag)
         self.version = root.get("version")
         if not self.version:
             raise ValueError("No specified OSM version")
         elif not self.version == "0.5":
-            raise ValueError("Unsupported OSM version `%s'" % root)
+            raise ValueError("Unsupported OSM version %r" % root)
 
         self.generator = root.get("generator")
 

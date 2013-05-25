@@ -103,7 +103,7 @@ class Point(object):
         if angle in ("degrees", "radians"):
             self._angle = angle
         else:
-            raise ValueError("Unknown angle type `%s'" % angle)
+            raise ValueError("Unknown angle type %r" % angle)
         self._set_location("latitude", latitude)
         self._set_location("longitude", longitude)
 
@@ -116,7 +116,7 @@ class Point(object):
         elif units == "nm":
             self.units = "nautical"
         else:
-            raise ValueError("Unknown units type `%s'" % units)
+            raise ValueError("Unknown units type %r" % units)
         self.timezone = timezone
 
     def _set_location(self, ltype, value):
@@ -130,11 +130,11 @@ class Point(object):
             setattr(self, "_rad_%s" % ltype, float(value))
             setattr(self, "_%s" % ltype, math.degrees(float(value)))
         else:
-            raise ValueError("Unknown angle type `%s'" % self._angle)
+            raise ValueError("Unknown angle type %r" % self._angle)
         if ltype == "latitude" and not -90 <= self._latitude <= 90:
-            raise ValueError("Invalid latitude value `%f'" % value)
+            raise ValueError("Invalid latitude value %r" % value)
         elif ltype == "longitude" and not -180 <= self._longitude <= 180:
-            raise ValueError("Invalid longitude value `%f'" % value)
+            raise ValueError("Invalid longitude value %r" % value)
     latitude = _manage_location("latitude")
     longitude = _manage_location("longitude")
     rad_latitude = _manage_location("rad_latitude")
@@ -186,7 +186,7 @@ class Point(object):
         elif mode == "locator":
             text.append(self.to_grid_locator())
         else:
-            raise ValueError("Unknown mode type `%s'" % mode)
+            raise ValueError("Unknown mode type %r" % mode)
 
         return "".join(text)
 
@@ -205,7 +205,7 @@ class Point(object):
         elif mode in ("dm", "dms"):
             text = _dms_formatter(self.latitude, self.longitude, mode, True)
         else:
-            raise ValueError("Unknown mode type `%s'" % mode)
+            raise ValueError("Unknown mode type %r" % mode)
 
         return "".join(text)
 
@@ -307,7 +307,7 @@ class Point(object):
                                  math.cos(longitude_difference)) * \
                 utils.BODY_RADIUS
         else:
-            raise ValueError("Unknown method type `%s'" % method)
+            raise ValueError("Unknown method type %r" % method)
 
         if self.units == "imperial":
             return distance / utils.STATUTE_MILE
@@ -350,7 +350,7 @@ class Point(object):
         elif format == "string":
             return utils.angle_to_name(bearing)
         else:
-            raise ValueError("Unknown format type `%s'" % format)
+            raise ValueError("Unknown format type %r" % format)
 
     def midpoint(self, other):
         """Calculate the midpoint from self to other.
@@ -396,7 +396,7 @@ class Point(object):
         elif format == "string":
             return utils.angle_to_name(final_bearing)
         else:
-            raise ValueError("Unknown format type `%s'" % format)
+            raise ValueError("Unknown format type %r" % format)
 
     def destination(self, bearing, distance):
         """Calculate the destination from self given bearing and distance.

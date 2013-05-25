@@ -81,7 +81,7 @@ def test_to_dms():
     expect(to_dms(52.015)) == (52, 0, 54.0)
     expect(to_dms(-0.221)) == (0, -13, -15.600000000000023)
     expect(to_dms(-0.221, style="dm")) == (0, -13.26)
-    with expect.raises(ValueError, "Unknown style type `None'"):
+    with expect.raises(ValueError, "Unknown style type None"):
         to_dms(-0.221, style=None)
 
 
@@ -180,7 +180,7 @@ def test_from_iso6709_location_page():
     expect(from_iso6709("+35.658632+139.745411/")) == \
         (35.658632, 139.745411, None)
 
-    with expect.raises(ValueError, "Incorrect format for longitude `+1'"):
+    with expect.raises(ValueError, "Incorrect format for longitude '+1'"):
         from_iso6709("+35.658632+1/")
 
 
@@ -248,7 +248,7 @@ def test_angle_to_distance():
     expect("%i" % angle_to_distance(360, "imperial")) == '24863'
     expect("%i" % angle_to_distance(1.0 / 60, "nautical")) == '1'
 
-    with expect.raises(ValueError, "Unknown units type `baseless'"):
+    with expect.raises(ValueError, "Unknown units type 'baseless'"):
         "%i" % angle_to_distance(10, "baseless")
 
 
@@ -382,7 +382,7 @@ def test_dump_xearth_markers():
     expect(data[1]) == '52.010585 -0.173443 "Bygrave" # 501097, alt 97m'
     expect(data[2]) == '51.910886 -0.186462 "Sish Lane" # 505392, alt 136m'
 
-    with expect.raises(ValueError, "Unknown name type `falseKey'"):
+    with expect.raises(ValueError, "Unknown name type 'falseKey'"):
         dump_xearth_markers(markers, "falseKey")
 
     points = {

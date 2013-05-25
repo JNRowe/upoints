@@ -64,11 +64,11 @@ def _get_test_file(filename):
         return __builtin__.open(os.path.join(BASEDIR, "data", filename))
     else:
         if filename in SOURCES:
-            raise IOError("`%s' missing.  It can be downloaded from `%s', or "
+            raise IOError("%r missing.  It can be downloaded from %r, or "
                           "alternatively by running the `grab_net_sources' "
                           "script." % (filename, SOURCES[filename]))
         else:
-            raise IOError("Can not open `%s'" % filename)
+            raise IOError("Can not open %r" % filename)
 
 def open(filename, mode="rb"):
     """Mock `open` function to open test data files.

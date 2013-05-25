@@ -109,7 +109,7 @@ class LocationsError(ValueError):
         if self.function:
             return "More than one location is required for %s." % self.function
         elif self.data:
-            return "Location parsing failure in location %i `%s'." % self.data
+            return "Location parsing failure in location %i %r." % self.data
         else:
             return "Invalid location data."
 
@@ -475,7 +475,7 @@ def read_locations(filename):
     data = ConfigParser.ConfigParser()
     data.read(filename)
     if not data.sections():
-        logging.debug("Config file `%s' is empty" % filename)
+        logging.debug("Config file %r is empty" % filename)
         return {}
 
     locations = {}

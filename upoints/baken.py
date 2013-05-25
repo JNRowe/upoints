@@ -170,7 +170,7 @@ class Bakens(point.KeyedPoints):
         elif isinstance(baken_file, basestring):
             data.readfp(open(baken_file))
         else:
-            raise TypeError("Unable to handle data of type `%s`"
+            raise TypeError("Unable to handle data of type %r"
                             % type(baken_file))
         valid_locator = re.compile(r"[A-Z]{2}\d{2}[A-Z]{2}")
         for name in data.sections():
@@ -190,14 +190,14 @@ class Bakens(point.KeyedPoints):
                             elements[item] = data.getfloat(name, item)
                         except ValueError:
                             logging.debug("Multiple frequency workaround for "
-                                          "`%s' entry" % name)
+                                          "%r entry" % name)
                             elements[item] = \
                                 map(float, data.get(name, item).split(","))
                 else:
                     elements[item] = None
             if elements["latitude"] is None \
                and not valid_locator.match(elements["locator"]):
-                logging.info("Skipping `%s' entry, as it contains no location "
+                logging.info("Skipping %r entry, as it contains no location "
                              "data" % name)
                 continue
 

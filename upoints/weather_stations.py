@@ -175,7 +175,7 @@ class Stations(point.KeyedPoints):
                     # Some entries only have 12 or 13 elements, so we assume 13
                     # and 14 are None.  Of the entries I've hand checked this
                     # assumption would be correct.
-                    logging.debug("Extending ICAO `%s' entry, because it is "
+                    logging.debug("Extending ICAO %r entry, because it is "
                                   "too short to process" % line)
                     chunk.extend(["", ""])
                 elif index == "WMO" and len(chunk) == 13:
@@ -183,7 +183,7 @@ class Stations(point.KeyedPoints):
                     # fields, hand checking the entries for 71046 and 71899
                     # shows that they are correct if we just assume RBSN is
                     # false.
-                    logging.debug("Extending WMO `%s' entry, because it is "
+                    logging.debug("Extending WMO %r entry, because it is "
                                   "too short to process" % line)
                     chunk.append("")
                 else:
@@ -195,7 +195,7 @@ class Stations(point.KeyedPoints):
                 identifier = chunk[0]
                 alt_id = "".join(chunk[1:3])
             else:
-                raise ValueError("Unknown format `%s'" % index)
+                raise ValueError("Unknown format %r" % index)
             if alt_id in ("----", "-----"):
                 alt_id = None
             name = chunk[3]
@@ -210,7 +210,7 @@ class Stations(point.KeyedPoints):
                 # Some entries in nsd_cccc.txt are of the format "DD-MM-
                 # N", so we just take the spaces to mean 0 seconds.
                 if " " in i:
-                    logging.debug("Fixing unpadded location data in `%s' entry"
+                    logging.debug("Fixing unpadded location data in %r entry"
                                   % line)
                     i = i.replace(" ", "0")
                 values = map(int, i[:-1].split("-"))

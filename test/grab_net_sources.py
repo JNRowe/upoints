@@ -87,10 +87,10 @@ def main(argv=None):
         path = resource[0]
         filename = data_file(resource)
         if not force and os.path.exists(filename):
-            print("`%s' already downloaded." % path)
+            print("%r already downloaded." % path)
             cached += 1
         else:
-            print("Fetching `%s'..." % path)
+            print("Fetching %r..." % path)
             if path.endswith(".gz"):
                 temp = tempfile.mkstemp()[1]
                 try:

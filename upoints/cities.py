@@ -190,7 +190,7 @@ class Cities(point.Points):
         elif isinstance(data, basestring):
             data = open(data).read().split("//\n")
         else:
-            raise TypeError("Unable to handle data of type `%s'" % type(data))
+            raise TypeError("Unable to handle data of type %r" % type(data))
 
         keys = ("identifier", "ptype", "population", "size", "name", "country",
                 "region", "location", "longitude", "latitude", "altitude",
@@ -205,7 +205,7 @@ class Cities(point.Points):
 
             # Entry for Utrecht has the incorrect value of 0.000 for elevation.
             if entries["altitude"] == "0.000":
-                logging.debug("Ignoring `0.000' value for elevation in `%s' "
+                logging.debug("Ignoring `0.000' value for elevation in %r "
                               "entry" % record)
                 entries["altitude"] = ""
             for i in ("identifier", "population", "size", "altitude"):

@@ -38,13 +38,13 @@ class TestPoint(TestCase):
         expect("%.3f" % test.latitude) == '50.336'
         expect("%.3f" % test.longitude) == '-1.053'
 
-        with expect.raises(ValueError, "Unknown angle type `None'"):
+        with expect.raises(ValueError, "Unknown angle type None"):
             Point(52.015, -0.221, angle=None)
-        with expect.raises(ValueError, "Invalid latitude value `-92.000000'"):
+        with expect.raises(ValueError, "Invalid latitude value -92"):
             Point(-92, -0.221)
-        with expect.raises(ValueError, "Invalid longitude value `185.000000'"):
+        with expect.raises(ValueError, "Invalid longitude value 185"):
             Point(52.015, 185)
-        with expect.raises(ValueError, "Unknown units type `None'"):
+        with expect.raises(ValueError, "Unknown units type None"):
             Point(52.015, -0.221, units=None)
 
     def test___dict__(self):
@@ -113,7 +113,7 @@ class TestPoint(TestCase):
         expect("%i kM" % home.distance(dest)) == '169 kM'
         expect("%i kM" % home.distance(dest, method="sloc")) == '169 kM'
 
-        with expect.raises(ValueError, "Unknown method type `Invalid'"):
+        with expect.raises(ValueError, "Unknown method type 'Invalid'"):
             home.distance(dest, method="Invalid")
 
         start = Point(36.1200, -86.6700)

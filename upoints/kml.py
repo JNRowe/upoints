@@ -194,7 +194,7 @@ class Placemarks(point.KeyedPoints):
             name = place.findtext(name_elem)
             coords = place.findtext(coords_elem)
             if coords is None:
-                logging.info("No coordinates found for `%s' entry" % name)
+                logging.info("No coordinates found for %r entry" % name)
                 continue
             coords = coords.split(",")
             if len(coords) == 2:
@@ -203,8 +203,8 @@ class Placemarks(point.KeyedPoints):
             elif len(coords) == 3:
                 longitude, latitude, altitude = coords
             else:
-                raise ValueError("Unable to handle coordinates value `%s'"
-                                    % coords)
+                raise ValueError("Unable to handle coordinates value %r"
+                                 % coords)
             description = place.findtext(desc_elem)
             self[name] = Placemark(latitude, longitude, altitude, name,
                                    description)

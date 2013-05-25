@@ -170,7 +170,7 @@ def prepare_read(data, method="readlines", mode="r"):
     elif isinstance(data, basestring):
         data = getattr(open(data, mode), method)()
     else:
-        raise TypeError("Unable to handle data of type `%s`" % type(data))
+        raise TypeError("Unable to handle data of type %r" % type(data))
     return data
 
 
@@ -191,7 +191,7 @@ def prepare_csv_read(data, field_names, *args, **kwargs):
     elif isinstance(data, basestring):
         data = open(data)
     else:
-        raise TypeError("Unable to handle data of type `%s'" % type(data))
+        raise TypeError("Unable to handle data of type %r" % type(data))
     return csv.DictReader(data, field_names, *args, **kwargs)
 
 
@@ -212,8 +212,7 @@ def prepare_xml_read(data):
     elif isinstance(data, basestring):
         data = ET.parse(open(data))
     else:
-        raise TypeError("Unable to handle data of type `%s`"
-                        % type(data))
+        raise TypeError("Unable to handle data of type %r" % type(data))
     return data
 
 #}
@@ -241,7 +240,7 @@ def to_dms(angle, style="dms"):
         return tuple(sign * abs(i) for i in (int(degrees),
                                              (minutes + seconds / 60)))
     else:
-        raise ValueError("Unknown style type `%s'" % style)
+        raise ValueError("Unknown style type %r" % style)
 
 
 def to_dd(degrees, minutes, seconds=0):
@@ -308,7 +307,7 @@ def angle_to_name(angle, segments=8, abbr=False):
     elif segments == 16:
         string = COMPASS_NAMES[int((angle + 11.25) / 22.5) % 16]
     else:
-        raise ValueError("Segments parameter must be 4, 8 or 16 not `%s'"
+        raise ValueError("Segments parameter must be 4, 8 or 16 not %r"
                          % segments)
     if abbr:
         return "".join(i[0].capitalize() for i in string.split("-"))
@@ -471,7 +470,7 @@ def from_iso6709(coordinates):
         latitude = float(latitude[:3]) + (sign * (float(latitude[3:5]) / 60)) \
             + (sign * (float(latitude[5:]) / 3600))
     else:
-        raise ValueError("Incorrect format for latitude `%s'" % latitude)
+        raise ValueError("Incorrect format for latitude %r" % latitude)
     sign = 1 if longitude[0] == "+" else -1
     longitude_head = len(longitude.split(".")[0])
     if longitude_head == 4:  # ±DDD(.D{1,4})?
@@ -483,7 +482,7 @@ def from_iso6709(coordinates):
             + (sign * (float(longitude[4:6]) / 60)) \
             + (sign * (float(longitude[6:]) / 3600))
     else:
-        raise ValueError("Incorrect format for longitude `%s'" % longitude)
+        raise ValueError("Incorrect format for longitude %r" % longitude)
     if altitude:
         altitude = float(altitude)
     return latitude, longitude, altitude
@@ -540,7 +539,7 @@ def to_iso6709(latitude, longitude, altitude=None, format="dd", precision=4):
             text.append("%s%03i%02i%02i"
                         % ((longitude_sign, ) + longitude_dms))
     else:
-        raise ValueError("Unknown format type `%s'" % format)
+        raise ValueError("Unknown format type %r" % format)
     if altitude and int(altitude) == altitude:
         text.append("%+i" % altitude)
     elif altitude:
@@ -568,7 +567,7 @@ def angle_to_distance(angle, units="metric"):
     elif units in ("nm", "nautical"):
         return distance / NAUTICAL_MILE
     else:
-        raise ValueError("Unknown units type `%s'" % units)
+        raise ValueError("Unknown units type %r" % units)
 
 
 def distance_to_angle(distance, units="metric"):
@@ -588,7 +587,7 @@ def distance_to_angle(distance, units="metric"):
     elif units in ("nm", "nautical"):
         distance *= NAUTICAL_MILE
     else:
-        raise ValueError("Unknown units type `%s'" % units)
+        raise ValueError("Unknown units type %r" % units)
 
     return math.degrees(distance / BODY_RADIUS)
 
@@ -604,7 +603,7 @@ def from_grid_locator(locator):
 
     """
     if not len(locator) in (4, 6, 8):
-        raise ValueError("Locator must be 4, 6 or 8 characters long `%s'"
+        raise ValueError("Locator must be 4, 6 or 8 characters long %r"
                          % locator)
 
     # Convert the locator string to a list, because we need it to be mutable to
@@ -636,19 +635,19 @@ def from_grid_locator(locator):
        or not 0 <= locator[1] <= 17 \
        or not 0 <= locator[2] <= 9 \
        or not 0 <= locator[3] <= 9:
-        raise ValueError("Invalid values in locator `%s'" % locator)
+        raise ValueError("Invalid values in locator %r" % locator)
 
     # Check subsquare values are within 'a'(0) to 'x'(23)
     if len(locator) >= 6:
         if not 0 <= locator[4] <= 23 \
            or not 0 <= locator[5] <= 23:
-            raise ValueError("Invalid values in locator `%s'" % locator)
+            raise ValueError("Invalid values in locator %r" % locator)
 
     # Extended square values must be within 0 to 9
     if len(locator) == 8:
         if not 0 <= locator[6] <= 9 \
            or not 0 <= locator[7] <= 9:
-            raise ValueError("Invalid values in locator `%s'" % locator)
+            raise ValueError("Invalid values in locator %r" % locator)
 
     longitude = LONGITUDE_FIELD * locator[0] \
         + LONGITUDE_SQUARE * locator[2]
@@ -686,12 +685,12 @@ def to_grid_locator(latitude, longitude, precision="square"):
 
     """
     if not precision in ("square", "subsquare", "extsquare"):
-        raise ValueError("Unsupported precision value `%s'" % precision)
+        raise ValueError("Unsupported precision value %r" % precision)
 
     if not -90 <= latitude <= 90:
-        raise ValueError("Invalid latitude value `%f'" % latitude)
+        raise ValueError("Invalid latitude value %r" % latitude)
     if not -180 <= longitude <= 180:
-        raise ValueError("Invalid longitude value `%f'" % longitude)
+        raise ValueError("Invalid longitude value %r" % longitude)
 
     latitude += 90.0
     longitude += 180.0
@@ -862,7 +861,7 @@ def sun_rise_set(latitude, longitude, date, mode="rise", timezone=0,
     elif mode == "set":
         t = n + ((18 - lng_hour) / 24)
     else:
-        raise ValueError("Unknown mode value `%s'" % mode)
+        raise ValueError("Unknown mode value %r" % mode)
 
     # Calculate the Sun's mean anomaly
     m = (0.9856 * t) - 3.289
@@ -1023,7 +1022,7 @@ def dump_xearth_markers(markers, name="identifier"):
             elif name == "comment":
                 line.append('"%s" # %s' % (identifier, point.comment))
             else:
-                raise ValueError("Unknown name type `%s'" % name)
+                raise ValueError("Unknown name type %r" % name)
             if hasattr(point, 'altitude') and point.altitude:
                 line.append(", alt %im" % point.altitude)
         else:

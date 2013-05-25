@@ -33,7 +33,7 @@ class TestLocationsError(TestCase):
                        'More than one location is required for distance.'):
         raise LocationsError("distance")
     with expect.raises(LocationsError,
-                       "Location parsing failure in location 4 `52;None'."):
+                       "Location parsing failure in location 4 '52;None'."):
         raise LocationsError(data=(4, "52;None"))
 
 
