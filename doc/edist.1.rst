@@ -194,7 +194,7 @@ Home page: https://github.com/JNRowe/upoints
 COPYING
 -------
 
-Copyright © 200, 2007, 2008, 2009, 2010, 2011, 2012  James Rowe <jnrowe@gmail.com>
+Copyright © 2007-2013  James Rowe <jnrowe@gmail.com>
 
 This program is free software: you can redistribute it and/or modify it
 under the terms of the GNU General Public License as published by the
