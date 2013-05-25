@@ -23,7 +23,7 @@ from unittest import TestCase
 from expecter import expect
 
 from upoints import (point, utils)
-from upoints.osm import (ET, Node, Osm, Way, get_area_url)
+from upoints.osm import (Node, Osm, Way, etree, get_area_url)
 
 from utils import xml_str_compare
 
@@ -60,11 +60,11 @@ class TestNode(TestCase):
             """Node 0 (52°00'00"N, 000°00'00"E) [key: value]"""
 
     def test_toosm(self):
-        expect(ET.tostring(self.bare.toosm())) == \
+        expect(etree.tostring(self.bare.toosm())) == \
             '<node id="0" lat="52.0" lon="0.0" visible="false" />'
-        expect(ET.tostring(self.named.toosm())) == \
+        expect(etree.tostring(self.named.toosm())) == \
             '<node id="0" lat="52.0" lon="0.0" timestamp="2008-01-25T00:00:00+00:00" user="jnrowe" visible="true" />'
-        expect(ET.tostring(self.tagged.toosm())) == \
+        expect(etree.tostring(self.tagged.toosm())) == \
             '<node id="0" lat="52.0" lon="0.0" visible="false"><tag k="key" v="value" /></node>'
 
     def test_get_area_url(self):
@@ -126,14 +126,14 @@ class TestWay(TestCase):
     def test_toosm(self):
         xml_str_compare(
             '<way id="0" visible="false"><nd ref="0"/><nd ref="1"/><nd ref="2"/></way>',
-            ET.tostring(self.bare.toosm())
+            etree.tostring(self.bare.toosm())
         )
         xml_str_compare(
             '<way id="0" timestamp="2008-01-25T00:00:00+00:00" user="jnrowe" visible="true"><nd ref="0"/><nd ref="1"/><nd ref="2"/></way>',
-            ET.tostring(self.named.toosm()))
+            etree.tostring(self.named.toosm()))
         xml_str_compare(
             '<way id="0" visible="false"><tag k="key" v="value"/><nd ref="0"/><nd ref="1"/><nd ref="2"/></way>',
-            ET.tostring(self.tagged.toosm()))
+            etree.tostring(self.tagged.toosm()))
 
 class TestOsm(TestCase):
     def setUp(self):

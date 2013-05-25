@@ -22,28 +22,28 @@ import time
 from functools import partial
 from operator import attrgetter
 
-from lxml import etree as ET
+from lxml import etree
 
 from upoints import (point, utils)
 
 
 GPX_NS = "http://www.topografix.com/GPX/1/1"
-ET.register_namespace('gpx', GPX_NS)
+etree.register_namespace('gpx', GPX_NS)
 
 
 def create_elem(tag, attr=None, text=None):
-    """Create a partial :class:`ET.Element` wrapper with namespace defined.
+    """Create a partial :class:`etree.Element` wrapper with namespace defined.
 
     :param str tag:    Tag name
     :param dict attr: Default attributes for tag
     :param str text: Text content for the tag
     :rtype: ``function``
-    :return: :class:`ET.Element` wrapper with predefined namespace
+    :return: :class:`etree.Element` wrapper with predefined namespace
 
     """
     if not attr:
         attr = {}
-    element = ET.Element("{%s}%s" % (GPX_NS, tag), attr)
+    element = etree.Element("{%s}%s" % (GPX_NS, tag), attr)
     if text:
         element.text = text
     return element
@@ -103,7 +103,7 @@ class _GpxElem(point.TimedPoint):
     def togpx(self):
         """Generate a GPX waypoint element subtree.
 
-        :rtype: :class:`ET.Element`
+        :rtype: :class:`etree.Element`
         :return: GPX element
 
         """
@@ -323,7 +323,7 @@ class _GpxMeta(object):
         :param str keywords: Keywords associated with the data
         :type bounds: ``dict`` or ``list`` of ``Point`` objects
         :param bounds: Area used in the data
-        :type extensions: ``list`` of :class:`ET.Element` objects
+        :type extensions: ``list`` of :class:`etree.Element` objects
         :param extensions: Any external data associated with the export
 
         """
@@ -341,7 +341,7 @@ class _GpxMeta(object):
     def togpx(self):
         """Generate a GPX metadata element subtree.
 
-        :rtype: :class:`ET.Element`
+        :rtype: :class:`etree.Element`
         :return: GPX metadata element
 
         """
@@ -415,10 +415,10 @@ class _GpxMeta(object):
     def import_metadata(self, elements):
         """Import information from GPX metadata.
 
-        :param ET.Element elements: GPX metadata subtree
+        :param etree.Element elements: GPX metadata subtree
 
         """
-        metadata_elem = lambda name: ET.QName(GPX_NS, name)
+        metadata_elem = lambda name: etree.QName(GPX_NS, name)
 
         for child in elements.getchildren():
             tag_ns, tag_name = child.tag[1:].split("}")
@@ -533,7 +533,7 @@ class Waypoints(point.TimedPoints):
         self._gpx_file = gpx_file
         data = utils.prepare_xml_read(gpx_file)
 
-        gpx_elem = lambda name: ET.QName(GPX_NS, name).text
+        gpx_elem = lambda name: etree.QName(GPX_NS, name).text
         metadata = data.find(".//" + gpx_elem("metadata"))
         if metadata:
             self.metadata.import_metadata(metadata)
@@ -560,7 +560,7 @@ class Waypoints(point.TimedPoints):
     def export_gpx_file(self):
         """Generate GPX element tree from ``Waypoints`` object.
 
-        :rtype: :class:`ET.ElementTree`
+        :rtype: :class:`etree.ElementTree`
         :return: GPX element tree depicting ``Waypoints`` object
 
         """
@@ -571,7 +571,7 @@ class Waypoints(point.TimedPoints):
         for place in self:
             gpx.append(place.togpx())
 
-        return ET.ElementTree(gpx)
+        return etree.ElementTree(gpx)
 
 
 class Trackpoint(_GpxElem):
@@ -645,7 +645,7 @@ class Trackpoints(_SegWrap):
         self._gpx_file = gpx_file
         data = utils.prepare_xml_read(gpx_file)
 
-        gpx_elem = lambda name: ET.QName(GPX_NS, name).text
+        gpx_elem = lambda name: etree.QName(GPX_NS, name).text
         metadata = data.find(".//" + gpx_elem("metadata"))
         if metadata:
             self.metadata.import_metadata(metadata)
@@ -676,7 +676,7 @@ class Trackpoints(_SegWrap):
     def export_gpx_file(self):
         """Generate GPX element tree from ``Trackpoints``.
 
-        :rtype: :class:`ET.ElementTree`
+        :rtype: :class:`etree.ElementTree`
         :return: GPX element tree depicting ``Trackpoints`` objects
 
         """
@@ -693,7 +693,7 @@ class Trackpoints(_SegWrap):
             for place in segment:
                 chunk.append(place.togpx())
 
-        return ET.ElementTree(gpx)
+        return etree.ElementTree(gpx)
 
 
 class Routepoint(_GpxElem):
@@ -765,7 +765,7 @@ class Routepoints(_SegWrap):
         self._gpx_file = gpx_file
         data = utils.prepare_xml_read(gpx_file)
 
-        gpx_elem = lambda name: ET.QName(GPX_NS, name).text
+        gpx_elem = lambda name: etree.QName(GPX_NS, name).text
         metadata = data.find(".//" + gpx_elem("metadata"))
         if metadata:
             self.metadata.import_metadata(metadata)
@@ -796,7 +796,7 @@ class Routepoints(_SegWrap):
     def export_gpx_file(self):
         """Generate GPX element tree from :class:`Routepoints`
 
-        :rtype: :class:`ET.ElementTree`
+        :rtype: :class:`etree.ElementTree`
         :return: GPX element tree depicting :class:`Routepoints` objects
 
         """
@@ -811,4 +811,4 @@ class Routepoints(_SegWrap):
             for place in rte:
                 chunk.append(place.togpx())
 
-        return ET.ElementTree(gpx)
+        return etree.ElementTree(gpx)

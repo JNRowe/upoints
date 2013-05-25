@@ -22,8 +22,8 @@ from unittest import TestCase
 
 from expecter import expect
 
-from upoints.gpx import (_GpxElem, _GpxMeta, ET, Routepoint, Routepoints,
-                         Trackpoint, Trackpoints, Waypoint, Waypoints)
+from upoints.gpx import (_GpxElem, _GpxMeta, Routepoint, Routepoints,
+                         Trackpoint, Trackpoints, Waypoint, Waypoints, etree)
 from upoints import point
 from upoints import utils
 
@@ -47,21 +47,21 @@ class Test_GpxElem(TestCase):
              '2008-07-25T00:00:00+00:00) [desc]')
 
     def test_togpx(self):
-        expect(ET.tostring(_GpxElem(52, 0).togpx())) == \
+        expect(etree.tostring(_GpxElem(52, 0).togpx())) == \
             '<ns0:None xmlns:ns0="http://www.topografix.com/GPX/1/1" lat="52.0" lon="0.0" />'
-        expect(ET.tostring(_GpxElem(52, 0, "Cambridge").togpx())) == \
+        expect(etree.tostring(_GpxElem(52, 0, "Cambridge").togpx())) == \
             ('<ns0:None xmlns:ns0="http://www.topografix.com/GPX/1/1" lat="52.0" lon="0.0">'
              '<ns0:name>Cambridge</ns0:name>'
              '</ns0:None>')
-        expect(ET.tostring(_GpxElem(52, 0, "Cambridge", "in the UK").togpx())) == \
+        expect(etree.tostring(_GpxElem(52, 0, "Cambridge", "in the UK").togpx())) == \
             ('<ns0:None xmlns:ns0="http://www.topografix.com/GPX/1/1" lat="52.0" lon="0.0">'
              '<ns0:name>Cambridge</ns0:name><ns0:desc>in the UK</ns0:desc>'
              '</ns0:None>')
-        expect(ET.tostring(_GpxElem(52, 0, "Cambridge", "in the UK").togpx())) == \
+        expect(etree.tostring(_GpxElem(52, 0, "Cambridge", "in the UK").togpx())) == \
             ('<ns0:None xmlns:ns0="http://www.topografix.com/GPX/1/1" lat="52.0" lon="0.0">'
              '<ns0:name>Cambridge</ns0:name><ns0:desc>in the UK</ns0:desc>'
              '</ns0:None>')
-        expect(ET.tostring(_GpxElem(52, 0, "name", "desc", 40,
+        expect(etree.tostring(_GpxElem(52, 0, "name", "desc", 40,
                                     utils.Timestamp(2008, 7, 25)).togpx())) == \
             ('<ns0:None xmlns:ns0="http://www.topografix.com/GPX/1/1" lat="52.0" lon="0.0">'
              '<ns0:name>name</ns0:name><ns0:desc>desc</ns0:desc><ns0:ele>40</ns0:ele>'
@@ -72,17 +72,17 @@ class Test_GpxElem(TestCase):
 class Test_GpxMeta(TestCase):
     def test_togpx(self):
         meta = _GpxMeta(time=(2008, 6, 3, 16, 12, 43, 1, 155, 0))
-        expect(ET.tostring(meta.togpx())) == \
+        expect(etree.tostring(meta.togpx())) == \
             ('<ns0:metadata xmlns:ns0="http://www.topografix.com/GPX/1/1">'
              '<ns0:time>2008-06-03T16:12:43+0000</ns0:time>'
              '</ns0:metadata>')
         meta.bounds = {"minlat": 52, "maxlat": 54, "minlon": -2, "maxlon": 1}
-        expect(ET.tostring(meta.togpx())) == \
+        expect(etree.tostring(meta.togpx())) == \
             ('<ns0:metadata xmlns:ns0="http://www.topografix.com/GPX/1/1">'
              '<ns0:time>2008-06-03T16:12:43+0000</ns0:time><ns0:bounds maxlat="54" maxlon="1" minlat="52" minlon="-2" />'
              '</ns0:metadata>')
         meta.bounds = [point.Point(52.015, -0.221), point.Point(52.167, 0.390)]
-        expect(ET.tostring(meta.togpx())) == \
+        expect(etree.tostring(meta.togpx())) == \
             ('<ns0:metadata xmlns:ns0="http://www.topografix.com/GPX/1/1">'
              '<ns0:time>...</ns0:time><ns0:bounds maxlat="52.167" maxlon="0.39" minlat="52.015" minlon="-0.221" />'
              '</ns0:metadata>')

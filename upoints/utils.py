@@ -28,7 +28,7 @@ import inspect
 import math
 import re
 
-from lxml import etree as ET
+from lxml import etree
 
 from operator import add
 
@@ -200,17 +200,17 @@ def prepare_xml_read(data):
 
     :type data: ``file`` like object, ``list``, ``str``
     :param data: Data to read
-    :rtype: :class:`ET.ElementTree`
+    :rtype: :class:`etree.ElementTree`
     :return: Tree suitable for parsing
     :raise TypeError: Invalid value for data
 
     """
     if hasattr(data, "readlines"):
-        data = ET.parse(data)
+        data = etree.parse(data)
     elif isinstance(data, list):
-        data = ET.fromstring("".join(data))
+        data = etree.fromstring("".join(data))
     elif isinstance(data, basestring):
-        data = ET.parse(open(data))
+        data = etree.parse(open(data))
     else:
         raise TypeError("Unable to handle data of type %r" % type(data))
     return data

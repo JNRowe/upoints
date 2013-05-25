@@ -21,27 +21,27 @@ import logging
 
 from functools import partial
 
-from lxml import etree as ET
+from lxml import etree
 
 from upoints import (point, trigpoints, utils)
 
 KML_NS = "http://earth.google.com/kml/2.2"
-ET.register_namespace('kml', KML_NS)
+etree.register_namespace('kml', KML_NS)
 
 
 def create_elem(tag, attr=None, text=None):
-    """Create a partial :class:`ET.Element` wrapper with namespace defined.
+    """Create a partial :class:`etree.Element` wrapper with namespace defined.
 
     :param str tag: Tag name
     :param dict attr: Default attributes for tag
     :param str text: Text content for the tag
     :rtype: ``function``
-    :return: :class:`ET.Element` wrapper with predefined namespace
+    :return: :class:`etree.Element` wrapper with predefined namespace
 
     """
     if not attr:
         attr = {}
-    element = ET.Element("{%s}%s" % (KML_NS, tag), attr)
+    element = etree.Element("{%s}%s" % (KML_NS, tag), attr)
     if text:
         element.text = text
     return element
@@ -91,7 +91,7 @@ class Placemark(trigpoints.Trigpoint):
     def tokml(self):
         """Generate a KML Placemark element subtree.
 
-        :rtype: :class:`ET.Element`
+        :rtype: :class:`etree.Element`
         :return: KML Placemark element
 
         """
@@ -184,7 +184,7 @@ class Placemarks(point.KeyedPoints):
         self._kml_file = kml_file
         data = utils.prepare_xml_read(kml_file)
 
-        kml_elem = lambda name: ET.QName(KML_NS, name).text
+        kml_elem = lambda name: etree.QName(KML_NS, name).text
         placemark_elem = ".//" + kml_elem("Placemark")
         name_elem = kml_elem("name")
         coords_elem = kml_elem("Point") + "/" + kml_elem("coordinates")
@@ -212,7 +212,7 @@ class Placemarks(point.KeyedPoints):
     def export_kml_file(self):
         """Generate KML element tree from ``Placemarks``.
 
-        :rtype: :class:`ET.ElementTree`
+        :rtype: :class:`etree.ElementTree`
         :return: KML element tree depicting ``Placemarks``
 
         """
@@ -223,4 +223,4 @@ class Placemarks(point.KeyedPoints):
             doc.append(place.tokml())
         kml.append(doc)
 
-        return ET.ElementTree(kml)
+        return etree.ElementTree(kml)

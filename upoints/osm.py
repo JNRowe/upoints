@@ -21,7 +21,7 @@ import urllib
 
 from operator import attrgetter
 
-from lxml import etree as ET
+from lxml import etree
 
 from upoints import (__version__, point, utils)
 
@@ -29,7 +29,7 @@ from upoints import (__version__, point, utils)
 def _parse_flags(element):
     """Parse OSM XML element for generic data.
 
-    :param ET.Element element: Element to parse
+    :param etree.Element element: Element to parse
     :rtype: ``tuple``
     :return: Generic OSM data for object instantiation
 
@@ -150,13 +150,13 @@ class Node(point.Point):
     def toosm(self):
         """Generate a OSM node element subtree.
 
-        :rtype: :class:`ET.Element`
+        :rtype: :class:`etree.Element`
         :return: OSM node element
 
         """
-        node = ET.Element("node", {"id": str(self.ident),
-                                   "lat": str(self.latitude),
-                                   "lon": str(self.longitude)})
+        node = etree.Element("node", {"id": str(self.ident),
+                                      "lat": str(self.latitude),
+                                      "lon": str(self.longitude)})
         node.set("visible", "true" if self.visible else "false")
         if self.user:
             node.set("user", self.user)
@@ -164,7 +164,7 @@ class Node(point.Point):
             node.set("timestamp", self.timestamp.isoformat())
         if self.tags:
             for key, value in sorted(self.tags.items()):
-                tag = ET.Element("tag", {"k": key, "v": value})
+                tag = etree.Element("tag", {"k": key, "v": value})
                 node.append(tag)
 
         return node
@@ -194,7 +194,7 @@ class Node(point.Point):
     def parse_elem(element):
         """Parse a OSM node XML element.
 
-        :param ET.Element element: XML Element to parse
+        :param etree.Element element: XML Element to parse
         :rtype: ``Node``
         :return: ``Node`` object representing parsed element
 
@@ -274,11 +274,11 @@ class Way(point.Points):
     def toosm(self):
         """Generate a OSM way element subtree.
 
-        :rtype: :class:`ET.Element`
+        :rtype: :class:`etree.Element`
         :return: OSM way element
 
         """
-        way = ET.Element("way", {"id": str(self.ident)})
+        way = etree.Element("way", {"id": str(self.ident)})
         way.set("visible", "true" if self.visible else "false")
         if self.user:
             way.set("user", self.user)
@@ -286,11 +286,11 @@ class Way(point.Points):
             way.set("timestamp", self.timestamp.isoformat())
         if self.tags:
             for key, value in sorted(self.tags.items()):
-                tag = ET.Element("tag", {"k": key, "v": value})
+                tag = etree.Element("tag", {"k": key, "v": value})
                 way.append(tag)
 
         for node in self:
-            tag = ET.Element("nd", {"ref": str(node)})
+            tag = etree.Element("nd", {"ref": str(node)})
             way.append(tag)
 
         return way
@@ -299,7 +299,7 @@ class Way(point.Points):
     def parse_elem(element):
         """Parse a OSM way XML element.
 
-        :param ET.Element element: XML Element to parse
+        :param etree.Element element: XML Element to parse
         :rtype: ``Way``
         :return: `Way` object representing parsed element
 
@@ -404,9 +404,9 @@ class Osm(point.Points):
 
     def export_osm_file(self):
         """Generate OpenStreetMap element tree from `Osm`"""
-        osm = ET.Element('osm', {"generator": self.generator,
-                                 "version": self.version})
+        osm = etree.Element('osm', {"generator": self.generator,
+                                    "version": self.version})
         for obj in self:
             osm.append(obj.toosm())
 
-        return ET.ElementTree(osm)
+        return etree.ElementTree(osm)

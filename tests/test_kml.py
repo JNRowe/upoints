@@ -22,7 +22,7 @@ from unittest import TestCase
 
 from expecter import expect
 
-from upoints.kml import (ET, Placemark, Placemarks)
+from upoints.kml import (Placemark, Placemarks, etree)
 
 
 class TestPlacemark(TestCase):
@@ -45,18 +45,18 @@ class TestPlacemark(TestCase):
             """name (52°00'00"N, 000°00'00"E alt 42m) [desc]"""
 
     def test_tokml(self):
-        expect(ET.tostring(Placemark(52, 0, 4).tokml())) == \
+        expect(etree.tostring(Placemark(52, 0, 4).tokml())) == \
             ('<ns0:Placemark xmlns:ns0="http://earth.google.com/kml/2.2">'
              '<ns0:Point><ns0:coordinates>0.0,52.0,4</ns0:coordinates></ns0:Point>'
              '</ns0:Placemark>')
-        expect(ET.tostring(Placemark(52, 0, 4, "Cambridge").tokml())) == \
+        expect(etree.tostring(Placemark(52, 0, 4, "Cambridge").tokml())) == \
             ('<ns0:Placemark xmlns:ns0="http://earth.google.com/kml/2.2" id="Cambridge">'
              '<ns0:name>Cambridge</ns0:name><ns0:Point><ns0:coordinates>0.0,52.0,4</ns0:coordinates></ns0:Point>'
              '</ns0:Placemark>')
-        expect(ET.tostring(Placemark(52, 0, 4).tokml(kml_version="2.0"))) == \
+        expect(etree.tostring(Placemark(52, 0, 4).tokml(kml_version="2.0"))) == \
             ('<ns0:Placemark xmlns:ns0="http://earth.google.com/kml/2.0">'
              '<ns0:Point><ns0:coordinates>0.0,52.0,4</ns0:coordinates></ns0:Point></ns0:Placemark>')
-        expect(ET.tostring(Placemark(52, 0, 4, "Cambridge", "in the UK").tokml())) == \
+        expect(etree.tostring(Placemark(52, 0, 4, "Cambridge", "in the UK").tokml())) == \
             ('<ns0:Placemark xmlns:ns0="http://earth.google.com/kml/2.2" id="Cambridge">'
              '<ns0:name>Cambridge</ns0:name><ns0:description>in the UK</ns0:description>'
              '<ns0:Point><ns0:coordinates>0.0,52.0,4</ns0:coordinates></ns0:Point>'
