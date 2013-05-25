@@ -104,7 +104,7 @@ def test_angle_to_name():
 
 
 class TestTzOffset(TestCase):
-    def test___repr__(self):
+    def test__offset(self):
         expect(TzOffset("+00:00").utcoffset()) == datetime.timedelta(0)
         expect(TzOffset("-00:00").utcoffset()) == datetime.timedelta(0)
         expect(TzOffset("+05:30").utcoffset()) == datetime.timedelta(0, 19800)
