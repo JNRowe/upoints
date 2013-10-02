@@ -50,6 +50,7 @@ The :mod:`upoints.point` module is the simplest interface available, and is
 mainly useful as a naïve object for simple calculation and subclassing for
 specific usage.  An example of how to use it follows:
 
+>>> from upoints import point
 >>> Home = point.Point(52.015, -0.221)
 >>> Telford = point.Point(52.6333, -2.5000)
 >>> int(Home.distance(Telford))
