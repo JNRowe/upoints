@@ -31,12 +31,12 @@ except ImportError:
 
 
 SOURCES = [
-    ("http://cvs.savannah.gnu.org/viewvc/*checkout*/miscfiles/cities.dat?root=miscfiles", ),
-    ("http://weather.noaa.gov/data/nsd_bbsss.txt", ),
-    ("http://weather.noaa.gov/data/nsd_cccc.txt", ),
-    ("http://www.haroldstreet.org.uk/download.php?file=waypoints/files/alltrigs-wgs84.txt", "alltrigs-wgs84.txt"),
-    ("http://myapp.fr/cellsIdData/cells.txt.gz", ),
-    ("http://xplanet.sourceforge.net/Extras/earth-markers-schaumann", ),
+    "http://cvs.savannah.gnu.org/viewvc/*checkout*/miscfiles/cities.dat?root=miscfiles",
+    "http://weather.noaa.gov/data/nsd_bbsss.txt",
+    "http://weather.noaa.gov/data/nsd_cccc.txt",
+    "http://www.haroldstreet.org.uk/download.php?file=waypoints/files/alltrigs-wgs84.txt",
+    "http://myapp.fr/cellsIdData/cells.txt.gz",
+    "http://xplanet.sourceforge.net/Extras/earth-markers-schaumann",
 ]
 
 def data_file(resource):
@@ -49,16 +49,13 @@ def data_file(resource):
     >>> print data_file(SOURCES[3])
     tests/data/alltrigs-wgs84.txt
 
-    :Parameters tuple resource: Source, and optional destination
+    :parameters str resource: Source
     :rtype: `str`
     :return: Local filename
 
     """
-    if len(resource) == 2:
-        filename = os.path.join(os.path.dirname(__file__), "data", resource[1])
-    else:
-        filename = os.path.join(os.path.dirname(__file__), "data",
-                                os.path.basename(urlparse(resource[0]).path))
+    filename = os.path.join(os.path.dirname(__file__), "data",
+                            os.path.basename(urlparse(resource[0]).path))
     if filename.endswith(".gz"):
         return filename[:-3]
     elif filename.endswith(".bz2"):
@@ -83,9 +80,8 @@ def main(argv=None):
     else:
         force = False
     cached = 0
-    for resource in SOURCES:
-        path = resource[0]
-        filename = data_file(resource)
+    for path in SOURCES:
+        filename = data_file(path)
         if not force and os.path.exists(filename):
             print("%r already downloaded." % path)
             cached += 1
