@@ -112,7 +112,7 @@ are higher than 1000m.  If you start xearth with the command
 :command:`xearth -pos "fixed 57 -4" -mag 25 -noroot -markerfile
 high_markers.txt` you will see an image similar to the one on the right.
 
-You could of course use :func:`~upoints.utils.dump_xearth_markers` to
+You could, of course, use :func:`~upoints.utils.dump_xearth_markers` to
 dump the entire trigpoint database, but with over 6000 locations the
 result is just going to be a sea of blurred text when rendered.
 
