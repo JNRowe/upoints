@@ -182,17 +182,11 @@ class Placemarks(point.KeyedPoints):
 
         """
         self._kml_file = kml_file
-        data = utils.prepare_xml_read(kml_file)
+        data = utils.prepare_xml_read(kml_file, objectify=True)
 
-        kml_elem = lambda name: etree.QName(KML_NS, name).text
-        placemark_elem = './/' + kml_elem('Placemark')
-        name_elem = kml_elem('name')
-        coords_elem = kml_elem('Point') + '/' + kml_elem('coordinates')
-        desc_elem = kml_elem('description')
-
-        for place in data.findall(placemark_elem):
-            name = place.findtext(name_elem)
-            coords = place.findtext(coords_elem)
+        for place in data.Document.Placemark:
+            name = place.name.text
+            coords = place.Point.coordinates.text
             if coords is None:
                 logging.info('No coordinates found for %r entry' % name)
                 continue
@@ -205,7 +199,10 @@ class Placemarks(point.KeyedPoints):
             else:
                 raise ValueError('Unable to handle coordinates value %r'
                                  % coords)
-            description = place.findtext(desc_elem)
+            try:
+                description = place.description
+            except AttributeError:
+                description = None
             self[name] = Placemark(latitude, longitude, altitude, name,
                                    description)
 

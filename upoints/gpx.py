@@ -532,29 +532,32 @@ class Waypoints(point.TimedPoints):
 
         """
         self._gpx_file = gpx_file
-        data = utils.prepare_xml_read(gpx_file)
+        data = utils.prepare_xml_read(gpx_file, objectify=True)
 
-        gpx_elem = lambda name: etree.QName(GPX_NS, name).text
-        metadata = data.find('.//' + gpx_elem('metadata'))
-        if metadata:
-            self.metadata.import_metadata(metadata)
-        waypoint_elem = './/' + gpx_elem('wpt')
-        name_elem = gpx_elem('name')
-        desc_elem = gpx_elem('desc')
-        elev_elem = gpx_elem('ele')
-        time_elem = gpx_elem('time')
+        try:
+            self.metadata.import_metadata(data.metadata)
+        except AttributeError:
+            pass
 
-        for waypoint in data.findall(waypoint_elem):
+        for waypoint in data.wpt:
             latitude = waypoint.get('lat')
             longitude = waypoint.get('lon')
-            name = waypoint.findtext(name_elem)
-            description = waypoint.findtext(desc_elem)
-            elevation = waypoint.findtext(elev_elem)
-            if elevation:
-                elevation = float(elevation)
-            time = waypoint.findtext(time_elem)
-            if time:
-                time = utils.Timestamp.parse_isoformat(time)
+            try:
+                name = waypoint.name.text
+            except AttributeError:
+                name = None
+            try:
+                description = waypoint.desc.text
+            except AttributeError:
+                description = None
+            try:
+                elevation = float(waypoint.ele.text)
+            except AttributeError:
+                elevation = None
+            try:
+                time = utils.Timestamp.parse_isoformat(waypoint.time.text)
+            except AttributeError:
+                time = None
             self.append(Waypoint(latitude, longitude, name, description,
                                  elevation, time))
 
@@ -644,32 +647,34 @@ class Trackpoints(_SegWrap):
 
         """
         self._gpx_file = gpx_file
-        data = utils.prepare_xml_read(gpx_file)
+        data = utils.prepare_xml_read(gpx_file, objectify=True)
 
-        gpx_elem = lambda name: etree.QName(GPX_NS, name).text
-        metadata = data.find('.//' + gpx_elem('metadata'))
-        if metadata:
-            self.metadata.import_metadata(metadata)
-        segment_elem = './/' + gpx_elem('trkseg')
-        trackpoint_elem = gpx_elem('trkpt')
-        name_elem = gpx_elem('name')
-        desc_elem = gpx_elem('desc')
-        elev_elem = gpx_elem('ele')
-        time_elem = gpx_elem('time')
+        try:
+            self.metadata.import_metadata(data.metadata)
+        except AttributeError:
+            pass
 
-        for segment in data.findall(segment_elem):
+        for segment in data.trk.trkseg:
             points = point.TimedPoints()
-            for trackpoint in segment.findall(trackpoint_elem):
+            for trackpoint in segment.trkpt:
                 latitude = trackpoint.get('lat')
                 longitude = trackpoint.get('lon')
-                name = trackpoint.findtext(name_elem)
-                description = trackpoint.findtext(desc_elem)
-                elevation = trackpoint.findtext(elev_elem)
-                if elevation:
-                    elevation = float(elevation)
-                time = trackpoint.findtext(time_elem)
-                if time:
-                    time = utils.Timestamp.parse_isoformat(time)
+                try:
+                    name = trackpoint.name.text
+                except AttributeError:
+                    name = None
+                try:
+                    description = trackpoint.desc.text
+                except AttributeError:
+                    description = None
+                try:
+                    elevation = float(trackpoint.ele.text)
+                except AttributeError:
+                    elevation = None
+                try:
+                    time = utils.Timestamp.parse_isoformat(trackpoint.time.text)
+                except AttributeError:
+                    time = None
                 points.append(Trackpoint(latitude, longitude, name,
                                          description, elevation, time))
             self.append(points)
@@ -764,32 +769,34 @@ class Routepoints(_SegWrap):
 
         """
         self._gpx_file = gpx_file
-        data = utils.prepare_xml_read(gpx_file)
+        data = utils.prepare_xml_read(gpx_file, objectify=True)
 
-        gpx_elem = lambda name: etree.QName(GPX_NS, name).text
-        metadata = data.find('.//' + gpx_elem('metadata'))
-        if metadata:
-            self.metadata.import_metadata(metadata)
-        route_elem = './/' + gpx_elem('rte')
-        routepoint_elem = gpx_elem('rtept')
-        name_elem = gpx_elem('name')
-        desc_elem = gpx_elem('desc')
-        elev_elem = gpx_elem('ele')
-        time_elem = gpx_elem('time')
+        try:
+            self.metadata.import_metadata(data.metadata)
+        except AttributeError:
+            pass
 
-        for route in data.findall(route_elem):
+        for route in data.rte:
             points = point.TimedPoints()
-            for routepoint in route.findall(routepoint_elem):
+            for routepoint in route.rtept:
                 latitude = routepoint.get('lat')
                 longitude = routepoint.get('lon')
-                name = routepoint.findtext(name_elem)
-                description = routepoint.findtext(desc_elem)
-                elevation = routepoint.findtext(elev_elem)
-                if elevation:
-                    elevation = float(elevation)
-                time = routepoint.findtext(time_elem)
-                if time:
-                    time = utils.Timestamp.parse_isoformat(time)
+                try:
+                    name = routepoint.name.text
+                except AttributeError:
+                    name = None
+                try:
+                    description = routepoint.desc.text
+                except AttributeError:
+                    description = None
+                try:
+                    elevation = float(routepoint.ele.text)
+                except AttributeError:
+                    elevation = None
+                try:
+                    time = utils.Timestamp.parse_isoformat(routepoint.time.text)
+                except AttributeError:
+                    time = None
                 points.append(Routepoint(latitude, longitude, name,
                                          description, elevation, time))
             self.append(points)

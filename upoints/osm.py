@@ -40,10 +40,13 @@ def _parse_flags(element):
     if timestamp:
         timestamp = utils.Timestamp.parse_isoformat(timestamp)
     tags = {}
-    for tag in element.findall('tag'):
-        key = tag.get('k')
-        value = tag.get('v')
-        tags[key] = value
+    try:
+        for tag in element['tag']:
+            key = tag.get('k')
+            value = tag.get('v')
+            tags[key] = value
+    except AttributeError:
+        pass
 
     return visible, user, timestamp, tags
 
@@ -382,21 +385,20 @@ class Osm(point.Points):
 
         """
         self._osm_file = osm_file
-        data = utils.prepare_xml_read(osm_file)
+        data = utils.prepare_xml_read(osm_file, objectify=True)
 
         # This would be a lot simpler if OSM exports defined a namespace
-        root = data.getroot()
-        if not root.tag == 'osm':
-            raise ValueError("Root element %r is not `osm'" % root.tag)
-        self.version = root.get('version')
+        if not data.tag == 'osm':
+            raise ValueError("Root element %r is not `osm'" % data.tag)
+        self.version = data.get('version')
         if not self.version:
             raise ValueError('No specified OSM version')
         elif not self.version == '0.5':
-            raise ValueError('Unsupported OSM version %r' % root)
+            raise ValueError('Unsupported OSM version %r' % data)
 
-        self.generator = root.get('generator')
+        self.generator = data.get('generator')
 
-        for elem in root.getchildren():
+        for elem in data.getchildren():
             if elem.tag == 'node':
                 self.append(Node.parse_elem(elem))
             elif elem.tag == 'way':
