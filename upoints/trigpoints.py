@@ -61,7 +61,7 @@ class Trigpoint(point.Point):
         self.name = name
         self.identity = identity
 
-    def __str__(self, mode="dms"):
+    def __str__(self, mode='dms'):
         """Pretty printed location string.
 
         :param str mode: Coordinate formatting system to use
@@ -71,12 +71,12 @@ class Trigpoint(point.Point):
         """
         location = [super(Trigpoint, self).__str__(mode), ]
         if self.altitude:
-            location.append("alt %im" % self.altitude)
+            location.append('alt %im' % self.altitude)
 
         if self.name:
-            return "%s (%s)" % (self.name, " ".join(location))
+            return '%s (%s)' % (self.name, ' '.join(location))
         else:
-            return " ".join(location)
+            return ' '.join(location)
 
 
 class Trigpoints(point.KeyedPoints):
@@ -130,19 +130,19 @@ class Trigpoints(point.KeyedPoints):
 
         """
         self._marker_file = marker_file
-        field_names = ("tag", "identity", "latitude", "longitude", "altitude",
-                       "name")
+        field_names = ('tag', 'identity', 'latitude', 'longitude', 'altitude',
+                       'name')
         pos_parse = lambda x, s: float(s[1:]) if s[0] == x else 0 - float(s[1:])
-        latitude_parse = partial(pos_parse, "N")
-        longitude_parse = partial(pos_parse, "E")
+        latitude_parse = partial(pos_parse, 'N')
+        longitude_parse = partial(pos_parse, 'E')
         # A value of 8888.0 denotes unavailable data
-        altitude_parse = lambda s: None if s.strip() == "8888.0" else float(s)
+        altitude_parse = lambda s: None if s.strip() == '8888.0' else float(s)
         field_parsers = (str, int, latitude_parse, longitude_parse,
                          altitude_parse, str)
 
         data = utils.prepare_csv_read(marker_file, field_names)
 
-        for row in (x for x in data if x['tag'] == "W"):
+        for row in (x for x in data if x['tag'] == 'W'):
             for name, parser in zip(field_names, field_parsers):
                 row[name] = parser(row[name])
             del row['tag']

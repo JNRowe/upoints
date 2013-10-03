@@ -68,7 +68,7 @@ class Station(trigpoints.Trigpoint):
         self.ua_altitude = ua_altitude
         self.rbsn = rbsn
 
-    def __str__(self, mode="dd"):
+    def __str__(self, mode='dd'):
         """Pretty printed location string.
 
         .. seealso::
@@ -83,9 +83,9 @@ class Station(trigpoints.Trigpoint):
         text = super(Station.__base__, self).__str__(mode)
 
         if self.alt_id:
-            return "%s (%s - %s)" % (self.name, self.alt_id, text)
+            return '%s (%s - %s)' % (self.name, self.alt_id, text)
         else:
-            return "%s (%s)" % (self.name, text)
+            return '%s (%s)' % (self.name, text)
 
 
 class Stations(point.KeyedPoints):
@@ -96,7 +96,7 @@ class Stations(point.KeyedPoints):
 
     """
 
-    def __init__(self, data=None, index="WMO"):
+    def __init__(self, data=None, index='WMO'):
         """Initialise a new `Stations` object."""
         super(Stations, self).__init__()
         self._data = data
@@ -104,7 +104,7 @@ class Stations(point.KeyedPoints):
         if data:
             self.import_locations(data, index)
 
-    def import_locations(self, data, index="WMO"):
+    def import_locations(self, data, index='WMO'):
         """Parse NOAA weather station data files.
 
         ``import_locations()`` returns a dictionary with keys containing either
@@ -169,34 +169,34 @@ class Stations(point.KeyedPoints):
 
         for line in data:
             line = line.strip()
-            chunk = line.split(";")
+            chunk = line.split(';')
             if not len(chunk) == 14:
-                if index == "ICAO":
+                if index == 'ICAO':
                     # Some entries only have 12 or 13 elements, so we assume 13
                     # and 14 are None.  Of the entries I've hand checked this
                     # assumption would be correct.
-                    logging.debug("Extending ICAO %r entry, because it is "
-                                  "too short to process" % line)
-                    chunk.extend(["", ""])
-                elif index == "WMO" and len(chunk) == 13:
+                    logging.debug('Extending ICAO %r entry, because it is '
+                                  'too short to process' % line)
+                    chunk.extend(['', ''])
+                elif index == 'WMO' and len(chunk) == 13:
                     # A few of the WMO indexed entries are missing their RBSN
                     # fields, hand checking the entries for 71046 and 71899
                     # shows that they are correct if we just assume RBSN is
                     # false.
-                    logging.debug("Extending WMO %r entry, because it is "
-                                  "too short to process" % line)
-                    chunk.append("")
+                    logging.debug('Extending WMO %r entry, because it is '
+                                  'too short to process' % line)
+                    chunk.append('')
                 else:
-                    raise utils.FileFormatError("NOAA")
-            if index == "WMO":
-                identifier = "".join(chunk[:2])
+                    raise utils.FileFormatError('NOAA')
+            if index == 'WMO':
+                identifier = ''.join(chunk[:2])
                 alt_id = chunk[2]
-            elif index == "ICAO":
+            elif index == 'ICAO':
                 identifier = chunk[0]
-                alt_id = "".join(chunk[1:3])
+                alt_id = ''.join(chunk[1:3])
             else:
-                raise ValueError("Unknown format %r" % index)
-            if alt_id in ("----", "-----"):
+                raise ValueError('Unknown format %r' % index)
+            if alt_id in ('----', '-----'):
                 alt_id = None
             name = chunk[3]
             state = chunk[4] if chunk[4] else None
@@ -209,12 +209,12 @@ class Stations(point.KeyedPoints):
                     continue
                 # Some entries in nsd_cccc.txt are of the format "DD-MM-
                 # N", so we just take the spaces to mean 0 seconds.
-                if " " in i:
-                    logging.debug("Fixing unpadded location data in %r entry"
+                if ' ' in i:
+                    logging.debug('Fixing unpadded location data in %r entry'
                                   % line)
-                    i = i.replace(" ", "0")
-                values = map(int, i[:-1].split("-"))
-                if i[-1] in ("S", "W"):
+                    i = i.replace(' ', '0')
+                values = map(int, i[:-1].split('-'))
+                if i[-1] in ('S', 'W'):
                     values = [-i for i in values]
                 point_data.append(point.utils.to_dd(*values))
             latitude, longitude, ua_latitude, ua_longitude = point_data

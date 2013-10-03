@@ -36,14 +36,14 @@ class Test_GpxElem(TestCase):
             '_GpxElem(52.0, 0.0, None, None, None, None)'
         expect(repr(_GpxElem(52, 0, None))) == \
             '_GpxElem(52.0, 0.0, None, None, None, None)'
-        expect(_GpxElem(52, 0, "name", "desc")) == \
+        expect(_GpxElem(52, 0, 'name', 'desc')) == \
             "_GpxElem(52.0, 0.0, 'name', 'desc', None, None)"
 
     def test___str__(self):
         expect(str(_GpxElem(52, 0))) == """52°00'00"N, 000°00'00"E"""
-        expect(str(_GpxElem(52, 0, "name", "desc", 40))) == \
+        expect(str(_GpxElem(52, 0, 'name', 'desc', 40))) == \
             """name (52°00'00"N, 000°00'00"E @ 40m) [desc]"""
-        expect(str(_GpxElem(52, 0, "name", "desc", 40,
+        expect(str(_GpxElem(52, 0, 'name', 'desc', 40,
                    utils.Timestamp(2008, 7, 25)))) == \
             ("""name (52°00'00"N, 000°00'00"E @ 40m on """
              '2008-07-25T00:00:00+00:00) [desc]')
@@ -51,19 +51,19 @@ class Test_GpxElem(TestCase):
     def test_togpx(self):
         expect(etree.tostring(_GpxElem(52, 0).togpx())) == \
             '<gpx:None xmlns:gpx="http://www.topografix.com/GPX/1/1" lat="52.0" lon="0.0"/>'
-        expect(etree.tostring(_GpxElem(52, 0, "Cambridge").togpx())) == \
+        expect(etree.tostring(_GpxElem(52, 0, 'Cambridge').togpx())) == \
             ('<gpx:None xmlns:gpx="http://www.topografix.com/GPX/1/1" lat="52.0" lon="0.0">'
              '<gpx:name>Cambridge</gpx:name>'
              '</gpx:None>')
-        expect(etree.tostring(_GpxElem(52, 0, "Cambridge", "in the UK").togpx())) == \
+        expect(etree.tostring(_GpxElem(52, 0, 'Cambridge', 'in the UK').togpx())) == \
             ('<gpx:None xmlns:gpx="http://www.topografix.com/GPX/1/1" lat="52.0" lon="0.0">'
              '<gpx:name>Cambridge</gpx:name><gpx:desc>in the UK</gpx:desc>'
              '</gpx:None>')
-        expect(etree.tostring(_GpxElem(52, 0, "Cambridge", "in the UK").togpx())) == \
+        expect(etree.tostring(_GpxElem(52, 0, 'Cambridge', 'in the UK').togpx())) == \
             ('<gpx:None xmlns:gpx="http://www.topografix.com/GPX/1/1" lat="52.0" lon="0.0">'
              '<gpx:name>Cambridge</gpx:name><gpx:desc>in the UK</gpx:desc>'
              '</gpx:None>')
-        expect(etree.tostring(_GpxElem(52, 0, "name", "desc", 40,
+        expect(etree.tostring(_GpxElem(52, 0, 'name', 'desc', 40,
                                     utils.Timestamp(2008, 7, 25)).togpx())) == \
             ('<gpx:None xmlns:gpx="http://www.topografix.com/GPX/1/1" lat="52.0" lon="0.0">'
              '<gpx:name>name</gpx:name><gpx:desc>desc</gpx:desc><gpx:ele>40</gpx:ele>'
@@ -78,7 +78,7 @@ class Test_GpxMeta(TestCase):
             ('<gpx:metadata xmlns:gpx="http://www.topografix.com/GPX/1/1">'
              '<gpx:time>2008-06-03T16:12:43+0000</gpx:time>'
              '</gpx:metadata>')
-        meta.bounds = {"minlat": 52, "maxlat": 54, "minlon": -2, "maxlon": 1}
+        meta.bounds = {'minlat': 52, 'maxlat': 54, 'minlon': -2, 'maxlon': 1}
         expect(etree.tostring(meta.togpx())) == \
             ('<gpx:metadata xmlns:gpx="http://www.topografix.com/GPX/1/1">'
              '<gpx:time>2008-06-03T16:12:43+0000</gpx:time><gpx:bounds maxlat="54" maxlon="1" minlat="52" minlon="-2"/>'
@@ -95,13 +95,13 @@ class TestWaypoint(TestCase):
         'Waypoint(52.0, 0.0, None, None, None, None)'
     expect(repr(Waypoint(52, 0, None))) == \
         'Waypoint(52.0, 0.0, None, None, None, None)'
-    expect(repr(Waypoint(52, 0, "name", "desc"))) == \
+    expect(repr(Waypoint(52, 0, 'name', 'desc'))) == \
         "Waypoint(52.0, 0.0, 'name', 'desc', None, None)"
 
 
 class TestWaypoints(TestCase):
     def test_import_locations(self):
-        waypoints = Waypoints(open("tests/data/gpx"))
+        waypoints = Waypoints(open('tests/data/gpx'))
         data = map(str, sorted(waypoints, key=lambda x: x.name))
         expect(data[0]) == \
             """Home (52°00'54"N, 000°13'15"W on 2008-07-26T00:00:00+00:00) [My place]"""
@@ -109,7 +109,7 @@ class TestWaypoints(TestCase):
             """MSR (52°10'01"N, 000°23'24"E on 2008-07-27T00:00:00+00:00) [Microsoft Research, Cambridge]"""
 
     def test_export_gpx_file(self):
-        locations = Waypoints(open("tests/data/gpx"))
+        locations = Waypoints(open('tests/data/gpx'))
         xml = locations.export_gpx_file()
         f = StringIO()
         xml.write(f)
@@ -138,13 +138,13 @@ class TestTrackpoint(TestCase):
             'Trackpoint(52.0, 0.0, None, None, None, None)'
         expect(Trackpoint(52, 0, None)) == \
             'Trackpoint(52.0, 0.0, None, None, None, None)'
-        expect(Trackpoint(52, 0, "name", "desc")) == \
+        expect(Trackpoint(52, 0, 'name', 'desc')) == \
             "Trackpoint(52.0, 0.0, 'name', 'desc', None, None)"
 
 
 class TestTrackpoints(TestCase):
     def test_import_locations(self):
-        trackpoints = Trackpoints(open("tests/data/gpx_tracks"))
+        trackpoints = Trackpoints(open('tests/data/gpx_tracks'))
         data = map(str, sorted(trackpoints[0], key=lambda x: x.name))
         expect(data[0]) == \
             """Home (52°00'54"N, 000°13'15"W on 2008-07-26T00:00:00+00:00) [My place]"""
@@ -152,7 +152,7 @@ class TestTrackpoints(TestCase):
             """MSR (52°10'01"N, 000°23'24"E on 2008-07-27T00:00:00+00:00) [Microsoft Research, Cambridge]"""
 
     def test_export_gpx_file(self):
-        locations = Trackpoints(open("tests/data/gpx_tracks"))
+        locations = Trackpoints(open('tests/data/gpx_tracks'))
         xml = locations.export_gpx_file()
         f = StringIO()
         xml.write(f)
@@ -184,13 +184,13 @@ class TestRoutepoint(TestCase):
             'Routepoint(52.0, 0.0, None, None, None, None)'
         expect(Routepoint(52, 0, None)) == \
             'Routepoint(52.0, 0.0, None, None, None, None)'
-        expect(Routepoint(52, 0, "name", "desc")) == \
+        expect(Routepoint(52, 0, 'name', 'desc')) == \
             "Routepoint(52.0, 0.0, 'name', 'desc', None, None)"
 
 
 class TestRoutepoints(TestCase):
     def test_import_locations(self):
-        routepoints = Routepoints(open("tests/data/gpx_routes"))
+        routepoints = Routepoints(open('tests/data/gpx_routes'))
         data = map(str, sorted(routepoints[0], key=lambda x: x.name))
         expect(data[0]) == \
             """Home (52°00'54"N, 000°13'15"W on 2008-07-26T00:00:00+00:00) [My place]"""
@@ -198,7 +198,7 @@ class TestRoutepoints(TestCase):
             """MSR (52°10'01"N, 000°23'24"E on 2008-07-27T00:00:00+00:00) [Microsoft Research, Cambridge]"""
 
     def test_export_gpx_file(self):
-        locations = Routepoints(open("tests/data/gpx_routes"))
+        locations = Routepoints(open('tests/data/gpx_routes'))
         xml = locations.export_gpx_file()
         f = StringIO()
         xml.write(f)

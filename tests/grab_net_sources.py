@@ -31,12 +31,12 @@ except ImportError:
 
 
 SOURCES = [
-    "http://cvs.savannah.gnu.org/viewvc/*checkout*/miscfiles/cities.dat?root=miscfiles",
-    "http://weather.noaa.gov/data/nsd_bbsss.txt",
-    "http://weather.noaa.gov/data/nsd_cccc.txt",
-    "http://www.haroldstreet.org.uk/download.php?file=waypoints/files/alltrigs-wgs84.txt",
-    "http://myapp.fr/cellsIdData/cells.txt.gz",
-    "http://xplanet.sourceforge.net/Extras/earth-markers-schaumann",
+    'http://cvs.savannah.gnu.org/viewvc/*checkout*/miscfiles/cities.dat?root=miscfiles',
+    'http://weather.noaa.gov/data/nsd_bbsss.txt',
+    'http://weather.noaa.gov/data/nsd_cccc.txt',
+    'http://www.haroldstreet.org.uk/download.php?file=waypoints/files/alltrigs-wgs84.txt',
+    'http://myapp.fr/cellsIdData/cells.txt.gz',
+    'http://xplanet.sourceforge.net/Extras/earth-markers-schaumann',
 ]
 
 def data_file(resource):
@@ -54,11 +54,11 @@ def data_file(resource):
     :return: Local filename
 
     """
-    filename = os.path.join(os.path.dirname(__file__), "data",
+    filename = os.path.join(os.path.dirname(__file__), 'data',
                             os.path.basename(urlparse(resource[0]).path))
-    if filename.endswith(".gz"):
+    if filename.endswith('.gz'):
         return filename[:-3]
-    elif filename.endswith(".bz2"):
+    elif filename.endswith('.bz2'):
         return filename[:-4]
     else:
         return filename
@@ -69,13 +69,13 @@ def main(argv=None):
     :param list argv: Command line arguments
 
     """
-    print("*WARNING* This script will fetch some data files that can not be "
-          "distributed legally!  In some jurisdictions you may not even be "
-          "entitled to personal use of the data it fetches without express "
-          "consent of the copyright holders.")
+    print('*WARNING* This script will fetch some data files that can not be '
+          'distributed legally!  In some jurisdictions you may not even be '
+          'entitled to personal use of the data it fetches without express '
+          'consent of the copyright holders.')
     if not argv:
         argv = sys.argv
-    if len(argv) == 2 and argv[1] in ("-f" or "--force"):
+    if len(argv) == 2 and argv[1] in ('-f' or '--force'):
         force = True
     else:
         force = False
@@ -83,21 +83,21 @@ def main(argv=None):
     for path in SOURCES:
         filename = data_file(path)
         if not force and os.path.exists(filename):
-            print("%r already downloaded." % path)
+            print('%r already downloaded.' % path)
             cached += 1
         else:
-            print("Fetching %r..." % path)
-            if path.endswith(".gz"):
+            print('Fetching %r...' % path)
+            if path.endswith('.gz'):
                 temp = tempfile.mkstemp()[1]
                 try:
                     urlretrieve(path, temp)
                     data = gzip.GzipFile(temp).read()
                 finally:
                     os.unlink(temp)
-                open(filename, "w").write(data)
-            elif path.endswith(".bz2"):
+                open(filename, 'w').write(data)
+            elif path.endswith('.bz2'):
                 data = bz2.decompress(urlopen(path).read())
-                open(filename, "w").write(data)
+                open(filename, 'w').write(data)
             else:
                 urlretrieve(path, filename)
     if cached > 1:

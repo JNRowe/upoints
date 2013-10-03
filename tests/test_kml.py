@@ -33,7 +33,7 @@ class TestPlacemark(TestCase):
             'Placemark(52.0, 0.0, 4.0, None, None)'
         expect(Placemark(52, 0, None)) == \
             'Placemark(52.0, 0.0, None, None, None)'
-        expect(Placemark(52, 0, None, "name", "desc")) == \
+        expect(Placemark(52, 0, None, 'name', 'desc')) == \
             "Placemark(52.0, 0.0, None, 'name', 'desc')"
 
     def test___str__(self):
@@ -41,9 +41,9 @@ class TestPlacemark(TestCase):
             """52°00'00"N, 000°00'00"E alt 4m"""
         expect(str(Placemark(52, 0, None))) == \
             """52°00'00"N, 000°00'00"E"""
-        expect(str(Placemark(52, 0, None, "name", "desc"))) == \
+        expect(str(Placemark(52, 0, None, 'name', 'desc'))) == \
             """name (52°00'00"N, 000°00'00"E) [desc]"""
-        expect(str(Placemark(52, 0, 42, "name", "desc"))) == \
+        expect(str(Placemark(52, 0, 42, 'name', 'desc'))) == \
             """name (52°00'00"N, 000°00'00"E alt 42m) [desc]"""
 
     def test_tokml(self):
@@ -51,14 +51,14 @@ class TestPlacemark(TestCase):
             ('<kml:Placemark xmlns:kml="http://earth.google.com/kml/2.2">'
              '<kml:Point><kml:coordinates>0.0,52.0,4</kml:coordinates></kml:Point>'
              '</kml:Placemark>')
-        expect(etree.tostring(Placemark(52, 0, 4, "Cambridge").tokml())) == \
+        expect(etree.tostring(Placemark(52, 0, 4, 'Cambridge').tokml())) == \
             ('<kml:Placemark xmlns:kml="http://earth.google.com/kml/2.2" id="Cambridge">'
              '<kml:name>Cambridge</kml:name><kml:Point><kml:coordinates>0.0,52.0,4</kml:coordinates></kml:Point>'
              '</kml:Placemark>')
         expect(etree.tostring(Placemark(52, 0, 4).tokml())) == \
             ('<kml:Placemark xmlns:kml="http://earth.google.com/kml/2.2">'
              '<kml:Point><kml:coordinates>0.0,52.0,4</kml:coordinates></kml:Point></kml:Placemark>')
-        expect(etree.tostring(Placemark(52, 0, 4, "Cambridge", "in the UK").tokml())) == \
+        expect(etree.tostring(Placemark(52, 0, 4, 'Cambridge', 'in the UK').tokml())) == \
             ('<kml:Placemark xmlns:kml="http://earth.google.com/kml/2.2" id="Cambridge">'
              '<kml:name>Cambridge</kml:name><kml:description>in the UK</kml:description>'
              '<kml:Point><kml:coordinates>0.0,52.0,4</kml:coordinates></kml:Point>'
@@ -67,14 +67,14 @@ class TestPlacemark(TestCase):
 
 class TestPlacemarks(TestCase):
     def test_import_locations(self):
-        locations = Placemarks(open("tests/data/kml"))
+        locations = Placemarks(open('tests/data/kml'))
         expect(str(locations['Cambridge'])) ==  \
             """Cambridge (52°10'01"N, 000°23'24"E)"""
         expect(str(locations['Home'])) == \
             """Home (52°00'54"N, 000°13'15"W alt 60m)"""
 
     def test_export_kml_file(self):
-        locations = Placemarks(open("tests/data/kml"))
+        locations = Placemarks(open('tests/data/kml'))
         xml = locations.export_kml_file()
         f = StringIO()
         xml.write(f)

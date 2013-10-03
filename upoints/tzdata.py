@@ -41,7 +41,7 @@ class Zone(point.Point):
         :param list comments: Location's alternate names
 
         """
-        latitude, longitude = utils.from_iso6709(location + "/")[:2]
+        latitude, longitude = utils.from_iso6709(location + '/')[:2]
         super(Zone, self).__init__(latitude, longitude)
 
         self.country = country
@@ -56,10 +56,10 @@ class Zone(point.Point):
 
         """
         location = utils.to_iso6709(self.latitude, self.longitude,
-                                    format="dms")[:-1]
-        return utils.repr_assist(self, {"location": location})
+                                    format='dms')[:-1]
+        return utils.repr_assist(self, {'location': location})
 
-    def __str__(self, mode="dms"):
+    def __str__(self, mode='dms'):
         """Pretty printed location string.
 
         :param str mode: Coordinate formatting system to use
@@ -67,12 +67,12 @@ class Zone(point.Point):
         :return: Human readable string representation of ``Zone`` object
 
         """
-        text = ["%s (%s: %s" % (self.zone, self.country,
+        text = ['%s (%s: %s' % (self.zone, self.country,
                                 super(Zone, self).__str__(mode)), ]
         if self.comments:
-            text.append(" also " + ", ".join(self.comments))
-        text.append(")")
-        return "".join(text)
+            text.append(' also ' + ', '.join(self.comments))
+        text.append(')')
+        return ''.join(text)
 
 
 class Zones(point.Points):
@@ -124,13 +124,13 @@ class Zones(point.Points):
 
         """
         self._zone_file = zone_file
-        field_names = ("country", "location", "zone", "comments")
+        field_names = ('country', 'location', 'zone', 'comments')
 
         data = utils.prepare_csv_read(zone_file, field_names, delimiter=r"	")
 
-        for row in (x for x in data if not x['country'].startswith("#")):
+        for row in (x for x in data if not x['country'].startswith('#')):
             if row['comments']:
-                row['comments'] = row['comments'].split(", ")
+                row['comments'] = row['comments'].split(', ')
             self.append(Zone(**row))
 
     def dump_zone_file(self):
@@ -141,13 +141,13 @@ class Zones(point.Points):
 
         """
         data = []
-        for zone in sorted(self, key=attrgetter("country")):
-            text = ["%s	%s	%s"
+        for zone in sorted(self, key=attrgetter('country')):
+            text = ['%s	%s	%s'
                     % (zone.country,
                        utils.to_iso6709(zone.latitude, zone.longitude,
-                                        format="dms")[:-1],
+                                        format='dms')[:-1],
                        zone.zone), ]
             if zone.comments:
-                text.append("	%s" % ", ".join(zone.comments))
-            data.append("".join(text))
+                text.append('	%s' % ', '.join(zone.comments))
+            data.append(''.join(text))
         return data

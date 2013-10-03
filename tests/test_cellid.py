@@ -31,21 +31,21 @@ class TestCell(TestCase):
         expect(repr(Cell(4, 52.015, -0.221, 21, 46, 40000, 10, 0, 1,
                          datetime.datetime(2008, 4, 15, 15, 21, 35),
                          datetime.datetime(2008, 4, 15, 15, 28, 49)))) == \
-            ("Cell(4, 52.015, -0.221, 21, 46, 40000, 10, 0, 1, "
-             "datetime.datetime(2008, 4, 15, 15, 21, 35), "
-             "datetime.datetime(2008, 4, 15, 15, 28, 49))")
+            ('Cell(4, 52.015, -0.221, 21, 46, 40000, 10, 0, 1, '
+             'datetime.datetime(2008, 4, 15, 15, 21, 35), '
+             'datetime.datetime(2008, 4, 15, 15, 28, 49))')
 
     def test___str__(self):
         expect(str(Cell(4, 52.015, -0.221, 21, 46, 40000, 10, 0, 1,
                         datetime.datetime(2008, 4, 15, 15, 21, 35),
                         datetime.datetime(2008, 4, 15, 15, 28, 49)))) == \
-            ("4,52.0150000000000,-0.2210000000000,21,46,40000,10,0,1,"
-             "2008-04-15 15:21:35,2008-04-15 15:28:49")
+            ('4,52.0150000000000,-0.2210000000000,21,46,40000,10,0,1,'
+             '2008-04-15 15:21:35,2008-04-15 15:28:49')
 
 
 class TestCells(TestCase):
     def setUp(self):
-        self.cells = Cells(open("tests/data/cells"))
+        self.cells = Cells(open('tests/data/cells'))
 
     def test___str__(self):
         data = sorted(map(str, self.cells.values()))

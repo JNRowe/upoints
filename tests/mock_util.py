@@ -43,7 +43,7 @@ def isfile(path):
     """
     filename = os.path.basename(path)
     try:
-        __builtin__.open(os.path.join(BASEDIR, "data", filename))
+        __builtin__.open(os.path.join(BASEDIR, 'data', filename))
     except IOError:
         return False
     return True
@@ -60,16 +60,16 @@ def _get_test_file(filename):
 
     """
     if isfile(filename):
-        return __builtin__.open(os.path.join(BASEDIR, "data", filename))
+        return __builtin__.open(os.path.join(BASEDIR, 'data', filename))
     else:
         if filename in SOURCES:
-            raise IOError("%r missing.  It can be downloaded from %r, or "
+            raise IOError('%r missing.  It can be downloaded from %r, or '
                           "alternatively by running the `grab_net_sources' "
-                          "script." % (filename, SOURCES[filename]))
+                          'script.' % (filename, SOURCES[filename]))
         else:
-            raise IOError("Can not open %r" % filename)
+            raise IOError('Can not open %r' % filename)
 
-def open(filename, mode="rb"):
+def open(filename, mode='rb'):
     """Mock `open` function to open test data files.
 
     :Parameters:
@@ -83,9 +83,9 @@ def open(filename, mode="rb"):
     :raise NotImplementedError: When attempting to use an unhandled file mode
 
     """
-    if "r" in mode:
+    if 'r' in mode:
         return _get_test_file(os.path.basename(filename))
-    elif "w" in mode:
+    elif 'w' in mode:
         return StringIO.StringIO()
     else:
         raise NotImplementedError
@@ -164,5 +164,5 @@ class pymetar(ModuleType):
                 :return: Sample ISO time string
 
                 """
-                return "2007-11-28 19:20:00Z"
+                return '2007-11-28 19:20:00Z'
 

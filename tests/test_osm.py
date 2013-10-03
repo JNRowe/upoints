@@ -38,9 +38,9 @@ def test_get_area_url():
 class TestNode(TestCase):
     def setUp(self):
         self.bare = Node(0, 52, 0)
-        self.named = Node(0, 52, 0, True, "jnrowe",
+        self.named = Node(0, 52, 0, True, 'jnrowe',
                           utils.Timestamp(2008, 1, 25))
-        self.tagged = Node(0, 52, 0, tags={"key": "value"})
+        self.tagged = Node(0, 52, 0, tags={'key': 'value'})
 
     def test___repr__(self):
         expect(repr(self.bare)) == \
@@ -85,15 +85,15 @@ class TestNode(TestCase):
 class TestWay(TestCase):
     def setUp(self):
         self.bare = Way(0, (0, 1, 2))
-        self.named = Way(0, (0, 1, 2), True, "jnrowe",
+        self.named = Way(0, (0, 1, 2), True, 'jnrowe',
                          utils.Timestamp(2008, 1, 25))
-        self.tagged = Way(0, (0, 1, 2), tags={"key": "value"})
+        self.tagged = Way(0, (0, 1, 2), tags={'key': 'value'})
 
     def test___repr__(self):
         expect(repr(self.bare)) == 'Way(0, [0, 1, 2], False, None, None, None)'
         expect(repr(self.named)) == \
             ("Way(0, [0, 1, 2], True, 'jnrowe', Timestamp(2008, 1, 25, 0, 0), "
-             "None)")
+             'None)')
         expect(repr(self.tagged)) == \
             "Way(0, [0, 1, 2], False, None, None, {'key': 'value'})"
 
@@ -104,14 +104,14 @@ class TestWay(TestCase):
              '2008-01-25T00:00:00+00:00]')
         expect(str(self.tagged)) == 'Way 0 (nodes: 0, 1, 2) [key: value]'
         nodes = [
-            Node(0, 52.015749, -0.221765, True, "jnrowe",
+            Node(0, 52.015749, -0.221765, True, 'jnrowe',
                  utils.Timestamp(2008, 1, 25, 12, 52, 11), None),
             Node(1, 52.015761, -0.221767, True, None,
                  utils.Timestamp(2008, 1, 25, 12, 53, 14),
-                 {"created_by": "hand", "highway": "crossing"}),
-            Node(2, 52.015754, -0.221766, True, "jnrowe",
+                 {'created_by': 'hand', 'highway': 'crossing'}),
+            Node(2, 52.015754, -0.221766, True, 'jnrowe',
                  utils.Timestamp(2008, 1, 25, 12, 52, 30),
-                 {"amenity": "pub"}),
+                 {'amenity': 'pub'}),
         ]
         data = self.tagged.__str__(nodes).splitlines()
         expect(data[0]) == 'Way 0 [key: value]'
@@ -139,7 +139,7 @@ class TestWay(TestCase):
 
 class TestOsm(TestCase):
     def setUp(self):
-        self.region = Osm(open("tests/data/osm"))
+        self.region = Osm(open('tests/data/osm'))
 
     def test_import_locations(self):
         data = map(str, sorted([x for x in self.region if isinstance(x, Node)],

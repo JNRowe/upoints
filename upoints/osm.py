@@ -34,15 +34,15 @@ def _parse_flags(element):
     :return: Generic OSM data for object instantiation
 
     """
-    visible = True if element.get("visible") else False
-    user = element.get("user")
-    timestamp = element.get("timestamp")
+    visible = True if element.get('visible') else False
+    user = element.get('user')
+    timestamp = element.get('timestamp')
     if timestamp:
         timestamp = utils.Timestamp.parse_isoformat(timestamp)
     tags = {}
-    for tag in element.findall("tag"):
-        key = tag.get("k")
-        value = tag.get("v")
+    for tag in element.findall('tag'):
+        key = tag.get('k')
+        value = tag.get('v')
         tags[key] = value
 
     return visible, user, timestamp, tags
@@ -58,13 +58,13 @@ def _get_flags(osm_obj):
     """
     flags = []
     if osm_obj.visible:
-        flags.append("visible")
+        flags.append('visible')
     if osm_obj.user:
-        flags.append("user: %s" % osm_obj.user)
+        flags.append('user: %s' % osm_obj.user)
     if osm_obj.timestamp:
-        flags.append("timestamp: %s" % osm_obj.timestamp.isoformat())
+        flags.append('timestamp: %s' % osm_obj.timestamp.isoformat())
     if osm_obj.tags:
-        flags.append(", ".join("%s: %s" % (k, v)
+        flags.append(', '.join('%s: %s' % (k, v)
                                for k, v in sorted(osm_obj.tags.items())))
     return flags
 
@@ -91,13 +91,13 @@ def get_area_url(location, distance):
 
     """
     locations = [location.destination(i, distance) for i in range(0, 360, 90)]
-    latitudes = map(attrgetter("latitude"), locations)
-    longitudes = map(attrgetter("longitude"), locations)
+    latitudes = map(attrgetter('latitude'), locations)
+    longitudes = map(attrgetter('longitude'), locations)
 
     bounds = (min(longitudes), min(latitudes), max(longitudes), max(latitudes))
 
-    return ("http://api.openstreetmap.org/api/0.5/map?bbox="
-            + ",".join(map(str, bounds)))
+    return ('http://api.openstreetmap.org/api/0.5/map?bbox='
+            + ','.join(map(str, bounds)))
 
 
 class Node(point.Point):
@@ -131,7 +131,7 @@ class Node(point.Point):
         self.timestamp = timestamp
         self.tags = tags
 
-    def __str__(self, mode="dms"):
+    def __str__(self, mode='dms'):
         """Pretty printed location string.
 
         :param str mode: Coordinate formatting system to use
@@ -139,13 +139,13 @@ class Node(point.Point):
         :return: Human readable string representation of ``Node`` object
 
         """
-        text = ["Node %i (%s)" % (self.ident,
+        text = ['Node %i (%s)' % (self.ident,
                                   super(Node, self).__str__(mode)), ]
         flags = _get_flags(self)
 
         if flags:
-            text.append("[%s]" % ", ".join(flags))
-        return " ".join(text)
+            text.append('[%s]' % ', '.join(flags))
+        return ' '.join(text)
 
     def toosm(self):
         """Generate a OSM node element subtree.
@@ -154,17 +154,17 @@ class Node(point.Point):
         :return: OSM node element
 
         """
-        node = etree.Element("node", {"id": str(self.ident),
-                                      "lat": str(self.latitude),
-                                      "lon": str(self.longitude)})
-        node.set("visible", "true" if self.visible else "false")
+        node = etree.Element('node', {'id': str(self.ident),
+                                      'lat': str(self.latitude),
+                                      'lon': str(self.longitude)})
+        node.set('visible', 'true' if self.visible else 'false')
         if self.user:
-            node.set("user", self.user)
+            node.set('user', self.user)
         if self.timestamp:
-            node.set("timestamp", self.timestamp.isoformat())
+            node.set('timestamp', self.timestamp.isoformat())
         if self.tags:
             for key, value in sorted(self.tags.items()):
-                tag = etree.Element("tag", {"k": key, "v": value})
+                tag = etree.Element('tag', {'k': key, 'v': value})
                 node.append(tag)
 
         return node
@@ -199,9 +199,9 @@ class Node(point.Point):
         :return: ``Node`` object representing parsed element
 
         """
-        ident = int(element.get("id"))
-        latitude = element.get("lat")
-        longitude = element.get("lon")
+        ident = int(element.get('id'))
+        latitude = element.get('lat')
+        longitude = element.get('lon')
 
         flags = _parse_flags(element)
 
@@ -248,7 +248,7 @@ class Way(point.Points):
         :return: String to recreate ``Way`` object
 
         """
-        return utils.repr_assist(self, {"nodes": self[:]})
+        return utils.repr_assist(self, {'nodes': self[:]})
 
     def __str__(self, nodes=False):
         """Pretty printed location string.
@@ -258,18 +258,18 @@ class Way(point.Points):
         :return: Human readable string representation of ``Way`` object
 
         """
-        text = ["Way %i" % (self.ident), ]
+        text = ['Way %i' % (self.ident), ]
         if not nodes:
-            text.append(" (nodes: %s)" % str(self[:])[1:-1])
+            text.append(' (nodes: %s)' % str(self[:])[1:-1])
         flags = _get_flags(self)
 
         if flags:
-            text.append(" [%s]" % ", ".join(flags))
+            text.append(' [%s]' % ', '.join(flags))
         if nodes:
-            text.append("\n")
-            text.append("\n".join("    %s" % nodes[node] for node in self[:]))
+            text.append('\n')
+            text.append('\n'.join('    %s' % nodes[node] for node in self[:]))
 
-        return "".join(text)
+        return ''.join(text)
 
     def toosm(self):
         """Generate a OSM way element subtree.
@@ -278,19 +278,19 @@ class Way(point.Points):
         :return: OSM way element
 
         """
-        way = etree.Element("way", {"id": str(self.ident)})
-        way.set("visible", "true" if self.visible else "false")
+        way = etree.Element('way', {'id': str(self.ident)})
+        way.set('visible', 'true' if self.visible else 'false')
         if self.user:
-            way.set("user", self.user)
+            way.set('user', self.user)
         if self.timestamp:
-            way.set("timestamp", self.timestamp.isoformat())
+            way.set('timestamp', self.timestamp.isoformat())
         if self.tags:
             for key, value in sorted(self.tags.items()):
-                tag = etree.Element("tag", {"k": key, "v": value})
+                tag = etree.Element('tag', {'k': key, 'v': value})
                 way.append(tag)
 
         for node in self:
-            tag = etree.Element("nd", {"ref": str(node)})
+            tag = etree.Element('nd', {'ref': str(node)})
             way.append(tag)
 
         return way
@@ -304,9 +304,9 @@ class Way(point.Points):
         :return: `Way` object representing parsed element
 
         """
-        ident = int(element.get("id"))
+        ident = int(element.get('id'))
         flags = _parse_flags(element)
-        nodes = [node.get("ref") for node in element.findall("nd")]
+        nodes = [node.get('ref') for node in element.findall('nd')]
         return Way(ident, nodes, *flags)
 
 
@@ -324,8 +324,8 @@ class Osm(point.Points):
         self._osm_file = osm_file
         if osm_file:
             self.import_locations(osm_file)
-        self.generator = "upoints/%s" % __version__
-        self.version = "0.5"
+        self.generator = 'upoints/%s' % __version__
+        self.version = '0.5'
 
     def import_locations(self, osm_file):
         """Import OSM data files.
@@ -386,26 +386,26 @@ class Osm(point.Points):
 
         # This would be a lot simpler if OSM exports defined a namespace
         root = data.getroot()
-        if not root.tag == "osm":
+        if not root.tag == 'osm':
             raise ValueError("Root element %r is not `osm'" % root.tag)
-        self.version = root.get("version")
+        self.version = root.get('version')
         if not self.version:
-            raise ValueError("No specified OSM version")
-        elif not self.version == "0.5":
-            raise ValueError("Unsupported OSM version %r" % root)
+            raise ValueError('No specified OSM version')
+        elif not self.version == '0.5':
+            raise ValueError('Unsupported OSM version %r' % root)
 
-        self.generator = root.get("generator")
+        self.generator = root.get('generator')
 
         for elem in root.getchildren():
-            if elem.tag == "node":
+            if elem.tag == 'node':
                 self.append(Node.parse_elem(elem))
-            elif elem.tag == "way":
+            elif elem.tag == 'way':
                 self.append(Way.parse_elem(elem))
 
     def export_osm_file(self):
         """Generate OpenStreetMap element tree from `Osm`"""
-        osm = etree.Element('osm', {"generator": self.generator,
-                                    "version": self.version})
+        osm = etree.Element('osm', {'generator': self.generator,
+                                    'version': self.version})
         for obj in self:
             osm.append(obj.toosm())
 

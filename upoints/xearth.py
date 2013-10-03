@@ -47,7 +47,7 @@ class Xearth(point.Point):
         super(Xearth, self).__init__(latitude, longitude)
         self.comment = comment
 
-    def __str__(self, mode="dd"):
+    def __str__(self, mode='dd'):
         """Pretty printed location string.
 
         .. seealso:
@@ -62,7 +62,7 @@ class Xearth(point.Point):
         text = super(Xearth, self).__str__(mode)
 
         if self.comment:
-            return "%s (%s)" % (self.comment, text)
+            return '%s (%s)' % (self.comment, text)
         else:
             return text
 
@@ -89,7 +89,7 @@ class Xearths(point.KeyedPoints):
         :return: Xearth/Xplanet marker file formatted output
 
         """
-        return "\n".join(utils.dump_xearth_markers(self, "comment"))
+        return '\n'.join(utils.dump_xearth_markers(self, 'comment'))
 
     def import_locations(self, marker_file):
         """Parse Xearth data files.
@@ -132,9 +132,9 @@ class Xearths(point.KeyedPoints):
 
         for line in data:
             line = line.strip()
-            if not line or line.startswith("#"):
+            if not line or line.startswith('#'):
                 continue
-            chunk = line.split("#")
+            chunk = line.split('#')
             data = chunk[0]
             comment = chunk[1].strip() if len(chunk) == 2 else None
             # Need maximum split of 2, because name may contain whitespace

@@ -50,7 +50,7 @@ a hyphen(such as anywhere in the Southern hemisphere).
 # Pull the first paragraph from the docstring
 USAGE = __doc__[:__doc__.find('\n\n', 100)].replace('``', "'").splitlines()[2:]
 # Replace script name with optparse's substitution var, and rebuild string
-USAGE = "\n".join(USAGE).replace("edist", "%(prog)s")
+USAGE = '\n'.join(USAGE).replace('edist', '%(prog)s')
 
 import ConfigParser
 import locale
@@ -68,7 +68,7 @@ from upoints import (point, utils)
 # Pull the first paragraph from the docstring
 USAGE = __doc__[:__doc__.find('\n\n', 100)].splitlines()[2:]
 # Replace script name with optparse's substitution var, and rebuild string
-USAGE = "\n".join(USAGE).replace("edist", "%(prog)s")
+USAGE = '\n'.join(USAGE).replace('edist', '%(prog)s')
 
 EPILOG = 'Please report bugs at https://github.com/JNRowe/upoints/'
 
@@ -108,11 +108,11 @@ class LocationsError(ValueError):
 
         """
         if self.function:
-            return "More than one location is required for %s." % self.function
+            return 'More than one location is required for %s.' % self.function
         elif self.data:
-            return "Location parsing failure in location %i %r." % self.data
+            return 'Location parsing failure in location %i %r.' % self.data
         else:
-            return "Invalid location data."
+            return 'Invalid location data.'
 
 
 class NumberedPoint(point.Point):
@@ -134,9 +134,9 @@ class NumberedPoint(point.Point):
 
     """
 
-    __slots__ = ("name")
+    __slots__ = ('name')
 
-    def __init__(self, latitude, longitude, name, units="km"):
+    def __init__(self, latitude, longitude, name, units='km'):
         """Initialise a new ``NumberedPoint`` object.
 
         :param float latitude: Location's latitude
@@ -157,8 +157,8 @@ class NumberedPoints(point.Points):
 
     """
 
-    def __init__(self, locations=None, format="dd", unistr=True,
-                 verbose=True, config_locations=None, units="km"):
+    def __init__(self, locations=None, format='dd', unistr=True,
+                 verbose=True, config_locations=None, units='km'):
         """Initialise a new ``NumberedPoints`` object.
 
         :type locations: ``list`` of ``str`` objects
@@ -191,7 +191,7 @@ class NumberedPoints(point.Points):
         :return: String to recreate ``NumberedPoints`` object
 
         """
-        return utils.repr_assist(self, {"locations": self[:]})
+        return utils.repr_assist(self, {'locations': self[:]})
 
     def import_locations(self, locations, config_locations):
         """Import locations from arguments.
@@ -226,12 +226,12 @@ class NumberedPoints(point.Points):
 
         """
         for location in self:
-            if self.format == "locator":
+            if self.format == 'locator':
                 output = location.to_grid_locator(locator)
             else:
                 output = self.stringify(location)
             if self.verbose:
-                print("Location %s is %s" % (location.name, output))
+                print('Location %s is %s' % (location.name, output))
             else:
                 print(output)
 
@@ -240,24 +240,24 @@ class NumberedPoints(point.Points):
 
         """
         distances = list(super(NumberedPoints, self).distance())
-        leg_msg = ["Location %s to %s is %i", ]
-        total_msg = ["Total distance is %i", ]
-        if self.units == "sm":
-            leg_msg.append("miles")
-            total_msg.append("miles")
-        elif self.units == "nm":
-            leg_msg.append("nautical miles")
-            total_msg.append("nautical miles")
+        leg_msg = ['Location %s to %s is %i', ]
+        total_msg = ['Total distance is %i', ]
+        if self.units == 'sm':
+            leg_msg.append('miles')
+            total_msg.append('miles')
+        elif self.units == 'nm':
+            leg_msg.append('nautical miles')
+            total_msg.append('nautical miles')
         else:
-            leg_msg.append("kilometres")
-            total_msg.append("kilometres")
+            leg_msg.append('kilometres')
+            total_msg.append('kilometres')
         if self.verbose:
             for number, distance in enumerate(distances):
-                print(" ".join(leg_msg) % (self[number].name,
+                print(' '.join(leg_msg) % (self[number].name,
                                            self[number + 1].name,
                                            distance))
             if len(distances) > 1:
-                print(" ".join(total_msg) % sum(distances))
+                print(' '.join(total_msg) % sum(distances))
         else:
             print(sum(distances))
 
@@ -272,11 +272,11 @@ class NumberedPoints(point.Points):
         if string:
             bearings = map(utils.angle_to_name, bearings)
         else:
-            bearings = ["%i°" % bearing for bearing in bearings]
-        if mode == "bearing":
-            verbose_fmt = "Location %s to %s is %s"
+            bearings = ['%i°' % bearing for bearing in bearings]
+        if mode == 'bearing':
+            verbose_fmt = 'Location %s to %s is %s'
         else:
-            verbose_fmt = "Final bearing from location %s to %s is %s"
+            verbose_fmt = 'Final bearing from location %s to %s is %s'
         for number, bearing in enumerate(bearings):
             if self.verbose:
                 print(verbose_fmt % (self[number].name, self[number + 1].name,
@@ -294,18 +294,18 @@ class NumberedPoints(point.Points):
         for location in self[1:]:
             in_range = test_location.__eq__(location, distance)
             if self.verbose:
-                text = ["Location %s is", ]
+                text = ['Location %s is', ]
                 if not in_range:
-                    text.append("not")
-                text.append("within %i")
-                if self.units == "sm":
-                    text.append("miles")
-                elif self.units == "nm":
-                    text.append("nautical miles")
+                    text.append('not')
+                text.append('within %i')
+                if self.units == 'sm':
+                    text.append('miles')
+                elif self.units == 'nm':
+                    text.append('nautical miles')
                 else:
-                    text.append("kilometres")
-                text.append("of location %s")
-                print(" ".join(text) % (location.name, distance, self[0].name))
+                    text.append('kilometres')
+                text.append('of location %s')
+                print(' '.join(text) % (location.name, distance, self[0].name))
             else:
                 print(in_range)
 
@@ -320,12 +320,12 @@ class NumberedPoints(point.Points):
         destinations = super(NumberedPoints, self).destination(bearing,
                                                                distance)
         for location, destination in zip(self, destinations):
-            if self.format == "locator":
+            if self.format == 'locator':
                 output = destination.to_grid_locator(locator)
             else:
                 output = self.stringify(destination)
             if self.verbose:
-                print("Destination from location %s is %s" % (location.name,
+                print('Destination from location %s is %s' % (location.name,
                                                               output))
             else:
                 print(output)
@@ -341,7 +341,7 @@ class NumberedPoints(point.Points):
         for location, time in zip(self, times):
             if self.verbose:
                 if time:
-                    print("%s at %s UTC in location %s" % (mode_str, time,
+                    print('%s at %s UTC in location %s' % (mode_str, time,
                                                            location.name))
                 else:
                     print("The sun doesn't %s at location %s on this date"
@@ -359,108 +359,108 @@ class NumberedPoints(point.Points):
 
         """
         if len(self) == 1:
-            raise LocationsError("flight_plan")
+            raise LocationsError('flight_plan')
         if self.verbose:
-            print("WAYPOINT,BEARING[°],DISTANCE[%s],ELAPSED_TIME[%s],"
-                  "LATITUDE[d.dd],LONGITUDE[d.dd]" % (self.units, time))
+            print('WAYPOINT,BEARING[°],DISTANCE[%s],ELAPSED_TIME[%s],'
+                  'LATITUDE[d.dd],LONGITUDE[d.dd]' % (self.units, time))
         legs = [(0, 0), ] + list(self.inverse())
         for leg, loc in zip(legs, self):
             if leg == (0, 0):
-                print("%s,,,,%f,%f" % (loc.name, loc.latitude, loc.longitude))
+                print('%s,,,,%f,%f' % (loc.name, loc.latitude, loc.longitude))
             else:
-                leg_speed = "%.1f" % (leg[1] / speed) if speed != 0 else ""
-                print("%s,%i,%.1f,%s,%f,%f"
+                leg_speed = '%.1f' % (leg[1] / speed) if speed != 0 else ''
+                print('%s,%i,%.1f,%s,%f,%f'
                       % (loc.name, leg[0], leg[1], leg_speed, loc.latitude,
                          loc.longitude))
         if self.verbose:
             overall_distance = sum(map(itemgetter(1), legs))
             direct_distance = self[0].distance(self[-1])
             if speed == 0:
-                speed_marker = "#"
-                overall_speed = ""
-                direct_speed = ""
+                speed_marker = '#'
+                overall_speed = ''
+                direct_speed = ''
             else:
-                speed_marker = ""
-                overall_speed = "%.1f" % (overall_distance / speed)
-                direct_speed = "%.1f" % (direct_distance / speed)
-            print("-- OVERALL --%s,,%.1f,%s,,"
+                speed_marker = ''
+                overall_speed = '%.1f' % (overall_distance / speed)
+                direct_speed = '%.1f' % (direct_distance / speed)
+            print('-- OVERALL --%s,,%.1f,%s,,'
                   % (speed_marker, overall_distance, overall_speed))
-            print("-- DIRECT --%s,%i,%.1f,%s,,"
+            print('-- DIRECT --%s,%i,%.1f,%s,,'
                   % (speed_marker, self[0].bearing(self[-1]), direct_distance,
                      direct_speed))
 
 
-@APP.cmd(help="pretty print the location(s)")
-@APP.cmd_arg("-l", "--locator", choices=("square", "subsquare", "extsquare"),
-             default="subsquare",
-             help="accuracy of Maidenhead locator output")
-@APP.cmd_arg("location", nargs="+", help="Locations to operate on")
+@APP.cmd(help='pretty print the location(s)')
+@APP.cmd_arg('-l', '--locator', choices=('square', 'subsquare', 'extsquare'),
+             default='subsquare',
+             help='accuracy of Maidenhead locator output')
+@APP.cmd_arg('location', nargs='+', help='Locations to operate on')
 def display(args):
     args.locations.display(args.locator)
 
 
-@APP.cmd(help="calculate the distance between locations")
-@APP.cmd_arg("location", nargs="+", help="Locations to operate on")
+@APP.cmd(help='calculate the distance between locations')
+@APP.cmd_arg('location', nargs='+', help='Locations to operate on')
 def distance(args):
     args.locations.distance()
 
 
-@APP.cmd(help="calculate the initial bearing between locations")
-@APP.cmd_arg("-g", "--string", action="store_true",
-             help="display named bearings")
-@APP.cmd_arg("location", nargs="+", help="Locations to operate on")
+@APP.cmd(help='calculate the initial bearing between locations')
+@APP.cmd_arg('-g', '--string', action='store_true',
+             help='display named bearings')
+@APP.cmd_arg('location', nargs='+', help='Locations to operate on')
 def bearing(args):
     args.locations.bearing('bearing', args.string)
 
 
-@APP.cmd(name="final-bearing",
-         help="calculate the final bearing between locations")
-@APP.cmd_arg("-g", "--string", action="store_true",
-             help="display named bearings")
-@APP.cmd_arg("location", nargs="+", help="Locations to operate on")
+@APP.cmd(name='final-bearing',
+         help='calculate the final bearing between locations')
+@APP.cmd_arg('-g', '--string', action='store_true',
+             help='display named bearings')
+@APP.cmd_arg('location', nargs='+', help='Locations to operate on')
 def final_bearing(args):
     args.locations.bearing('final_bearing', args.string)
 
 
-@APP.cmd(help="calculate whether locations are within a given range")
-@APP.cmd_arg("-d", "--distance", type=float, help="range radius")
-@APP.cmd_arg("location", nargs="+", help="Locations to operate on")
+@APP.cmd(help='calculate whether locations are within a given range')
+@APP.cmd_arg('-d', '--distance', type=float, help='range radius')
+@APP.cmd_arg('location', nargs='+', help='Locations to operate on')
 def range(args):
     args.locations.range(args.distance)
 
 
-@APP.cmd(help="calculate the destination for a given distance and bearing")
-@APP.cmd_arg("-l", "--locator", choices=("square", "subsquare", "extsquare"),
-             default="subsquare",
-             help="accuracy of Maidenhead locator output")
-@APP.cmd_arg("-d", "--distance", required=True, type=float,
-             help="distance from start point")
-@APP.cmd_arg("-b", "--bearing", required=True, type=float,
-             help="bearing from start point")
-@APP.cmd_arg("location", nargs="+", help="Locations to operate on")
+@APP.cmd(help='calculate the destination for a given distance and bearing')
+@APP.cmd_arg('-l', '--locator', choices=('square', 'subsquare', 'extsquare'),
+             default='subsquare',
+             help='accuracy of Maidenhead locator output')
+@APP.cmd_arg('-d', '--distance', required=True, type=float,
+             help='distance from start point')
+@APP.cmd_arg('-b', '--bearing', required=True, type=float,
+             help='bearing from start point')
+@APP.cmd_arg('location', nargs='+', help='Locations to operate on')
 def destination(args):
     args.locations.destination(args.distance, args.bearing, args.locator)
 
 
-@APP.cmd(help="calculate the sunrise time for a given location")
-@APP.cmd_arg("location", nargs="+", help="Locations to operate on")
+@APP.cmd(help='calculate the sunrise time for a given location')
+@APP.cmd_arg('location', nargs='+', help='Locations to operate on')
 def sunrise(args):
     args.locations.sun_events('sunrise')
 
 
-@APP.cmd(help="calculate the sunset time for a given location")
-@APP.cmd_arg("location", nargs="+", help="Locations to operate on")
+@APP.cmd(help='calculate the sunset time for a given location')
+@APP.cmd_arg('location', nargs='+', help='Locations to operate on')
 def sunset(args):
     args.locations.sun_events('sunset')
 
 
-@APP.cmd(name="flight-plan",
-         help="calculate the flight plan corresponding to locations (route)")
-@APP.cmd_arg("-s", "--speed", default=0, type=float,
-             help="speed to calculate elapsed time")
-@APP.cmd_arg("-t", "--time", choices=("h", "m", "s"),
-             help="display time in hours, minutes or seconds")
-@APP.cmd_arg("location", nargs="+", help="Locations to operate on")
+@APP.cmd(name='flight-plan',
+         help='calculate the flight plan corresponding to locations (route)')
+@APP.cmd_arg('-s', '--speed', default=0, type=float,
+             help='speed to calculate elapsed time')
+@APP.cmd_arg('-t', '--time', choices=('h', 'm', 's'),
+             help='display time in hours, minutes or seconds')
+@APP.cmd_arg('location', nargs='+', help='Locations to operate on')
 def flight_plan(args):
     args.locations.flight_plan(args.speed, args.time)
 
@@ -476,17 +476,17 @@ def read_locations(filename):
     data = ConfigParser.ConfigParser()
     data.read(filename)
     if not data.sections():
-        logging.debug("Config file %r is empty" % filename)
+        logging.debug('Config file %r is empty' % filename)
         return {}
 
     locations = {}
     for name in data.sections():
-        if data.has_option(name, "locator"):
+        if data.has_option(name, 'locator'):
             latitude, longitude = utils.from_grid_locator(data.get(name,
-                                                                   "locator"))
+                                                                   'locator'))
         else:
-            latitude = data.getfloat(name, "latitude")
-            longitude = data.getfloat(name, "longitude")
+            latitude = data.getfloat(name, 'latitude')
+            longitude = data.getfloat(name, 'longitude')
         locations[name] = (latitude, longitude)
     return locations
 
@@ -503,16 +503,16 @@ def read_csv(filename):
     :return: List of locations as ``str`` objects
 
     """
-    if filename == "-":
+    if filename == '-':
         filename = sys.stdin
-    field_names = ("latitude", "longitude", "name")
+    field_names = ('latitude', 'longitude', 'name')
     data = utils.prepare_csv_read(filename, field_names, skipinitialspace=True)
     index = 0
     locations = {}
     args = []
     for row in data:
         index += 1
-        name = "%02i:%s" % (index, row['name'])
+        name = '%02i:%s' % (index, row['name'])
         locations[name] = (row['latitude'], row['longitude'])
         args.append(name)
     return locations, args
@@ -528,37 +528,37 @@ def main():
     logging.basicConfig(format='%(asctime)s %(levelname)s:%(message)s')
 
     APP.arg('--version', action='version',
-            version="%%(prog)s v%s" % __version__)
+            version='%%(prog)s v%s' % __version__)
 
-    APP.arg("-v", "--verbose", action="store_true", dest="verbose",
+    APP.arg('-v', '--verbose', action='store_true', dest='verbose',
             default=True,
-            help="produce verbose output")
-    APP.arg("-q", "--quiet", action="store_false", dest="verbose",
-            help="output only results and errors")
+            help='produce verbose output')
+    APP.arg('-q', '--quiet', action='store_false', dest='verbose',
+            help='output only results and errors')
 
-    APP.arg("--config-file", metavar="~/.edist.conf",
-            default=os.path.expanduser("~/.edist.conf"),
-            help="config file to read custom locations from")
-    APP.arg("--csv-file",
-            help="CSV file (gpsbabel format) to read route/locations from "
+    APP.arg('--config-file', metavar='~/.edist.conf',
+            default=os.path.expanduser('~/.edist.conf'),
+            help='config file to read custom locations from')
+    APP.arg('--csv-file',
+            help='CSV file (gpsbabel format) to read route/locations from '
                  "('-' for STDIN)")
 
-    APP.arg("--unicode", action="store_true",
+    APP.arg('--unicode', action='store_true',
             default='UTF-8' == locale.getpreferredencoding(),
-            help="produce Unicode output")
-    APP.arg("--ascii", action="store_false", dest="unicode",
-            help="produce ASCII output")
-    APP.arg("-o", "--format", choices=("dms", "dm", "dd", "locator"),
-            default="dms",
-            help="produce output in dms, dm, d format or Maidenhead locator")
-    APP.arg("-g", "--string", action="store_true",
-            help="display named bearings")
-    APP.arg("-u", "--units", choices=("km", "sm", "nm"), metavar="km",
-            default="km",
-            help="display distances in kilometres(default), statute miles or "
-                 "nautical miles")
-    APP.arg("-t", "--time", choices=("h", "m", "s"), metavar="h", default="h",
-            help="display time in hours(default), minutes or seconds")
+            help='produce Unicode output')
+    APP.arg('--ascii', action='store_false', dest='unicode',
+            help='produce ASCII output')
+    APP.arg('-o', '--format', choices=('dms', 'dm', 'dd', 'locator'),
+            default='dms',
+            help='produce output in dms, dm, d format or Maidenhead locator')
+    APP.arg('-g', '--string', action='store_true',
+            help='display named bearings')
+    APP.arg('-u', '--units', choices=('km', 'sm', 'nm'), metavar='km',
+            default='km',
+            help='display distances in kilometres(default), statute miles or '
+                 'nautical miles')
+    APP.arg('-t', '--time', choices=('h', 'm', 's'), metavar='h', default='h',
+            help='display time in hours(default), minutes or seconds')
 
     args = APP._parser.parse_args()
     func = args._func

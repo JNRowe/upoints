@@ -26,15 +26,15 @@ from upoints.cities import (City, Cities)
 
 class TestCity(TestCase):
     def setUp(self):
-        self.t = City(498, "Zwickau", "City", "Sachsen", "DE", "Earth", 108835,
+        self.t = City(498, 'Zwickau', 'City', 'Sachsen', 'DE', 'Earth', 108835,
                       None, 12.5, 50.72, None,
                       (1997, 4, 10, 0, 0, 0, 3, 100, -1),
-                      "M.Dowling@tu-bs.de")
+                      'M.Dowling@tu-bs.de')
 
     def test___repr__(self):
         expect(repr(self.t)) == \
             ("City(498, 'Zwickau', 'City', 'Sachsen', 'DE', 'Earth', 108835, "
-             "None, 12.5, 50.72, None, (1997, 4, 10, 0, 0, 0, 3, 100, -1), "
+             'None, 12.5, 50.72, None, (1997, 4, 10, 0, 0, 0, 3, 100, -1), '
              "'M.Dowling@tu-bs.de')")
 
     def test___str__(self):
@@ -56,15 +56,15 @@ class TestCity(TestCase):
 
 class TestCities(TestCase):
     def test_import_locations(self):
-        cities_file = open("tests/data/city_data")
+        cities_file = open('tests/data/city_data')
         cities = Cities(cities_file)
-        data = [("%i - %s (%s;%s)" % (city.identifier, city.name,
+        data = [('%i - %s (%s;%s)' % (city.identifier, city.name,
                                       city.latitude, city.longitude))
                 for city in sorted(cities, key=lambda x: x.identifier)]
         expect(data[0]) == '126 - London (51.5;-0.083)'
         expect(data[1]) == '127 - Luxembourg (49.617;6.117)'
         expect(data[2]) == '128 - Lyon (45.767;4.867)'
         cities_file.seek(0)
-        manual_list = cities_file.read().split("//\\n")
+        manual_list = cities_file.read().split('//\\n')
         cities = Cities(manual_list)
         expect(len(cities)) == 1

@@ -64,8 +64,8 @@ class Baken(point.Point):
             latitude, longitude = utils.from_grid_locator(locator)
             super(Baken, self).__init__(latitude, longitude)
         else:
-            raise LookupError("Unable to instantiate baken object, no "
-                              "latitude or locator string")
+            raise LookupError('Unable to instantiate baken object, no '
+                              'latitude or locator string')
 
         self.antenna = antenna
         self.direction = direction
@@ -91,7 +91,7 @@ class Baken(point.Point):
         self._locator = value
         self._latitude, self._longitude = utils.from_grid_locator(value)
 
-    def __str__(self, mode="dms"):
+    def __str__(self, mode='dms'):
         """Pretty printed location string.
 
         :param str mode: Coordinate formatting system to use
@@ -101,7 +101,7 @@ class Baken(point.Point):
         """
         text = super(Baken, self).__str__(mode)
         if self._locator:
-            text = "%s (%s)" % (self._locator, text)
+            text = '%s (%s)' % (self._locator, text)
         return text
 
 
@@ -163,42 +163,42 @@ class Bakens(point.KeyedPoints):
         """
         self._baken_file = baken_file
         data = ConfigParser.ConfigParser()
-        if hasattr(baken_file, "readlines"):
+        if hasattr(baken_file, 'readlines'):
             data.readfp(baken_file)
         elif isinstance(baken_file, list):
             data.read(baken_file)
         elif isinstance(baken_file, basestring):
             data.readfp(open(baken_file))
         else:
-            raise TypeError("Unable to handle data of type %r"
+            raise TypeError('Unable to handle data of type %r'
                             % type(baken_file))
         valid_locator = re.compile(r"[A-Z]{2}\d{2}[A-Z]{2}")
         for name in data.sections():
             elements = {}
-            for item in ("latitude", "longitude", "antenna", "direction",
-                         "frequency", "height", "locator", "mode", "operator",
-                         "power", "qth"):
+            for item in ('latitude', 'longitude', 'antenna', 'direction',
+                         'frequency', 'height', 'locator', 'mode', 'operator',
+                         'power', 'qth'):
                 if data.has_option(name, item):
-                    if item in ("antenna", "locator", "mode", "power", "qth"):
+                    if item in ('antenna', 'locator', 'mode', 'power', 'qth'):
                         elements[item] = data.get(name, item)
-                    elif item == "operator":
-                        elements[item] = elements[item].split(",")
-                    elif item == "direction":
-                        elements[item] = data.get(name, item).split(",")
+                    elif item == 'operator':
+                        elements[item] = elements[item].split(',')
+                    elif item == 'direction':
+                        elements[item] = data.get(name, item).split(',')
                     else:
                         try:
                             elements[item] = data.getfloat(name, item)
                         except ValueError:
-                            logging.debug("Multiple frequency workaround for "
-                                          "%r entry" % name)
+                            logging.debug('Multiple frequency workaround for '
+                                          '%r entry' % name)
                             elements[item] = \
-                                map(float, data.get(name, item).split(","))
+                                map(float, data.get(name, item).split(','))
                 else:
                     elements[item] = None
-            if elements["latitude"] is None \
-               and not valid_locator.match(elements["locator"]):
-                logging.info("Skipping %r entry, as it contains no location "
-                             "data" % name)
+            if elements['latitude'] is None \
+               and not valid_locator.match(elements['locator']):
+                logging.info('Skipping %r entry, as it contains no location '
+                             'data' % name)
                 continue
 
             self[name] = Baken(**elements)

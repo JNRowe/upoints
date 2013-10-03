@@ -29,9 +29,9 @@ from upoints.utils import FileFormatError
 
 class TestLocation(TestCase):
     def setUp(self):
-        self.x = Location(2636782, "Stotfold", "Stotfold", None, 52.0,
-                          -0.2166667, "P", "PPL", "GB", None, "F8", None, None,
-                          None, 6245, None, 77, "Europe/London",
+        self.x = Location(2636782, 'Stotfold', 'Stotfold', None, 52.0,
+                          -0.2166667, 'P', 'PPL', 'GB', None, 'F8', None, None,
+                          None, 6245, None, 77, 'Europe/London',
                           datetime.date(2007, 6, 15), 0)
 
     def test___repr__(self):
@@ -42,17 +42,17 @@ class TestLocation(TestCase):
 
     def test___str__(self):
         expect(str(self.x)) == 'Stotfold (N52.000°; W000.217°)'
-        expect(str(self.x.__str__(mode="dms"))) == \
+        expect(str(self.x.__str__(mode='dms'))) == \
             """Stotfold (52°00'00"N, 000°13'00"W)"""
-        expect(str(self.x.__str__(mode="dm"))) == \
+        expect(str(self.x.__str__(mode='dm'))) == \
             "Stotfold (52°00.00'N, 000°13.00'W)"
-        self.x.alt_names = ["Home", "Target"]
+        self.x.alt_names = ['Home', 'Target']
         expect(str(self.x)) == 'Stotfold (Home, Target - N52.000°; W000.217°)'
 
 
 class TestLocations(TestCase):
     def test_import_locations(self):
-        locations = Locations(open("tests/data/geonames"))
+        locations = Locations(open('tests/data/geonames'))
         expect(str(locations[0])) == \
             'Afon Wyre (River Wayrai, River Wyrai, Wyre - N52.317°; W004.167°)'
         expect(str(locations[1])) == \
@@ -62,23 +62,23 @@ class TestLocations(TestCase):
 
         with expect.raises(FileFormatError,
                            "Incorrect data format, if you're using a file "
-                           "downloaded from geonames.org please report this "
-                           "to James Rowe <jnrowe@gmail.com>"):
-            Locations(open("tests/data/broken_geonames"))
+                           'downloaded from geonames.org please report this '
+                           'to James Rowe <jnrowe@gmail.com>'):
+            Locations(open('tests/data/broken_geonames'))
 
     def test_import_timezones_file(self):
-        locations = Locations(None, open("tests/data/geonames_timezones"))
+        locations = Locations(None, open('tests/data/geonames_timezones'))
         timezones = locations.timezones
         expect(timezones['Asia/Dubai']) == [240, 240]
         expect(timezones['Asia/Kabul']) == [270, 270]
         expect(timezones['Europe/Andorra']) == [60, 120]
 
         header_skip_check = Locations(None,
-                                      open("tests/data/geonames_timezones_header"))
+                                      open('tests/data/geonames_timezones_header'))
         expect(header_skip_check) == Locations()
 
         with expect.raises(FileFormatError,
                            "Incorrect data format, if you're using a file "
-                           "downloaded from geonames.org please report this "
-                           "to James Rowe <jnrowe@gmail.com>"):
-            Locations(None, open("tests/data/geonames_timezones_broken"))
+                           'downloaded from geonames.org please report this '
+                           'to James Rowe <jnrowe@gmail.com>'):
+            Locations(None, open('tests/data/geonames_timezones_broken'))

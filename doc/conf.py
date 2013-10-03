@@ -20,19 +20,19 @@ from glob import glob
 from PIL import Image
 
 
-for image in glob(".static/*.png"):
-    if "_mini.png" in image:
+for image in glob('.static/*.png'):
+    if '_mini.png' in image:
         continue
-    thumb_name = image.replace(".png", "_mini.png")
+    thumb_name = image.replace('.png', '_mini.png')
     if not os.path.exists(thumb_name) \
         or os.path.getmtime(image) > os.path.getmtime(thumb_name):
-        print "Creating thumbnail for", image
+        print 'Creating thumbnail for', image
         try:
             image = Image.open(image)
             image.thumbnail((256, 192))
             image.save(thumb_name)
         except IOError:
-            print "cannot create thumbnail for", image
+            print 'cannot create thumbnail for', image
             sys.exit(1)
 
 # If extensions (or modules to document with autodoc) are in another directory,
@@ -47,8 +47,8 @@ for image in glob(".static/*.png"):
 
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
-extensions = ["sphinx.ext.%s" % ext for ext in ["autodoc", "doctest", "todo", ]] + \
-    ["sphinxcontrib.%s" % ext for ext in []]
+extensions = ['sphinx.ext.%s' % ext for ext in ['autodoc', 'doctest', 'todo', ]] + \
+    ['sphinxcontrib.%s' % ext for ext in []]
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['.templates']
@@ -74,7 +74,7 @@ root_dir = os.path.sep.join(os.path.realpath(__file__).split(os.path.sep)[:-2])
 sys.path.insert(0, root_dir)
 from upoints import _version
 # The short X.Y version.
-version = ".".join(map(str, _version.tuple[:2]))
+version = '.'.join(map(str, _version.tuple[:2]))
 # The full version, including alpha/beta/rc tags.
 release = _version.dotted
 
@@ -124,7 +124,7 @@ html_theme = 'default'
 # further.  For a list of options available for each theme, see the
 # documentation.
 html_theme_options = {
-    "externalrefs": True,
+    'externalrefs': True,
 }
 
 # Add any paths that contain custom themes here, relative to this directory.
@@ -247,7 +247,7 @@ man_pages = [
 
 todo_include_todos = True
 
-autoclass_content = "both"
+autoclass_content = 'both'
 
 
 intersphinx_mapping = {
