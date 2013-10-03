@@ -17,7 +17,7 @@ import sys
 
 from glob import glob
 
-import Image
+from PIL import Image
 
 
 for image in glob(".static/*.png"):
