@@ -29,6 +29,7 @@ import math
 import re
 
 from lxml import etree
+from lxml import objectify as _objectify
 
 from operator import add
 
@@ -195,25 +196,60 @@ def prepare_csv_read(data, field_names, *args, **kwargs):
     return csv.DictReader(data, field_names, *args, **kwargs)
 
 
-def prepare_xml_read(data):
+def prepare_xml_read(data, objectify=False):
     """Prepare various input types for XML parsing.
 
     :type data: ``file`` like object, ``list``, ``str``
     :param data: Data to read
+    :type objectify: bool
+    :param objectify: Parse using lxml's objectify data binding
     :rtype: :class:`etree.ElementTree`
     :return: Tree suitable for parsing
     :raise TypeError: Invalid value for data
 
     """
+    mod = _objectify if objectify else etree
     if hasattr(data, 'readlines'):
-        data = etree.parse(data)
+        data = mod.parse(data).getroot()
     elif isinstance(data, list):
-        data = etree.fromstring(''.join(data))
+        data = mod.fromstring(''.join(data))
     elif isinstance(data, basestring):
-        data = etree.parse(open(data))
+        data = mod.parse(open(data)).getroot()
     else:
         raise TypeError('Unable to handle data of type %r' % type(data))
     return data
+
+
+def element_creator(namespace=None):
+    """Create a simple namespace-aware objectify element creator.
+
+    :param str namespace: Namespace to work in
+    :rtype: ``function``
+    :return: Namespace-aware element creator
+
+    """
+    ELEMENT_MAKER = _objectify.ElementMaker(namespace=namespace,
+                                            annotate=False)
+
+    def create_elem(tag, attr=None, text=None):
+        """:class:`objectify.Element` wrapper with namespace defined.
+
+        :param str tag: Tag name
+        :param dict attr: Default attributes for tag
+        :param str text: Text content for the tag
+        :rtype: ``_objectify.ObjectifiedElement``
+        :return: objectify element
+
+        """
+        if not attr:
+            attr = {}
+        if text:
+            element = getattr(ELEMENT_MAKER, tag)(text, **attr)
+        else:
+            element = getattr(ELEMENT_MAKER, tag)(**attr)
+        return element
+
+    return create_elem
 
 #}
 

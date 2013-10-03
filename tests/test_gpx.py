@@ -48,28 +48,6 @@ class Test_GpxElem(TestCase):
             ("""name (52°00'00"N, 000°00'00"E @ 40m on """
              '2008-07-25T00:00:00+00:00) [desc]')
 
-    def test_togpx(self):
-        expect(etree.tostring(_GpxElem(52, 0).togpx())) == \
-            '<gpx:None xmlns:gpx="http://www.topografix.com/GPX/1/1" lat="52.0" lon="0.0"/>'
-        expect(etree.tostring(_GpxElem(52, 0, 'Cambridge').togpx())) == \
-            ('<gpx:None xmlns:gpx="http://www.topografix.com/GPX/1/1" lat="52.0" lon="0.0">'
-             '<gpx:name>Cambridge</gpx:name>'
-             '</gpx:None>')
-        expect(etree.tostring(_GpxElem(52, 0, 'Cambridge', 'in the UK').togpx())) == \
-            ('<gpx:None xmlns:gpx="http://www.topografix.com/GPX/1/1" lat="52.0" lon="0.0">'
-             '<gpx:name>Cambridge</gpx:name><gpx:desc>in the UK</gpx:desc>'
-             '</gpx:None>')
-        expect(etree.tostring(_GpxElem(52, 0, 'Cambridge', 'in the UK').togpx())) == \
-            ('<gpx:None xmlns:gpx="http://www.topografix.com/GPX/1/1" lat="52.0" lon="0.0">'
-             '<gpx:name>Cambridge</gpx:name><gpx:desc>in the UK</gpx:desc>'
-             '</gpx:None>')
-        expect(etree.tostring(_GpxElem(52, 0, 'name', 'desc', 40,
-                                    utils.Timestamp(2008, 7, 25)).togpx())) == \
-            ('<gpx:None xmlns:gpx="http://www.topografix.com/GPX/1/1" lat="52.0" lon="0.0">'
-             '<gpx:name>name</gpx:name><gpx:desc>desc</gpx:desc><gpx:ele>40</gpx:ele>'
-             '<gpx:time>2008-07-25T00:00:00+00:00</gpx:time>'
-             '</gpx:None>')
-
 
 class Test_GpxMeta(TestCase):
     def test_togpx(self):
