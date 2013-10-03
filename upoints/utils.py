@@ -509,8 +509,6 @@ def to_iso6709(latitude, longitude, altitude=None, format="dd", precision=4):
 
     .. _Latitude, Longitude and Altitude format for geospatial information:
        http://www.w3.org/2005/Incubator/geo/Wiki/LatitudeLongitudeAltitude
-    .. _simplified ISO 8601 profile: http://www.w3.org/TR/NOTE-datetime
-       http://www.w3.org/2005/Incubator/geo/Wiki/LatitudeLongitudeAltitude
     .. _wikipedia ISO 6709 page: http://en.wikipedia.org/wiki/ISO_6709
 
     """
