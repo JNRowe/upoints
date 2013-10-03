@@ -53,6 +53,7 @@ USAGE = __doc__[:__doc__.find('\n\n', 100)].replace('``', "'").splitlines()[2:]
 USAGE = "\n".join(USAGE).replace("edist", "%(prog)s")
 
 import ConfigParser
+import locale
 import logging
 import os
 import sys
@@ -542,8 +543,11 @@ def main():
             help="CSV file (gpsbabel format) to read route/locations from "
                  "('-' for STDIN)")
 
-    APP.arg("--unicode", action="store_true", help="produce Unicode output")
-    APP.arg("--ascii", action="store_true", help="produce ASCII output")
+    APP.arg("--unicode", action="store_true",
+            default='UTF-8' == locale.getpreferredencoding(),
+            help="produce Unicode output")
+    APP.arg("--ascii", action="store_false", dest="unicode",
+            help="produce ASCII output")
     APP.arg("-o", "--format", choices=("dms", "dm", "dd", "locator"),
             default="dms",
             help="produce output in dms, dm, d format or Maidenhead locator")
@@ -558,15 +562,6 @@ def main():
 
     args = APP._parser.parse_args()
     func = args._func
-
-    if not args.unicode and not args.ascii:
-        logging.debug("Neither ASCII nor Unicode is set, guessing")
-        if "utf8" in os.getenv("LC_ALL", "").lower().replace("-", ""):
-            args.unicode = True
-            logging.debug("Setting output to Unicode")
-        else:
-            args.unicode = False
-            logging.debug("Setting output to ASCII")
 
     if args.csv_file:
         config_locations, args.location = read_csv(args.csv_file)
