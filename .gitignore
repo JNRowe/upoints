@@ -3,7 +3,6 @@ dist/
 doc/.build/
 doc/.static/*_mini.png
 upoints.egg-info/
-test/data
 
 *.html
 *.py[co]
@@ -15,9 +14,10 @@ ChangeLog
 MANIFEST
 
 # test data files that can't be distributed
-test/data/alltrigs-wgs84.txt
-test/data/cells.txt
-test/data/cities.dat
-test/data/earth-markers-schaumann
-test/data/nsd_bbsss.txt
-test/data/nsd_cccc.txt
+tests/data/.gitignore
+tests/data/alltrigs-wgs84.txt
+tests/data/cells.txt
+tests/data/cities.dat
+tests/data/earth-markers-schaumann
+tests/data/nsd_bbsss.txt
+tests/data/nsd_cccc.txt

@@ -60,12 +60,14 @@ class TestNode(TestCase):
             """Node 0 (52°00'00"N, 000°00'00"E) [key: value]"""
 
     def test_toosm(self):
-        expect(etree.tostring(self.bare.toosm())) == \
-            '<node id="0" lat="52.0" lon="0.0" visible="false" />'
-        expect(etree.tostring(self.named.toosm())) == \
-            '<node id="0" lat="52.0" lon="0.0" timestamp="2008-01-25T00:00:00+00:00" user="jnrowe" visible="true" />'
-        expect(etree.tostring(self.tagged.toosm())) == \
-            '<node id="0" lat="52.0" lon="0.0" visible="false"><tag k="key" v="value" /></node>'
+        xml_str_compare('<node id="0" lat="52.0" lon="0.0" visible="false"/>',
+                        etree.tostring(self.bare.toosm()))
+        xml_str_compare(
+            '<node id="0" lat="52.0" lon="0.0" timestamp="2008-01-25T00:00:00+00:00" user="jnrowe" visible="true"/>',
+            etree.tostring(self.named.toosm()))
+        xml_str_compare(
+            '<node id="0" lat="52.0" lon="0.0" visible="false"><tag k="key" v="value"/></node>',
+            etree.tostring(self.tagged.toosm()))
 
     def test_get_area_url(self):
         expect(self.bare.get_area_url(3)) == \
@@ -137,7 +139,7 @@ class TestWay(TestCase):
 
 class TestOsm(TestCase):
     def setUp(self):
-        self.region = Osm(open("test/data/osm"))
+        self.region = Osm(open("tests/data/osm"))
 
     def test_import_locations(self):
         data = map(str, sorted([x for x in self.region if isinstance(x, Node)],
@@ -157,21 +159,22 @@ class TestOsm(TestCase):
         f = StringIO()
         xml.write(f)
         f.seek(0)
-        expect(f.read()) == \
+        xml_str_compare(
             ('<osm generator="upoints/0.11.0" version="0.5">'
              '<node id="0" lat="52.015749" lon="-0.221765" '
              'timestamp="2008-01-25T12:52:11+00:00" user="jnrowe" '
-             'visible="true" />'
+             'visible="true"/>'
              '<node id="1" lat="52.015761" lon="-0.221767" '
              'timestamp="2008-01-25T12:53:00+00:00" visible="true">'
-             '<tag k="highway" v="crossing" /><tag k="created_by" v="hand" />'
+             '<tag k="created_by" v="hand"/><tag k="highway" v="crossing"/>'
              '</node>'
              '<node id="2" lat="52.015754" lon="-0.221766" '
              'timestamp="2008-01-25T12:52:30+00:00" user="jnrowe" '
              'visible="true">'
-             '<tag k="amenity" v="pub" />'
+             '<tag k="amenity" v="pub"/>'
              '</node>'
              '<way id="0" timestamp="2008-01-25T13:00:00+00:00" visible="true">'
-             '<tag k="highway" v="primary" /><tag k="ref" v="My Way" />'
-             '<nd ref="0" /><nd ref="1" /><nd ref="2" />'
-             '</way></osm>')
+             '<tag k="highway" v="primary"/><tag k="ref" v="My Way"/>'
+             '<nd ref="0"/><nd ref="1"/><nd ref="2"/>'
+             '</way></osm>'),
+            f.read())

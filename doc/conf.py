@@ -47,7 +47,7 @@ for image in glob(".static/*.png"):
 
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom ones.
-extensions = ["sphinx.ext.%s" % ext for ext in ["autodoc", "todo", ]] + \
+extensions = ["sphinx.ext.%s" % ext for ext in ["autodoc", "doctest", "todo", ]] + \
     ["sphinxcontrib.%s" % ext for ext in []]
 
 # Add any paths that contain templates here, relative to this directory.

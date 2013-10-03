@@ -41,12 +41,12 @@ class TestXearth(TestCase):
 
 class TestXearths(TestCase):
     def test___str__(self):
-        markers = Xearths(open("test/data/xearth"))
+        markers = Xearths(open("tests/data/xearth"))
         expect(markers.__str__().splitlines()) == \
             ['52.015000 -0.221000 "Home"', '52.633300 -2.500000 "Telford"']
 
     def test_import_locations(self):
-        markers = Xearths(open("test/data/xearth"))
+        markers = Xearths(open("tests/data/xearth"))
         expect(str(markers['Home'])) == \
             "James Rowe's home (N52.015°; W000.221°)"
         expect(str(markers['Telford'])) == "N52.633°; W002.500°"

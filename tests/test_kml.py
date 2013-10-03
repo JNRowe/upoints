@@ -24,6 +24,8 @@ from expecter import expect
 
 from upoints.kml import (Placemark, Placemarks, etree)
 
+from utils import xml_str_compare
+
 
 class TestPlacemark(TestCase):
     def test___repr__(self):
@@ -46,60 +48,46 @@ class TestPlacemark(TestCase):
 
     def test_tokml(self):
         expect(etree.tostring(Placemark(52, 0, 4).tokml())) == \
-            ('<ns0:Placemark xmlns:ns0="http://earth.google.com/kml/2.2">'
-             '<ns0:Point><ns0:coordinates>0.0,52.0,4</ns0:coordinates></ns0:Point>'
-             '</ns0:Placemark>')
+            ('<kml:Placemark xmlns:kml="http://earth.google.com/kml/2.2">'
+             '<kml:Point><kml:coordinates>0.0,52.0,4</kml:coordinates></kml:Point>'
+             '</kml:Placemark>')
         expect(etree.tostring(Placemark(52, 0, 4, "Cambridge").tokml())) == \
-            ('<ns0:Placemark xmlns:ns0="http://earth.google.com/kml/2.2" id="Cambridge">'
-             '<ns0:name>Cambridge</ns0:name><ns0:Point><ns0:coordinates>0.0,52.0,4</ns0:coordinates></ns0:Point>'
-             '</ns0:Placemark>')
-        expect(etree.tostring(Placemark(52, 0, 4).tokml(kml_version="2.0"))) == \
-            ('<ns0:Placemark xmlns:ns0="http://earth.google.com/kml/2.0">'
-             '<ns0:Point><ns0:coordinates>0.0,52.0,4</ns0:coordinates></ns0:Point></ns0:Placemark>')
+            ('<kml:Placemark xmlns:kml="http://earth.google.com/kml/2.2" id="Cambridge">'
+             '<kml:name>Cambridge</kml:name><kml:Point><kml:coordinates>0.0,52.0,4</kml:coordinates></kml:Point>'
+             '</kml:Placemark>')
+        expect(etree.tostring(Placemark(52, 0, 4).tokml())) == \
+            ('<kml:Placemark xmlns:kml="http://earth.google.com/kml/2.2">'
+             '<kml:Point><kml:coordinates>0.0,52.0,4</kml:coordinates></kml:Point></kml:Placemark>')
         expect(etree.tostring(Placemark(52, 0, 4, "Cambridge", "in the UK").tokml())) == \
-            ('<ns0:Placemark xmlns:ns0="http://earth.google.com/kml/2.2" id="Cambridge">'
-             '<ns0:name>Cambridge</ns0:name><ns0:description>in the UK</ns0:description>'
-             '<ns0:Point><ns0:coordinates>0.0,52.0,4</ns0:coordinates></ns0:Point>'
-             '</ns0:Placemark>')
+            ('<kml:Placemark xmlns:kml="http://earth.google.com/kml/2.2" id="Cambridge">'
+             '<kml:name>Cambridge</kml:name><kml:description>in the UK</kml:description>'
+             '<kml:Point><kml:coordinates>0.0,52.0,4</kml:coordinates></kml:Point>'
+             '</kml:Placemark>')
 
 
 class TestPlacemarks(TestCase):
     def test_import_locations(self):
-        locations = Placemarks(open("test/data/kml"))
+        locations = Placemarks(open("tests/data/kml"))
         expect(str(locations['Cambridge'])) ==  \
             """Cambridge (52°10'01"N, 000°23'24"E)"""
         expect(str(locations['Home'])) == \
             """Home (52°00'54"N, 000°13'15"W alt 60m)"""
 
     def test_export_kml_file(self):
-        locations = Placemarks(open("test/data/kml"))
+        locations = Placemarks(open("tests/data/kml"))
         xml = locations.export_kml_file()
         f = StringIO()
         xml.write(f)
         f.seek(0)
-        expect(f.read()) == \
-            ('<ns0:kml xmlns:ns0="http://earth.google.com/kml/2.2">'
-             '<ns0:Document>'
-             '<ns0:Placemark id="Home"><ns0:name>Home</ns0:name>'
-             '<ns0:Point><ns0:coordinates>-0.221,52.015,60</ns0:coordinates></ns0:Point>'
-             '</ns0:Placemark>'
-             '<ns0:Placemark id="Cambridge"><ns0:name>Cambridge</ns0:name>'
-             '<ns0:Point><ns0:coordinates>0.39,52.167</ns0:coordinates></ns0:Point>'
-             '</ns0:Placemark>'
-             '</ns0:Document>'
-             '</ns0:kml>')
-        xml = locations.export_kml_file("2.0")
-        f = StringIO()
-        xml.write(f)
-        f.seek(0)
-        expect(f.read()) == \
-            ('<ns0:kml xmlns:ns0="http://earth.google.com/kml/2.0">'
-             '<ns0:Document>'
-             '<ns0:Placemark id="Home"><ns0:name>Home</ns0:name>'
-             '<ns0:Point><ns0:coordinates>-0.221,52.015,60</ns0:coordinates></ns0:Point>'
-             '</ns0:Placemark>'
-             '<ns0:Placemark id="Cambridge"><ns0:name>Cambridge</ns0:name>'
-             '<ns0:Point><ns0:coordinates>0.39,52.167</ns0:coordinates></ns0:Point>'
-             '</ns0:Placemark>'
-             '</ns0:Document>'
-             '</ns0:kml>')
+        xml_str_compare(
+            ('<kml:kml xmlns:kml="http://earth.google.com/kml/2.2">'
+             '<kml:Document>'
+             '<kml:Placemark id="Cambridge"><kml:name>Cambridge</kml:name>'
+             '<kml:Point><kml:coordinates>0.39,52.167</kml:coordinates></kml:Point>'
+             '</kml:Placemark>'
+             '<kml:Placemark id="Home"><kml:name>Home</kml:name>'
+             '<kml:Point><kml:coordinates>-0.221,52.015,60</kml:coordinates></kml:Point>'
+             '</kml:Placemark>'
+             '</kml:Document>'
+             '</kml:kml>'),
+            f.read())
