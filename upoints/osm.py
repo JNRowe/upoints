@@ -21,31 +21,11 @@ import urllib
 
 from operator import attrgetter
 
-from lxml import (etree, objectify)
+from lxml import etree
 
 from upoints import (__version__, point, utils)
 
-
-ELEMENT_MAKER = objectify.ElementMaker(annotate=False)
-
-
-def create_elem(tag, attr=None, text=None):
-    """Create a partial :class:`etree.Element` wrapper.
-
-    :param str tag: Tag name
-    :param dict attr: Default attributes for tag
-    :param str text: Text content for the tag
-    :rtype: ``function``
-    :return: :class:`etree.Element` wrapper
-
-    """
-    if not attr:
-        attr = {}
-    if text:
-        element = getattr(ELEMENT_MAKER, tag)(text, **attr)
-    else:
-        element = getattr(ELEMENT_MAKER, tag)(**attr)
-    return element
+create_elem = utils.element_creator()
 
 
 def _parse_flags(element):

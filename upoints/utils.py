@@ -219,6 +219,38 @@ def prepare_xml_read(data, objectify=False):
         raise TypeError('Unable to handle data of type %r' % type(data))
     return data
 
+
+def element_creator(namespace=None):
+    """Create a simple namespace-aware objectify element creator.
+
+    :param str namespace: Namespace to work in
+    :rtype: ``function``
+    :return: Namespace-aware element creator
+
+    """
+    ELEMENT_MAKER = _objectify.ElementMaker(namespace=namespace,
+                                            annotate=False)
+
+    def create_elem(tag, attr=None, text=None):
+        """:class:`objectify.Element` wrapper with namespace defined.
+
+        :param str tag: Tag name
+        :param dict attr: Default attributes for tag
+        :param str text: Text content for the tag
+        :rtype: ``_objectify.ObjectifiedElement``
+        :return: objectify element
+
+        """
+        if not attr:
+            attr = {}
+        if text:
+            element = getattr(ELEMENT_MAKER, tag)(text, **attr)
+        else:
+            element = getattr(ELEMENT_MAKER, tag)(**attr)
+        return element
+
+    return create_elem
+
 #}
 
 

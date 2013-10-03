@@ -21,7 +21,7 @@ import time
 
 from operator import attrgetter
 
-from lxml import (etree, objectify)
+from lxml import etree
 
 from upoints import (point, utils)
 
@@ -29,26 +29,7 @@ from upoints import (point, utils)
 GPX_NS = 'http://www.topografix.com/GPX/1/1'
 etree.register_namespace('gpx', GPX_NS)
 
-ELEMENT_MAKER = objectify.ElementMaker(namespace=GPX_NS, annotate=False)
-
-
-def create_elem(tag, attr=None, text=None):
-    """Create a partial :class:`etree.Element` wrapper with namespace defined.
-
-    :param str tag: Tag name
-    :param dict attr: Default attributes for tag
-    :param str text: Text content for the tag
-    :rtype: ``function``
-    :return: :class:`etree.Element` wrapper with predefined namespace
-
-    """
-    if not attr:
-        attr = {}
-    if text:
-        element = getattr(ELEMENT_MAKER, tag)(text, **attr)
-    else:
-        element = getattr(ELEMENT_MAKER, tag)(**attr)
-    return element
+create_elem = utils.element_creator(GPX_NS)
 
 
 class _GpxElem(point.TimedPoint):
