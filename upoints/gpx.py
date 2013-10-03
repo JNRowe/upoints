@@ -19,10 +19,9 @@
 
 import time
 
-from functools import partial
 from operator import attrgetter
 
-from lxml import etree
+from lxml import (etree, objectify)
 
 from upoints import (point, utils)
 
@@ -30,11 +29,13 @@ from upoints import (point, utils)
 GPX_NS = 'http://www.topografix.com/GPX/1/1'
 etree.register_namespace('gpx', GPX_NS)
 
+ELEMENT_MAKER = objectify.ElementMaker(namespace=GPX_NS, annotate=False)
+
 
 def create_elem(tag, attr=None, text=None):
     """Create a partial :class:`etree.Element` wrapper with namespace defined.
 
-    :param str tag:    Tag name
+    :param str tag: Tag name
     :param dict attr: Default attributes for tag
     :param str text: Text content for the tag
     :rtype: ``function``
@@ -43,9 +44,10 @@ def create_elem(tag, attr=None, text=None):
     """
     if not attr:
         attr = {}
-    element = etree.Element('{%s}%s' % (GPX_NS, tag), attr)
     if text:
-        element.text = text
+        element = getattr(ELEMENT_MAKER, tag)(text, **attr)
+    else:
+        element = getattr(ELEMENT_MAKER, tag)(**attr)
     return element
 
 
@@ -107,18 +109,17 @@ class _GpxElem(point.TimedPoint):
         :return: GPX element
 
         """
-        elementise = partial(create_elem)
-        element = elementise(self.__class__._elem_name,
-                             {'lat': str(self.latitude),
-                              'lon': str(self.longitude)})
+        element = create_elem(self.__class__._elem_name,
+                              {'lat': str(self.latitude),
+                               'lon': str(self.longitude)})
         if self.name:
-            element.append(elementise('name', None, self.name))
+            element.append(create_elem('name', text=self.name))
         if self.description:
-            element.append(elementise('desc', None, self.description))
+            element.append(create_elem('desc', text=self.description))
         if self.elevation:
-            element.append(elementise('ele', None, str(self.elevation)))
+            element.append(create_elem('ele', text=str(self.elevation)))
         if self.time:
-            element.append(elementise('time', None, self.time.isoformat()))
+            element.append(create_elem('time', text=self.time.isoformat()))
         return element
 
 
@@ -346,53 +347,54 @@ class _GpxMeta(object):
         :return: GPX metadata element
 
         """
-        elementise = partial(create_elem)
-        metadata = elementise('metadata', None)
+        metadata = create_elem('metadata')
         if self.name:
-            metadata.append(elementise('name', None, self.name))
+            metadata.append(create_elem('name', text=self.name))
         if self.desc:
-            metadata.append(elementise('desc', None, self.desc))
+            metadata.append(create_elem('desc', text=self.desc))
         if self.author:
-            element = elementise('author', None)
+            element = create_elem('author')
             if self.author['name']:
-                element.append(elementise('name', None, self.author['name']))
+                element.append(create_elem('name', text=self.author['name']))
             if self.author['email']:
-                element.append(elementise('email',
-                                          dict(zip(self.author['email'].split('@'),
-                                                   ('id', 'domain')))))
+                attr = dict(zip(self.author['email'].split('@'),
+                                ('id', 'domain')))
+                element.append(create_elem('email', attr))
             if self.author['link']:
-                element.append(elementise('link', None, self.author['link']))
+                element.append(create_elem('link', text=self.author['link']))
             metadata.append(element)
         if self.copyright:
-            author = {'author': self.copyright['name']} if self.copyright['name'] else None
-            element = elementise('copyright', author)
+            if self.copyright['name']:
+                author = {'author': self.copyright['name']}
+            else:
+                author = None
+            element = create_elem('copyright', author)
             if self.copyright['year']:
-                element.append(elementise('year', None, self.copyright['year']))
+                element.append(create_elem('year', text=self.copyright['year']))
             if self.copyright['license']:
-                license = elementise('license', None)
+                license = create_elem('license')
                 element.append(license)
             metadata.append(element)
         if self.link:
             for link in self.link:
                 if isinstance(link, basestring):
-                    element = elementise('link', {'href': link})
+                    element = create_elem('link', {'href': link})
                 else:
-                    element = elementise('link', {'href': link['href']})
+                    element = create_elem('link', {'href': link['href']})
                     if link['text']:
-                        element.append(elementise('text', None, link['text']))
+                        element.append(create_elem('text', text=link['text']))
                     if link['type']:
-                        element.append(elementise('type', None, link['type']))
+                        element.append(create_elem('type', text=link['type']))
                 metadata.append(element)
-        element = elementise('time', None)
         if isinstance(self.time, (time.struct_time, tuple)):
-            element.text = time.strftime('%Y-%m-%dT%H:%M:%S%z', self.time)
+            text = time.strftime('%Y-%m-%dT%H:%M:%S%z', self.time)
         elif isinstance(self.time, utils.Timestamp):
-            element.text = self.time.isoformat()
+            text = self.time.isoformat()
         else:
-            element.text = time.strftime('%Y-%m-%dT%H:%M:%S%z')
-        metadata.append(element)
+            text = time.strftime('%Y-%m-%dT%H:%M:%S%z')
+        metadata.append(create_elem('time', text=text))
         if self.keywords:
-            metadata.append(elementise('keywords', None, self.keywords))
+            metadata.append(create_elem('keywords', text=self.keywords))
         if self.bounds:
             if not isinstance(self.bounds, dict):
                 latitudes = map(attrgetter('latitude'), self.bounds)
@@ -405,9 +407,9 @@ class _GpxMeta(object):
                 }
             else:
                 bounds = dict((k, str(v)) for k, v in self.bounds.items())
-            metadata.append(elementise('bounds', bounds))
+            metadata.append(create_elem('bounds', bounds))
         if self.extensions:
-            element = elementise('extensions')
+            element = create_elem('extensions')
             for i in self.extensions:
                 element.append(i)
             metadata.append(self.extensions)
@@ -686,15 +688,14 @@ class Trackpoints(_SegWrap):
         :return: GPX element tree depicting ``Trackpoints`` objects
 
         """
-        elementise = partial(create_elem)
-        gpx = elementise('gpx', None)
+        gpx = create_elem('gpx')
         if not self.metadata.bounds:
             self.metadata.bounds = [j for i in self for j in i]
         gpx.append(self.metadata.togpx())
-        track = elementise('trk', None)
+        track = create_elem('trk')
         gpx.append(track)
         for segment in self:
-            chunk = elementise('trkseg', None)
+            chunk = create_elem('trkseg')
             track.append(chunk)
             for place in segment:
                 chunk.append(place.togpx())
@@ -808,13 +809,12 @@ class Routepoints(_SegWrap):
         :return: GPX element tree depicting :class:`Routepoints` objects
 
         """
-        elementise = partial(create_elem)
-        gpx = elementise('gpx', None)
+        gpx = create_elem('gpx')
         if not self.metadata.bounds:
             self.metadata.bounds = [j for i in self for j in i]
         gpx.append(self.metadata.togpx())
         for rte in self:
-            chunk = elementise('rte', None)
+            chunk = create_elem('rte')
             gpx.append(chunk)
             for place in rte:
                 chunk.append(place.togpx())

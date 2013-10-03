@@ -21,9 +21,31 @@ import urllib
 
 from operator import attrgetter
 
-from lxml import etree
+from lxml import (etree, objectify)
 
 from upoints import (__version__, point, utils)
+
+
+ELEMENT_MAKER = objectify.ElementMaker(annotate=False)
+
+
+def create_elem(tag, attr=None, text=None):
+    """Create a partial :class:`etree.Element` wrapper.
+
+    :param str tag: Tag name
+    :param dict attr: Default attributes for tag
+    :param str text: Text content for the tag
+    :rtype: ``function``
+    :return: :class:`etree.Element` wrapper
+
+    """
+    if not attr:
+        attr = {}
+    if text:
+        element = getattr(ELEMENT_MAKER, tag)(text, **attr)
+    else:
+        element = getattr(ELEMENT_MAKER, tag)(**attr)
+    return element
 
 
 def _parse_flags(element):
@@ -157,9 +179,9 @@ class Node(point.Point):
         :return: OSM node element
 
         """
-        node = etree.Element('node', {'id': str(self.ident),
-                                      'lat': str(self.latitude),
-                                      'lon': str(self.longitude)})
+        node = create_elem('node', {'id': str(self.ident),
+                                    'lat': str(self.latitude),
+                                    'lon': str(self.longitude)})
         node.set('visible', 'true' if self.visible else 'false')
         if self.user:
             node.set('user', self.user)
@@ -167,8 +189,7 @@ class Node(point.Point):
             node.set('timestamp', self.timestamp.isoformat())
         if self.tags:
             for key, value in sorted(self.tags.items()):
-                tag = etree.Element('tag', {'k': key, 'v': value})
-                node.append(tag)
+                node.append(create_elem('tag', {'k': key, 'v': value}))
 
         return node
 
@@ -281,7 +302,7 @@ class Way(point.Points):
         :return: OSM way element
 
         """
-        way = etree.Element('way', {'id': str(self.ident)})
+        way = create_elem('way', {'id': str(self.ident)})
         way.set('visible', 'true' if self.visible else 'false')
         if self.user:
             way.set('user', self.user)
@@ -289,12 +310,10 @@ class Way(point.Points):
             way.set('timestamp', self.timestamp.isoformat())
         if self.tags:
             for key, value in sorted(self.tags.items()):
-                tag = etree.Element('tag', {'k': key, 'v': value})
-                way.append(tag)
+                way.append(create_elem('tag', {'k': key, 'v': value}))
 
         for node in self:
-            tag = etree.Element('nd', {'ref': str(node)})
-            way.append(tag)
+            way.append(create_elem('nd', {'ref': str(node)}))
 
         return way
 
@@ -406,9 +425,8 @@ class Osm(point.Points):
 
     def export_osm_file(self):
         """Generate OpenStreetMap element tree from `Osm`"""
-        osm = etree.Element('osm', {'generator': self.generator,
-                                    'version': self.version})
-        for obj in self:
-            osm.append(obj.toosm())
+        osm = create_elem('osm', {'generator': self.generator,
+                                  'version': self.version})
+        osm.extend(obj.toosm() for obj in self)
 
         return etree.ElementTree(osm)

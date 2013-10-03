@@ -19,14 +19,14 @@
 
 import logging
 
-from functools import partial
-
-from lxml import etree
+from lxml import (etree, objectify)
 
 from upoints import (point, trigpoints, utils)
 
 KML_NS = 'http://earth.google.com/kml/2.2'
 etree.register_namespace('kml', KML_NS)
+
+ELEMENT_MAKER = objectify.ElementMaker(namespace=KML_NS, annotate=False)
 
 
 def create_elem(tag, attr=None, text=None):
@@ -41,9 +41,10 @@ def create_elem(tag, attr=None, text=None):
     """
     if not attr:
         attr = {}
-    element = etree.Element('{%s}%s' % (KML_NS, tag), attr)
     if text:
-        element.text = text
+        element = getattr(ELEMENT_MAKER, tag)(text, **attr)
+    else:
+        element = getattr(ELEMENT_MAKER, tag)(**attr)
     return element
 
 
@@ -95,15 +96,14 @@ class Placemark(trigpoints.Trigpoint):
         :return: KML Placemark element
 
         """
-        element = partial(create_elem)
-        placemark = element('Placemark')
+        placemark = create_elem('Placemark')
         if self.name:
             placemark.set('id', self.name)
-            nametag = element('name', None, self.name)
+            placemark.name = create_elem('name', text=self.name)
         if self.description:
-            desctag = element('description', None, self.description)
-        tpoint = element('Point')
-        coords = element('coordinates')
+            placemark.description = create_elem('description',
+                                                text=self.description)
+        placemark.Point = create_elem('Point')
 
         data = [str(self.longitude), str(self.latitude)]
         if self.altitude:
@@ -111,14 +111,8 @@ class Placemark(trigpoints.Trigpoint):
                 data.append('%i' % self.altitude)
             else:
                 data.append(str(self.altitude))
-        coords.text = ','.join(data)
-
-        if self.name:
-            placemark.append(nametag)
-        if self.description:
-            placemark.append(desctag)
-        placemark.append(tpoint)
-        tpoint.append(coords)
+        placemark.Point.coordinates = create_elem('coordinates',
+                                                  text=','.join(data))
 
         return placemark
 
@@ -213,11 +207,9 @@ class Placemarks(point.KeyedPoints):
         :return: KML element tree depicting ``Placemarks``
 
         """
-        element = partial(create_elem)
-        kml = element('kml')
-        doc = element('Document')
-        for place in sorted(self.values()):
-            doc.append(place.tokml())
-        kml.append(doc)
+        kml = create_elem('kml')
+        kml.Document = create_elem('Document')
+        for place in sorted(self.values(), key=lambda x: x.name):
+            kml.Document.append(place.tokml())
 
         return etree.ElementTree(kml)
