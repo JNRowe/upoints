@@ -29,18 +29,20 @@ def xml_compare(elem1, elem2, ellipsis=False):
         expect(elem2.attrib.get(key)) == value
     for key in elem2.attrib.keys():
         expect(elem1.attrib).contains(key)
+    text1 = elem1.text.strip() if elem1.text else ''
+    text2 = elem2.text.strip() if elem2.text else ''
+    tail1 = elem1.tail.strip() if elem1.tail else ''
+    tail2 = elem2.tail.strip() if elem2.tail else ''
     if ellipsis:
-        if not ellipsis_match(elem1.text if elem1.text else '',
-                              elem2.text if elem2.text else ''):
+        if not ellipsis_match(text1, text2):
             raise ValueError('text mismatch: %r != %r' % (elem1.text,
                                                           elem2.text))
-        if not ellipsis_match(elem1.tail if elem1.tail else '',
-                              elem2.tail if elem2.tail else ''):
+        if not ellipsis_match(tail1, tail2):
             raise ValueError('tail mismatch: %r != %r' % (elem1.text,
                                                           elem2.text))
     else:
-        expect(elem1.text) == elem2.text
-        expect(elem1.tail) == elem2.tail
+        expect(text1) == text2
+        expect(tail1) == tail2
     children1 = elem1.getchildren()
     children2 = elem2.getchildren()
     expect(len(children1)) == len(children2)

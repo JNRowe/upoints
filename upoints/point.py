@@ -28,6 +28,7 @@ __doc__ += """.
 import math
 
 from upoints import utils
+from upoints.compat import mangle_repr_type
 
 
 def _manage_location(attr):
@@ -72,6 +73,7 @@ def _dms_formatter(latitude, longitude, mode, unistr=False):
     return text
 
 
+@mangle_repr_type
 class Point(object):
 
     """Simple class for representing a location on a sphere.
@@ -523,6 +525,7 @@ class TimedPoint(Point):
         self.time = time
 
 
+@mangle_repr_type
 class Points(list):
 
     """Class for representing a group of :class:`Point` objects.
@@ -722,6 +725,7 @@ class TimedPoints(Points):
                 for i, distance in enumerate(self.distance()))
 
 
+@mangle_repr_type
 class KeyedPoints(dict):
 
     """Class for representing a keyed group of :class:`Point` objects.

@@ -3,6 +3,10 @@
 xmlns="http://www.topografix.com/GPX/1/1"
 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd">
+  <metadata>
+    <time>2014-01-23T18:34:23+00:00</time>
+    <bounds maxlat="52.167" maxlon="0.39" minlat="52.015" minlon="-0.221"/>
+  </metadata>
   <trk>
     <trkseg>
       <trkpt lat="52.015" lon="-0.221">
@@ -10,7 +14,7 @@ xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/
         <desc>My place</desc>
         <time>2008-07-26T00:00:00+00:00</time>
       </trkpt>
-      <trkpt lat="52.167" lon="0.390">
+      <trkpt lat="52.167" lon="0.39">
         <name>MSR</name>
         <desc>Microsoft Research, Cambridge</desc>
         <time>2008-07-27T00:00:00+00:00</time>

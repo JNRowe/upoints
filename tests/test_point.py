@@ -138,9 +138,11 @@ class TestPoint(TestCase):
 
     def test_midpoint(self):
         expect(Point(52.015, -0.221).midpoint(Point(52.6333, -2.5))) == \
-            Point(52.3296314054, -1.35253686056, 'metric', 'degrees', 0)
+            Point(52.329631405407014, -1.3525368605590993, 'metric', 'degrees',
+                  0)
         expect(Point(36.1200, -86.6700).midpoint(Point(33.9400, -118.4000))) == \
-            Point(36.082394919, -102.752173705, 'metric', 'degrees', 0)
+            Point(36.08239491900365, -102.75217370539663, 'metric', 'degrees',
+                  0)
 
     def test_final_bearing(self):
         expect(int(Point(52.015, -0.221).final_bearing(Point(52.6333, -2.5)))) == 293
@@ -155,15 +157,19 @@ class TestPoint(TestCase):
 
     def test_destination(self):
         expect(Point(52.015, -0.221).destination(294, 169)) == \
-            Point(52.6116387502, -2.50937408195, 'metric', 'degrees', 0)
+            Point(52.611638750214745, -2.509374081952352, 'metric', 'degrees',
+                  0)
         home = Point(52.015, -0.221, 'imperial')
         expect(home.destination(294, 169 / utils.STATUTE_MILE)) == \
-            Point(52.6116387502, -2.50937408195, 'metric', 'degrees', 0)
+            Point(52.611638750214745, -2.509374081952352, 'metric', 'degrees',
+                  0)
         home = Point(52.015, -0.221, 'nautical')
         expect(home.destination(294, 169 / utils.NAUTICAL_MILE)) == \
-            Point(52.6116387502, -2.50937408195, 'metric', 'degrees', 0)
+            Point(52.611638750214745, -2.509374081952352, 'metric', 'degrees',
+                  0)
         expect(Point(36.1200, -86.6700).destination(274, 2885)) == \
-            Point(33.6872799138, -118.327218421, 'metric', 'degrees', 0)
+            Point(33.6872799137609, -118.32721842114393, 'metric', 'degrees',
+                  0)
 
     def test_sunrise(self):
         date = datetime.date(2007, 6, 15)
@@ -236,8 +242,10 @@ class TestPoints(TestCase):
 
     def test_midpoint(self):
         expect(list(self.locs.midpoint())) == \
-            [Point(52.0915720432, -0.0907237539143, 'metric', 'degrees', 0),
-             Point(52.5119010509, 0.346088603087, 'metric', 'degrees', 0)]
+            [Point(52.09157204324692, -0.09072375391429187, 'metric',
+                   'degrees', 0),
+             Point(52.51190105089283, 0.3460886030865466, 'metric',
+                   'degrees', 0)]
 
     def test_range(self):
         expect(list(self.locs.range(Point(52.015, -0.221), 20))) == \
@@ -245,9 +253,12 @@ class TestPoints(TestCase):
 
     def test_destination(self):
         expect(list(self.locs.destination(42, 240))) == \
-            [Point(53.5956078217, 2.2141813684, 'metric', 'degrees', 0),
-             Point(53.7484691495, 2.48403821375, 'metric', 'degrees', 0),
-             Point(54.4348338045, 3.14183478498, 'metric', 'degrees', 0)]
+            [Point(53.59560782169536, 2.2141813683976777, 'metric', 'degrees',
+                   0),
+             Point(53.74846914951471, 2.4840382137470614, 'metric', 'degrees',
+                   0),
+             Point(54.43483380445103, 3.1418347849815293, 'metric', 'degrees',
+                   0)]
 
     def test_sunrise(self):
         expect(list(self.locs.sunrise(datetime.date(2008, 5, 2)))) == \
@@ -321,8 +332,10 @@ class TestKeyedPoints(TestCase):
 
     def test_midpoint(self):
         expect(list(self.locs.midpoint(('home', 'Carol', 'Kenny')))) == \
-            [Point(52.0915720432, -0.0907237539143, 'metric', 'degrees', 0),
-             Point(52.5119010509, 0.346088603087, 'metric', 'degrees', 0)]
+            [Point(52.09157204324692, -0.09072375391429187, 'metric',
+                   'degrees', 0),
+             Point(52.51190105089283, 0.3460886030865466, 'metric', 'degrees',
+                   0)]
 
     def test_range(self):
         expect(list(self.locs.range(Point(52.015, -0.221), 20))) == \
@@ -330,9 +343,12 @@ class TestKeyedPoints(TestCase):
 
     def test_destination(self):
         expect(sorted(self.locs.destination(42, 240))) == \
-            [('Carol', Point(53.7484691495, 2.48403821375, 'metric', 'degrees', 0)),
-             ('Kenny', Point(54.4348338045, 3.14183478498, 'metric', 'degrees', 0)),
-             ('home', Point(53.5956078217, 2.2141813684, 'metric', 'degrees', 0))]
+            [('Carol', Point(53.74846914951471, 2.4840382137470614, 'metric',
+                             'degrees', 0)),
+             ('Kenny', Point(54.43483380445103, 3.1418347849815293, 'metric',
+                             'degrees', 0)),
+             ('home', Point(53.59560782169536, 2.2141813683976777, 'metric',
+                            'degrees', 0))]
 
     def test_sunrise(self):
         expect(sorted(self.locs.sunrise(datetime.date(2008, 5, 2)))) == \

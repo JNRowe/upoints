@@ -17,7 +17,6 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from StringIO import StringIO
 from unittest import TestCase
 
 from expecter import expect
@@ -27,7 +26,7 @@ from upoints.gpx import (_GpxElem, _GpxMeta, Routepoint, Routepoints,
 from upoints import point
 from upoints import utils
 
-from utils import xml_str_compare
+from tests.utils import xml_compare
 
 
 class Test_GpxElem(TestCase):
@@ -53,19 +52,19 @@ class Test_GpxMeta(TestCase):
     def test_togpx(self):
         meta = _GpxMeta(time=(2008, 6, 3, 16, 12, 43, 1, 155, 0))
         expect(etree.tostring(meta.togpx())) == \
-            ('<gpx:metadata xmlns:gpx="http://www.topografix.com/GPX/1/1">'
-             '<gpx:time>2008-06-03T16:12:43+0000</gpx:time>'
-             '</gpx:metadata>')
+            b'<gpx:metadata xmlns:gpx="http://www.topografix.com/GPX/1/1">' \
+            b'<gpx:time>2008-06-03T16:12:43+0000</gpx:time>' \
+            b'</gpx:metadata>'
         meta.bounds = {'minlat': 52, 'maxlat': 54, 'minlon': -2, 'maxlon': 1}
         expect(etree.tostring(meta.togpx())) == \
-            ('<gpx:metadata xmlns:gpx="http://www.topografix.com/GPX/1/1">'
-             '<gpx:time>2008-06-03T16:12:43+0000</gpx:time><gpx:bounds maxlat="54" maxlon="1" minlat="52" minlon="-2"/>'
-             '</gpx:metadata>')
+            b'<gpx:metadata xmlns:gpx="http://www.topografix.com/GPX/1/1">' \
+            b'<gpx:time>2008-06-03T16:12:43+0000</gpx:time><gpx:bounds maxlat="54" maxlon="1" minlat="52" minlon="-2"/>' \
+            b'</gpx:metadata>'
         meta.bounds = [point.Point(52.015, -0.221), point.Point(52.167, 0.390)]
         expect(etree.tostring(meta.togpx())) == \
-            ('<gpx:metadata xmlns:gpx="http://www.topografix.com/GPX/1/1">'
-                    '<gpx:time>2008-06-03T16:12:43+0000</gpx:time><gpx:bounds maxlat="52.167" maxlon="0.39" minlat="52.015" minlon="-0.221"/>'
-             '</gpx:metadata>')
+            b'<gpx:metadata xmlns:gpx="http://www.topografix.com/GPX/1/1">' \
+            b'<gpx:time>2008-06-03T16:12:43+0000</gpx:time><gpx:bounds maxlat="52.167" maxlon="0.39" minlat="52.015" minlon="-0.221"/>' \
+            b'</gpx:metadata>'
 
 
 class TestWaypoint(TestCase):
@@ -80,7 +79,7 @@ class TestWaypoint(TestCase):
 class TestWaypoints(TestCase):
     def test_import_locations(self):
         waypoints = Waypoints(open('tests/data/gpx'))
-        data = map(str, sorted(waypoints, key=lambda x: x.name))
+        data = list(map(str, sorted(waypoints, key=lambda x: x.name)))
         expect(data[0]) == \
             """Home (52°00'54"N, 000°13'15"W on 2008-07-26T00:00:00+00:00) [My place]"""
         expect(data[1]) == \
@@ -88,26 +87,11 @@ class TestWaypoints(TestCase):
 
     def test_export_gpx_file(self):
         locations = Waypoints(open('tests/data/gpx'))
-        xml = locations.export_gpx_file()
-        f = StringIO()
-        xml.write(f)
-        f.seek(0)
-        xml_str_compare(
-            ('<gpx:gpx xmlns:gpx="http://www.topografix.com/GPX/1/1">'
-             '<gpx:metadata>'
-             '<gpx:time>...</gpx:time>'
-             '<gpx:bounds maxlat="52.167" maxlon="0.39" minlat="52.015" minlon="-0.221"/>'
-             '</gpx:metadata>'
-             '<gpx:wpt lat="52.015" lon="-0.221">'
-             '<gpx:name>Home</gpx:name><gpx:desc>My place</gpx:desc><gpx:time>2008-07-26T00:00:00+00:00</gpx:time>'
-             '</gpx:wpt>'
-             '<gpx:wpt lat="52.167" lon="0.39">'
-             '<gpx:name>MSR</gpx:name><gpx:desc>Microsoft Research, Cambridge</gpx:desc>'
-             '<gpx:time>2008-07-27T00:00:00+00:00</gpx:time>'
-             '</gpx:wpt>'
-             '</gpx:gpx>'),
-            f.read(),
-            ellipsis=True)
+        export = locations.export_gpx_file()
+        gpx_xml = etree.parse('tests/data/gpx')
+        for e1, e2 in zip(export.getiterator(), gpx_xml.getiterator()):
+            xml_compare(e1, e2)
+
 
 
 class TestTrackpoint(TestCase):
@@ -123,7 +107,7 @@ class TestTrackpoint(TestCase):
 class TestTrackpoints(TestCase):
     def test_import_locations(self):
         trackpoints = Trackpoints(open('tests/data/gpx_tracks'))
-        data = map(str, sorted(trackpoints[0], key=lambda x: x.name))
+        data = list(map(str, sorted(trackpoints[0], key=lambda x: x.name)))
         expect(data[0]) == \
             """Home (52°00'54"N, 000°13'15"W on 2008-07-26T00:00:00+00:00) [My place]"""
         expect(data[1]) == \
@@ -131,29 +115,11 @@ class TestTrackpoints(TestCase):
 
     def test_export_gpx_file(self):
         locations = Trackpoints(open('tests/data/gpx_tracks'))
-        xml = locations.export_gpx_file()
-        f = StringIO()
-        xml.write(f)
-        f.seek(0)
-        xml_str_compare(
-            ('<gpx:gpx xmlns:gpx="http://www.topografix.com/GPX/1/1">'
-             '<gpx:metadata>'
-             '<gpx:time>...</gpx:time><gpx:bounds maxlat="52.167" maxlon="0.39" minlat="52.015" minlon="-0.221"/>'
-             '</gpx:metadata>'
-             '<gpx:trk>'
-             '<gpx:trkseg>'
-             '<gpx:trkpt lat="52.015" lon="-0.221">'
-             '<gpx:name>Home</gpx:name><gpx:desc>My place</gpx:desc><gpx:time>2008-07-26T00:00:00+00:00</gpx:time>'
-             '</gpx:trkpt>'
-             '<gpx:trkpt lat="52.167" lon="0.39">'
-             '<gpx:name>MSR</gpx:name><gpx:desc>Microsoft Research, Cambridge</gpx:desc>'
-             '<gpx:time>2008-07-27T00:00:00+00:00</gpx:time>'
-             '</gpx:trkpt>'
-             '</gpx:trkseg>'
-             '</gpx:trk>'
-             '</gpx:gpx>'),
-            f.read(),
-            ellipsis=True)
+        export = locations.export_gpx_file()
+        tracks_xml = etree.parse('tests/data/gpx_tracks')
+        for e1, e2 in zip(export.getiterator(), tracks_xml.getiterator()):
+            xml_compare(e1, e2)
+
 
 
 class TestRoutepoint(TestCase):
@@ -169,7 +135,7 @@ class TestRoutepoint(TestCase):
 class TestRoutepoints(TestCase):
     def test_import_locations(self):
         routepoints = Routepoints(open('tests/data/gpx_routes'))
-        data = map(str, sorted(routepoints[0], key=lambda x: x.name))
+        data = list(map(str, sorted(routepoints[0], key=lambda x: x.name)))
         expect(data[0]) == \
             """Home (52°00'54"N, 000°13'15"W on 2008-07-26T00:00:00+00:00) [My place]"""
         expect(data[1]) == \
@@ -177,25 +143,8 @@ class TestRoutepoints(TestCase):
 
     def test_export_gpx_file(self):
         locations = Routepoints(open('tests/data/gpx_routes'))
-        xml = locations.export_gpx_file()
-        f = StringIO()
-        xml.write(f)
-        f.seek(0)
-        xml_str_compare(
-            ('<gpx:gpx xmlns:gpx="http://www.topografix.com/GPX/1/1">'
-             '<gpx:metadata>'
-             '<gpx:time>...</gpx:time>'
-             '<gpx:bounds maxlat="52.167" maxlon="0.39" minlat="52.015" minlon="-0.221"/>'
-             '</gpx:metadata>'
-             '<gpx:rte>'
-             '<gpx:rtept lat="52.015" lon="-0.221">'
-             '<gpx:name>Home</gpx:name><gpx:desc>My place</gpx:desc><gpx:time>2008-07-26T00:00:00+00:00</gpx:time>'
-             '</gpx:rtept>'
-             '<gpx:rtept lat="52.167" lon="0.39">'
-             '<gpx:name>MSR</gpx:name><gpx:desc>Microsoft Research, Cambridge</gpx:desc>'
-             '<gpx:time>2008-07-27T00:00:00+00:00</gpx:time>'
-             '</gpx:rtept>'
-             '</gpx:rte>'
-             '</gpx:gpx>'),
-            f.read(),
-            ellipsis=True)
+        export = locations.export_gpx_file()
+        routes_xml = etree.parse('tests/data/gpx_routes')
+
+        for e1, e2 in zip(routes_xml.getiterator(), export.getiterator()):
+            xml_compare(e1, e2, ellipsis=True)

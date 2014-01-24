@@ -272,7 +272,7 @@ class Locations(point.Points):
             if row['ident'] == 'TimeZoneId':
                 continue
             try:
-                delta = map(time_parse, (row['gmt_offset'], row['dst_offset']))
+                delta = list(map(time_parse, (row['gmt_offset'], row['dst_offset'])))
             except ValueError:
                 raise utils.FileFormatError('geonames.org')
             self.timezones[row['ident']] = delta

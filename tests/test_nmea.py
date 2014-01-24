@@ -80,7 +80,7 @@ class TestLoranPosition(TestCase):
     def test_parse_elements(self):
         expect(LoranPosition.parse_elements(['52.32144', 'N', '00300.9257', 'W',
                                             '14205914', 'A'])) == \
-            LoranPosition(52.0053573333, -3.01542833333,
+            LoranPosition(52.005357333333336, -3.0154283333333334,
                           datetime.time(14, 20, 59, 140000), True, None)
 
 
@@ -109,14 +109,15 @@ class TestPosition(TestCase):
         expect(repr(Position.parse_elements(['142058', 'A', '5308.6414', 'N',
                                             '00300.9257', 'W', '109394.7',
                                             '202.9', '191107', '5', 'E', 'A']))) == \
-            ('Position(datetime.time(14, 20, 58), True, 53.1440233333, '
-             '-3.01542833333, 109394.7, 202.9, datetime.date(2007, 11, 19), '
-             "5.0, 'A')")
+            ('Position(datetime.time(14, 20, 58), True, %s, %s, 109394.7, '
+             "202.9, datetime.date(2007, 11, 19), 5.0, 'A')"
+             % (53.14402333333334, -3.0154283333333334))
         expect(repr(Position.parse_elements(['142100', 'A', '5200.9000', 'N',
                                             '00316.6600', 'W', '123142.7',
                                             '188.1', '191107', '5', 'E', 'A']))) == \
-            ('Position(datetime.time(14, 21), True, 52.015, -3.27766666667, '
-             "123142.7, 188.1, datetime.date(2007, 11, 19), 5.0, 'A')")
+            ('Position(datetime.time(14, 21), True, 52.015, %s, 123142.7, '
+             "188.1, datetime.date(2007, 11, 19), 5.0, 'A')"
+             % (-3.2776666666666667))
 
 
 class TestFix(TestCase):
@@ -176,7 +177,7 @@ class TestWaypoint(TestCase):
 class TestLocations(TestCase):
     def test_import_locations(self):
         locations = Locations(open('tests/data/gpsdata'))
-        data = map(str, locations)
+        data = list(map(str, locations))
         expect(data[0]) == \
             '$GPGGA,142058,5308.6414,N,00300.9257,W,1,04,5.6,1374.6,M,34.5,M,,*6B\r'
         expect(data[1]) == \
