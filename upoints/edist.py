@@ -577,10 +577,10 @@ def main():
         args.locations = NumberedPoints(args.location, args.format,
                                         args.unicode, args.verbose,
                                         config_locations, args.units)
-    except (LocationsError, ), error:
+    except LocationsError as error:
         APP._parser.error(error)
 
     try:
         return func(args)
-    except (RuntimeError, ), error:
+    except RuntimeError as error:
         APP._parser.error(error)
