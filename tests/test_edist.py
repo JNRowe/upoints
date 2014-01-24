@@ -109,7 +109,9 @@ class TestNumberedPoints(TestCase):
                                    units='nm')
         locations.verbose = False
         locations.distance()
-        expect(stdout.getvalue()) == '13.2989574317\n'
+        # Manually convert to string here to workaround Python 2/3 float
+        # formatting differences
+        expect(stdout.getvalue()) == str(13.298957431655218) + '\n'
 
     @patch('sys.stdout', new_callable=StringIO)
     def test_distance_multi(self, stdout):

@@ -61,6 +61,6 @@ class TestCells(TestCase):
 
     def test_import_locations(self):
         expect(self.cells['22747']) == \
-            Cell(22747, 52.0438995361, -0.224637001753, 234, 33, 2319, 647, 0,
-                 1, datetime.datetime(2008, 4, 5, 21, 32, 40),
+            Cell(22747, 52.0438995361328, -0.224637001752853, 234, 33, 2319,
+                 647, 0, 1, datetime.datetime(2008, 4, 5, 21, 32, 40),
                  datetime.datetime(2008, 4, 5, 21, 32, 40))

@@ -30,9 +30,14 @@ from utils import xml_str_compare
 
 def test_get_area_url():
     expect(get_area_url(point.Point(52.015, -0.221), 3)) == \
-        'http://api.openstreetmap.org/api/0.5/map?bbox=-0.264864438253,51.9880034021,-0.177135561747,52.0419965979'
+        'http://api.openstreetmap.org/api/0.5/map?bbox=%s,%s,%s,%s' \
+        % (-0.26486443825283734, 51.98800340214556, -0.17713556174716266,
+           52.04199659785444)
+
     expect(get_area_url(point.Point(52.015, -0.221), 12)) == \
-        'http://api.openstreetmap.org/api/0.5/map?bbox=-0.396457433591,51.9070136086,-0.045542566409,52.1229863914'
+        'http://api.openstreetmap.org/api/0.5/map?bbox=%s,%s,%s,%s' \
+        % (-0.3964574335910109, 51.907013608582226, -0.04554256640898919,
+           52.12298639141776)
 
 
 class TestNode(TestCase):
@@ -71,9 +76,13 @@ class TestNode(TestCase):
 
     def test_get_area_url(self):
         expect(self.bare.get_area_url(3)) == \
-            'http://api.openstreetmap.org/api/0.5/map?bbox=-0.0438497383115,51.9730034021,0.0438497383115,52.0269965979'
+            'http://api.openstreetmap.org/api/0.5/map?bbox=%s,%s,%s,%s' \
+            % (-0.04384973831146972, 51.97300340214557, 0.04384973831146972,
+               52.02699659785445)
         expect(self.bare.get_area_url(12)) == \
-            'http://api.openstreetmap.org/api/0.5/map?bbox=-0.175398634277,51.8920136086,0.175398634277,52.1079863914'
+            'http://api.openstreetmap.org/api/0.5/map?bbox=%s,%s,%s,%s' \
+            % (-0.1753986342770412, 51.892013608582225, 0.1753986342770412,
+               52.10798639141778)
 
     def test_fetch_area_osm(self):
         # FIXME: The following test is skipped, because the Osm object doesn't
