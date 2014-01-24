@@ -23,7 +23,8 @@ from operator import attrgetter
 
 from lxml import etree
 
-from upoints import (__version__, point, utils)
+from upoints import (point, utils)
+from upoints._version import web as ua_string
 
 create_elem = utils.element_creator()
 
@@ -326,7 +327,7 @@ class Osm(point.Points):
         self._osm_file = osm_file
         if osm_file:
             self.import_locations(osm_file)
-        self.generator = 'upoints/%s' % __version__
+        self.generator = ua_string
         self.version = '0.5'
 
     def import_locations(self, osm_file):

@@ -24,6 +24,7 @@ from operator import attrgetter
 from lxml import etree
 
 from upoints import (point, utils)
+from upoints._version import web as ua_string
 
 
 GPX_NS = 'http://www.topografix.com/GPX/1/1'
@@ -31,6 +32,11 @@ etree.register_namespace('gpx', GPX_NS)
 
 create_elem = utils.element_creator(GPX_NS)
 
+GPX_ELEM_ATTRIB = {
+    'creator': ua_string,
+    'version': '1.1',
+    '{http://www.w3.org/2001/XMLSchema-instance}schemaLocation': '%s http://www.topografix.com/GPX/1/1/gpx.xsd' % GPX_NS,
+}
 
 class _GpxElem(point.TimedPoint):
 
@@ -551,7 +557,7 @@ class Waypoints(point.TimedPoints):
         :return: GPX element tree depicting ``Waypoints`` object
 
         """
-        gpx = create_elem('gpx', None, None)
+        gpx = create_elem('gpx', GPX_ELEM_ATTRIB)
         if not self.metadata.bounds:
             self.metadata.bounds = self[:]
         gpx.append(self.metadata.togpx())
@@ -669,7 +675,7 @@ class Trackpoints(_SegWrap):
         :return: GPX element tree depicting ``Trackpoints`` objects
 
         """
-        gpx = create_elem('gpx')
+        gpx = create_elem('gpx', GPX_ELEM_ATTRIB)
         if not self.metadata.bounds:
             self.metadata.bounds = [j for i in self for j in i]
         gpx.append(self.metadata.togpx())
@@ -790,7 +796,7 @@ class Routepoints(_SegWrap):
         :return: GPX element tree depicting :class:`Routepoints` objects
 
         """
-        gpx = create_elem('gpx')
+        gpx = create_elem('gpx', GPX_ELEM_ATTRIB)
         if not self.metadata.bounds:
             self.metadata.bounds = [j for i in self for j in i]
         gpx.append(self.metadata.togpx())
