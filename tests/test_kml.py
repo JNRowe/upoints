@@ -17,14 +17,13 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from StringIO import StringIO
 from unittest import TestCase
 
 from expecter import expect
 
 from upoints.kml import (Placemark, Placemarks, etree)
 
-from utils import xml_str_compare
+from tests.utils import xml_compare
 
 
 class TestPlacemark(TestCase):
@@ -75,19 +74,7 @@ class TestPlacemarks(TestCase):
 
     def test_export_kml_file(self):
         locations = Placemarks(open('tests/data/kml'))
-        xml = locations.export_kml_file()
-        f = StringIO()
-        xml.write(f)
-        f.seek(0)
-        xml_str_compare(
-            ('<kml:kml xmlns:kml="http://earth.google.com/kml/2.2">'
-             '<kml:Document>'
-             '<kml:Placemark id="Cambridge"><kml:name>Cambridge</kml:name>'
-             '<kml:Point><kml:coordinates>0.39,52.167</kml:coordinates></kml:Point>'
-             '</kml:Placemark>'
-             '<kml:Placemark id="Home"><kml:name>Home</kml:name>'
-             '<kml:Point><kml:coordinates>-0.221,52.015,60</kml:coordinates></kml:Point>'
-             '</kml:Placemark>'
-             '</kml:Document>'
-             '</kml:kml>'),
-            f.read())
+        export = locations.export_kml_file()
+        kml_xml = etree.parse('tests/data/kml')
+        for e1, e2 in zip(export.getiterator(), kml_xml.getiterator()):
+            xml_compare(e1, e2)

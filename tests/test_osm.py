@@ -17,7 +17,6 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-from StringIO import StringIO
 from unittest import TestCase
 
 from expecter import expect
@@ -25,7 +24,7 @@ from expecter import expect
 from upoints import (point, utils)
 from upoints.osm import (Node, Osm, Way, etree, get_area_url)
 
-from utils import xml_str_compare
+from tests.utils import (xml_compare, xml_str_compare)
 
 
 def test_get_area_url():
@@ -164,26 +163,10 @@ class TestOsm(TestCase):
              'timestamp: 2008-01-25T12:52:30+00:00, amenity: pub]')
 
     def test_export_osm_file(self):
-        xml = self.region.export_osm_file()
-        f = StringIO()
-        xml.write(f)
-        f.seek(0)
-        xml_str_compare(
-            ('<osm generator="upoints/0.11.0" version="0.5">'
-             '<node id="0" lat="52.015749" lon="-0.221765" '
-             'timestamp="2008-01-25T12:52:11+00:00" user="jnrowe" '
-             'visible="true"/>'
-             '<node id="1" lat="52.015761" lon="-0.221767" '
-             'timestamp="2008-01-25T12:53:00+00:00" visible="true">'
-             '<tag k="created_by" v="hand"/><tag k="highway" v="crossing"/>'
-             '</node>'
-             '<node id="2" lat="52.015754" lon="-0.221766" '
-             'timestamp="2008-01-25T12:52:30+00:00" user="jnrowe" '
-             'visible="true">'
-             '<tag k="amenity" v="pub"/>'
-             '</node>'
-             '<way id="0" timestamp="2008-01-25T13:00:00+00:00" visible="true">'
-             '<tag k="highway" v="primary"/><tag k="ref" v="My Way"/>'
-             '<nd ref="0"/><nd ref="1"/><nd ref="2"/>'
-             '</way></osm>'),
-            f.read())
+        export = self.region.export_osm_file()
+        osm_xml = etree.parse('tests/data/osm')
+        for e1, e2 in zip(export.getiterator(), osm_xml.getiterator()):
+            xml_compare(e1, e2)
+            # expect(e1.tag) == e2.tag
+            # expect(e1.text) == e2.text
+            # expect(e1.attrib) == e2.attrib
