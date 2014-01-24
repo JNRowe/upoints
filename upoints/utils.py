@@ -33,6 +33,9 @@ from lxml import objectify as _objectify
 
 from operator import add
 
+from upoints.compat import basestring
+
+
 #: Body radii of various solar system objects
 BODIES = {
     # Body radii in kilometres
