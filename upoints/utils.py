@@ -35,7 +35,7 @@ from lxml import objectify as _objectify
 
 from operator import add
 
-from upoints.compat import basestring
+from upoints.compat import (basestring, mangle_repr_type)
 
 
 #: Body radii of various solar system objects
@@ -153,7 +153,7 @@ def repr_assist(obj, remap=None):
             data.append(repr(value))
         else:
             data.append(str(value))
-    return obj.__class__.__name__ + '(' + ', '.join(data) + ')'
+    return u"%s(%s)" % (obj.__class__.__name__, u', '.join(data))
 
 
 def prepare_read(data, method='readlines', mode='r'):
@@ -358,6 +358,7 @@ def angle_to_name(angle, segments=8, abbr=False):
 
 
 #{ Date andtime handling utilities
+@mangle_repr_type
 class TzOffset(datetime.tzinfo):
 
     """Time offset from UTC."""

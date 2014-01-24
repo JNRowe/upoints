@@ -21,6 +21,7 @@
 from email.utils import parseaddr
 
 from upoints import (__version__, __author__)
+from upoints.compat import mangle_repr_type
 
 
 __doc__ += """.
@@ -155,6 +156,7 @@ class NumberedPoint(point.Point):
         self.name = name
 
 
+@mangle_repr_type
 class NumberedPoints(point.Points):
     """Class for representing a group of :class:`NumberedPoint` objects.
 

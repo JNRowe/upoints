@@ -20,8 +20,10 @@
 from operator import attrgetter
 
 from upoints import (point, utils)
+from upoints.compat import mangle_repr_type
 
 
+@mangle_repr_type
 class Zone(point.Point):
 
     """Class for representing timezone descriptions from zoneinfo data.

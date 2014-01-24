@@ -25,6 +25,7 @@ from lxml import etree
 
 from upoints import (point, utils)
 from upoints._version import web as ua_string
+from upoints.compat import mangle_repr_type
 
 create_elem = utils.element_creator()
 
@@ -213,6 +214,7 @@ class Node(point.Point):
         return Node(ident, latitude, longitude, *flags)
 
 
+@mangle_repr_type
 class Way(point.Points):
 
     """Class for representing a way element from OSM data files.
