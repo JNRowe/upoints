@@ -17,9 +17,13 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-import ConfigParser
 import logging
 import re
+
+try:
+    from configparser import ConfigParser
+except ImportError:
+    from ConfigParser import ConfigParser
 
 from upoints import (point, utils)
 
@@ -144,7 +148,7 @@ class Bakens(point.KeyedPoints):
             height=460
             mode=A1A
 
-        The reader uses the :mod:`ConfigParser` module, so should be reasonably
+        The reader uses the :mod:`configparser` module, so should be reasonably
         robust against encodings and such.  The above file processed by
         ``import_locations()`` will return the following ``dict`` object::
 
@@ -162,7 +166,7 @@ class Bakens(point.KeyedPoints):
 
         """
         self._baken_file = baken_file
-        data = ConfigParser.ConfigParser()
+        data = ConfigParser()
         if hasattr(baken_file, 'readlines'):
             data.readfp(baken_file)
         elif isinstance(baken_file, list):

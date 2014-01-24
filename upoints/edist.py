@@ -52,7 +52,6 @@ USAGE = __doc__[:__doc__.find('\n\n', 100)].replace('``', "'").splitlines()[2:]
 # Replace script name with optparse's substitution var, and rebuild string
 USAGE = '\n'.join(USAGE).replace('edist', '%(prog)s')
 
-import ConfigParser
 import locale
 import logging
 import os
@@ -61,6 +60,12 @@ import sys
 from operator import itemgetter
 
 import aaargh
+
+try:
+    from configparser import ConfigParser
+except ImportError:
+    from ConfigParser import ConfigParser
+
 
 from upoints import (point, utils)
 
@@ -473,7 +478,7 @@ def read_locations(filename):
     :return: List of locations from config file
 
     """
-    data = ConfigParser.ConfigParser()
+    data = ConfigParser()
     data.read(filename)
     if not data.sections():
         logging.debug('Config file %r is empty' % filename)

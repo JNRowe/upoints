@@ -19,9 +19,13 @@
 
 import sys
 
-from StringIO import StringIO
 from doctest import _ellipsis_match as ellipsis_match
 from unittest import TestCase
+
+try:
+    from StringIO import StringIO
+except ImportError:
+    from io import StringIO  # NOQA
 
 from expecter import expect
 from mock import patch

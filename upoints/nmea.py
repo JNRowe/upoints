@@ -20,6 +20,7 @@
 import datetime
 import logging
 
+from functools import reduce
 from operator import xor
 
 from upoints import (point, utils)

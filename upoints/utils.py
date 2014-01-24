@@ -28,6 +28,8 @@ import inspect
 import math
 import re
 
+from functools import reduce
+
 from lxml import etree
 from lxml import objectify as _objectify
 
