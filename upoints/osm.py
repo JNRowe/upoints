@@ -96,8 +96,8 @@ def get_area_url(location, distance):
 
     """
     locations = [location.destination(i, distance) for i in range(0, 360, 90)]
-    latitudes = map(attrgetter('latitude'), locations)
-    longitudes = map(attrgetter('longitude'), locations)
+    latitudes = list(map(attrgetter('latitude'), locations))
+    longitudes = list(map(attrgetter('longitude'), locations))
 
     bounds = (min(longitudes), min(latitudes), max(longitudes), max(latitudes))
 

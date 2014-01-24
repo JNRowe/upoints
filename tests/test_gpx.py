@@ -79,7 +79,7 @@ class TestWaypoint(TestCase):
 class TestWaypoints(TestCase):
     def test_import_locations(self):
         waypoints = Waypoints(open('tests/data/gpx'))
-        data = map(str, sorted(waypoints, key=lambda x: x.name))
+        data = list(map(str, sorted(waypoints, key=lambda x: x.name)))
         expect(data[0]) == \
             """Home (52°00'54"N, 000°13'15"W on 2008-07-26T00:00:00+00:00) [My place]"""
         expect(data[1]) == \
@@ -107,7 +107,7 @@ class TestTrackpoint(TestCase):
 class TestTrackpoints(TestCase):
     def test_import_locations(self):
         trackpoints = Trackpoints(open('tests/data/gpx_tracks'))
-        data = map(str, sorted(trackpoints[0], key=lambda x: x.name))
+        data = list(map(str, sorted(trackpoints[0], key=lambda x: x.name)))
         expect(data[0]) == \
             """Home (52°00'54"N, 000°13'15"W on 2008-07-26T00:00:00+00:00) [My place]"""
         expect(data[1]) == \
@@ -135,7 +135,7 @@ class TestRoutepoint(TestCase):
 class TestRoutepoints(TestCase):
     def test_import_locations(self):
         routepoints = Routepoints(open('tests/data/gpx_routes'))
-        data = map(str, sorted(routepoints[0], key=lambda x: x.name))
+        data = list(map(str, sorted(routepoints[0], key=lambda x: x.name)))
         expect(data[0]) == \
             """Home (52°00'54"N, 000°13'15"W on 2008-07-26T00:00:00+00:00) [My place]"""
         expect(data[1]) == \

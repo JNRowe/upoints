@@ -177,7 +177,7 @@ class TestWaypoint(TestCase):
 class TestLocations(TestCase):
     def test_import_locations(self):
         locations = Locations(open('tests/data/gpsdata'))
-        data = map(str, locations)
+        data = list(map(str, locations))
         expect(data[0]) == \
             '$GPGGA,142058,5308.6414,N,00300.9257,W,1,04,5.6,1374.6,M,34.5,M,,*6B\r'
         expect(data[1]) == \

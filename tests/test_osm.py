@@ -150,8 +150,8 @@ class TestOsm(TestCase):
         self.region = Osm(open('tests/data/osm'))
 
     def test_import_locations(self):
-        data = map(str, sorted([x for x in self.region if isinstance(x, Node)],
-                               key=lambda x: x.ident))
+        data = list(map(str, sorted([x for x in self.region if isinstance(x, Node)],
+                                    key=lambda x: x.ident)))
         expect(data[0]) == \
             ("""Node 0 (52°00'56"N, 000°13'18"W) [visible, user: jnrowe, """
              'timestamp: 2008-01-25T12:52:11+00:00]')
