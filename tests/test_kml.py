@@ -47,21 +47,21 @@ class TestPlacemark(TestCase):
 
     def test_tokml(self):
         expect(etree.tostring(Placemark(52, 0, 4).tokml())) == \
-            ('<kml:Placemark xmlns:kml="http://earth.google.com/kml/2.2">'
-             '<kml:Point><kml:coordinates>0.0,52.0,4</kml:coordinates></kml:Point>'
-             '</kml:Placemark>')
+            b'<kml:Placemark xmlns:kml="http://earth.google.com/kml/2.2">' \
+            b'<kml:Point><kml:coordinates>0.0,52.0,4</kml:coordinates></kml:Point>' \
+            b'</kml:Placemark>'
         expect(etree.tostring(Placemark(52, 0, 4, 'Cambridge').tokml())) == \
-            ('<kml:Placemark xmlns:kml="http://earth.google.com/kml/2.2" id="Cambridge">'
-             '<kml:name>Cambridge</kml:name><kml:Point><kml:coordinates>0.0,52.0,4</kml:coordinates></kml:Point>'
-             '</kml:Placemark>')
+            b'<kml:Placemark xmlns:kml="http://earth.google.com/kml/2.2" id="Cambridge">' \
+            b'<kml:name>Cambridge</kml:name><kml:Point><kml:coordinates>0.0,52.0,4</kml:coordinates></kml:Point>' \
+            b'</kml:Placemark>'
         expect(etree.tostring(Placemark(52, 0, 4).tokml())) == \
-            ('<kml:Placemark xmlns:kml="http://earth.google.com/kml/2.2">'
-             '<kml:Point><kml:coordinates>0.0,52.0,4</kml:coordinates></kml:Point></kml:Placemark>')
+            b'<kml:Placemark xmlns:kml="http://earth.google.com/kml/2.2">' \
+            b'<kml:Point><kml:coordinates>0.0,52.0,4</kml:coordinates></kml:Point></kml:Placemark>'
         expect(etree.tostring(Placemark(52, 0, 4, 'Cambridge', 'in the UK').tokml())) == \
-            ('<kml:Placemark xmlns:kml="http://earth.google.com/kml/2.2" id="Cambridge">'
-             '<kml:name>Cambridge</kml:name><kml:description>in the UK</kml:description>'
-             '<kml:Point><kml:coordinates>0.0,52.0,4</kml:coordinates></kml:Point>'
-             '</kml:Placemark>')
+            b'<kml:Placemark xmlns:kml="http://earth.google.com/kml/2.2" id="Cambridge">' \
+            b'<kml:name>Cambridge</kml:name><kml:description>in the UK</kml:description>' \
+            b'<kml:Point><kml:coordinates>0.0,52.0,4</kml:coordinates></kml:Point>' \
+            b'</kml:Placemark>'
 
 
 class TestPlacemarks(TestCase):

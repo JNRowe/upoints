@@ -52,19 +52,19 @@ class Test_GpxMeta(TestCase):
     def test_togpx(self):
         meta = _GpxMeta(time=(2008, 6, 3, 16, 12, 43, 1, 155, 0))
         expect(etree.tostring(meta.togpx())) == \
-            ('<gpx:metadata xmlns:gpx="http://www.topografix.com/GPX/1/1">'
-             '<gpx:time>2008-06-03T16:12:43+0000</gpx:time>'
-             '</gpx:metadata>')
+            b'<gpx:metadata xmlns:gpx="http://www.topografix.com/GPX/1/1">' \
+            b'<gpx:time>2008-06-03T16:12:43+0000</gpx:time>' \
+            b'</gpx:metadata>'
         meta.bounds = {'minlat': 52, 'maxlat': 54, 'minlon': -2, 'maxlon': 1}
         expect(etree.tostring(meta.togpx())) == \
-            ('<gpx:metadata xmlns:gpx="http://www.topografix.com/GPX/1/1">'
-             '<gpx:time>2008-06-03T16:12:43+0000</gpx:time><gpx:bounds maxlat="54" maxlon="1" minlat="52" minlon="-2"/>'
-             '</gpx:metadata>')
+            b'<gpx:metadata xmlns:gpx="http://www.topografix.com/GPX/1/1">' \
+            b'<gpx:time>2008-06-03T16:12:43+0000</gpx:time><gpx:bounds maxlat="54" maxlon="1" minlat="52" minlon="-2"/>' \
+            b'</gpx:metadata>'
         meta.bounds = [point.Point(52.015, -0.221), point.Point(52.167, 0.390)]
         expect(etree.tostring(meta.togpx())) == \
-            ('<gpx:metadata xmlns:gpx="http://www.topografix.com/GPX/1/1">'
-                    '<gpx:time>2008-06-03T16:12:43+0000</gpx:time><gpx:bounds maxlat="52.167" maxlon="0.39" minlat="52.015" minlon="-0.221"/>'
-             '</gpx:metadata>')
+            b'<gpx:metadata xmlns:gpx="http://www.topografix.com/GPX/1/1">' \
+            b'<gpx:time>2008-06-03T16:12:43+0000</gpx:time><gpx:bounds maxlat="52.167" maxlon="0.39" minlat="52.015" minlon="-0.221"/>' \
+            b'</gpx:metadata>'
 
 
 class TestWaypoint(TestCase):
