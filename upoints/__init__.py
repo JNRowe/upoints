@@ -23,7 +23,7 @@ from upoints import _version
 __version__ = _version.dotted
 __date__ = _version.date
 __author__ = 'James Rowe <jnrowe@gmail.com>'
-__copyright__ = 'Copyright © 2007-2014  James Rowe <jnrowe@gmail.com>'
+__copyright__ = 'Copyright (C) 2007-2014  James Rowe <jnrowe@gmail.com>'
 __license__ = 'GNU General Public License Version 3'
 __credits__ = 'Cédric Dufour, Thomas Traber, Kelly Turner, Simon Woods'
 __history__ = 'See git repository'

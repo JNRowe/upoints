@@ -115,7 +115,7 @@ parameter in your call to :func:`~upoints.utils.dump_xearth_markers`.
 Also, as the function only requires a dictionary of
 :class:`~upoints.trigpoints.Trigpoint`-style objects you could apply
 :func:`filter` and :func:`map` expressions to the objects to generate
-your own lables for the markers.
+your own labels for the markers.
 
 .. figure:: .static/xplanet_trip_date_mini.png
    :alt: Xplanet showing the location points and dates for a trip
