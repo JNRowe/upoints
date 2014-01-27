@@ -155,6 +155,18 @@ class NumberedPoint(point.Point):
 
         self.name = name
 
+    def __format__(self, format_spec='dd'):
+        """Extended pretty printing for location strings.
+
+        :param str format_spec: Coordinate formatting system to use
+        :rtype: ``str``
+        :return: Human readable string representation of ``NumberedPoint``
+            object
+        :raise ValueError: Unknown value for ``format_spec``
+
+        """
+        return super(NumberedPoint, self).__format__('dm')
+
 
 @mangle_repr_type
 class NumberedPoints(point.Points):

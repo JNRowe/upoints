@@ -56,15 +56,14 @@ class Placemark(trigpoints.Trigpoint):
             self.altitude = float(altitude)
         self.description = description
 
-    def __str__(self, mode='dms'):
+    def __str__(self):
         """Pretty printed location string.
 
-        :param str mode: Coordinate formatting system to use
         :rtype: ``str``
         :return: Human readable string representation of ``Placemark`` object
 
         """
-        location = super(Placemark, self).__str__(mode)
+        location = super(Placemark, self).__format__('dms')
         if self.description:
             return '%s [%s]' % (location, self.description)
         else:

@@ -66,14 +66,13 @@ class Cell(point.Point):
         self.created = created
         self.updated = updated
 
-    def __str__(self, mode=None):
+    def __str__(self):
         """OpenCellID.org-style location string.
 
         .. seealso::
 
            :class:`point.Point`
 
-        :param mode: For compatibility with parent class
         :rtype: ``str``
         :return: OpenCellID.org-style string representation of ``Cell`` object
 

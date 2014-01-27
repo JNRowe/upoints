@@ -138,16 +138,15 @@ class Node(point.Point):
         self.timestamp = timestamp
         self.tags = tags
 
-    def __str__(self, mode='dms'):
+    def __str__(self):
         """Pretty printed location string.
 
-        :param str mode: Coordinate formatting system to use
         :rtype: ``str``
         :return: Human readable string representation of ``Node`` object
 
         """
         text = ['Node %i (%s)' % (self.ident,
-                                  super(Node, self).__str__(mode)), ]
+                                  super(Node, self).__format__('dms')), ]
         flags = _get_flags(self)
 
         if flags:

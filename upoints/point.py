@@ -168,56 +168,49 @@ class Point(object):
         """
         return utils.repr_assist(self, {'angle': 'degrees'})
 
-    def __str__(self, mode='dd'):
+    def __str__(self):
         """Pretty printed location string.
 
-        :param str mode: Coordinate formatting system to use
         :rtype: ``str``
         :return: Human readable string representation of ``Point`` object
-        :raise ValueError: Unknown value for ``mode``
+
+        """
+        return format(self)
+
+    def __unicode__(self):
+        """Pretty printed Unicode location string.
+
+        :rtype: ``str``
+        :return: Human readable Unicode representation of ``Point`` object
+
+        """
+        return _dms_formatter(self, 'dd', True)
+
+    def __format__(self, format_spec='dd'):
+        """Extended pretty printing for location strings.
+
+        :param str format_spec: Coordinate formatting system to use
+        :rtype: ``str``
+        :return: Human readable string representation of ``Point`` object
+        :raise ValueError: Unknown value for ``format_spec``
 
         """
         text = []
-        if mode == 'dd':
+        if not format_spec:  # default format calls set format_spec to ''
+            format_spec = 'dd'
+        if format_spec == 'dd':
             text.append('S' if self.latitude < 0 else 'N')
             text.append('%06.3f°; ' % abs(self.latitude))
             text.append('W' if self.longitude < 0 else 'E')
             text.append('%07.3f°' % abs(self.longitude))
-        elif mode in ('dm', 'dms'):
-            text = _dms_formatter(self.latitude, self.longitude, mode)
-        elif mode == 'locator':
+        elif format_spec in ('dm', 'dms'):
+            text = _dms_formatter(self.latitude, self.longitude, format_spec)
+        elif format_spec == 'locator':
             text.append(self.to_grid_locator())
         else:
-            raise ValueError('Unknown mode type %r' % mode)
+            raise ValueError('Unknown format_spec %r' % format_spec)
 
         return ''.join(text)
-
-    def __unicode__(self, mode='dd'):
-        """Pretty printed Unicode location string.
-
-        :param str mode: Coordinate formatting system to use
-        :rtype: ``str``
-        :return: Human readable Unicode representation of ``Point`` object
-        :raise ValueError: Unknown value for ``mode``
-
-        """
-        text = []
-        if mode in ('dd', 'locator'):
-            text.append(self.__str__(mode=mode))
-        elif mode in ('dm', 'dms'):
-            text = _dms_formatter(self.latitude, self.longitude, mode, True)
-        else:
-            raise ValueError('Unknown mode type %r' % mode)
-
-        return ''.join(text)
-
-    def __format__(self, format_spec=None):
-        if type(format_spec) == unicode:
-            unicode
-        else:
-            str
-        if not format_spec:
-            return str(self)
 
     def __eq__(self, other, accuracy=None):
         """Compare ``Point`` objects for equality with optional accuracy amount.

@@ -47,19 +47,18 @@ class Xearth(point.Point):
         super(Xearth, self).__init__(latitude, longitude)
         self.comment = comment
 
-    def __str__(self, mode='dd'):
+    def __str__(self):
         """Pretty printed location string.
 
         .. seealso:
 
            :class:`point.Point`
 
-        :param str mode: Coordinate formatting system to use
         :rtype: ``str``
         :return: Human readable string representation of ``Xearth`` object
 
         """
-        text = super(Xearth, self).__str__(mode)
+        text = super(Xearth, self).__str__()
 
         if self.comment:
             return '%s (%s)' % (self.comment, text)

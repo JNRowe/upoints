@@ -32,12 +32,14 @@ class TestTrigpoint(TestCase):
     def test___str__(self):
         expect(str(Trigpoint(52.010585, -0.173443, 97.0))) == \
             """52°00'38"N, 000°10'24"W alt 97m"""
-        expect(str(Trigpoint(52.010585, -0.173443, 97.0).__str__(mode='dd'))) == \
-            """N52.011°; W000.173° alt 97m"""
-        expect(str(Trigpoint(52.010585, -0.173443, 97.0).__str__(mode='dm'))) == \
-            """52°00.64'N, 000°10.41'W alt 97m"""
         expect(str(Trigpoint(52.010585, -0.173443, 97.0, 'Bygrave'))) == \
             """Bygrave (52°00'38"N, 000°10'24"W alt 97m)"""
+
+    def test___format__(self):
+        expect(format(Trigpoint(52.010585, -0.173443, 97.0), 'dd')) == \
+            """N52.011°; W000.173° alt 97m"""
+        expect(format(Trigpoint(52.010585, -0.173443, 97.0), 'dm')) ==\
+            """52°00.64'N, 000°10.41'W alt 97m"""
 
 
 class TestTrigpoints(TestCase):

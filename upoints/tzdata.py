@@ -61,7 +61,7 @@ class Zone(point.Point):
                                     format='dms')[:-1]
         return utils.repr_assist(self, {'location': location})
 
-    def __str__(self, mode='dms'):
+    def __str__(self):
         """Pretty printed location string.
 
         :param str mode: Coordinate formatting system to use
@@ -70,7 +70,7 @@ class Zone(point.Point):
 
         """
         text = ['%s (%s: %s' % (self.zone, self.country,
-                                super(Zone, self).__str__(mode)), ]
+                                super(Zone, self).__format__('dms')), ]
         if self.comments:
             text.append(' also ' + ', '.join(self.comments))
         text.append(')')

@@ -89,11 +89,9 @@ class City(trigpoints.Trigpoint):
         self.date = date
         self.entered = entered
 
-    def __str__(self, mode=None):
+    def __str__(self):
         """Pretty printed location string.
 
-        :param mode: Dummy parameter to maintain signature of
-            ``trigpoints.Trigpoint.__str__``
         :rtype: ``str``
         :return: Human readable string representation of ``City`` object
 
