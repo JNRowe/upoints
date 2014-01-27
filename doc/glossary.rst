@@ -6,3 +6,6 @@ Glossary
 
    GPS
       :abbr:`GPS (Global Positioning System)`
+
+   Loran
+      :abbr:`Loran (LOng RAnge Navigation)`
