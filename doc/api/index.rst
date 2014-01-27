@@ -2,7 +2,6 @@ API documentation
 =================
 
 .. automodule:: upoints
-   :show-inheritance:
    :synopsis: Modules for working with points on Earth
 
 Contents

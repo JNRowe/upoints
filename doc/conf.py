@@ -91,7 +91,7 @@ todo_include_todos = True
 
 # Autodoc extension settings
 autoclass_content = 'both'
-autodoc_default_flags = ['members', ]
+autodoc_default_flags = ['members', 'show-inheritance']
 
 intersphinx_mapping = {
     'python': ('http://docs.python.org/', os.getenv('SPHINX_PYTHON_OBJECTS')),
