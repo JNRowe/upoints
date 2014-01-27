@@ -6,12 +6,27 @@ User-visible changes
 
 .. contents::
 
-SCM only
---------
+0.12.0 - 2014-01-27
+-------------------
 
-* Added a bash completion script for edist.py
+* Python 3 support, but Python 2.6 is now the lowest supported version
+* New support files to handle dependencies for pip_ users in ``extra/``
+* GPX 1.0 support has been removed
+* KML support for versions older than 2.2 has been removed
+* Unicode output guessing has been removed from ``edist``
+* Added a zsh completion script for edist
+* PEP-3101_ format support
+* aaargh_ is now required
+* lxml_ is no longer optional, and is now required for XML support
+* The testsuite now requires expecter_ and nose2_
 * Added support for metadata in GPX files
 * Added support for route data in GPX files
+
+.. _pip: https://crate.io/packages/pip/
+.. _pep-3101: http://www.python.org/dev/peps/pep-3101/
+.. _aaargh: https://crate.io/packages/aaargh/
+.. _expecter: https://crate.io/packages/expecter/
+.. _nose2: https://crate.io/packages/nose2/
 
 0.11.0 - 2008-05-20
 -------------------
