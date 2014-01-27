@@ -357,7 +357,7 @@ def angle_to_name(angle, segments=8, abbr=False):
 #}
 
 
-#{ Date andtime handling utilities
+#{ Date and time handling utilities
 @mangle_repr_type
 class TzOffset(datetime.tzinfo):
 
