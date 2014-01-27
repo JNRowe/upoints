@@ -53,12 +53,6 @@ OPTIONS
 -q, --quiet
     output only results and errors
 
---unicode
-    produce Unicode output
-
---ascii
-    produce ASCII output
-
 -o **FORMAT**, --format **FORMAT**
     produce output in dms, dm, d format or Maidenhead locator
 

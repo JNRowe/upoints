@@ -57,12 +57,12 @@ class TestNumberedPoints(TestCase):
     def test___repr__(self):
         locations = ['0;0'] * 4
         expect(repr(NumberedPoints(locations))) == \
-            "NumberedPoints([NumberedPoint(0.0, 0.0, 1, 'metric'), NumberedPoint(0.0, 0.0, 2, 'metric'), NumberedPoint(0.0, 0.0, 3, 'metric'), NumberedPoint(0.0, 0.0, 4, 'metric')], 'dd', True, True, None, 'km')"
+            "NumberedPoints([NumberedPoint(0.0, 0.0, 1, 'metric'), NumberedPoint(0.0, 0.0, 2, 'metric'), NumberedPoint(0.0, 0.0, 3, 'metric'), NumberedPoint(0.0, 0.0, 4, 'metric')], 'dd', True, None, 'km')"
 
     def test_import_locations(self):
         locs = NumberedPoints(['0;0', 'Home', '0;0'],
                               config_locations={'Home': (52.015, -0.221)})
-        expect(repr(locs)) == "NumberedPoints([NumberedPoint(0.0, 0.0, 1, 'metric'), NumberedPoint(52.015, -0.221, 'Home', 'metric'), NumberedPoint(0.0, 0.0, 3, 'metric')], 'dd', True, True, {'Home': (52.015, -0.221)}, 'km')"
+        expect(repr(locs)) == "NumberedPoints([NumberedPoint(0.0, 0.0, 1, 'metric'), NumberedPoint(52.015, -0.221, 'Home', 'metric'), NumberedPoint(0.0, 0.0, 3, 'metric')], 'dd', True, {'Home': (52.015, -0.221)}, 'km')"
 
     @patch('sys.stdout', new_callable=StringIO)
     def test_display(self, stdout):
@@ -70,8 +70,8 @@ class TestNumberedPoints(TestCase):
                               config_locations={'Home': (52.015, -0.221)})
         locs.display(None)
         expect(stdout.getvalue()) == (
-            'Location Home is N52.015°; W000.221°\n'
-            'Location 2 is N52.168°; E000.040°\n'
+            "Location Home is 52\xc2\xb000.90'N, 000\xc2\xb013.26'W\n"
+            "Location 2 is 52\xc2\xb010.08'N, 000\xc2\xb002.40'E\n"
         )
 
     @patch('sys.stdout', new_callable=StringIO)
@@ -194,8 +194,8 @@ class TestNumberedPoints(TestCase):
         locations = NumberedPoints(['52.015;-0.221', '52.168;0.040'])
         locations.destination(42, 240, False)
         expect(stdout.getvalue()) == (
-            'Destination from location 1 is N51.825°; W000.751°\n'
-            'Destination from location 2 is N51.978°; W000.491°\n'
+            "Destination from location 1 is 52\xc2\xb000.90'N, 000\xc2\xb013.26'W\n"
+            "Destination from location 2 is 52\xc2\xb010.08'N, 000\xc2\xb002.40'E\n"
         )
 
     @patch('sys.stdout', new_callable=StringIO)
@@ -277,7 +277,8 @@ def test_read_csv():
 
 
 @patch('sys.stdout', new_callable=StringIO)
-@patch.object(sys, 'argv', ['edist', '--unicode', 'display', '52.015;-0.221'])
+@patch.object(sys, 'argv', ['edist', 'display', '52.015;-0.221'])
 def test_main(stdout):
     main()
-    expect(stdout.getvalue()) == 'Location 1 is 52°00′54″N, 000°13′15″W\n'
+    expect(stdout.getvalue()) == \
+        "Location 1 is 52\xc2\xb000.90'N, 000\xc2\xb013.26'W\n"

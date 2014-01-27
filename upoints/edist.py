@@ -53,7 +53,6 @@ USAGE = __doc__[:__doc__.find('\n\n', 100)].replace('``', "'").splitlines()[2:]
 # Replace script name with optparse's substitution var, and rebuild string
 USAGE = '\n'.join(USAGE).replace('edist', '%(prog)s')
 
-import locale
 import logging
 import os
 import sys
@@ -176,14 +175,13 @@ class NumberedPoints(point.Points):
 
     """
 
-    def __init__(self, locations=None, format='dd', unistr=True,
-                 verbose=True, config_locations=None, units='km'):
+    def __init__(self, locations=None, format='dd', verbose=True,
+                 config_locations=None, units='km'):
         """Initialise a new ``NumberedPoints`` object.
 
         :type locations: ``list`` of ``str`` objects
         :param locations: Location identifiers
         :param str format: Coordinate formatting system to use
-        :param bool unistr: Whether to output Unicode results
         :param bool verbose: Whether to generate verbose output
         :param dict config_locations: Locations imported from user's config
             file
@@ -192,11 +190,6 @@ class NumberedPoints(point.Points):
         """
         super(NumberedPoints, self).__init__()
         self.format = format
-        self._unistr = unistr
-        if unistr:
-            self.stringify = lambda p: p.__unicode__(format)
-        else:
-            self.stringify = lambda p: p.__str__(format)
         self.verbose = verbose
         self._config_locations = config_locations
         self.units = units
@@ -248,7 +241,7 @@ class NumberedPoints(point.Points):
             if self.format == 'locator':
                 output = location.to_grid_locator(locator)
             else:
-                output = self.stringify(location)
+                output = format(location, self.format)
             if self.verbose:
                 print('Location %s is %s' % (location.name, output))
             else:
@@ -342,7 +335,7 @@ class NumberedPoints(point.Points):
             if self.format == 'locator':
                 output = destination.to_grid_locator(locator)
             else:
-                output = self.stringify(destination)
+                output = format(location, self.format)
             if self.verbose:
                 print('Destination from location %s is %s' % (location.name,
                                                               output))
@@ -562,11 +555,6 @@ def main():
             help='CSV file (gpsbabel format) to read route/locations from '
                  "('-' for STDIN)")
 
-    APP.arg('--unicode', action='store_true',
-            default='UTF-8' == locale.getpreferredencoding(),
-            help='produce Unicode output')
-    APP.arg('--ascii', action='store_false', dest='unicode',
-            help='produce ASCII output')
     APP.arg('-o', '--format', choices=('dms', 'dm', 'dd', 'locator'),
             default='dms',
             help='produce output in dms, dm, d format or Maidenhead locator')
@@ -589,8 +577,8 @@ def main():
 
     try:
         args.locations = NumberedPoints(args.location, args.format,
-                                        args.unicode, args.verbose,
-                                        config_locations, args.units)
+                                        args.verbose, config_locations,
+                                        args.units)
     except LocationsError as error:
         APP._parser.error(error)
 
