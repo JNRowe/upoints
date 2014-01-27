@@ -17,9 +17,12 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-import urllib
-
 from operator import attrgetter
+
+try:
+    from urllib.request import urlopen
+except ImportError:  # Python 2
+    from urllib import urlopen
 
 from lxml import etree
 
@@ -193,7 +196,7 @@ class Node(point.Point):
         :return: All the data OSM has on a region imported for use
 
         """
-        return Osm(urllib.urlopen(get_area_url(self, distance)))
+        return Osm(urlopen(get_area_url(self, distance)))
 
     @staticmethod
     def parse_elem(element):
