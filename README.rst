@@ -1,6 +1,11 @@
 ``upoints`` - Modules for working with points on Earth
 ======================================================
 
+.. warning::
+
+   At this point ``upoints`` only exists to assist the users who have been using
+   it for years, I *absolutely* do **not** recommend its use to new users.
+
 Introduction
 ------------
 

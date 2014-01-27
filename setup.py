@@ -44,7 +44,7 @@ setup(
     entry_points={'console_scripts': ['edist = upoints.edist:main', ]},
     zip_safe=False,
     classifiers=[
-        'Development Status :: 5 - Production/Stable',
+        'Development Status :: 7 - Inactive',
         'Environment :: Console',
         'Environment :: Other Environment',
         'Intended Audience :: Developers',

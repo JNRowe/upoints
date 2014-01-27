@@ -3,6 +3,11 @@
 ``upoints``
 ===========
 
+.. warning::
+
+   At this point ``upoints`` only exists to assist the users who have been using
+   it for years, I *absolutely* do **not** recommend its use to new users.
+
 :mod:`upoints` is a collection of `GPL v3`_ licensed modules for working
 with points on Earth, or other near spherical objects.  It allows you to
 calculate the distance and bearings between points, mangle
