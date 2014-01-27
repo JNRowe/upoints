@@ -22,31 +22,13 @@ from __future__ import print_function
 import os
 import sys
 
-from glob import glob
 from subprocess import (CalledProcessError, check_output)
-
-from PIL import Image
 
 root_dir = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
 sys.path.insert(0, root_dir)
 
 
 import upoints
-
-for image in glob('.static/*.png'):
-    if '_mini.png' in image:
-        continue
-    thumb_name = image.replace('.png', '_mini.png')
-    if not os.path.exists(thumb_name) \
-            or os.path.getmtime(image) > os.path.getmtime(thumb_name):
-        print('Creating thumbnail for %s' % image)
-        try:
-            image = Image.open(image)
-            image.thumbnail((256, 192))
-            image.save(thumb_name)
-        except IOError:
-            print('cannot create thumbnail for %s' % image)
-            sys.exit(1)
 
 extensions = \
     ['sphinx.ext.%s' % ext for ext in ['autodoc', 'coverage', 'doctest',

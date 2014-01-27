@@ -98,11 +98,10 @@ example, create a nice graphical view of your trip with xplanet_::
     >>> f.write("\n".join(utils.dump_xearth_markers(Trip, "name")))
     >>> f.close()
 
-.. figure:: .static/xearth_trip_mini.png
+.. figure:: .static/xearth_trip.png
    :alt: Xplanet showing the locations for a small European trip
    :width: 256
    :height: 192
-   :target: .static/xearth_trip.png
 
 The code above will create a file named :file:`trip.txt` that can be
 used with xplanet or xearth_.  It actually produces a reasonably
@@ -117,11 +116,10 @@ Also, as the function only requires a dictionary of
 :func:`filter` and :func:`map` expressions to the objects to generate
 your own labels for the markers.
 
-.. figure:: .static/xplanet_trip_date_mini.png
+.. figure:: .static/xplanet_trip_date.png
    :alt: Xplanet showing the location points and dates for a trip
    :width: 256
    :height: 192
-   :target: .static/xplanet_trip_date.png
 
 There is a wealth of Sphinx_ generated HTML output in the tarball, including
 documentation and usage examples.  If you still have any questions after reading

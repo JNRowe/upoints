@@ -95,8 +95,6 @@ databases.
 
 .. image:: .static/merlin_xearth.png
    :alt: xearth displaying array locations
-   :width: 256
-   :height: 256
 
 Examining local solar time
 --------------------------

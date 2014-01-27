@@ -1,6 +1,5 @@
 build/
 dist/
-doc/.static/*_mini.png
 upoints.egg-info/
 
 *.html
