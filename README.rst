@@ -125,7 +125,7 @@ a minimal testcase, or even better a patch!
 .. _Pythons on a plane: doc/pythons_on_a_plane.html
 .. _NOAA: http://weather.noaa.gov/
 .. _mail: jnrowe@gmail.com
-.. _aaargh: http://pypi.python.org/pypi/aaargh/
+.. _aaargh: https://crate.io/packages/aaargh/
 .. _lxml: http://codespeak.net/lxml/
 .. _Sphinx: http://sphinx.pocoo.org/
-.. _nose2: http://pypi.python.org/pypi/nose2/
+.. _nose2: https://crate.io/packages/nose2/
