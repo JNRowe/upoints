@@ -1,15 +1,17 @@
+include CONTRIBUTING.rst
 include COPYING
 include NEWS.rst
 include README.rst
 include edist.py
+include extra/_edist
+include extra/requirements*.txt
+include nose2.cfg
 
 recursive-include doc *.rst
 include doc/conf.py
 recursive-include doc/.static *.png
-include doc/.templates/layout.html
-prune doc/.build
 
-include test/*.py
+include tests/*.py
 
 include tests/data/baken_data
 include tests/data/broken_geonames
