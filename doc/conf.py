@@ -17,6 +17,8 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+from __future__ import print_function
+
 import os
 import sys
 
@@ -37,13 +39,13 @@ for image in glob('.static/*.png'):
     thumb_name = image.replace('.png', '_mini.png')
     if not os.path.exists(thumb_name) \
             or os.path.getmtime(image) > os.path.getmtime(thumb_name):
-        print 'Creating thumbnail for', image
+        print('Creating thumbnail for %s' % image)
         try:
             image = Image.open(image)
             image.thumbnail((256, 192))
             image.save(thumb_name)
         except IOError:
-            print 'cannot create thumbnail for', image
+            print('cannot create thumbnail for %s' % image)
             sys.exit(1)
 
 extensions = \
