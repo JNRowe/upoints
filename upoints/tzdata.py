@@ -39,7 +39,7 @@ class Zone(point.Point):
 
         :param str location: Primary location in ISO 6709 format
         :param str country: Location's ISO 3166 country code
-        :param str zone: Location's zone name as used in zoneinfo databse
+        :param str zone: Location's zone name as used in zoneinfo database
         :param list comments: Location's alternate names
 
         """

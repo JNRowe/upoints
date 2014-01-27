@@ -22,7 +22,7 @@ results drops considerably as you zoom in from country-wide geolocation.
 My initial idea had been to use the city_ data to populate an
 automatically updating database that could be queried to find people in
 the local area [#]_.  Much like some of those oh-so-cool Web 2.0
-buzzword laden sites do but without the manual updating, javascript,
+buzzword laden sites do but without the manual updating, Javascript,
 lack of privacy and continual spam.  Me and a few friends already do
 such a thing using our published hCalendar_ entries, a heap of nifty
 Haskell code and some dirty hack infested XSLT.  It works well, but it

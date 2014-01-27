@@ -129,8 +129,8 @@ def value_or_empty(value):
 def repr_assist(obj, remap=None):
     """Helper function to simplify ``__repr__`` methods.
 
-    :param obj: Object to pull arg values for
-    :param dict remap: Arg pairs to remap before output
+    :param obj: Object to pull argument values for
+    :param dict remap: Argument pairs to remap before output
     :rtype: ``str``
     :return: Self-documenting representation of ``value``
 
@@ -1040,7 +1040,7 @@ def dump_xearth_markers(markers, name='identifier'):
 
        :func:`upoints.xearth.Xearths.import_locations`
 
-    :param dict markers: Dictionary of identifer keys, with :class:`Trigpoint`
+    :param dict markers: Dictionary of identifier keys, with :class:`Trigpoint`
         values
     :param str name: Value to use as Xearth display string
     :rtype: ``list``
