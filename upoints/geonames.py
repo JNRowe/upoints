@@ -115,19 +115,29 @@ class Location(trigpoints.Trigpoint):
         else:
             self.timezone = None
 
-    def __str__(self, mode='dd'):
+    def __str__(self):
         """Pretty printed location string.
 
         .. seealso::
 
-           :class:`trigpoints.point.Point`
+           :type :class:`trigpoints.point.Point`
 
-        :param str mode: Coordinate formatting system to use
         :rtype: ``str``
         :return: Human readable string representation of ``Location`` object
 
         """
-        text = super(Location.__base__, self).__str__(mode)
+        return self.__format__()
+
+    def __format__(self, format_spec='dd'):
+        """Extended pretty printing for location strings.
+
+        :param str format_spec: Coordinate formatting system to use
+        :rtype: ``str``
+        :return: Human readable string representation of ``Point`` object
+        :raise ValueError: Unknown value for ``format_spec``
+
+        """
+        text = super(Location.__base__, self).__format__(format_spec)
 
         if self.alt_names:
             return '%s (%s - %s)' % (self.name, ', '.join(self.alt_names),

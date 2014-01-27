@@ -42,12 +42,15 @@ class TestLocation(TestCase):
 
     def test___str__(self):
         expect(str(self.x)) == 'Stotfold (N52.000°; W000.217°)'
-        expect(str(self.x.__str__(mode='dms'))) == \
-            """Stotfold (52°00'00"N, 000°13'00"W)"""
-        expect(str(self.x.__str__(mode='dm'))) == \
-            "Stotfold (52°00.00'N, 000°13.00'W)"
         self.x.alt_names = ['Home', 'Target']
         expect(str(self.x)) == 'Stotfold (Home, Target - N52.000°; W000.217°)'
+        self.x.alt_names = None
+
+    def test___format__(self):
+        expect(format(self.x, 'dms')) == \
+            """Stotfold (52°00'00"N, 000°13'00"W)"""
+        expect(format(self.x, 'dm')) == \
+            "Stotfold (52°00.00'N, 000°13.00'W)"
 
 
 class TestLocations(TestCase):

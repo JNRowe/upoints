@@ -39,13 +39,16 @@ class TestStation(TestCase):
     def test___str__(self):
         expect(str(self.x)) == \
             'London / Heathrow Airport (EGLL - N51.483°; W000.450°)'
-        expect(self.x.__str__(mode='dms')) == \
-            """London / Heathrow Airport (EGLL - 51°28'59"N, 000°27'00"W)"""
-        expect(self.x.__str__(mode='dm')) == \
-            "London / Heathrow Airport (EGLL - 51°29.00'N, 000°27.00'W)"
         self.x.alt_id = None
         expect(str(self.x)) == \
             'London / Heathrow Airport (N51.483°; W000.450°)'
+        self.x.alt_id = 'EGLL'
+
+    def test___format__(self):
+        expect(format(self.x, 'dms')) == \
+            """London / Heathrow Airport (EGLL - 51°28'59"N, 000°27'00"W)"""
+        expect(format(self.x, 'dm')) == \
+            "London / Heathrow Airport (EGLL - 51°29.00'N, 000°27.00'W)"
 
 
 class TestStations(TestCase):

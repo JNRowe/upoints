@@ -36,8 +36,6 @@ _arguments '--help[show help message and exit]' \
     '--quiet[output only results and errors]' \
     '--config-file=[config file to read custom locations from]:select file:_files' \
     '--csv-file=[CSV file (gpsbabel format) to read route/locations from]:select file:_files' \
-    '--unicode[produce Unicode output]' \
-    '--ascii[produce ASCII output]' \
     '--output=[produce output in dms, dm, d format or Maidenhead locator]:select format:(dms dm dd locator)' \
     '--string[display named bearings]' \
     '--units=[display distances in kilometres(default), statute miles or nautical miles]:select unit:(km sm nm)' \

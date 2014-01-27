@@ -95,7 +95,7 @@ class Baken(point.Point):
         self._locator = value
         self._latitude, self._longitude = utils.from_grid_locator(value)
 
-    def __str__(self, mode='dms'):
+    def __str__(self):
         """Pretty printed location string.
 
         :param str mode: Coordinate formatting system to use
@@ -103,7 +103,7 @@ class Baken(point.Point):
         :return: Human readable string representation of ``Baken`` object
 
         """
-        text = super(Baken, self).__str__(mode)
+        text = super(Baken, self).__format__('dms')
         if self._locator:
             text = '%s (%s)' % (self._locator, text)
         return text

@@ -67,16 +67,15 @@ class _GpxElem(point.TimedPoint):
         self.description = description
         self.elevation = elevation
 
-    def __str__(self, mode='dms'):
+    def __str__(self):
         """Pretty printed location string.
 
-        :param str mode: Coordinate formatting system to use
         :rtype: ``str``
         :return: Human readable string representation of :class:`_GpxElem`
             object
 
         """
-        location = super(_GpxElem, self).__str__(mode)
+        location = super(_GpxElem, self).__format__('dms')
         if self.elevation:
             location += ' @ %sm' % self.elevation
         if self.time:

@@ -61,15 +61,29 @@ class Trigpoint(point.Point):
         self.name = name
         self.identity = identity
 
-    def __str__(self, mode='dms'):
+    def __str__(self):
         """Pretty printed location string.
 
-        :param str mode: Coordinate formatting system to use
+        .. seealso::
+
+           :type :class:`trigpoints.point.Point`
+
         :rtype: ``str``
-        :return: Human readable string representation of ``Trigpoint`` object
+        :return: Human readable string representation of ``Station`` object
 
         """
-        location = [super(Trigpoint, self).__str__(mode), ]
+        return self.__format__()
+
+    def __format__(self, format_spec='dms'):
+        """Extended pretty printing for location strings.
+
+        :param str format_spec: Coordinate formatting system to use
+        :rtype: ``str``
+        :return: Human readable string representation of ``Trigpoint`` object
+        :raise ValueError: Unknown value for ``format_spec``
+
+        """
+        location = [super(Trigpoint, self).__format__(format_spec), ]
         if self.altitude:
             location.append('alt %im' % self.altitude)
 

@@ -76,24 +76,18 @@ class TestPoint(TestCase):
 
     def test___str__(self):
         expect(str(Point(52.015, -0.221))) == 'N52.015°; W000.221°'
-        expect(str(Point(52.015, -0.221).__str__(mode='dm'))) == \
+
+    def test___format__(self):
+        expect(format(Point(52.015, -0.221), 'dm')) == \
             "52°00.90'N, 000°13.26'W"
-        expect(str(Point(52.015, -0.221).__str__(mode='dms'))) == \
+        expect(format(Point(52.015, -0.221), 'dms')) == \
             """52°00'54"N, 000°13'15"W"""
-        expect(str(Point(33.9400, -118.4000).__str__(mode='dms'))) == \
+        expect(format(Point(33.9400, -118.4000), 'dms')) == \
             """33°56'23"N, 118°24'00"W"""
-        expect(str(Point(52.015, -0.221).__str__(mode='locator'))) == 'IO92'
+        expect(format(Point(52.015, -0.221), 'locator')) == 'IO92'
 
     def test___unicode__(self):
         expect(str(Point(52.015, -0.221))) == 'N52.015°; W000.221°'
-        expect(str(Point(52.015, -0.221).__unicode__(mode='dm'))) == \
-            '52°00.90′N, 000°13.26′W'
-        expect(str(Point(52.015, -0.221).__unicode__(mode='dms'))) == \
-            '52°00′54″N, 000°13′15″W'
-        expect(str(Point(33.9400, -118.4000).__unicode__(mode='dms'))) == \
-            '33°56′23″N, 118°24′00″W'
-        expect(str(Point(52.015, -0.221).__unicode__(mode='locator'))) == \
-            'IO92'
 
     def test___eq__(self):
         expect(Point(52.015, -0.221)) == Point(52.015, -0.221)
