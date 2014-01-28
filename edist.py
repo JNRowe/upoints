@@ -1,4 +1,4 @@
-#! /usr/bin/python -tt
+#! /usr/bin/env python
 # coding=utf-8
 """edist - Simple command line coordinate processing"""
 # Copyright © 2007-2014  James Rowe <jnrowe@gmail.com>
