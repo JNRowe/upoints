@@ -9,6 +9,7 @@ include nose2.cfg
 
 recursive-include doc *.rst
 include doc/conf.py
+include doc/wordlist.txt
 recursive-include doc/.static *.png
 
 include tests/*.py
