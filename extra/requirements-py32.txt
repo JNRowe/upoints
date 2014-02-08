@@ -1,0 +1,3 @@
+-r requirements-base.txt
+# Recent aaargh versions require pbr, which is broken on Python 3.2
+aaargh==0.4
