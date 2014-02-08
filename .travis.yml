@@ -3,6 +3,7 @@ language:
 python:
   - 2.6
   - 2.7
+  - 3.2
   - 3.3
 install:
   # We don't want to support external fetches, but the 2.6 case is forcing it on
