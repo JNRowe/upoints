@@ -9,4 +9,4 @@ install:
   - pip install -r extra/requirements-test.txt
   - pip install .
 script:
-    nose2 -vv tests
+    nose2 tests
