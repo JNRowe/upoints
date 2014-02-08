@@ -153,7 +153,7 @@ def repr_assist(obj, remap=None):
             data.append(repr(value))
         else:
             data.append(str(value))
-    return u"%s(%s)" % (obj.__class__.__name__, u', '.join(data))
+    return "%s(%s)" % (obj.__class__.__name__, ', '.join(data))
 
 
 def prepare_read(data, method='readlines', mode='r'):
