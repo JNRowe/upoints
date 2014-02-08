@@ -17,19 +17,22 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+import imp
+
 from setuptools import setup
 
 # Hack to import _version file without importing upoints/__init__.py, its
 # purpose is to allow import without requiring dependencies at this point.
-_version = {}
-execfile('upoints/_version.py', {}, _version)
+ver_file = open('upoints/_version.py')
+_version = imp.load_module('_version', ver_file, ver_file.name,
+                           ('.py', ver_file.mode, imp.PY_SOURCE))
 
 install_requires = list(map(str.strip,
                             open('extra/requirements.txt').readlines()))
 
 setup(
     name='upoints',
-    version=_version['dotted'],
+    version=_version.dotted,
     description='Modules for working with points on Earth',
     long_description=open('README.rst').read(),
     author='James Rowe',
