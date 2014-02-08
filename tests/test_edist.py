@@ -30,6 +30,7 @@ except ImportError:
 from expecter import expect
 from mock import patch
 
+from upoints.compat import PY2
 from upoints.edist import (LocationsError, NumberedPoint, NumberedPoints,
                            main, read_csv)
 
@@ -69,10 +70,16 @@ class TestNumberedPoints(TestCase):
         locs = NumberedPoints(['Home', '52.168;0.040'],
                               config_locations={'Home': (52.015, -0.221)})
         locs.display(None)
-        expect(stdout.getvalue()) == (
-            "Location Home is 52\xc2\xb000.90'N, 000\xc2\xb013.26'W\n"
-            "Location 2 is 52\xc2\xb010.08'N, 000\xc2\xb002.40'E\n"
-        )
+        if PY2:
+            expect(stdout.getvalue()) == (
+                "Location Home is 52\xc2\xb000.90'N, 000\xc2\xb013.26'W\n"
+                "Location 2 is 52\xc2\xb010.08'N, 000\xc2\xb002.40'E\n"
+            )
+        else:
+            expect(stdout.getvalue()) == (
+                "Location Home is 52°00.90'N, 000°13.26'W\n"
+                "Location 2 is 52°10.08'N, 000°02.40'E\n"
+            )
 
     @patch('sys.stdout', new_callable=StringIO)
     def test_display_locator(self, stdout):
@@ -193,10 +200,16 @@ class TestNumberedPoints(TestCase):
     def test_destination(self, stdout):
         locations = NumberedPoints(['52.015;-0.221', '52.168;0.040'])
         locations.destination(42, 240, False)
-        expect(stdout.getvalue()) == (
-            "Destination from location 1 is 52\xc2\xb000.90'N, 000\xc2\xb013.26'W\n"
-            "Destination from location 2 is 52\xc2\xb010.08'N, 000\xc2\xb002.40'E\n"
-        )
+        if PY2:
+            expect(stdout.getvalue()) == (
+                "Destination from location 1 is 52\xc2\xb000.90'N, 000\xc2\xb013.26'W\n"
+                "Destination from location 2 is 52\xc2\xb010.08'N, 000\xc2\xb002.40'E\n"
+            )
+        else:
+            expect(stdout.getvalue()) == (
+                "Destination from location 1 is 52°00.90'N, 000°13.26'W\n"
+                "Destination from location 2 is 52°10.08'N, 000°02.40'E\n"
+            )
 
     @patch('sys.stdout', new_callable=StringIO)
     def test_destination_locator(self, stdout):
@@ -280,5 +293,9 @@ def test_read_csv():
 @patch.object(sys, 'argv', ['edist', 'display', '52.015;-0.221'])
 def test_main(stdout):
     main()
-    expect(stdout.getvalue()) == \
-        "Location 1 is 52\xc2\xb000.90'N, 000\xc2\xb013.26'W\n"
+    if PY2:
+        expect(stdout.getvalue()) == \
+            "Location 1 is 52\xc2\xb000.90'N, 000\xc2\xb013.26'W\n"
+    else:
+        expect(stdout.getvalue()) == \
+            "Location 1 is 52°00.90'N, 000°13.26'W\n"
