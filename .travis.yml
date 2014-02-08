@@ -6,6 +6,9 @@ python:
   - 3.2
   - 3.3
 install:
+  - if [[ $TRAVIS_PYTHON_VERSION == '3.2' ]]; then
+      pip install -r extra/requirements-py32.txt;
+    fi
   # We don't want to support external fetches, but the 2.6 case is forcing it on
   # us for argparse
   - if [[ $TRAVIS_PYTHON_VERSION == '2.6' ]]; then
