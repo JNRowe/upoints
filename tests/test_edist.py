@@ -27,11 +27,6 @@ try:
 except ImportError:
     from io import StringIO  # NOQA
 
-if sys.version_info > (2, 7):
-    from unittest import skipIf
-else:
-    from unittest2 import skipIf
-
 from expecter import expect
 from mock import patch
 
@@ -65,9 +60,11 @@ class TestNumberedPoints(TestCase):
         expect(repr(NumberedPoints(locations))) == \
             "NumberedPoints([NumberedPoint(0.0, 0.0, 1, 'metric'), NumberedPoint(0.0, 0.0, 2, 'metric'), NumberedPoint(0.0, 0.0, 3, 'metric'), NumberedPoint(0.0, 0.0, 4, 'metric')], 'dd', True, None, 'km')"
 
-    @skipIf(sys.version_info < (2, 7),
-            "float formatting changes cause failure")
     def test_import_locations(self):
+        if sys.version_info < (2, 7):
+            # Float formatting changes cause failure, and unittest2.skipIf is
+            # counting as a failure
+            return True
         locs = NumberedPoints(['0;0', 'Home', '0;0'],
                               config_locations={'Home': (52.015, -0.221)})
         expect(repr(locs)) == "NumberedPoints([NumberedPoint(0.0, 0.0, 1, 'metric'), NumberedPoint(52.015, -0.221, 'Home', 'metric'), NumberedPoint(0.0, 0.0, 3, 'metric')], 'dd', True, {'Home': (52.015, -0.221)}, 'km')"
