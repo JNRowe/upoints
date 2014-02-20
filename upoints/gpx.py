@@ -601,7 +601,7 @@ class Trackpoints(_SegWrap):
         Documentation`_, which is XML such as::
 
             <?xml version="1.0" encoding="utf-8" standalone="no"?>
-            <gpx version="1.1" creator="upoints/0.12.1"
+            <gpx version="1.1" creator="upoints/0.12.2"
             xmlns="http://www.topografix.com/GPX/1/1"
             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
             xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd">
@@ -724,7 +724,7 @@ class Routepoints(_SegWrap):
         Documentation`_, which is XML such as::
 
             <?xml version="1.0" encoding="utf-8" standalone="no"?>
-            <gpx version="1.1" creator="upoints/0.12.1"
+            <gpx version="1.1" creator="upoints/0.12.2"
             xmlns="http://www.topografix.com/GPX/1/1"
             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
             xsi:schemaLocation="http://www.topografix.com/GPX/1/1 http://www.topografix.com/GPX/1/1/gpx.xsd">
