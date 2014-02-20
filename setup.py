@@ -19,8 +19,6 @@
 
 import imp
 
-from sys import version_info
-
 from setuptools import setup
 
 # Hack to import _version file without importing upoints/__init__.py, its
@@ -41,7 +39,7 @@ def parse_requires(file):
             deps.append(dep)
     return deps
 
-install_requires = parse_requires('requirements-py%s%s.txt' % version_info[:2])
+install_requires = parse_requires('requirements.txt')
 
 setup(
     name='upoints',
