@@ -4,6 +4,7 @@ include NEWS.rst
 include README.rst
 include edist.py
 include extra/_edist
+include extra/doap.rdf
 include extra/requirements*.txt
 include nose2.cfg
 
