@@ -34,7 +34,6 @@ class Placemark(trigpoints.Trigpoint):
     """Class for representing a Placemark element from KML data files.
 
     .. versionadded:: 0.6.0
-
     """
 
     __slots__ = ('description', )
@@ -48,7 +47,6 @@ class Placemark(trigpoints.Trigpoint):
         :param float altitude: Placemark's altitude
         :param str name: Name for placemark
         :param str description: Placemark's description
-
         """
         super(Placemark, self).__init__(latitude, longitude, altitude, name)
 
@@ -61,7 +59,6 @@ class Placemark(trigpoints.Trigpoint):
 
         :rtype: ``str``
         :return: Human readable string representation of ``Placemark`` object
-
         """
         location = super(Placemark, self).__format__('dms')
         if self.description:
@@ -74,7 +71,6 @@ class Placemark(trigpoints.Trigpoint):
 
         :rtype: :class:`etree.Element`
         :return: KML Placemark element
-
         """
         placemark = create_elem('Placemark')
         if self.name:
@@ -102,7 +98,6 @@ class Placemarks(point.KeyedPoints):
     """Class for representing a group of :class:`Placemark` objects.
 
     .. versionadded:: 0.6.0
-
     """
 
     def __init__(self, kml_file=None):
@@ -153,7 +148,6 @@ class Placemarks(point.KeyedPoints):
 
         .. _KML Reference:
            http://code.google.com/apis/kml/documentation/kmlreference.html
-
         """
         self._kml_file = kml_file
         data = utils.prepare_xml_read(kml_file, objectify=True)
@@ -185,7 +179,6 @@ class Placemarks(point.KeyedPoints):
 
         :rtype: :class:`etree.ElementTree`
         :return: KML element tree depicting ``Placemarks``
-
         """
         kml = create_elem('kml')
         kml.Document = create_elem('Document')

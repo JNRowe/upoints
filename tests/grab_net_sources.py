@@ -54,7 +54,6 @@ def data_file(resource):
     :parameters str resource: Source
     :rtype: `str`
     :return: Local filename
-
     """
     filename = os.path.join(os.path.dirname(__file__), 'data',
                             os.path.basename(urlparse(resource[0]).path))
@@ -69,7 +68,6 @@ def main(argv=None):
     """Main script handler.
 
     :param list argv: Command line arguments
-
     """
     print('*WARNING* This script will fetch some data files that can not be '
           'distributed legally!  In some jurisdictions you may not even be '

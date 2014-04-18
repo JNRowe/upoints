@@ -39,7 +39,6 @@ def _parse_flags(element):
     :param etree.Element element: Element to parse
     :rtype: ``tuple``
     :return: Generic OSM data for object instantiation
-
     """
     visible = True if element.get('visible') else False
     user = element.get('user')
@@ -64,7 +63,6 @@ def _get_flags(osm_obj):
     :param Node osm_obj: Object with OSM-style metadata
     :rtype: ``list``
     :return: Human readable flags output
-
     """
     flags = []
     if osm_obj.visible:
@@ -98,7 +96,6 @@ def get_area_url(location, distance):
     :rtype: ``str``
     :return: URL that can be used to fetch the OSM data within ``distance`` of
         ``location``
-
     """
     locations = [location.destination(i, distance) for i in range(0, 360, 90)]
     latitudes = list(map(attrgetter('latitude'), locations))
@@ -115,7 +112,6 @@ class Node(point.Point):
     """Class for representing a node element from OSM data files.
 
     .. versionadded:: 0.9.0
-
     """
 
     __slots__ = ('ident', 'visible', 'user', 'timestamp', 'tags')
@@ -131,7 +127,6 @@ class Node(point.Point):
         :param str user: User who logged the node
         :param str timestamp: The date and time a node was logged
         :param dict tags: Tags associated with the node
-
         """
         super(Node, self).__init__(latitude, longitude)
 
@@ -146,7 +141,6 @@ class Node(point.Point):
 
         :rtype: ``str``
         :return: Human readable string representation of ``Node`` object
-
         """
         text = ['Node %i (%s)' % (self.ident,
                                   super(Node, self).__format__('dms')), ]
@@ -161,7 +155,6 @@ class Node(point.Point):
 
         :rtype: :class:`etree.Element`
         :return: OSM node element
-
         """
         node = create_elem('node', {'id': str(self.ident),
                                     'lat': str(self.latitude),
@@ -184,7 +177,6 @@ class Node(point.Point):
         :rtype: ``str``
         :return: URL that can be used to fetch the OSM data within ``distance``
             of ``location``
-
         """
         return get_area_url(self, distance)
 
@@ -194,7 +186,6 @@ class Node(point.Point):
         :param int distance: Boundary distance in kilometres
         :rtype: :class:`Osm`
         :return: All the data OSM has on a region imported for use
-
         """
         return Osm(urlopen(get_area_url(self, distance)))
 
@@ -205,7 +196,6 @@ class Node(point.Point):
         :param etree.Element element: XML Element to parse
         :rtype: ``Node``
         :return: ``Node`` object representing parsed element
-
         """
         ident = int(element.get('id'))
         latitude = element.get('lat')
@@ -222,7 +212,6 @@ class Way(point.Points):
     """Class for representing a way element from OSM data files.
 
     .. versionadded:: 0.9.0
-
     """
 
     __slots__ = ('ident', 'visible', 'user', 'timestamp', 'tags')
@@ -238,7 +227,6 @@ class Way(point.Points):
         :param str user: User who logged the way
         :param str timestamp: The date and time a way was logged
         :param dict tags: Tags associated with the way
-
         """
         super(Way, self).__init__()
 
@@ -255,7 +243,6 @@ class Way(point.Points):
 
         :rtype: ``str``
         :return: String to recreate ``Way`` object
-
         """
         return utils.repr_assist(self, {'nodes': self[:]})
 
@@ -265,7 +252,6 @@ class Way(point.Points):
         :param list nodes: Nodes to be used in expanding references
         :rtype: ``str``
         :return: Human readable string representation of ``Way`` object
-
         """
         text = ['Way %i' % (self.ident), ]
         if not nodes:
@@ -285,7 +271,6 @@ class Way(point.Points):
 
         :rtype: :class:`etree.Element`
         :return: OSM way element
-
         """
         way = create_elem('way', {'id': str(self.ident)})
         way.set('visible', 'true' if self.visible else 'false')
@@ -309,7 +294,6 @@ class Way(point.Points):
         :param etree.Element element: XML Element to parse
         :rtype: ``Way``
         :return: `Way` object representing parsed element
-
         """
         ident = int(element.get('id'))
         flags = _parse_flags(element)
@@ -322,7 +306,6 @@ class Osm(point.Points):
     """Class for representing an OSM region.
 
     .. versionadded:: 0.9.0
-
     """
 
     def __init__(self, osm_file=None):
@@ -386,7 +369,6 @@ class Osm(point.Points):
 
         .. _OpenStreetMap 0.5 DTD:
             http://wiki.openstreetmap.org/wiki/OSM_Protocol_Version_0.5/DTD
-
         """
         self._osm_file = osm_file
         data = utils.prepare_xml_read(osm_file, objectify=True)

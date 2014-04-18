@@ -40,7 +40,6 @@ class Location(trigpoints.Trigpoint):
     :cvar __TIMEZONES: ``dateutil.gettz`` cache to speed up generation
 
     .. _geonames.org: http://www.geonames.org/
-
     """
 
     __slots__ = ('geonameid', 'asciiname', 'alt_names', 'feature_class',
@@ -82,7 +81,6 @@ class Location(trigpoints.Trigpoint):
         :param datetime.date modified_date: Location's last modification date
             in the geonames databases
         :param int timezone: The non-DST timezone offset from UTC in minutes
-
         """
         super(Location, self).__init__(latitude, longitude, altitude, name)
         self.geonameid = geonameid
@@ -124,7 +122,6 @@ class Location(trigpoints.Trigpoint):
 
         :rtype: ``str``
         :return: Human readable string representation of ``Location`` object
-
         """
         return self.__format__()
 
@@ -135,7 +132,6 @@ class Location(trigpoints.Trigpoint):
         :rtype: ``str``
         :return: Human readable string representation of ``Point`` object
         :raise ValueError: Unknown value for ``format_spec``
-
         """
         text = super(Location.__base__, self).__format__(format_spec)
 
@@ -151,7 +147,6 @@ class Locations(point.Points):
     """Class for representing a group of :class:`Location` objects.
 
     .. versionadded:: 0.5.1
-
     """
 
     def __init__(self, data=None, tzfile=None):
@@ -209,7 +204,6 @@ class Locations(point.Points):
 
         .. _geonames.org: http://www.geonames.org/
         .. _database export page: http://download.geonames.org/export/dump/
-
         """
         self._data = data
         field_names = ('geonameid', 'name', 'asciiname', 'alt_names',
@@ -270,7 +264,6 @@ class Locations(point.Points):
 
         .. _geonames.org: http://www.geonames.org/
         .. _database export page: http://download.geonames.org/export/dump/
-
         """
         self._tzfile = data
         field_names = ('ident', 'gmt_offset', 'dst_offset')

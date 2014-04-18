@@ -40,7 +40,6 @@ class Trigpoint(point.Point):
        considerably larger than the reported value calculated at ground level.
 
     .. versionadded:: 0.2.0
-
     """
 
     __slots__ = ('altitude', 'name', 'identity')
@@ -54,7 +53,6 @@ class Trigpoint(point.Point):
         :param float altitude: Location's altitude
         :param str name: Name for location
         :param int identity: Database identifier, if known
-
         """
         super(Trigpoint, self).__init__(latitude, longitude)
         self.altitude = altitude
@@ -70,7 +68,6 @@ class Trigpoint(point.Point):
 
         :rtype: ``str``
         :return: Human readable string representation of ``Station`` object
-
         """
         return self.__format__()
 
@@ -81,7 +78,6 @@ class Trigpoint(point.Point):
         :rtype: ``str``
         :return: Human readable string representation of ``Trigpoint`` object
         :raise ValueError: Unknown value for ``format_spec``
-
         """
         location = [super(Trigpoint, self).__format__(format_spec), ]
         if self.altitude:
@@ -98,7 +94,6 @@ class Trigpoints(point.KeyedPoints):
     """Class for representing a group of :class:`Trigpoint` objects.
 
     .. versionadded:: 0.5.1
-
     """
 
     def __init__(self, marker_file=None):
@@ -141,7 +136,6 @@ class Trigpoints(point.KeyedPoints):
         :raise ValueError: Invalid value for ``marker_file``
 
         .. _alltrigs-wgs84.txt: http://www.haroldstreet.org.uk/trigpoints/
-
         """
         self._marker_file = marker_file
         field_names = ('tag', 'identity', 'latitude', 'longitude', 'altitude',

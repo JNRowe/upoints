@@ -31,7 +31,6 @@ class Xearth(point.Point):
     """Class for representing a location from a Xearth marker.
 
     .. versionadded:: 0.2.0
-
     """
 
     __slots__ = ('comment', )
@@ -42,7 +41,6 @@ class Xearth(point.Point):
         :param float latitude: Location's latitude
         :param float longitude: Location's longitude
         :param str comment: Comment for location
-
         """
         super(Xearth, self).__init__(latitude, longitude)
         self.comment = comment
@@ -56,7 +54,6 @@ class Xearth(point.Point):
 
         :rtype: ``str``
         :return: Human readable string representation of ``Xearth`` object
-
         """
         text = super(Xearth, self).__str__()
 
@@ -71,7 +68,6 @@ class Xearths(point.KeyedPoints):
     """Class for representing a group of :class:`Xearth` objects.
 
     .. versionadded:: 0.5.1
-
     """
 
     def __init__(self, marker_file=None):
@@ -86,7 +82,6 @@ class Xearths(point.KeyedPoints):
 
         :rtype: ``str``
         :return: Xearth/Xplanet marker file formatted output
-
         """
         return '\n'.join(utils.dump_xearth_markers(self, 'comment'))
 
@@ -124,7 +119,6 @@ class Xearths(point.KeyedPoints):
 
         .. _xearth: http://hewgill.com/xearth/original/
         .. _xplanet: http://xplanet.sourceforge.net/
-
         """
         self._marker_file = marker_file
         data = utils.prepare_read(marker_file)

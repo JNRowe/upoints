@@ -34,7 +34,6 @@ class Station(trigpoints.Trigpoint):
     """Class for representing a weather station from a NOAA data file.
 
     .. versionadded:: 0.2.0
-
     """
 
     __slots__ = ('alt_id', 'state', 'country', 'wmo', 'ua_latitude',
@@ -56,7 +55,6 @@ class Station(trigpoints.Trigpoint):
         :param int altitude: Station's elevation
         :param int ua_altitude: Station's upper air elevation
         :param bool rbsn: True if station belongs to RSBN
-
         """
         super(Station, self).__init__(latitude, longitude, altitude, name)
         self.alt_id = alt_id
@@ -77,7 +75,6 @@ class Station(trigpoints.Trigpoint):
 
         :rtype: ``str``
         :return: Human readable string representation of ``Station`` object
-
         """
         return self.__format__()
 
@@ -88,7 +85,6 @@ class Station(trigpoints.Trigpoint):
         :rtype: ``str``
         :return: Human readable string representation of ``Point`` object
         :raise ValueError: Unknown value for ``format_spec``
-
         """
         text = super(Station.__base__, self).__format__(format_spec)
 
@@ -103,7 +99,6 @@ class Stations(point.KeyedPoints):
     """Class for representing a group of `Station` objects.
 
     .. versionadded:: 0.5.1
-
     """
 
     def __init__(self, data=None, index='WMO'):
@@ -172,7 +167,6 @@ class Stations(point.KeyedPoints):
 
         .. _NOAA: http://weather.noaa.gov/
         .. _station location page: http://weather.noaa.gov/tg/site.shtml
-
         """
         self._data = data
         data = utils.prepare_read(data)

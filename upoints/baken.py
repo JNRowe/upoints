@@ -35,7 +35,6 @@ class Baken(point.Point):
     .. versionadded:: 0.4.0
 
     .. _baken: http://www.qsl.net:80/g4klx/
-
     """
 
     __slots__ = ('antenna', 'direction', 'frequency', 'height', '_locator',
@@ -60,7 +59,6 @@ class Baken(point.Point):
         :param float power: Transmitter's power
         :param str qth: Location's qth
         :raise LookupError: No position data to use
-
         """
         if not latitude is None:
             super(Baken, self).__init__(latitude, longitude)
@@ -90,7 +88,6 @@ class Baken(point.Point):
         """Update the locator, and trigger a latitude and longitude update.
 
         :param str value: New Maidenhead locator string
-
         """
         self._locator = value
         self._latitude, self._longitude = utils.from_grid_locator(value)
@@ -101,7 +98,6 @@ class Baken(point.Point):
         :param str mode: Coordinate formatting system to use
         :rtype: ``str``
         :return: Human readable string representation of ``Baken`` object
-
         """
         text = super(Baken, self).__format__('dms')
         if self._locator:
@@ -114,7 +110,6 @@ class Bakens(point.KeyedPoints):
     """Class for representing a group of :class:`Baken` objects.
 
     .. versionadded:: 0.5.1
-
     """
 
     def __init__(self, baken_file=None):
@@ -163,7 +158,6 @@ class Bakens(point.KeyedPoints):
         :return: Named locations and their associated values
 
         .. _baken: http://www.qsl.net:80/g4klx/
-
         """
         self._baken_file = baken_file
         data = ConfigParser()

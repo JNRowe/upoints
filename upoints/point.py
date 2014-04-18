@@ -37,7 +37,6 @@ def _manage_location(attr):
     :param str attr: Property's name
     :rtype: ``property``
     :return: Managed property interface
-
     """
     return property(lambda self: getattr(self, '_%s' % attr),
                     lambda self, value: self._set_location(attr, value))
@@ -50,7 +49,6 @@ def _dms_formatter(latitude, longitude, mode, unistr=False):
     :param float longitude: Location's longitude
     :param str mode: Coordinate formatting system to use
     :param bool unistr: Whether to use extended character set
-
     """
     if unistr:
         chars = ('°', '′', '″')
@@ -79,7 +77,6 @@ class Point(object):
     """Simple class for representing a location on a sphere.
 
     .. versionadded:: 0.2.0
-
     """
 
     __slots__ = ('units', '_latitude', '_longitude', '_rad_latitude',
@@ -99,7 +96,6 @@ class Point(object):
         :raise ValueError: Unknown value for ``angle``
         :raise ValueError: Unknown value for ``units``
         :raise ValueError: Invalid value for ``latitude`` or ``longitude``
-
         """
         super(Point, self).__init__()
         if angle in ('degrees', 'radians'):
@@ -149,7 +145,6 @@ class Point(object):
         :rtype: ``dict``
         :return: Object attributes, as would be provided by a class that didn't
             set ``__slots__``
-
         """
         slots = []
         cls = self.__class__
@@ -164,7 +159,6 @@ class Point(object):
 
         :rtype: ``str``
         :return: String to recreate ``Point`` object
-
         """
         return utils.repr_assist(self, {'angle': 'degrees'})
 
@@ -173,7 +167,6 @@ class Point(object):
 
         :rtype: ``str``
         :return: Human readable string representation of ``Point`` object
-
         """
         return format(self)
 
@@ -182,7 +175,6 @@ class Point(object):
 
         :rtype: ``str``
         :return: Human readable Unicode representation of ``Point`` object
-
         """
         return _dms_formatter(self, 'dd', True)
 
@@ -193,7 +185,6 @@ class Point(object):
         :rtype: ``str``
         :return: Human readable string representation of ``Point`` object
         :raise ValueError: Unknown value for ``format_spec``
-
         """
         text = []
         if not format_spec:  # default format calls set format_spec to ''
@@ -220,7 +211,6 @@ class Point(object):
             ``accuracy`` ``units`` distance of each other
         :rtype: ``bool``
         :return: True if objects are equal within given bounds
-
         """
         if accuracy is None:
             return hash(self) == hash(other)
@@ -235,7 +225,6 @@ class Point(object):
             ``accuracy`` ``units`` distance
         :rtype: ``bool``
         :return: True if objects are not equal within given bounds
-
         """
         return not self.__eq__(other, accuracy)
 
@@ -252,7 +241,6 @@ class Point(object):
 
         :rtype: ``int``
         :return: Hash of string representation
-
         """
         return hash(repr(self))
 
@@ -262,7 +250,6 @@ class Point(object):
         :param str precision: Precision with which generate locator string
         :rtype: ``str``
         :return: Maidenhead locator for latitude and longitude
-
         """
         return utils.to_grid_locator(self.latitude, self.longitude, precision)
 
@@ -282,7 +269,6 @@ class Point(object):
 
         .. _Great-circle distance entry:
            http://en.wikipedia.org/wiki/Great-circle_distance
-
         """
         longitude_difference = other.rad_longitude - self.rad_longitude
         latitude_difference = other.rad_latitude - self.rad_latitude
@@ -329,7 +315,6 @@ class Point(object):
         :rtype: ``float``
         :return: Initial bearing from self to other in degrees
         :raise ValueError: Unknown value for ``format``
-
         """
         longitude_difference = other.rad_longitude - self.rad_longitude
 
@@ -357,7 +342,6 @@ class Point(object):
         :param Point other: Location to calculate midpoint to
         :rtype: ``Point`` instance
         :return: Great circle midpoint from self to other
-
         """
         longitude_difference = other.rad_longitude - self.rad_longitude
         y = math.sin(longitude_difference) * math.cos(other.rad_latitude)
@@ -383,7 +367,6 @@ class Point(object):
         :rtype: ``float``
         :return: Final bearing from self to other in degrees
         :raise ValueError: Unknown value for ``format``
-
         """
         final_bearing = (other.bearing(self) + 180) % 360
         if format == 'numeric':
@@ -400,7 +383,6 @@ class Point(object):
         :param float distance: Distance from self in ``self.units``
         :rtype: ``Point``
         :return: Location after travelling ``distance`` along ``bearing``
-
         """
         bearing = math.radians(bearing)
 
@@ -437,7 +419,6 @@ class Point(object):
         :param str zenith: Calculate rise/set events, or twilight times
         :rtype: :class:`datetime.datetime`
         :return: The time for the given event in the specified timezone
-
         """
         return utils.sun_rise_set(self.latitude, self.longitude, date, 'rise',
                                   self.timezone, zenith)
@@ -453,7 +434,6 @@ class Point(object):
         :param str zenith: Calculate rise/set events, or twilight times
         :rtype: :class:`datetime.datetime`
         :return: The time for the given event in the specified timezone
-
         """
         return utils.sun_rise_set(self.latitude, self.longitude, date, 'set',
                                   self.timezone, zenith)
@@ -469,7 +449,6 @@ class Point(object):
         :param str zenith: Calculate rise/set events, or twilight times
         :rtype: ``tuple`` of :class:`datetime.datetime`
         :return: The time for the given events in the specified timezone
-
         """
         return utils.sun_events(self.latitude, self.longitude, date,
                                 self.timezone, zenith)
@@ -482,7 +461,6 @@ class Point(object):
         :param Point other: Location to calculate inverse geodesic to
         :rtype: ``tuple`` of ``float`` objects
         :return: Bearing and distance from self to other
-
         """
         return (self.bearing(other), self.distance(other))
     # Forward geodesic function maps directly to destination method
@@ -494,7 +472,6 @@ class TimedPoint(Point):
     """Class for representing a location with an associated time.
 
     .. versionadded:: 0.12.0
-
     """
 
     __slots__ = ('time', )
@@ -511,7 +488,6 @@ class TimedPoint(Point):
         :param units: Units type to be used for distances
         :param timezone: Offset from UTC in minutes
         :param datetime.datetime time: Time associated with the location
-
         """
         super(TimedPoint, self).__init__(latitude, longitude, units, angle,
                                          timezone)
@@ -524,7 +500,6 @@ class Points(list):
     """Class for representing a group of :class:`Point` objects.
 
     .. versionadded:: 0.2.0
-
     """
 
     def __init__(self, points=None, parse=False, units='metric'):
@@ -535,7 +510,6 @@ class Points(list):
         :param bool parse: Whether to attempt import of ``points``
         :param str units: Unit type to be used for distances when parsing string
             locations
-
         """
         super(Points, self).__init__()
         self._parse = parse
@@ -554,7 +528,6 @@ class Points(list):
 
         :rtype: ``str``
         :return: String to recreate ``Points`` object
-
         """
         return utils.repr_assist(self, {'points': self[:]})
 
@@ -563,7 +536,6 @@ class Points(list):
 
         :type locations: ``list`` of ``str`` or ``tuple``
         :param locations: Location identifiers
-
         """
         for location in locations:
             data = utils.parse_location(location)
@@ -579,7 +551,6 @@ class Points(list):
         :param str method: Method used to calculate distance
         :rtype: ``list`` of ``float``
         :return: Distance between points in series
-
         """
         if not len(self) > 1:
             raise RuntimeError('More than one location is required')
@@ -592,7 +563,6 @@ class Points(list):
         :param str format: Format of the bearing string to return
         :rtype: ``list`` of ``float``
         :return: Bearing between points in series
-
         """
         if not len(self) > 1:
             raise RuntimeError('More than one location is required')
@@ -605,7 +575,6 @@ class Points(list):
         :param str format: Format of the bearing string to return
         :rtype: ``list`` of ``float``
         :return: Bearing between points in series
-
         """
         if len(self) == 1:
             raise RuntimeError('More than one location is required')
@@ -617,7 +586,6 @@ class Points(list):
 
         :rtype: ``list`` of 2 ``tuple`` of ``float``
         :return: Bearing and distance between points in series
-
         """
         return ((self[i].bearing(self[i + 1]), self[i].distance(self[i + 1]))
                 for i in range(len(self) - 1))
@@ -627,7 +595,6 @@ class Points(list):
 
         :rtype: ``list`` of :class:`Point` instances
         :return: Midpoint between points in series
-
         """
         return (self[i].midpoint(self[i + 1]) for i in range(len(self) - 1))
 
@@ -638,7 +605,6 @@ class Points(list):
         :param float distance: Distance to test location is within
         :rtype: ``list`` of :class:`Point` objects within specified range
         :return: Points within range of the specified location
-
         """
         return (x for x in self if location.__eq__(x, distance))
 
@@ -649,7 +615,6 @@ class Points(list):
         :param float distance: Distance in kilometres
         :rtype: ``list`` of :class:`Point`
         :return: Points shifted by ``distance`` and ``bearing``
-
         """
         return (x.destination(bearing, distance) for x in self)
     forward = destination
@@ -661,7 +626,6 @@ class Points(list):
         :param str zenith: Calculate sunrise events, or end of twilight
         :rtype: ``list`` of :class:`datetime.datetime`
         :return: The time for the sunrise for each point
-
         """
         return (x.sunrise(date, zenith) for x in self)
 
@@ -672,7 +636,6 @@ class Points(list):
         :param str zenith: Calculate sunset events, or start of twilight
         :rtype: ``list`` of :class:`datetime.datetime`
         :return: The time for the sunset for each point
-
         """
         return (x.sunset(date, zenith) for x in self)
 
@@ -683,7 +646,6 @@ class Points(list):
         :param str zenith: Calculate rise/set events, or twilight times
         :rtype: ``list`` of 2 ``tuple`` of :class:`datetime.datetime`
         :return: The time for the sunrise and sunset events for each point
-
         """
         return (x.sun_events(date, zenith) for x in self)
 
@@ -693,7 +655,6 @@ class Points(list):
         :param str precision: Precision with which generate locator string
         :rtype: ``list`` of ``str``
         :return: Maidenhead locator for each point
-
         """
         return (x.to_grid_locator(precision) for x in self)
 
@@ -704,7 +665,6 @@ class TimedPoints(Points):
 
         :rtype: ``list`` of ``float``
         :return: Speed between :class:`Point` elements in km/h
-
         """
         if not len(self) > 1:
             raise RuntimeError('More than one location is required')
@@ -724,7 +684,6 @@ class KeyedPoints(dict):
     """Class for representing a keyed group of :class:`Point` objects.
 
     .. versionadded:: 0.2.0
-
     """
 
     def __init__(self, points=None, parse=False, units='metric'):
@@ -735,7 +694,6 @@ class KeyedPoints(dict):
         :param bool points: Whether to attempt import of ``points``
         :param str units: Unit type to be used for distances when parsing string
             locations
-
         """
         super(KeyedPoints, self).__init__()
         self._parse = parse
@@ -754,7 +712,6 @@ class KeyedPoints(dict):
 
         :rtype: ``str``
         :return: String to recreate ``KeyedPoints`` object
-
         """
         return utils.repr_assist(self, {'points': dict(self.items())})
 
@@ -763,7 +720,6 @@ class KeyedPoints(dict):
 
         :type locations: ``list`` of 2 ``tuple`` of ``str``
         :param locations: Identifiers and locations
-
         """
         for identifier, location in locations:
             data = utils.parse_location(location)
@@ -780,7 +736,6 @@ class KeyedPoints(dict):
         :param str method: Method used to calculate distance
         :rtype: ``list`` of ``float``
         :return: Distance between points in ``order``
-
         """
         if not len(self) > 1:
             raise RuntimeError('More than one location is required')
@@ -794,7 +749,6 @@ class KeyedPoints(dict):
         :param str format: Format of the bearing string to return
         :rtype: ``list`` of ``float``
         :return: Bearing between points in series
-
         """
         if not len(self) > 1:
             raise RuntimeError('More than one location is required')
@@ -808,7 +762,6 @@ class KeyedPoints(dict):
         :param str format: Format of the bearing string to return
         :rtype: ``list`` of ``float``
         :return: Bearing between points in series
-
         """
         if len(self) == 1:
             raise RuntimeError('More than one location is required')
@@ -821,7 +774,6 @@ class KeyedPoints(dict):
         :param list order: Order to process elements in
         :rtype: ``list`` of 2 ``tuple`` of ``float``
         :return: Bearing and distance between points in series
-
         """
         return ((self[order[i]].bearing(self[order[i + 1]]),
                  self[order[i]].distance(self[order[i + 1]]))
@@ -833,7 +785,6 @@ class KeyedPoints(dict):
         :param list order: Order to process elements in
         :rtype: ``list`` of `Point` instance
         :return: Midpoint between points in series
-
         """
         return (self[order[i]].midpoint(self[order[i + 1]])
                 for i in range(len(order) - 1))
@@ -844,7 +795,6 @@ class KeyedPoints(dict):
         :param Point location: Location to test range against
         :param float distance: Distance to test location is within
         :rtype: ``list`` of :class:`Point` objects within specified range
-
         """
         return (x for x in self.items() if location.__eq__(x[1], distance))
 
@@ -853,7 +803,6 @@ class KeyedPoints(dict):
 
         :param float bearing: Bearing to move on in degrees
         :param float distance: Distance in kilometres
-
         """
         return ((x[0], x[1].destination(bearing, distance))
                 for x in self.items())
@@ -866,7 +815,6 @@ class KeyedPoints(dict):
         :param str zenith: Calculate sunrise events, or end of twilight
         :rtype: ``list`` of :class:`datetime.datetime`
         :return: The time for the sunrise for each point
-
         """
         return ((x[0], x[1].sunrise(date, zenith)) for x in self.items())
 
@@ -877,7 +825,6 @@ class KeyedPoints(dict):
         :param str zenith: Calculate sunset events, or start of twilight
         :rtype: ``list`` of :class:`datetime.datetime`
         :return: The time for the sunset for each point
-
         """
         return ((x[0], x[1].sunset(date, zenith)) for x in self.items())
 
@@ -888,7 +835,6 @@ class KeyedPoints(dict):
         :param str zenith: Calculate rise/set events, or twilight times
         :rtype: ``list`` of 2 ``tuple`` of :class:`datetime.datetime`
         :return: The time for the sunrise and sunset events for each point
-
         """
         return ((x[0], x[1].sun_events(date, zenith)) for x in self.items())
 
@@ -898,6 +844,5 @@ class KeyedPoints(dict):
         :param str precision: Precision with which generate locator string
         :rtype: ``list`` of ``str``
         :return: Maidenhead locator for each point
-
         """
         return ((x[0], x[1].to_grid_locator(precision)) for x in self.items())

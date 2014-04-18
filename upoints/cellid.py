@@ -32,7 +32,6 @@ class Cell(point.Point):
     .. versionadded:: 0.11.0
 
     .. _OpenCellID.org: http://opencellid.org/
-
     """
 
     __slots__ = ('ident', 'mcc', 'mnc', 'lac', 'cellid', 'crange', 'samples',
@@ -53,7 +52,6 @@ class Cell(point.Point):
         :param int samples: Number of samples for the cell
         :param datetime.datetime created: Date the cell was first entered
         :param datetime.datetime updated: Date of the last update
-
         """
         super(Cell, self).__init__(latitude, longitude)
         self.ident = ident
@@ -75,7 +73,6 @@ class Cell(point.Point):
 
         :rtype: ``str``
         :return: OpenCellID.org-style string representation of ``Cell`` object
-
         """
         return '%i,%.13f,%.13f,%i,%i,%i,%i,%i,%i,%s,%s' \
             % (self.ident, self.latitude, self.longitude, self.mcc, self.mnc,
@@ -89,7 +86,6 @@ class Cells(point.KeyedPoints):
     """Class for representing a group of :class:`Cell` objects.
 
     .. versionadded:: 0.11.0
-
     """
 
     def __init__(self, cells_file=None):
@@ -104,7 +100,6 @@ class Cells(point.KeyedPoints):
 
         :rtype: ``str``
         :return: OpenCellID.org formatted output
-
         """
         return '\n'.join(map(str, sorted(self.values(),
                                          key=attrgetter('ident'))))
@@ -144,7 +139,6 @@ class Cells(point.KeyedPoints):
         :return: Cell data with their associated database identifier
 
         .. _OpenCellID.org: http://opencellid.org/
-
         """
         self._cells_file = cells_file
         field_names = ('ident', 'latitude', 'longitude', 'mcc', 'mnc', 'lac',

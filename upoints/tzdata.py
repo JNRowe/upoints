@@ -29,7 +29,6 @@ class Zone(point.Point):
     """Class for representing timezone descriptions from zoneinfo data.
 
     .. versionadded:: 0.6.0
-
     """
 
     __slots__ = ('country', 'zone', 'comments')
@@ -41,7 +40,6 @@ class Zone(point.Point):
         :param str country: Location's ISO 3166 country code
         :param str zone: Location's zone name as used in zoneinfo database
         :param list comments: Location's alternate names
-
         """
         latitude, longitude = utils.from_iso6709(location + '/')[:2]
         super(Zone, self).__init__(latitude, longitude)
@@ -55,7 +53,6 @@ class Zone(point.Point):
 
         :rtype: ``str``
         :return: String to recreate ``Zone`` object
-
         """
         location = utils.to_iso6709(self.latitude, self.longitude,
                                     format='dms')[:-1]
@@ -67,7 +64,6 @@ class Zone(point.Point):
         :param str mode: Coordinate formatting system to use
         :rtype: ``str``
         :return: Human readable string representation of ``Zone`` object
-
         """
         text = ['%s (%s: %s' % (self.zone, self.country,
                                 super(Zone, self).__format__('dms')), ]
@@ -82,7 +78,6 @@ class Zones(point.Points):
     """Class for representing a group of :class:`Zone` objects.
 
     .. versionadded:: 0.6.0
-
     """
 
     def __init__(self, zone_file=None):
@@ -123,7 +118,6 @@ class Zones(point.Points):
         :raise FileFormatError: Unknown file format
 
         .. _standard distribution site: ftp://elsie.nci.nih.gov/pub/
-
         """
         self._zone_file = zone_file
         field_names = ('country', 'location', 'zone', 'comments')
@@ -140,7 +134,6 @@ class Zones(point.Points):
 
         :rtype: ``list``
         :return: zoneinfo descriptions
-
         """
         data = []
         for zone in sorted(self, key=attrgetter('country')):

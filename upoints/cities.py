@@ -52,7 +52,6 @@ class City(trigpoints.Trigpoint):
     .. versionadded:: 0.2.0
 
     .. _GNU miscfiles: http://directory.fsf.org/project/miscfiles/
-
     """
 
     __slots__ = ('identifier', 'ptype', 'population', 'size', 'country',
@@ -76,7 +75,6 @@ class City(trigpoints.Trigpoint):
         :param int altitude: Station's elevation
         :param time.struct_time date: Date the entry was added
         :param str entered: Entry's author
-
         """
         super(City, self).__init__(latitude, longitude, altitude, name)
         self.identifier = identifier
@@ -94,7 +92,6 @@ class City(trigpoints.Trigpoint):
 
         :rtype: ``str``
         :return: Human readable string representation of ``City`` object
-
         """
         values = map(utils.value_or_empty,
                      (self.identifier, self.ptype,
@@ -113,7 +110,6 @@ class Cities(point.Points):
     """Class for representing a group of :class:`City` objects.
 
     .. versionadded:: 0.5.1
-
     """
 
     def __init__(self, data=None):
@@ -178,7 +174,6 @@ class Cities(point.Points):
         :raise TypeError: Invalid value for data
 
         .. _GNU miscfiles: http://directory.fsf.org/project/miscfiles/
-
         """
         self._data = data
         if hasattr(data, 'read'):

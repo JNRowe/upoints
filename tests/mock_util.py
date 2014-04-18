@@ -39,7 +39,6 @@ def isfile(path):
             File to check for existence
     :rtype: `bool`
     :return: `True` if file exists, `False` otherwise
-
     """
     filename = os.path.basename(path)
     try:
@@ -57,7 +56,6 @@ def _get_test_file(filename):
     :rtype: `file`
     :return: Test data
     :raise IOError: When the file can't be opened for reading
-
     """
     if isfile(filename):
         return __builtin__.open(os.path.join(BASEDIR, 'data', filename))
@@ -81,7 +79,6 @@ def open(filename, mode='rb'):
     :return: File object opened from test data directory, or ``StringIO.StringIO``
         object if a writable file is expected
     :raise NotImplementedError: When attempting to use an unhandled file mode
-
     """
     if 'r' in mode:
         return _get_test_file(os.path.basename(filename))
@@ -102,7 +99,6 @@ def urlopen(url, data=None, proxies=None):
             Ignored, just for compatibility with `urlopen` callers
     :rtype: `file`
     :return: File object from test data directory
-
     """
     return _get_test_file(os.path.basename(url))
 urllib.urlopen = urlopen
@@ -113,7 +109,6 @@ class pymetar(ModuleType):
     :since: 0.6.0
 
     :see: `pymetar <http://www.schwarzvogel.de/software-pymetar.shtml>`__
-
     """
     class ReportFetcher(object):
         def __init__(self, StationCode=None):
@@ -123,7 +118,6 @@ class pymetar(ModuleType):
                 StationCode : any
                     Ignored, just for compatibility with `ReportFetcher`
                     callers
-
             """
             super(pymetar.ReportFetcher, self).__init__()
 
@@ -142,7 +136,6 @@ class pymetar(ModuleType):
                     MetarReport : any
                         Ignored, just for compatibility with ``FetchReport``
                         callers
-
                 """
                 super(pymetar.ReportParser.ParseReport, self).__init__()
 
@@ -152,7 +145,6 @@ class pymetar(ModuleType):
 
                 :rtype: `float`
                 :return: Sample temperature data for tests
-
                 """
                 return 10.3
 
@@ -162,7 +154,6 @@ class pymetar(ModuleType):
 
                 :rtype: `str`
                 :return: Sample ISO time string
-
                 """
                 return '2007-11-28 19:20:00Z'
 
