@@ -18,6 +18,7 @@
 #
 
 import imp
+import io
 
 from setuptools import setup
 
@@ -45,7 +46,7 @@ setup(
     name='upoints',
     version=_version.dotted,
     description='Modules for working with points on Earth',
-    long_description=open('README.rst').read(),
+    long_description=io.open('README.rst', encoding='UTF-8').read(),
     author='James Rowe',
     author_email='jnrowe@gmail.com',
     url='https://github.com/JNRowe/upoints/',
