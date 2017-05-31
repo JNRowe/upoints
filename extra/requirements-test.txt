@@ -1,5 +1,7 @@
 -r requirements.txt
-mock>=1.0.1
 nose2>=0.4.1
 nose2_cov>=1.0a4
 expecter>=0.2.2
+
+# Conditionals
+mock>=0.7.1;python_version<"3.3"

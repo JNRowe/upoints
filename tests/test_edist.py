@@ -27,8 +27,12 @@ try:
 except ImportError:
     from io import StringIO  # NOQA
 
+try:
+    from unittest.mock import patch
+except ImportError:
+    from mock import patch
+
 from expecter import expect
-from mock import patch
 
 from upoints.compat import PY2
 from upoints.edist import (LocationsError, NumberedPoint, NumberedPoints,

@@ -19,6 +19,7 @@
 
 import imp
 import io
+import sys
 
 from setuptools import setup
 
@@ -36,8 +37,13 @@ def parse_requires(file):
     for dep in entries:
         if dep.startswith('-r '):
             deps.extend(parse_requires(dep.split()[1]))
-        else:
-            deps.append(dep)
+            continue
+        elif ';' in dep:
+            dep, marker = dep.split(';')
+            if not eval(marker.strip(),
+                        {'python_version': '%s.%s' % sys.version_info[:2]}):
+                continue
+        deps.append(dep)
     return deps
 
 install_requires = parse_requires('requirements.txt')
