@@ -548,7 +548,11 @@ def main():
             help='display time in hours(default), minutes or seconds')
 
     args = APP._parser.parse_args()
-    func = args._func
+    try:
+        func = args._func
+    except AttributeError:
+        APP._parser.print_help()
+        return 2
 
     if args.csv_file:
         config_locations, args.location = read_csv(args.csv_file)
