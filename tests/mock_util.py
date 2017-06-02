@@ -117,6 +117,7 @@ class pymetar(ModuleType):
 
     :see: `pymetar <http://www.schwarzvogel.de/software-pymetar.shtml>`__
     """
+
     class ReportFetcher(object):
         def __init__(self, StationCode=None):
             """Mock `ReportFetcher` initialisation for tests.
@@ -147,7 +148,7 @@ class pymetar(ModuleType):
 
             @staticmethod
             def getTemperatureCelsius():
-                """Mock `getTemperatureCelsius`
+                """Mock `getTemperatureCelsius`.
 
                 :rtype: `float`
                 :return: Sample temperature data for tests
@@ -156,7 +157,7 @@ class pymetar(ModuleType):
 
             @staticmethod
             def getISOTime():
-                """Mock `getISOTime`
+                """Mock `getISOTime`.
 
                 :rtype: `str`
                 :return: Sample ISO time string

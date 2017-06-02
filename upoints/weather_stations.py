@@ -1,6 +1,6 @@
 #
 # coding=utf-8
-"""weather_stations - Imports weather station data files"""
+"""weather_stations - Imports weather station data files."""
 # Copyright © 2007-2017  James Rowe <jnrowe@gmail.com>
 #
 # This file is part of upoints.
@@ -23,7 +23,6 @@ from . import (point, trigpoints, utils)
 
 
 class Station(trigpoints.Trigpoint):
-
     """Class for representing a weather station from a NOAA data file.
 
     .. versionadded:: 0.2.0
@@ -88,7 +87,6 @@ class Station(trigpoints.Trigpoint):
 
 
 class Stations(point.KeyedPoints):
-
     """Class for representing a group of `Station` objects.
 
     .. versionadded:: 0.5.1

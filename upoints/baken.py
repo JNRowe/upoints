@@ -1,6 +1,6 @@
 #
 # coding=utf-8
-"""baken - Imports baken data files"""
+"""baken - Imports baken data files."""
 # Copyright © 2007-2017  James Rowe <jnrowe@gmail.com>
 #
 # This file is part of upoints.
@@ -29,7 +29,6 @@ from . import (point, utils)
 
 
 class Baken(point.Point):
-
     """Class for representing location from baken_ data files.
 
     .. versionadded:: 0.4.0
@@ -106,7 +105,6 @@ class Baken(point.Point):
 
 
 class Bakens(point.KeyedPoints):
-
     """Class for representing a group of :class:`Baken` objects.
 
     .. versionadded:: 0.5.1

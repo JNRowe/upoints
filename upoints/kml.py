@@ -1,6 +1,6 @@
 #
 # coding=utf-8
-"""kml - Imports KML data files"""
+"""kml - Imports KML data files."""
 # Copyright © 2007-2017  James Rowe <jnrowe@gmail.com>
 #
 # This file is part of upoints.
@@ -30,7 +30,6 @@ create_elem = utils.element_creator(KML_NS)
 
 
 class Placemark(trigpoints.Trigpoint):
-
     """Class for representing a Placemark element from KML data files.
 
     .. versionadded:: 0.6.0
@@ -94,7 +93,6 @@ class Placemark(trigpoints.Trigpoint):
 
 
 class Placemarks(point.KeyedPoints):
-
     """Class for representing a group of :class:`Placemark` objects.
 
     .. versionadded:: 0.6.0

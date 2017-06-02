@@ -1,6 +1,6 @@
 #
 # coding=utf-8
-"""point - Classes for working with locations on Earth"""
+"""point - Classes for working with locations on Earth."""
 # Copyright © 2007-2017  James Rowe <jnrowe@gmail.com>
 #
 # This file is part of upoints.
@@ -67,7 +67,6 @@ def _dms_formatter(latitude, longitude, mode, unistr=False):
 
 @mangle_repr_type
 class Point(object):
-
     """Simple class for representing a location on a sphere.
 
     .. versionadded:: 0.2.0
@@ -462,7 +461,6 @@ class Point(object):
 
 
 class TimedPoint(Point):
-
     """Class for representing a location with an associated time.
 
     .. versionadded:: 0.12.0
@@ -490,7 +488,6 @@ class TimedPoint(Point):
 
 @mangle_repr_type
 class Points(list):
-
     """Class for representing a group of :class:`Point` objects.
 
     .. versionadded:: 0.2.0
@@ -593,7 +590,7 @@ class Points(list):
         return (self[i].midpoint(self[i + 1]) for i in range(len(self) - 1))
 
     def range(self, location, distance):
-        """Test whether locations are within a given range of ``location``
+        """Test whether locations are within a given range of ``location``.
 
         :param Point location: Location to test range against
         :param float distance: Distance to test location is within
@@ -655,7 +652,7 @@ class Points(list):
 
 class TimedPoints(Points):
     def speed(self):
-        """Calculate speed between :class:`Points`
+        """Calculate speed between :class:`Points`.
 
         :rtype: ``list`` of ``float``
         :return: Speed between :class:`Point` elements in km/h
@@ -674,7 +671,6 @@ class TimedPoints(Points):
 
 @mangle_repr_type
 class KeyedPoints(dict):
-
     """Class for representing a keyed group of :class:`Point` objects.
 
     .. versionadded:: 0.2.0

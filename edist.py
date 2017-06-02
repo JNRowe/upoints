@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 # coding=utf-8
-"""edist - Simple command line coordinate processing"""
+"""edist - Simple command line coordinate processing."""
 # Copyright © 2007-2017  James Rowe <jnrowe@gmail.com>
 #
 # This file is part of upoints.

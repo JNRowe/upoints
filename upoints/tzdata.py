@@ -1,6 +1,6 @@
 #
 # coding=utf-8
-"""tzdata - Imports timezone data files from UNIX zoneinfo"""
+"""tzdata - Imports timezone data files from UNIX zoneinfo."""
 # Copyright © 2007-2017  James Rowe <jnrowe@gmail.com>
 #
 # This file is part of upoints.
@@ -25,7 +25,6 @@ from .compat import mangle_repr_type
 
 @mangle_repr_type
 class Zone(point.Point):
-
     """Class for representing timezone descriptions from zoneinfo data.
 
     .. versionadded:: 0.6.0
@@ -74,7 +73,6 @@ class Zone(point.Point):
 
 
 class Zones(point.Points):
-
     """Class for representing a group of :class:`Zone` objects.
 
     .. versionadded:: 0.6.0

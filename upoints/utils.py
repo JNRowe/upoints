@@ -1,6 +1,6 @@
 #
 # coding=utf-8
-"""utils - Support code for :mod:upoints"""
+"""utils - Support code for :mod:`upoints`."""
 # Copyright © 2007-2017  James Rowe <jnrowe@gmail.com>
 #
 # This file is part of upoints.
@@ -83,7 +83,6 @@ LATITUDE_EXTSQUARE = LATITUDE_SUBSQUARE / 10
 
 
 class FileFormatError(ValueError):
-
     """Error object for data parsing error.
 
     .. versionadded:: 0.3.0
@@ -348,7 +347,6 @@ def angle_to_name(angle, segments=8, abbr=False):
 #{ Date and time handling utilities
 @mangle_repr_type
 class TzOffset(datetime.tzinfo):
-
     """Time offset from UTC."""
 
     def __init__(self, tzstring):
@@ -404,7 +402,6 @@ class TzOffset(datetime.tzinfo):
 
 
 class Timestamp(datetime.datetime):
-
     """Class for representing an OSM timestamp value."""
 
     def isoformat(self):
@@ -755,7 +752,6 @@ def parse_location(location):
     :rtype: ``tuple`` of ``float`` objects
     :return: Latitude and longitude of location
     """
-
     def split_dms(text, hemisphere):
         """Split degrees, minutes and seconds string.
 
@@ -1063,7 +1059,6 @@ def calc_radius(latitude, ellipsoid='WGS84'):
     :rtype: ``float``
     :return: Approximated Earth radius at the given latitude
     """
-
     ellipsoids = {
         'Airy (1830)': (6377.563, 6356.257),  # Ordnance Survey default
         'Bessel': (6377.397, 6356.079),

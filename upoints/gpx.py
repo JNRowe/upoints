@@ -1,6 +1,6 @@
 #
 # coding=utf-8
-"""gpx - Imports GPS eXchange format data files"""
+"""gpx - Imports GPS eXchange format data files."""
 # Copyright © 2007-2017  James Rowe <jnrowe@gmail.com>
 #
 # This file is part of upoints.
@@ -41,7 +41,6 @@ GPX_ELEM_ATTRIB = {
 
 
 class _GpxElem(point.TimedPoint):
-
     """Abstract class for representing an element from GPX data files.
 
     .. versionadded:: 0.11.0
@@ -108,7 +107,6 @@ class _GpxElem(point.TimedPoint):
 
 
 class _SegWrap(list):
-
     """Abstract class for representing segmented elements from GPX data files.
 
     .. versionadded:: 0.12.0
@@ -271,7 +269,6 @@ class _SegWrap(list):
 
 
 class _GpxMeta(object):
-
     """Class for representing GPX global metadata.
 
     .. versionadded:: 0.12.0
@@ -430,7 +427,6 @@ class _GpxMeta(object):
 
 
 class Waypoint(_GpxElem):
-
     """Class for representing a waypoint element from GPX data files.
 
     .. versionadded:: 0.8.0
@@ -446,7 +442,6 @@ class Waypoint(_GpxElem):
 
 
 class Waypoints(point.TimedPoints):
-
     """Class for representing a group of :class:`Waypoint` objects.
 
     .. versionadded:: 0.8.0
@@ -545,7 +540,6 @@ class Waypoints(point.TimedPoints):
 
 
 class Trackpoint(_GpxElem):
-
     """Class for representing a trackpoint element from GPX data files.
 
     .. versionadded:: 0.10.0
@@ -561,7 +555,6 @@ class Trackpoint(_GpxElem):
 
 
 class Trackpoints(_SegWrap):
-
     """Class for representing a group of :class:`Trackpoint` objects.
 
     .. versionadded:: 0.10.0
@@ -664,7 +657,6 @@ class Trackpoints(_SegWrap):
 
 
 class Routepoint(_GpxElem):
-
     """Class for representing a ``rtepoint`` element from GPX data files.
 
     .. versionadded:: 0.10.0
@@ -680,7 +672,6 @@ class Routepoint(_GpxElem):
 
 
 class Routepoints(_SegWrap):
-
     """Class for representing a group of :class:`Routepoint` objects.
 
     .. versionadded:: 0.10.0
@@ -760,7 +751,7 @@ class Routepoints(_SegWrap):
             self.append(points)
 
     def export_gpx_file(self):
-        """Generate GPX element tree from :class:`Routepoints`
+        """Generate GPX element tree from :class:`Routepoints`.
 
         :rtype: :class:`etree.ElementTree`
         :return: GPX element tree depicting :class:`Routepoints` objects

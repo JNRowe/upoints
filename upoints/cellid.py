@@ -1,6 +1,6 @@
 #
 # coding=utf-8
-"""cellid - Imports OpenCellID data files"""
+"""cellid - Imports OpenCellID data files."""
 # Copyright © 2007-2017  James Rowe <jnrowe@gmail.com>
 #
 # This file is part of upoints.
@@ -26,8 +26,7 @@ from . import (point, utils)
 
 
 class Cell(point.Point):
-
-    """Class for representing a cellular cite from OpenCellID.org_
+    """Class for representing a cellular cite from OpenCellID.org_.
 
     .. versionadded:: 0.11.0
 
@@ -82,7 +81,6 @@ class Cell(point.Point):
 
 
 class Cells(point.KeyedPoints):
-
     """Class for representing a group of :class:`Cell` objects.
 
     .. versionadded:: 0.11.0

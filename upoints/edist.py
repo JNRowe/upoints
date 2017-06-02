@@ -1,6 +1,6 @@
 #
 # coding=utf-8
-"""edist - Simple command line coordinate processing
+"""edist - Simple command line coordinate processing.
 
 edist operates on one, or more, locations specified in the following format
 ``[+-]DD.DD;[+-]DDD.DD``.  For example, a location string of ``52.015;-0.221``

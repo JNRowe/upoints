@@ -1,6 +1,6 @@
 #
 # coding=utf-8
-"""compat - Python 2/3 compatibility support for :mod:upoints"""
+"""compat - Python 2/3 compatibility support for :mod:`upoints`."""
 # Copyright © 2007-2017  James Rowe <jnrowe@gmail.com>
 #
 # This file is part of upoints.

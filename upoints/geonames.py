@@ -1,6 +1,6 @@
 #
 # coding=utf-8
-"""geonames - Imports geonames.org data files"""
+"""geonames - Imports geonames.org data files."""
 # Copyright © 2007-2017  James Rowe <jnrowe@gmail.com>
 #
 # This file is part of upoints.
@@ -29,7 +29,6 @@ from . import (point, trigpoints, utils)
 
 
 class Location(trigpoints.Trigpoint):
-
     """Class for representing a location from a geonames.org_ data file.
 
     All country codes are specified with their two letter ISO-3166 country
@@ -143,7 +142,6 @@ class Location(trigpoints.Trigpoint):
 
 
 class Locations(point.Points):
-
     """Class for representing a group of :class:`Location` objects.
 
     .. versionadded:: 0.5.1
