@@ -1,8 +1,7 @@
 -r requirements.txt
-nose2>=0.4.1
-nose2_cov>=1.0a4
 expecter>=0.2.2
+nose2[coverage_plugin]>=0.5.0
 
 # Conditionals
-mock>=0.7.1;python_version<"3.3"
+mock>=1.0.1;python_version<"3.3"
 unittest2<0.6,>=0.5.1;python_version<"2.7"
