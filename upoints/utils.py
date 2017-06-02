@@ -110,7 +110,7 @@ class FileFormatError(ValueError):
             return 'Unsupported data format.'
 
 
-#{ Implementation utilities
+# Implementation utilities {{{
 def value_or_empty(value):
     """Return an empty string for display when value is ``None``.
 
@@ -245,10 +245,10 @@ def element_creator(namespace=None):
 
     return create_elem
 
-#}
+# }}}
 
 
-#{ Angle conversion utilities
+# Angle conversion utilities {{{
 def to_dms(angle, style='dms'):
     """Convert decimal angle to degrees, minutes and possibly seconds.
 
@@ -341,10 +341,10 @@ def angle_to_name(angle, segments=8, abbr=False):
         return ''.join(i[0].capitalize() for i in string.split('-'))
     else:
         return string
-#}
+# }}}
 
 
-#{ Date and time handling utilities
+# Date and time handling utilities {{{
 @mangle_repr_type
 class TzOffset(datetime.tzinfo):
     """Time offset from UTC."""
@@ -440,9 +440,9 @@ class Timestamp(datetime.datetime):
         timestamp = timestamp.replace(tzinfo=zone)
         return timestamp
 
-#}
+# }}}
 
-#{ Coordinate conversion utilities
+# Coordinate conversion utilities {{{
 
 
 iso6709_matcher = re.compile(r'^([-+][\d.]+)([-+][\d.]+)([+-][\d.]+)?/$')
@@ -802,9 +802,9 @@ def parse_location(location):
                 if chunks[3] == 'W':
                     longitude = -1 * longitude
             return latitude, longitude
-#}
+# }}}
 
-#{ Solar event utilities
+# Solar event utilities {{{
 
 
 #: Sunrise/-set mappings from name to angle
@@ -961,7 +961,7 @@ def sun_events(latitude, longitude, date, timezone=0, zenith=None):
     return (sun_rise_set(latitude, longitude, date, 'rise', timezone, zenith),
             sun_rise_set(latitude, longitude, date, 'set', timezone, zenith))
 
-#}
+# }}}
 
 
 def dump_xearth_markers(markers, name='identifier'):
