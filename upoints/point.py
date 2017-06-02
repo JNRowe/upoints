@@ -19,16 +19,10 @@
 
 from __future__ import division
 
-__doc__ += """.
-
-.. moduleauthor:: James Rowe <jnrowe@gmail.com>
-.. versionadded:: 0.1.0
-"""
-
 import math
 
-from upoints import utils
-from upoints.compat import mangle_repr_type
+from . import utils
+from .compat import mangle_repr_type
 
 
 def _manage_location(attr):
@@ -149,7 +143,7 @@ class Point(object):
         slots = []
         cls = self.__class__
         # Build a tuple of __slots__ from all parent classes
-        while not cls is object:
+        while cls is not object:
             slots.extend(cls.__slots__)
             cls = cls.__base__
         return dict((item, getattr(self, item)) for item in slots)
@@ -508,8 +502,8 @@ class Points(list):
         :type points: ``list`` of `Point` objects
         :param points: :class:`Point` objects to wrap
         :param bool parse: Whether to attempt import of ``points``
-        :param str units: Unit type to be used for distances when parsing string
-            locations
+        :param str units: Unit type to be used for distances when parsing
+            string locations
         """
         super(Points, self).__init__()
         self._parse = parse
@@ -692,8 +686,8 @@ class KeyedPoints(dict):
         :type points: ``dict`` of :class:`Point` objects
         :param points: :class:`Point` objects to wrap
         :param bool points: Whether to attempt import of ``points``
-        :param str units: Unit type to be used for distances when parsing string
-            locations
+        :param str units: Unit type to be used for distances when parsing
+            string locations
         """
         super(KeyedPoints, self).__init__()
         self._parse = parse

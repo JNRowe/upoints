@@ -47,6 +47,7 @@ def parse_requires(file):
         deps.append(dep)
     return deps
 
+
 install_requires = parse_requires('requirements.txt')
 
 setup(

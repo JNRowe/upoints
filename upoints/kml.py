@@ -21,7 +21,7 @@ import logging
 
 from lxml import etree
 
-from upoints import (point, trigpoints, utils)
+from . import (point, trigpoints, utils)
 
 KML_NS = 'http://earth.google.com/kml/2.2'
 etree.register_namespace('kml', KML_NS)

@@ -31,6 +31,7 @@ from tests import grab_net_sources
 SOURCES = dict((os.path.basename(s), s) for s in grab_net_sources.SOURCES)
 BASEDIR = os.path.dirname(__file__)
 
+
 def isfile(path):
     """Mock `isfile` to check existence of test files.
 
@@ -46,6 +47,7 @@ def isfile(path):
     except IOError:
         return False
     return True
+
 
 def _get_test_file(filename):
     """Open a test data file.
@@ -67,6 +69,7 @@ def _get_test_file(filename):
         else:
             raise IOError('Can not open %r' % filename)
 
+
 def open(filename, mode='rb'):
     """Mock `open` function to open test data files.
 
@@ -76,8 +79,8 @@ def open(filename, mode='rb'):
         mode : `str`
             Valid `file` mode string
     :rtype: `file`
-    :return: File object opened from test data directory, or ``StringIO.StringIO``
-        object if a writable file is expected
+    :return: File object opened from test data directory, or
+        ``StringIO.StringIO`` object if a writable file is expected
     :raise NotImplementedError: When attempting to use an unhandled file mode
     """
     if 'r' in mode:
@@ -86,6 +89,7 @@ def open(filename, mode='rb'):
         return StringIO.StringIO()
     else:
         raise NotImplementedError
+
 
 def urlopen(url, data=None, proxies=None):
     """Mock `urlopen` to open test data files.
@@ -101,7 +105,10 @@ def urlopen(url, data=None, proxies=None):
     :return: File object from test data directory
     """
     return _get_test_file(os.path.basename(url))
+
+
 urllib.urlopen = urlopen
+
 
 class pymetar(ModuleType):
     """Mock `pymetar` infrastructure for tests.
@@ -125,7 +132,6 @@ class pymetar(ModuleType):
         def FetchReport():
             """Mock ``FetchReport`` function to pass tests."""
             pass
-
 
     class ReportParser(object):
         class ParseReport(object):
@@ -156,4 +162,3 @@ class pymetar(ModuleType):
                 :return: Sample ISO time string
                 """
                 return '2007-11-28 19:20:00Z'
-

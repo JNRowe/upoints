@@ -17,13 +17,7 @@
 # You should have received a copy of the GNU General Public License along with
 # upoints.  If not, see <http://www.gnu.org/licenses/>.
 
-__doc__ += """.
-
-.. moduleauthor:: James Rowe <jnrowe@gmail.com>
-.. versionadded:: 0.2.0
-"""
-
-from upoints import (point, utils)
+from . import (point, utils)
 
 
 class Xearth(point.Point):

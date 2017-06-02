@@ -22,7 +22,7 @@ import logging
 
 from operator import attrgetter
 
-from upoints import (point, utils)
+from . import (point, utils)
 
 
 class Cell(point.Point):

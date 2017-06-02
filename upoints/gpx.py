@@ -23,8 +23,8 @@ from operator import attrgetter
 
 from lxml import etree
 
-from upoints import (point, utils)
-from upoints._version import web as ua_string
+from . import (point, utils)
+from ._version import web as ua_string
 
 
 GPX_NS = 'http://www.topografix.com/GPX/1/1'
@@ -35,8 +35,10 @@ create_elem = utils.element_creator(GPX_NS)
 GPX_ELEM_ATTRIB = {
     'creator': ua_string,
     'version': '1.1',
-    '{http://www.w3.org/2001/XMLSchema-instance}schemaLocation': '%s http://www.topografix.com/GPX/1/1/gpx.xsd' % GPX_NS,
+    '{http://www.w3.org/2001/XMLSchema-instance}schemaLocation':
+        '%s http://www.topografix.com/GPX/1/1/gpx.xsd' % GPX_NS,
 }
+
 
 class _GpxElem(point.TimedPoint):
 
@@ -336,7 +338,8 @@ class _GpxMeta(object):
                 author = None
             element = create_elem('copyright', author)
             if self.copyright['year']:
-                element.append(create_elem('year', text=self.copyright['year']))
+                element.append(create_elem('year',
+                                           text=self.copyright['year']))
             if self.copyright['license']:
                 license = create_elem('license')
                 element.append(license)
@@ -482,8 +485,8 @@ class Waypoints(point.TimedPoints):
             </gpx>
 
         The reader uses the :mod:`ElementTree` module, so should be very fast
-        when importing data.  The above file processed by ``import_locations()``
-        will return the following ``list`` object::
+        when importing data.  The above file processed by
+        ``import_locations()`` will return the following ``list`` object::
 
             [Waypoint(52.015, -0.221, "Home", "My place"),
              Waypoint(52.167, 0.390, "MSR", "Microsoft Research, Cambridge")]
@@ -593,8 +596,8 @@ class Trackpoints(_SegWrap):
             </gpx>
 
         The reader uses the :mod:`ElementTree` module, so should be very fast
-        when importing data.  The above file processed by ``import_locations()``
-        will return the following ``list`` object::
+        when importing data.  The above file processed by
+        ``import_locations()`` will return the following ``list`` object::
 
             [[Trackpoint(52.015, -0.221, "Home", "My place"),
               Trackpoint(52.167, 0.390, "MSR", "Microsoft Research, Cambridge")], ]
@@ -710,8 +713,8 @@ class Routepoints(_SegWrap):
             </gpx>
 
         The reader uses the :mod:`ElementTree` module, so should be very fast
-        when importing data.  The above file processed by ``import_locations()``
-        will return the following ``list`` object::
+        when importing data.  The above file processed by
+        ``import_locations()`` will return the following ``list`` object::
 
             [[Routepoint(52.015, -0.221, "Home", "My place"),
               Routepoint(52.167, 0.390, "MSR", "Microsoft Research, Cambridge")], ]

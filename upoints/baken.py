@@ -25,7 +25,7 @@ try:
 except ImportError:
     from ConfigParser import ConfigParser
 
-from upoints import (point, utils)
+from . import (point, utils)
 
 
 class Baken(point.Point):
@@ -60,9 +60,9 @@ class Baken(point.Point):
         :param str qth: Location's qth
         :raise LookupError: No position data to use
         """
-        if not latitude is None:
+        if latitude is not None:
             super(Baken, self).__init__(latitude, longitude)
-        elif not locator is None:
+        elif locator is not None:
             latitude, longitude = utils.from_grid_locator(locator)
             super(Baken, self).__init__(latitude, longitude)
         else:

@@ -23,7 +23,7 @@ import logging
 from functools import reduce
 from operator import xor
 
-from upoints import (point, utils)
+from . import (point, utils)
 
 
 def calc_checksum(sentence):
@@ -92,6 +92,7 @@ def parse_longitude(longitude, hemisphere):
     elif not hemisphere == 'E':
         raise ValueError('Incorrect North/South value %r' % hemisphere)
     return longitude
+
 
 #: NMEA's mapping of code to reading type
 MODE_INDICATOR = {

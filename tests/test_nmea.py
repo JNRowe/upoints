@@ -79,7 +79,7 @@ class TestLoranPosition(TestCase):
 
     def test_parse_elements(self):
         expect(LoranPosition.parse_elements(['52.32144', 'N', '00300.9257', 'W',
-                                            '14205914', 'A'])) == \
+                                             '14205914', 'A'])) == \
             LoranPosition(52.005357333333336, -3.0154283333333334,
                           datetime.time(14, 20, 59, 140000), True, None)
 
@@ -107,14 +107,14 @@ class TestPosition(TestCase):
 
     def test_parse_elements(self):
         expect(repr(Position.parse_elements(['142058', 'A', '5308.6414', 'N',
-                                            '00300.9257', 'W', '109394.7',
-                                            '202.9', '191107', '5', 'E', 'A']))) == \
+                                             '00300.9257', 'W', '109394.7',
+                                             '202.9', '191107', '5', 'E', 'A']))) == \
             ('Position(datetime.time(14, 20, 58), True, %s, %s, 109394.7, '
              "202.9, datetime.date(2007, 11, 19), 5.0, 'A')"
              % (53.14402333333334, -3.0154283333333334))
         expect(repr(Position.parse_elements(['142100', 'A', '5200.9000', 'N',
-                                            '00316.6600', 'W', '123142.7',
-                                            '188.1', '191107', '5', 'E', 'A']))) == \
+                                             '00316.6600', 'W', '123142.7',
+                                             '188.1', '191107', '5', 'E', 'A']))) == \
             ('Position(datetime.time(14, 21), True, 52.015, %s, 123142.7, '
              "188.1, datetime.date(2007, 11, 19), 5.0, 'A')"
              % (-3.2776666666666667))

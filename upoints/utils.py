@@ -35,7 +35,7 @@ from lxml import objectify as _objectify
 
 from operator import add
 
-from upoints.compat import (basestring, mangle_repr_type)
+from .compat import (basestring, mangle_repr_type)
 
 
 #: Body radii of various solar system objects
@@ -314,6 +314,8 @@ def __chunk(segment, abbr=False):
                 sjoin.join((names[segment + 1].capitalize(), names[segment])),
                 sjoin.join((names[segment + 1].capitalize(),
                             names[segment + 1], names[segment])))
+
+
 COMPASS_NAMES = reduce(add, map(__chunk, range(4)))
 COMPASS_NAMES_ABBR = reduce(add, [__chunk(x, True) for x in range(4)])
 
@@ -444,6 +446,7 @@ class Timestamp(datetime.datetime):
 #}
 
 #{ Coordinate conversion utilities
+
 
 iso6709_matcher = re.compile(r'^([-+][\d.]+)([-+][\d.]+)([+-][\d.]+)?/$')
 
@@ -697,7 +700,7 @@ def to_grid_locator(latitude, longitude, precision='square'):
     :raise ValueError: Invalid precision identifier
     :raise ValueError: Invalid latitude or longitude value
     """
-    if not precision in ('square', 'subsquare', 'extsquare'):
+    if precision not in ('square', 'subsquare', 'extsquare'):
         raise ValueError('Unsupported precision value %r' % precision)
 
     if not -90 <= latitude <= 90:
@@ -806,6 +809,7 @@ def parse_location(location):
 #}
 
 #{ Solar event utilities
+
 
 #: Sunrise/-set mappings from name to angle
 ZENITH = {

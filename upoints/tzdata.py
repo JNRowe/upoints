@@ -19,8 +19,8 @@
 
 from operator import attrgetter
 
-from upoints import (point, utils)
-from upoints.compat import mangle_repr_type
+from . import (point, utils)
+from .compat import mangle_repr_type
 
 
 @mangle_repr_type
