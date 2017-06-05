@@ -32,7 +32,7 @@ import upoints  # NOQA
 
 extensions = \
     ['sphinx.ext.%s' % ext for ext in ['autodoc', 'coverage', 'doctest',
-                                       'intersphinx', 'viewcode', 'todo']] \
+                                       'intersphinx', 'todo', 'viewcode']] \
     + ['sphinxcontrib.%s' % ext for ext in []]
 
 # Only activate spelling, if it is installed.  It is not required in the
