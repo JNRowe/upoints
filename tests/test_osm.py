@@ -187,6 +187,3 @@ class TestOsm(TestCase):
         osm_xml = etree.parse('tests/data/osm')
         for e1, e2 in zip(export.getiterator(), osm_xml.getiterator()):
             xml_compare(e1, e2)
-            # expect(e1.tag) == e2.tag
-            # expect(e1.text) == e2.text
-            # expect(e1.attrib) == e2.attrib
