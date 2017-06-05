@@ -1,31 +1,6 @@
 #
 # coding=utf-8
-"""edist - Simple command line coordinate processing"""
-# Copyright © 2007-2017  James Rowe <jnrowe@gmail.com>
-#
-# This file is part of upoints.
-#
-# upoints is free software: you can redistribute it and/or modify it under the
-# terms of the GNU General Public License as published by the Free Software
-# Foundation, either version 3 of the License, or (at your option) any later
-# version.
-#
-# upoints is distributed in the hope that it will be useful, but WITHOUT ANY
-# WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
-# A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License along with
-# upoints.  If not, see <http://www.gnu.org/licenses/>.
-
-from __future__ import print_function
-
-from email.utils import parseaddr
-
-from upoints import (__version__, __author__)
-from upoints.compat import mangle_repr_type
-
-
-__doc__ += """.
+"""edist - Simple command line coordinate processing.
 
 edist operates on one, or more, locations specified in the following format
 ``[+-]DD.DD;[+-]DDD.DD``.  For example, a location string of ``52.015;-0.221``
@@ -45,14 +20,24 @@ a hyphen(such as anywhere in the Southern hemisphere).
    In most shells the locations must be quoted because of the special nature of
    the semicolon.
 
-.. currentmodule:: edist
-.. moduleauthor:: `%s <mailto:%s>`__
-""" % parseaddr(__author__)
+"""
+# Copyright © 2007-2017  James Rowe <jnrowe@gmail.com>
+#
+# This file is part of upoints.
+#
+# upoints is free software: you can redistribute it and/or modify it under the
+# terms of the GNU General Public License as published by the Free Software
+# Foundation, either version 3 of the License, or (at your option) any later
+# version.
+#
+# upoints is distributed in the hope that it will be useful, but WITHOUT ANY
+# WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+# A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along with
+# upoints.  If not, see <http://www.gnu.org/licenses/>.
 
-# Pull the first paragraph from the docstring
-USAGE = __doc__[:__doc__.find('\n\n', 100)].replace('``', "'").splitlines()[2:]
-# Replace script name with optparse's substitution var, and rebuild string
-USAGE = '\n'.join(USAGE).replace('edist', '%(prog)s')
+from __future__ import print_function
 
 import logging
 import os
@@ -67,8 +52,9 @@ try:
 except ImportError:
     from ConfigParser import ConfigParser
 
-
-from upoints import (point, utils)
+from . import __version__
+from .compat import mangle_repr_type
+from . import (point, utils)
 
 
 # Pull the first paragraph from the docstring
@@ -94,6 +80,7 @@ class LocationsError(ValueError):
 
        Location number and data
     """
+
     def __init__(self, function=None, data=None):
         """Initialise a new ``LocationsError`` object.
 

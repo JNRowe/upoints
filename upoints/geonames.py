@@ -1,6 +1,6 @@
 #
 # coding=utf-8
-"""geonames - Imports geonames.org data files"""
+"""geonames - Imports geonames.org data files."""
 # Copyright © 2007-2017  James Rowe <jnrowe@gmail.com>
 #
 # This file is part of upoints.
@@ -25,11 +25,10 @@ except ImportError:
     #: ``dateutil`` module reference if available
     tz = None
 
-from upoints import (point, trigpoints, utils)
+from . import (point, trigpoints, utils)
 
 
 class Location(trigpoints.Trigpoint):
-
     """Class for representing a location from a geonames.org_ data file.
 
     All country codes are specified with their two letter ISO-3166 country
@@ -69,8 +68,8 @@ class Location(trigpoints.Trigpoint):
         :param str alt_country: Alternate country codes for location
         :param str admin1: FIPS code (subject to change to ISO code), ISO code
             for the US and CH
-        :param str admin2: Code for the second administrative division, a county
-            in the US
+        :param str admin2: Code for the second administrative division, a
+            county in the US
         :param str admin3: Code for third level administrative division
         :param str admin4: Code for fourth level administrative division
         :param int population: Location's population, if applicable
@@ -143,7 +142,6 @@ class Location(trigpoints.Trigpoint):
 
 
 class Locations(point.Points):
-
     """Class for representing a group of :class:`Location` objects.
 
     .. versionadded:: 0.5.1
@@ -275,7 +273,8 @@ class Locations(point.Points):
             if row['ident'] == 'TimeZoneId':
                 continue
             try:
-                delta = list(map(time_parse, (row['gmt_offset'], row['dst_offset'])))
+                delta = list(map(time_parse,
+                                 (row['gmt_offset'], row['dst_offset'])))
             except ValueError:
                 raise utils.FileFormatError('geonames.org')
             self.timezones[row['ident']] = delta

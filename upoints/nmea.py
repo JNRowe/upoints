@@ -1,6 +1,6 @@
 #
 # coding=utf-8
-"""nmea - Imports GPS NMEA-formatted data files"""
+"""nmea - Imports GPS NMEA-formatted data files."""
 # Copyright © 2007-2017  James Rowe <jnrowe@gmail.com>
 #
 # This file is part of upoints.
@@ -23,7 +23,7 @@ import logging
 from functools import reduce
 from operator import xor
 
-from upoints import (point, utils)
+from . import (point, utils)
 
 
 def calc_checksum(sentence):
@@ -93,6 +93,7 @@ def parse_longitude(longitude, hemisphere):
         raise ValueError('Incorrect North/South value %r' % hemisphere)
     return longitude
 
+
 #: NMEA's mapping of code to reading type
 MODE_INDICATOR = {
     'A': 'Autonomous',
@@ -105,7 +106,6 @@ MODE_INDICATOR = {
 
 
 class LoranPosition(point.Point):
-
     """Class for representing a GPS NMEA-formatted Loran-C position."""
 
     __slots__ = ('time', 'status', 'mode')
@@ -176,7 +176,6 @@ class LoranPosition(point.Point):
 
 
 class Position(point.Point):
-
     """Class for representing a GPS NMEA-formatted position.
 
     .. versionadded:: 0.8.0
@@ -273,7 +272,6 @@ class Position(point.Point):
 
 
 class Fix(point.Point):
-
     """Class for representing a GPS NMEA-formatted system fix.
 
     .. versionadded:: 0.8.0
@@ -399,7 +397,6 @@ class Fix(point.Point):
 
 
 class Waypoint(point.Point):
-
     """Class for representing a NMEA-formatted waypoint.
 
     .. versionadded:: 0.8.0
@@ -453,7 +450,6 @@ class Waypoint(point.Point):
 
 
 class Locations(point.Points):
-
     """Class for representing a group of GPS location objects.
 
     .. versionadded:: 0.8.0
@@ -467,7 +463,7 @@ class Locations(point.Points):
             self.import_locations(gpsdata_file)
 
     def import_locations(self, gpsdata_file, checksum=True):
-        r"""Import GPS NMEA-formatted data files
+        r"""Import GPS NMEA-formatted data files.
 
         ``import_locations()`` returns a list of `Fix` objects representing the
         fix sentences found in the GPS data.

@@ -41,6 +41,7 @@ SOURCES = [
     'http://xplanet.sourceforge.net/Extras/earth-markers-schaumann',
 ]
 
+
 def data_file(resource):
     """Generate a local filename for the resource.
 
@@ -63,6 +64,7 @@ def data_file(resource):
         return filename[:-4]
     else:
         return filename
+
 
 def main(argv=None):
     """Main script handler.
@@ -102,6 +104,7 @@ def main(argv=None):
                 urlretrieve(path, filename)
     if cached > 1:
         print("You can force download with the `-f' option to this script.")
+
 
 if __name__ == '__main__':
     main(sys.argv)

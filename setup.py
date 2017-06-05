@@ -1,6 +1,6 @@
 #! /usr/bin/env python
 # coding=utf-8
-"""setup.py - Setuptools tasks and config for upoints"""
+"""setup.py - Setuptools tasks and config for upoints."""
 # Copyright © 2007-2017  James Rowe <jnrowe@gmail.com>
 #                        Petr Viktorin <encukou@gmail.com>
 #
@@ -46,6 +46,7 @@ def parse_requires(file):
                 continue
         deps.append(dep)
     return deps
+
 
 install_requires = parse_requires('requirements.txt')
 

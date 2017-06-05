@@ -86,7 +86,7 @@ class TestNode(TestCase):
     def test_fetch_area_osm(self):
         # FIXME: The following test is skipped, because the Osm object doesn't
         # support a reliable way __repr__ method.
-        #expect(Home.fetch_area_osm(3)
+        # expect(Home.fetch_area_osm(3)
         pass
 
 
@@ -144,6 +144,7 @@ class TestWay(TestCase):
         xml_str_compare(
             '<way id="0" visible="false"><tag k="key" v="value"/><nd ref="0"/><nd ref="1"/><nd ref="2"/></way>',
             etree.tostring(self.tagged.toosm()))
+
 
 class TestOsm(TestCase):
     def setUp(self):

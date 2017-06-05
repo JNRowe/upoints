@@ -43,7 +43,7 @@ class Test_GpxElem(TestCase):
         expect(str(_GpxElem(52, 0, 'name', 'desc', 40))) == \
             """name (52°00'00"N, 000°00'00"E @ 40m) [desc]"""
         expect(str(_GpxElem(52, 0, 'name', 'desc', 40,
-                   utils.Timestamp(2008, 7, 25)))) == \
+                            utils.Timestamp(2008, 7, 25)))) == \
             ("""name (52°00'00"N, 000°00'00"E @ 40m on """
              '2008-07-25T00:00:00+00:00) [desc]')
 
@@ -93,7 +93,6 @@ class TestWaypoints(TestCase):
             xml_compare(e1, e2)
 
 
-
 class TestTrackpoint(TestCase):
     def test___repr__(self):
         expect(Trackpoint(52, 0)) == \
@@ -119,7 +118,6 @@ class TestTrackpoints(TestCase):
         tracks_xml = etree.parse('tests/data/gpx_tracks')
         for e1, e2 in zip(export.getiterator(), tracks_xml.getiterator()):
             xml_compare(e1, e2)
-
 
 
 class TestRoutepoint(TestCase):

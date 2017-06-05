@@ -1,6 +1,6 @@
 #
 # coding=utf-8
-"""weather_stations - Imports weather station data files"""
+"""weather_stations - Imports weather station data files."""
 # Copyright © 2007-2017  James Rowe <jnrowe@gmail.com>
 #
 # This file is part of upoints.
@@ -17,20 +17,12 @@
 # You should have received a copy of the GNU General Public License along with
 # upoints.  If not, see <http://www.gnu.org/licenses/>.
 
-__doc__ += """.
-
-.. moduleauthor:: James Rowe <jnrowe@gmail.com>
-.. versionadded:: 0.2.0
-"""
-
-
 import logging
 
-from upoints import (point, trigpoints, utils)
+from . import (point, trigpoints, utils)
 
 
 class Station(trigpoints.Trigpoint):
-
     """Class for representing a weather station from a NOAA data file.
 
     .. versionadded:: 0.2.0
@@ -95,7 +87,6 @@ class Station(trigpoints.Trigpoint):
 
 
 class Stations(point.KeyedPoints):
-
     """Class for representing a group of `Station` objects.
 
     .. versionadded:: 0.5.1
@@ -219,7 +210,7 @@ class Stations(point.KeyedPoints):
                     i = i.replace(' ', '0')
                 values = map(int, i[:-1].split('-'))
                 if i[-1] in ('S', 'W'):
-                    values = [-i for i in values]
+                    values = [-x for x in values]
                 point_data.append(point.utils.to_dd(*values))
             latitude, longitude, ua_latitude, ua_longitude = point_data
             altitude = int(chunk[11]) if chunk[11] else None

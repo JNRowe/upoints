@@ -1,6 +1,6 @@
 #
 # coding=utf-8
-"""conf - Sphinx configuration information"""
+"""conf - Sphinx configuration information."""
 # Copyright © 2007-2017  James Rowe <jnrowe@gmail.com>
 #
 # This file is part of upoints.
@@ -28,11 +28,11 @@ root_dir = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
 sys.path.insert(0, root_dir)
 
 
-import upoints
+import upoints  # NOQA
 
 extensions = \
     ['sphinx.ext.%s' % ext for ext in ['autodoc', 'coverage', 'doctest',
-                                       'intersphinx', 'viewcode', 'todo']] \
+                                       'intersphinx', 'todo', 'viewcode']] \
     + ['sphinxcontrib.%s' % ext for ext in []]
 
 # Only activate spelling, if it is installed.  It is not required in the

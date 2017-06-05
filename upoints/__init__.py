@@ -1,36 +1,6 @@
 #
 # coding=utf-8
-"""upoints - Modules for working with points on Earth"""
-# Copyright © 2007-2017  James Rowe <jnrowe@gmail.com>
-#
-# This file is part of upoints.
-#
-# upoints is free software: you can redistribute it and/or modify it under the
-# terms of the GNU General Public License as published by the Free Software
-# Foundation, either version 3 of the License, or (at your option) any later
-# version.
-#
-# upoints is distributed in the hope that it will be useful, but WITHOUT ANY
-# WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
-# A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
-#
-# You should have received a copy of the GNU General Public License along with
-# upoints.  If not, see <http://www.gnu.org/licenses/>.
-
-from upoints import _version
-
-
-__version__ = _version.dotted
-__date__ = _version.date
-__author__ = 'James Rowe <jnrowe@gmail.com>'
-__copyright__ = 'Copyright (C) 2007-2017  James Rowe <jnrowe@gmail.com>'
-__license__ = 'GNU General Public License Version 3'
-__credits__ = 'Cédric Dufour, Thomas Traber, Kelly Turner, Simon Woods'
-__history__ = 'See git repository'
-
-from email.utils import parseaddr
-
-__doc__ += """.
+"""upoints - Modules for working with points on Earth
 
 ``upoints`` is a collection of `GPL v3`_ licensed modules for working with
 points on Earth, or other near spherical objects.  It allows you to calculate
@@ -64,12 +34,35 @@ datetime.time(3, 42)
 >>> Home.sunset(datetime.date(2007, 6, 28))
 datetime.time(20, 24)
 
-.. moduleauthor:: `%s <mailto:%s>`__
-""" % parseaddr(__author__)
+"""
+# Copyright © 2007-2017  James Rowe <jnrowe@gmail.com>
+#
+# This file is part of upoints.
+#
+# upoints is free software: you can redistribute it and/or modify it under the
+# terms of the GNU General Public License as published by the Free Software
+# Foundation, either version 3 of the License, or (at your option) any later
+# version.
+#
+# upoints is distributed in the hope that it will be useful, but WITHOUT ANY
+# WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR
+# A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License along with
+# upoints.  If not, see <http://www.gnu.org/licenses/>.
 
-from upoints import (baken, cellid, cities, geonames, gpx, kml, nmea, osm,
-                     point, trigpoints, tzdata, utils, weather_stations,
-                     xearth)
+from . import _version
+
+__version__ = _version.dotted
+__date__ = _version.date
+__author__ = 'James Rowe <jnrowe@gmail.com>'
+__copyright__ = 'Copyright (C) 2007-2017  James Rowe <jnrowe@gmail.com>'
+__license__ = 'GNU General Public License Version 3'
+__credits__ = 'Cédric Dufour, Thomas Traber, Kelly Turner, Simon Woods'
+__history__ = 'See git repository'
+
+from . import (baken, cellid, cities, geonames, gpx, kml, nmea, osm, point,
+               trigpoints, tzdata, utils, weather_stations, xearth)
 
 __all__ = ('baken', 'cellid', 'cities', 'geonames', 'gpx', 'kml', 'nmea',
            'osm', 'point', 'trigpoints', 'tzdata', 'utils', 'weather_stations',

@@ -196,13 +196,13 @@ def test_to_iso6709_wiki_page():
     expect(to_iso6709(48.866666666666667, 2.3333333333333335, None, 'dm')) == \
         '+4852+00220/'
 
-    #FIXME
+    # FIXME
     #  The following test is skipped, because the example from wikipedia
     #  uses differing precision widths for latitude and longitude. Also,
     #  that degree of formatting flexibility is not seen anywhere else and
     #  adds very little.
     #  Eiffel Tower
-    #expect(to_iso6709(48.857700000000001, 2.2949999999999999, None)) == \
+    # expect(to_iso6709(48.857700000000001, 2.2949999999999999, None)) == \
     #    '+48.8577+002.295/'
 
     #  Mount Everest
@@ -298,7 +298,7 @@ def test_sun_rise_set():
         datetime.time(7, 58)
     expect(sun_rise_set(52.015, -0.221, datetime.date(1993, 12, 11),
                         'set')) == datetime.time(15, 49)
-    expect(sun_rise_set(89, 0, datetime.date(2007, 12, 21))) == None
+    expect(sun_rise_set(89, 0, datetime.date(2007, 12, 21))) is None
     expect(sun_rise_set(52.015, -0.221, datetime.date(2007, 2, 21))) == \
         datetime.time(7, 4)
     expect(sun_rise_set(52.015, -0.221, datetime.date(2007, 1, 21))) == \

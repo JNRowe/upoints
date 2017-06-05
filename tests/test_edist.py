@@ -135,7 +135,7 @@ class TestNumberedPoints(TestCase):
     @patch('sys.stdout', new_callable=StringIO)
     def test_distance_multi(self, stdout):
         locations = NumberedPoints(['52.015;-0.221', '52.168;0.040',
-                                   '51.420;-1.500'])
+                                    '51.420;-1.500'])
         locations.distance()
         expect(stdout.getvalue()) == (
             'Location 1 to 2 is 24 kilometres\n'
@@ -260,7 +260,7 @@ class TestNumberedPoints(TestCase):
     @patch('sys.stdout', new_callable=StringIO)
     def test_flight_plan(self, stdout):
         locations = NumberedPoints(['52.015;-0.221', '52.168;0.040',
-                                   '52.249;0.130', '52.494;0.654'])
+                                    '52.249;0.130', '52.494;0.654'])
         locations.flight_plan(0, 'h')
         expect(stdout.getvalue()) == (
             'WAYPOINT,BEARING[°],DISTANCE[km],ELAPSED_TIME[h],LATITUDE[d.dd],LONGITUDE[d.dd]\n'

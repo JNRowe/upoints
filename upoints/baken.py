@@ -1,6 +1,6 @@
 #
 # coding=utf-8
-"""baken - Imports baken data files"""
+"""baken - Imports baken data files."""
 # Copyright © 2007-2017  James Rowe <jnrowe@gmail.com>
 #
 # This file is part of upoints.
@@ -25,11 +25,10 @@ try:
 except ImportError:
     from ConfigParser import ConfigParser
 
-from upoints import (point, utils)
+from . import (point, utils)
 
 
 class Baken(point.Point):
-
     """Class for representing location from baken_ data files.
 
     .. versionadded:: 0.4.0
@@ -60,9 +59,9 @@ class Baken(point.Point):
         :param str qth: Location's qth
         :raise LookupError: No position data to use
         """
-        if not latitude is None:
+        if latitude is not None:
             super(Baken, self).__init__(latitude, longitude)
-        elif not locator is None:
+        elif locator is not None:
             latitude, longitude = utils.from_grid_locator(locator)
             super(Baken, self).__init__(latitude, longitude)
         else:
@@ -106,7 +105,6 @@ class Baken(point.Point):
 
 
 class Bakens(point.KeyedPoints):
-
     """Class for representing a group of :class:`Baken` objects.
 
     .. versionadded:: 0.5.1

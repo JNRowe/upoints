@@ -1,6 +1,6 @@
 #
 # coding=utf-8
-"""utils - Support code for :mod:upoints"""
+"""utils - Support code for :mod:`upoints`."""
 # Copyright © 2007-2017  James Rowe <jnrowe@gmail.com>
 #
 # This file is part of upoints.
@@ -35,7 +35,7 @@ from lxml import objectify as _objectify
 
 from operator import add
 
-from upoints.compat import (basestring, mangle_repr_type)
+from .compat import (basestring, mangle_repr_type)
 
 
 #: Body radii of various solar system objects
@@ -83,7 +83,6 @@ LATITUDE_EXTSQUARE = LATITUDE_SUBSQUARE / 10
 
 
 class FileFormatError(ValueError):
-
     """Error object for data parsing error.
 
     .. versionadded:: 0.3.0
@@ -111,7 +110,7 @@ class FileFormatError(ValueError):
             return 'Unsupported data format.'
 
 
-#{ Implementation utilities
+# Implementation utilities {{{
 def value_or_empty(value):
     """Return an empty string for display when value is ``None``.
 
@@ -246,10 +245,10 @@ def element_creator(namespace=None):
 
     return create_elem
 
-#}
+# }}}
 
 
-#{ Angle conversion utilities
+# Angle conversion utilities {{{
 def to_dms(angle, style='dms'):
     """Convert decimal angle to degrees, minutes and possibly seconds.
 
@@ -314,6 +313,8 @@ def __chunk(segment, abbr=False):
                 sjoin.join((names[segment + 1].capitalize(), names[segment])),
                 sjoin.join((names[segment + 1].capitalize(),
                             names[segment + 1], names[segment])))
+
+
 COMPASS_NAMES = reduce(add, map(__chunk, range(4)))
 COMPASS_NAMES_ABBR = reduce(add, [__chunk(x, True) for x in range(4)])
 
@@ -340,13 +341,12 @@ def angle_to_name(angle, segments=8, abbr=False):
         return ''.join(i[0].capitalize() for i in string.split('-'))
     else:
         return string
-#}
+# }}}
 
 
-#{ Date and time handling utilities
+# Date and time handling utilities {{{
 @mangle_repr_type
 class TzOffset(datetime.tzinfo):
-
     """Time offset from UTC."""
 
     def __init__(self, tzstring):
@@ -402,7 +402,6 @@ class TzOffset(datetime.tzinfo):
 
 
 class Timestamp(datetime.datetime):
-
     """Class for representing an OSM timestamp value."""
 
     def isoformat(self):
@@ -441,9 +440,10 @@ class Timestamp(datetime.datetime):
         timestamp = timestamp.replace(tzinfo=zone)
         return timestamp
 
-#}
+# }}}
 
-#{ Coordinate conversion utilities
+# Coordinate conversion utilities {{{
+
 
 iso6709_matcher = re.compile(r'^([-+][\d.]+)([-+][\d.]+)([+-][\d.]+)?/$')
 
@@ -697,7 +697,7 @@ def to_grid_locator(latitude, longitude, precision='square'):
     :raise ValueError: Invalid precision identifier
     :raise ValueError: Invalid latitude or longitude value
     """
-    if not precision in ('square', 'subsquare', 'extsquare'):
+    if precision not in ('square', 'subsquare', 'extsquare'):
         raise ValueError('Unsupported precision value %r' % precision)
 
     if not -90 <= latitude <= 90:
@@ -752,7 +752,6 @@ def parse_location(location):
     :rtype: ``tuple`` of ``float`` objects
     :return: Latitude and longitude of location
     """
-
     def split_dms(text, hemisphere):
         """Split degrees, minutes and seconds string.
 
@@ -803,9 +802,10 @@ def parse_location(location):
                 if chunks[3] == 'W':
                     longitude = -1 * longitude
             return latitude, longitude
-#}
+# }}}
 
-#{ Solar event utilities
+# Solar event utilities {{{
+
 
 #: Sunrise/-set mappings from name to angle
 ZENITH = {
@@ -961,7 +961,7 @@ def sun_events(latitude, longitude, date, timezone=0, zenith=None):
     return (sun_rise_set(latitude, longitude, date, 'rise', timezone, zenith),
             sun_rise_set(latitude, longitude, date, 'set', timezone, zenith))
 
-#}
+# }}}
 
 
 def dump_xearth_markers(markers, name='identifier'):
@@ -1059,7 +1059,6 @@ def calc_radius(latitude, ellipsoid='WGS84'):
     :rtype: ``float``
     :return: Approximated Earth radius at the given latitude
     """
-
     ellipsoids = {
         'Airy (1830)': (6377.563, 6356.257),  # Ordnance Survey default
         'Bessel': (6377.397, 6356.079),

@@ -1,6 +1,6 @@
 #
 # coding=utf-8
-"""gpx - Imports GPS eXchange format data files"""
+"""gpx - Imports GPS eXchange format data files."""
 # Copyright © 2007-2017  James Rowe <jnrowe@gmail.com>
 #
 # This file is part of upoints.
@@ -23,8 +23,8 @@ from operator import attrgetter
 
 from lxml import etree
 
-from upoints import (point, utils)
-from upoints._version import web as ua_string
+from . import (point, utils)
+from ._version import web as ua_string
 
 
 GPX_NS = 'http://www.topografix.com/GPX/1/1'
@@ -35,11 +35,12 @@ create_elem = utils.element_creator(GPX_NS)
 GPX_ELEM_ATTRIB = {
     'creator': ua_string,
     'version': '1.1',
-    '{http://www.w3.org/2001/XMLSchema-instance}schemaLocation': '%s http://www.topografix.com/GPX/1/1/gpx.xsd' % GPX_NS,
+    '{http://www.w3.org/2001/XMLSchema-instance}schemaLocation':
+        '%s http://www.topografix.com/GPX/1/1/gpx.xsd' % GPX_NS,
 }
 
-class _GpxElem(point.TimedPoint):
 
+class _GpxElem(point.TimedPoint):
     """Abstract class for representing an element from GPX data files.
 
     .. versionadded:: 0.11.0
@@ -106,7 +107,6 @@ class _GpxElem(point.TimedPoint):
 
 
 class _SegWrap(list):
-
     """Abstract class for representing segmented elements from GPX data files.
 
     .. versionadded:: 0.12.0
@@ -269,7 +269,6 @@ class _SegWrap(list):
 
 
 class _GpxMeta(object):
-
     """Class for representing GPX global metadata.
 
     .. versionadded:: 0.12.0
@@ -336,7 +335,8 @@ class _GpxMeta(object):
                 author = None
             element = create_elem('copyright', author)
             if self.copyright['year']:
-                element.append(create_elem('year', text=self.copyright['year']))
+                element.append(create_elem('year',
+                                           text=self.copyright['year']))
             if self.copyright['license']:
                 license = create_elem('license')
                 element.append(license)
@@ -427,7 +427,6 @@ class _GpxMeta(object):
 
 
 class Waypoint(_GpxElem):
-
     """Class for representing a waypoint element from GPX data files.
 
     .. versionadded:: 0.8.0
@@ -443,7 +442,6 @@ class Waypoint(_GpxElem):
 
 
 class Waypoints(point.TimedPoints):
-
     """Class for representing a group of :class:`Waypoint` objects.
 
     .. versionadded:: 0.8.0
@@ -482,8 +480,8 @@ class Waypoints(point.TimedPoints):
             </gpx>
 
         The reader uses the :mod:`ElementTree` module, so should be very fast
-        when importing data.  The above file processed by ``import_locations()``
-        will return the following ``list`` object::
+        when importing data.  The above file processed by
+        ``import_locations()`` will return the following ``list`` object::
 
             [Waypoint(52.015, -0.221, "Home", "My place"),
              Waypoint(52.167, 0.390, "MSR", "Microsoft Research, Cambridge")]
@@ -542,7 +540,6 @@ class Waypoints(point.TimedPoints):
 
 
 class Trackpoint(_GpxElem):
-
     """Class for representing a trackpoint element from GPX data files.
 
     .. versionadded:: 0.10.0
@@ -558,7 +555,6 @@ class Trackpoint(_GpxElem):
 
 
 class Trackpoints(_SegWrap):
-
     """Class for representing a group of :class:`Trackpoint` objects.
 
     .. versionadded:: 0.10.0
@@ -593,8 +589,8 @@ class Trackpoints(_SegWrap):
             </gpx>
 
         The reader uses the :mod:`ElementTree` module, so should be very fast
-        when importing data.  The above file processed by ``import_locations()``
-        will return the following ``list`` object::
+        when importing data.  The above file processed by
+        ``import_locations()`` will return the following ``list`` object::
 
             [[Trackpoint(52.015, -0.221, "Home", "My place"),
               Trackpoint(52.167, 0.390, "MSR", "Microsoft Research, Cambridge")], ]
@@ -661,7 +657,6 @@ class Trackpoints(_SegWrap):
 
 
 class Routepoint(_GpxElem):
-
     """Class for representing a ``rtepoint`` element from GPX data files.
 
     .. versionadded:: 0.10.0
@@ -677,7 +672,6 @@ class Routepoint(_GpxElem):
 
 
 class Routepoints(_SegWrap):
-
     """Class for representing a group of :class:`Routepoint` objects.
 
     .. versionadded:: 0.10.0
@@ -710,8 +704,8 @@ class Routepoints(_SegWrap):
             </gpx>
 
         The reader uses the :mod:`ElementTree` module, so should be very fast
-        when importing data.  The above file processed by ``import_locations()``
-        will return the following ``list`` object::
+        when importing data.  The above file processed by
+        ``import_locations()`` will return the following ``list`` object::
 
             [[Routepoint(52.015, -0.221, "Home", "My place"),
               Routepoint(52.167, 0.390, "MSR", "Microsoft Research, Cambridge")], ]
@@ -757,7 +751,7 @@ class Routepoints(_SegWrap):
             self.append(points)
 
     def export_gpx_file(self):
-        """Generate GPX element tree from :class:`Routepoints`
+        """Generate GPX element tree from :class:`Routepoints`.
 
         :rtype: :class:`etree.ElementTree`
         :return: GPX element tree depicting :class:`Routepoints` objects

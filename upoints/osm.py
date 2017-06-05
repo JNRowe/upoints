@@ -1,6 +1,6 @@
 #
 # coding=utf-8
-"""osm - Imports OpenStreetMap data files"""
+"""osm - Imports OpenStreetMap data files.."""
 # Copyright © 2007-2017  James Rowe <jnrowe@gmail.com>
 #
 # This file is part of upoints.
@@ -26,9 +26,9 @@ except ImportError:  # Python 2
 
 from lxml import etree
 
-from upoints import (point, utils)
-from upoints._version import web as ua_string
-from upoints.compat import mangle_repr_type
+from . import (point, utils)
+from ._version import web as ua_string
+from .compat import mangle_repr_type
 
 create_elem = utils.element_creator()
 
@@ -108,7 +108,6 @@ def get_area_url(location, distance):
 
 
 class Node(point.Point):
-
     """Class for representing a node element from OSM data files.
 
     .. versionadded:: 0.9.0
@@ -208,7 +207,6 @@ class Node(point.Point):
 
 @mangle_repr_type
 class Way(point.Points):
-
     """Class for representing a way element from OSM data files.
 
     .. versionadded:: 0.9.0
@@ -302,7 +300,6 @@ class Way(point.Points):
 
 
 class Osm(point.Points):
-
     """Class for representing an OSM region.
 
     .. versionadded:: 0.9.0
@@ -391,7 +388,7 @@ class Osm(point.Points):
                 self.append(Way.parse_elem(elem))
 
     def export_osm_file(self):
-        """Generate OpenStreetMap element tree from `Osm`"""
+        """Generate OpenStreetMap element tree from ``Osm``."""
         osm = create_elem('osm', {'generator': self.generator,
                                   'version': self.version})
         osm.extend(obj.toosm() for obj in self)

@@ -1,6 +1,6 @@
 #
 # coding=utf-8
-"""cities - Imports GNU miscfiles cities data files"""
+"""cities - Imports GNU miscfiles cities data files."""
 # Copyright © 2007-2017  James Rowe <jnrowe@gmail.com>
 #
 # This file is part of upoints.
@@ -17,16 +17,10 @@
 # You should have received a copy of the GNU General Public License along with
 # upoints.  If not, see <http://www.gnu.org/licenses/>.
 
-__doc__ += """.
-
-.. moduleauthor:: James Rowe <jnrowe@gmail.com>
-.. versionadded:: 0.2.0
-"""
-
 import logging
 import time
 
-from upoints import (point, trigpoints, utils)
+from . import (point, trigpoints, utils)
 
 #: GNU miscfiles cities.dat template
 TEMPLATE = """\
@@ -46,7 +40,6 @@ Entered-By  : %s"""
 
 
 class City(trigpoints.Trigpoint):
-
     """Class for representing an entry from the `GNU miscfiles`_ cities data file.
 
     .. versionadded:: 0.2.0
@@ -106,7 +99,6 @@ class City(trigpoints.Trigpoint):
 
 
 class Cities(point.Points):
-
     """Class for representing a group of :class:`City` objects.
 
     .. versionadded:: 0.5.1
