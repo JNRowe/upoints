@@ -14,7 +14,7 @@ difficult at all.
 As a little background the reason for wanting access to the data in
 marker files is that our internal contact database allows us to export
 a file containing a subset of our contact's known current locations
-[#]_.  The original reasoning behind the feature was to allow simple
+[1]_.  The original reasoning behind the feature was to allow simple
 visualisation of a team's members, for example to quickly locate
 somebody who is close to a customer's site.
 
@@ -74,7 +74,7 @@ I'll end this entry with similar text to that which created it:  If you
 think of any good uses for :mod:`upoints`, drop me a mail.  Cool new
 uses with attached patches are even better!
 
-.. [#] All thanks to Simon Woods according to the source code
+.. [1] All thanks to Simon Woods according to the source code
        repository, so a big thanks to him!
 
 .. _geolocation and path cross: geolocation_and_pathcross.html

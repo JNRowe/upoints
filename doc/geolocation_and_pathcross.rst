@@ -21,7 +21,7 @@ results drops considerably as you zoom in from country-wide geolocation.
 
 My initial idea had been to use the city_ data to populate an
 automatically updating database that could be queried to find people in
-the local area [#]_.  Much like some of those oh-so-cool Web 2.0
+the local area [1]_.  Much like some of those oh-so-cool Web 2.0
 buzzword laden sites do but without the manual updating, Javascript,
 lack of privacy and continual spam.  Me and a few friends already do
 such a thing using our published hCalendar_ entries, a heap of nifty
@@ -57,7 +57,7 @@ being:
 
 Okay, so at the moment of that query it gets the correct country, net
 speed, organisation(my ISP UKFSN_ resells Entanet service) but that is
-it [#]_.  Not that we really should be expecting any great accuracy with
+it [2]_.  Not that we really should be expecting any great accuracy with
 the data, because of the way IPs are assigned and used.
 
 Assuming that I would be happy with my location being reported as
@@ -107,7 +107,7 @@ new features in our manual path cross tool, all based around the idea of
 relative proximity.
 
 The "average" location of a person is important when calculating whether
-your paths cross [#]_.  I'm not really interested in seeing when
+your paths cross [3]_.  I'm not really interested in seeing when
 somebody who works at the same site as me is within twenty kilometres of
 me as it would clearly happen a lot, but I'd like to see when somebody
 visits from abroad or heads to a show within perhaps thirty kilometres
@@ -185,16 +185,16 @@ of code, so why not?
     >>> print("A heading of %i° will find the beers!" % Home.bearing(Telford))
     A heading of 294° will find the beers!
 
-.. [#] By "automatically updating" I mean simply a ping-and-forget
+.. [1] By "automatically updating" I mean simply a ping-and-forget
        service that listens for a user ID and location and updates the
        database.  My test code was a simple five line Python_ script, it
        literally reads a configuration file for the user ID and pings my
        server.
 
-.. [#] I guess you could argue it gets the US area code, US metro code
+.. [2] I guess you could argue it gets the US area code, US metro code
        and zipcode correct as none of them apply here.
 
-.. [#] The implementation actually considers the mode, and not the
+.. [3] The implementation actually considers the mode, and not the
        average, in calculating "home" locations.  It makes it less prone
        to errors when people only report long distance changes, because
        the clustering isn't so obvious.  If more people hosted

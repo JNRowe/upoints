@@ -63,7 +63,7 @@ located within WMO region 6.  If we only work with the region
 6 locations then our operating database need only contain 1130 entries,
 and if we wished we could release the full database containing 10000
 entries we don't need from memory using code similar to the snippet
-above [#]_.
+above [1]_.
 
 ::
 
@@ -127,7 +127,7 @@ the documentation, drop me a mail_ and I'll do my best to answer your questions.
 Also, I'd love to hear from you if come up with any clever uses for for the
 modules in :mod:`upoints`.
 
-.. [#] I've personally taken to creating and using :mod:`cPickle` dumps
+.. [1] I've personally taken to creating and using :mod:`cPickle` dumps
        of the database, where each WMO region is stored in a separate
        file.  If you do this you end up with some interesting results
        including the 123 locations from the Antarctic, and the
