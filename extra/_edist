@@ -30,64 +30,63 @@ __list_locations() {
     fi
 }
 
-_arguments '--help[show help message and exit]' \
-    "--version[show program's version number and exit]" \
-    '--verbose[produce verbose output]' \
-    '--quiet[output only results and errors]' \
-    '--config-file=[config file to read custom locations from]:select file:_files' \
-    '--csv-file=[CSV file (gpsbabel format) to read route/locations from]:select file:_files' \
-    '--output=[produce output in dms, dm, d format or Maidenhead locator]:select format:(dms dm dd locator)' \
-    '--string[display named bearings]' \
-    '--units=[display distances in kilometres(default), statute miles or nautical miles]:select unit:(km sm nm)' \
-    ':edist command:(display distance bearing final-bearing range destination sunrise sunset flight-plan)' \
+_arguments \
+    '--version[Show the version and exit.]' \
+    '--verbose[Change verbosity level of output.]' \
+    '--config=[config file to read custom locations from.]:select file:_files' \
+    '--csv-file=[CSV file (gpsbabel format) to read route/locations from.]:select file:_files' \
+    '--output=[produce output in dms, dm or dd format.]:select format:(dms dm dd locator)' \
+    '--units=[display distances in kilometres, statute miles or nautical miles.]:select unit:(km sm nm)' \
+    '--location=[Location to operate on.]:select locations:__list_locations' \
+    ':edist command:(bearing destination display distance final_bearing flight_plan range sunrise sunset)' \
     '*::subcmd:->subcmd' && return 0
 
 ### DGEN_TAG: Generated from upoints/edist.py {{{
 case "$words[1]" in
 (bearing)
-    _arguments '--help[show help message and exit]' \
-        '--string[display named bearings]' \
-        '*:select locations:__list_locations'
+    _arguments \
+        '--help[Show this message and exit.]' \
+        '--string[Display named bearings.]'
     ;;
 (destination)
-    _arguments '--help[show help message and exit]' \
-        '--locator=[accuracy of Maidenhead locator output]:select accuracy:(square subsquare extsquare)' \
-        '--distance=[distance from start point]' \
-        '--bearing=[bearing from start point]' \
-        '*:select locations:__list_locations'
+    _arguments \
+        '--help[Show this message and exit.]' \
+        '--locator=[accuracy of Maidenhead locator output.]:select accuracy:(square subsquare extsquare)' \
+        '1:distance:_guard "[0-9]#" "numeric value"' \
+        '2:bearing:_guard "[0-9]#" "numeric value"'
     ;;
 (display)
-    _arguments '--help[show help message and exit]' \
-        '--locator=[accuracy of Maidenhead locator output]:select accuracy:(square subsquare extsquare)' \
-        '*:select locations:__list_locations'
+    _arguments \
+        '--help[Show this message and exit.]' \
+        '--locator=[Accuracy of Maidenhead locator output.]:select accuracy:(square subsquare extsquare)'
     ;;
 (distance)
-    _arguments '--help[show help message and exit]' \
-        '*:select locations:__list_locations'
+    _arguments \
+        '--help[Show this message and exit.]'
     ;;
-(final-bearing)
-    _arguments '--help[show help message and exit]' \
-        '--string[display named bearings]' \
-        '*:select locations:__list_locations'
+(final_bearing)
+    _arguments \
+        '--help[Show this message and exit.]' \
+        '--string[Display named bearings.]'
     ;;
-(flight-plan)
-    _arguments '--help[show help message and exit]' \
-        '--speed=[speed to calculate elapsed time]' \
-        '--time=[display time in hours, minutes or seconds]:select unit:(h m s)' \
-        '*:select locations:__list_locations'
+(flight_plan)
+    _arguments \
+        '--help[Show this message and exit.]' \
+        '--speed=[Speed to calculate elapsed time]:_guard "[0-9.]#" "numeric value"' \
+        '--time=[Display time in hours, minutes or seconds]:select unit:(h m s)' \
     ;;
 (range)
-    _arguments '--help[show help message and exit]' \
-        '--distance=[range radius]' \
-        '*:select locations:__list_locations'
+    _arguments \
+        '--help[Show this message and exit.]' \
+        '1:distance:_guard "[0-9]#" "numeric value"' \
     ;;
 (sunrise)
-    _arguments '--help[show help message and exit]' \
-        '*:select locations:__list_locations'
+    _arguments \
+        '--help[Show this message and exit.]'
     ;;
 (sunset)
-    _arguments '--help[show help message and exit]' \
-        '*:select locations:__list_locations'
+    _arguments \
+        '--help[Show this message and exit.]'
     ;;
 (*)
     ;;
