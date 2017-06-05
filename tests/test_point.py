@@ -180,8 +180,7 @@ class TestPoint(TestCase):
 
     def test_destination2(self):
         expect(Point(36.1200, -86.6700).destination(274, 2885)) == \
-            Point(33.6872799137609, -118.32721842114393, 'metric', 'degrees',
-                  0)
+            Point(33.6872799137609, -118.32721842114393)
 
     @params(
         (Point(52.015, -0.221), datetime.time(3, 40)),
@@ -313,7 +312,7 @@ class TestTimedPoints(TestCase):
             TimedPoint(52.855, 0.657,
                        time=datetime.datetime(2008, 7, 28, 19, 17)),
         ])
-        expect(map(lambda s: '%.3f' % s, locations.speed())) == \
+        expect(['%.3f' % s for s in locations.speed()]) == \
             ['12.315', '133.849']
 
 

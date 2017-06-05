@@ -80,8 +80,9 @@ class TestPlacemarks(TestCase):
         expect(str(locations[name])) == result
 
     def test_export_kml_file(self):
-        locations = Placemarks(open('tests/data/kml'))
+        filename = 'tests/data/kml'
+        locations = Placemarks(open(filename))
         export = locations.export_kml_file()
-        kml_xml = etree.parse('tests/data/kml')
+        kml_xml = etree.parse(filename)
         for e1, e2 in zip(export.getiterator(), kml_xml.getiterator()):
             xml_compare(e1, e2)
