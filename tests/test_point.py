@@ -23,6 +23,7 @@ import math
 from unittest import TestCase
 
 from expecter import expect
+from nose2.tools import params
 
 from upoints import utils
 from upoints.point import (KeyedPoints, Point, Points, TimedPoint, TimedPoints)
@@ -84,14 +85,13 @@ class TestPoint(TestCase):
     def test___str__(self):
         expect(str(Point(52.015, -0.221))) == 'N52.015°; W000.221°'
 
-    def test___format__(self):
-        expect(format(Point(52.015, -0.221), 'dm')) == \
-            "52°00.90'N, 000°13.26'W"
-        expect(format(Point(52.015, -0.221), 'dms')) == \
-            """52°00'54"N, 000°13'15"W"""
-        expect(format(Point(33.9400, -118.4000), 'dms')) == \
-            """33°56'23"N, 118°24'00"W"""
-        expect(format(Point(52.015, -0.221), 'locator')) == 'IO92'
+    @params(
+        ('dm', "52°00.90'N, 000°13.26'W"),
+        ('dms', """52°00'54"N, 000°13'15"W"""),
+        ('locator', 'IO92'),
+    )
+    def test___format__(self, style, result):
+        expect(format(Point(52.015, -0.221), style)) == result
 
     def test___unicode__(self):
         expect(str(Point(52.015, -0.221))) == 'N52.015°; W000.221°'
@@ -102,11 +102,15 @@ class TestPoint(TestCase):
     def test___ne__(self):
         expect(Point(52.015, -0.221)) != Point(52.6333, -2.5)
 
-    def test_to_grid_locator(self):
-        home = Point(52.015, -0.221)
-        expect(home.to_grid_locator('extsquare')) == 'IO92va33'
-        expect(home.to_grid_locator('subsquare')) == 'IO92va'
-        expect(home.to_grid_locator()) == 'IO92'
+    @params(
+        ('extsquare', 'IO92va33'),
+        ('subsquare', 'IO92va'),
+    )
+    def test_to_grid_locator(self, accuracy, result):
+        expect(Point(52.015, -0.221).to_grid_locator(accuracy)) == result
+
+    def test_to_grid_locator_default(self):
+        expect(Point(52.015, -0.221).to_grid_locator()) == 'IO92'
 
     def test_distance(self):
         home = Point(52.015, -0.221)
@@ -117,85 +121,97 @@ class TestPoint(TestCase):
         with expect.raises(ValueError, "Unknown method type 'Invalid'"):
             home.distance(dest, method='Invalid')
 
-        start = Point(36.1200, -86.6700)
+    @params(
+        ('imperial', 1792),
+        ('nautical', 1557),
+        ('metric', 2884),
+    )
+    def test_distance2(self, units, result):
+        start = Point(36.1200, -86.6700, units=units)
         dest = Point(33.9400, -118.4000)
-        expect('%i kM' % start.distance(dest)) == '2884 kM'
-        start.units = 'imperial'
-        expect('%i mi' % start.distance(dest)) == '1792 mi'
-        start.units = 'nautical'
-        expect('%i nmi' % start.distance(dest)) == '1557 nmi'
-        start.units = 'metric'
-        expect('%i kM' % start.distance(dest, method='sloc')) == '2884 kM'
+        expect(int(start.distance(dest))) == result
 
-    def test_bearing(self):
-        expect(int(Point(52.015, -0.221).bearing(Point(52.6333, -2.5)))) == 294
-        expect(int(Point(52.6333, -2.5).bearing(Point(52.015, -0.221)))) == 113
-        expect(int(Point(36.1200, -86.6700).bearing(Point(33.9400, -118.4000)))) == \
-            274
-        expect(int(Point(33.9400, -118.4000).bearing(Point(36.1200, -86.6700)))) == \
-            76
+    @params(
+        (Point(52.015, -0.221), Point(52.6333, -2.5), 294),
+        (Point(52.6333, -2.5), Point(52.015, -0.221), 113),
+        (Point(36.1200, -86.6700), Point(33.9400, -118.4000), 274),
+        (Point(33.9400, -118.4000), Point(36.1200, -86.6700), 76),
+    )
+    def test_bearing(self, p1, p2, result):
+        expect(int(p1.bearing(p2))) == result
+
+    def test_bearing_format(self):
         expect(Point(52.015, -0.221).bearing(Point(52.6333, -2.5),
                                              format='string')) == 'North-west'
 
-    def test_midpoint(self):
-        expect(Point(52.015, -0.221).midpoint(Point(52.6333, -2.5))) == \
-            Point(52.329631405407014, -1.3525368605590993, 'metric', 'degrees',
-                  0)
-        expect(Point(36.1200, -86.6700).midpoint(Point(33.9400, -118.4000))) == \
-            Point(36.08239491900365, -102.75217370539663, 'metric', 'degrees',
-                  0)
+    @params(
+        (Point(52.015, -0.221), Point(52.6333, -2.5),
+         Point(52.329631405407014, -1.3525368605590993)),
+        (Point(36.1200, -86.6700), Point(33.9400, -118.4000),
+         Point(36.08239491900365, -102.75217370539663)),
+    )
+    def test_midpoint(self, p1, p2, result):
+        expect(p1.midpoint(p2)) == result
 
-    def test_final_bearing(self):
-        expect(int(Point(52.015, -0.221).final_bearing(Point(52.6333, -2.5)))) == 293
-        expect(int(Point(52.6333, -2.5).final_bearing(Point(52.015, -0.221)))) == \
-            114
-        expect(int(Point(36.1200, -86.6700).final_bearing(Point(33.9400, -118.4000)))) == \
-            256
-        expect(int(Point(33.9400, -118.4000).final_bearing(Point(36.1200, -86.6700)))) == \
-            94
+    @params(
+        (Point(52.015, -0.221), Point(52.6333, -2.5), 293),
+        (Point(52.6333, -2.5), Point(52.015, -0.221), 114),
+        (Point(36.1200, -86.6700), Point(33.9400, -118.4000), 256),
+        (Point(33.9400, -118.4000), Point(36.1200, -86.6700), 94),
+    )
+    def test_final_bearing(self, p1, p2, result):
+        expect(int(p1.final_bearing(p2))) == result
+
+    def test_final_bearing_format(self):
         expect(Point(52.015, -0.221).bearing(Point(52.6333, -2.5),
                                              format='string')) == 'North-west'
 
-    def test_destination(self):
-        expect(Point(52.015, -0.221).destination(294, 169)) == \
-            Point(52.611638750214745, -2.509374081952352, 'metric', 'degrees',
-                  0)
-        home = Point(52.015, -0.221, 'imperial')
-        expect(home.destination(294, 169 / utils.STATUTE_MILE)) == \
-            Point(52.611638750214745, -2.509374081952352, 'metric', 'degrees',
-                  0)
-        home = Point(52.015, -0.221, 'nautical')
-        expect(home.destination(294, 169 / utils.NAUTICAL_MILE)) == \
-            Point(52.611638750214745, -2.509374081952352, 'metric', 'degrees',
-                  0)
+    @params(
+        ('metric', 1),
+        ('imperial', utils.STATUTE_MILE),
+        ('nautical', utils.NAUTICAL_MILE),
+    )
+    def test_destination(self, units, multiplier):
+        home = Point(52.015, -0.221, units=units)
+        expect(home.destination(294, 169 / multiplier)) == \
+            Point(52.611638750214745, -2.509374081952352)
+
+    def test_destination2(self):
         expect(Point(36.1200, -86.6700).destination(274, 2885)) == \
             Point(33.6872799137609, -118.32721842114393, 'metric', 'degrees',
                   0)
 
-    def test_sunrise(self):
+    @params(
+        (Point(52.015, -0.221), datetime.time(3, 40)),
+        (Point(52.6333, -2.5), datetime.time(3, 45)),
+        (Point(36.1200, -86.6700), datetime.time(10, 29)),
+        (Point(33.9400, -118.4000), datetime.time(12, 41)),
+    )
+    def test_sunrise(self, p1, result):
         date = datetime.date(2007, 6, 15)
-        expect(Point(52.015, -0.221).sunrise(date)) == datetime.time(3, 40)
-        expect(Point(52.6333, -2.5).sunrise(date)) == datetime.time(3, 45)
-        expect(Point(36.1200, -86.6700).sunrise(date)) == datetime.time(10, 29)
-        expect(Point(33.9400, -118.4000).sunrise(date)) == datetime.time(12, 41)
+        expect(p1.sunrise(date)) == result
 
-    def test_sunset(self):
+    @params(
+        (Point(52.015, -0.221), datetime.time(20, 22)),
+        (Point(52.6333, -2.5), datetime.time(20, 35)),
+        (Point(36.1200, -86.6700), datetime.time(1, 5)),
+        (Point(33.9400, -118.4000), datetime.time(3, 6)),
+    )
+    def test_sunset(self, p1, result):
         date = datetime.date(2007, 6, 15)
-        expect(Point(52.015, -0.221).sunset(date)) == datetime.time(20, 22)
-        expect(Point(52.6333, -2.5).sunset(date)) == datetime.time(20, 35)
-        expect(Point(36.1200, -86.6700).sunset(date)) == datetime.time(1, 5)
-        expect(Point(33.9400, -118.4000).sunset(date)) == datetime.time(3, 6)
+        expect(p1.sunset(date)) == result
 
-    def test_sun_events(self):
+    @params(
+        (Point(52.015, -0.221), (datetime.time(3, 40), datetime.time(20, 22))),
+        (Point(52.6333, -2.5), (datetime.time(3, 45), datetime.time(20, 35))),
+        (Point(36.1200, -86.6700),
+         (datetime.time(10, 29), datetime.time(1, 5))),
+        (Point(33.9400, -118.4000),
+         (datetime.time(12, 41), datetime.time(3, 6))),
+    )
+    def test_sun_events(self, p1, result):
         date = datetime.date(2007, 6, 15)
-        expect(Point(52.015, -0.221).sun_events(date)) == \
-            (datetime.time(3, 40), datetime.time(20, 22))
-        expect(Point(52.6333, -2.5).sun_events(date)) == \
-            (datetime.time(3, 45), datetime.time(20, 35))
-        expect(Point(36.1200, -86.6700).sun_events(date)) == \
-            (datetime.time(10, 29), datetime.time(1, 5))
-        expect(Point(33.9400, -118.4000).sun_events(date)) == \
-            (datetime.time(12, 41), datetime.time(3, 6))
+        expect(p1.sun_events(date)) == result
 
     def test_inverse(self):
         bearing, dist = Point(52.015, -0.221).inverse(Point(52.6333, -2.5))
@@ -276,11 +292,12 @@ class TestPoints(TestCase):
              (datetime.time(4, 26), datetime.time(19, 27)),
              (datetime.time(4, 21), datetime.time(19, 27))]
 
-    def test_to_grid_locator(self):
-        expect(list(self.locs.to_grid_locator('extsquare'))) == \
-            ['IO92va33', 'JO02ae40', 'JO02hu85']
-        expect(list(self.locs.to_grid_locator('subsquare'))) == \
-            ['IO92va', 'JO02ae', 'JO02hu']
+    @params(
+        ('extsquare', ['IO92va33', 'JO02ae40', 'JO02hu85']),
+        ('subsquare', ['IO92va', 'JO02ae', 'JO02hu']),
+    )
+    def test_to_grid_locator(self, accuracy, result):
+        expect(list(self.locs.to_grid_locator(accuracy))) == result
 
 
 class TestTimedPoints(TestCase):
@@ -369,8 +386,11 @@ class TestKeyedPoints(TestCase):
              ('Kenny', (datetime.time(4, 21), datetime.time(19, 27))),
              ('home', (datetime.time(4, 28), datetime.time(19, 28)))]
 
-    def test_to_grid_locator(self):
-        expect(sorted(self.locs.to_grid_locator('extsquare'))) == \
-            [('Carol', 'JO02ae40'), ('Kenny', 'JO02hu85'), ('home', 'IO92va33')]
-        expect(sorted(self.locs.to_grid_locator('subsquare'))) == \
-            [('Carol', 'JO02ae'), ('Kenny', 'JO02hu'), ('home', 'IO92va')]
+    @params(
+        ('extsquare',
+         [('Carol', 'JO02ae40'), ('Kenny', 'JO02hu85'), ('home', 'IO92va33')]),
+        ('subsquare',
+         [('Carol', 'JO02ae'), ('Kenny', 'JO02hu'), ('home', 'IO92va')]),
+    )
+    def test_to_grid_locator(self, accuracy, result):
+        expect(sorted(self.locs.to_grid_locator(accuracy))) == result

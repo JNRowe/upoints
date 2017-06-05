@@ -33,6 +33,7 @@ except ImportError:
     from mock import patch
 
 from expecter import expect
+from nose2.tools import params
 
 from upoints.compat import PY2
 from upoints.edist import (LocationsError, NumberedPoint, NumberedPoints,
@@ -51,11 +52,13 @@ class TestLocationsError(TestCase):
 
 
 class TestNumberedPoint(TestCase):
-    def test___repr__(self):
-        expect(repr(NumberedPoint(52.015, -0.221, 4))) == \
-            "NumberedPoint(52.015, -0.221, 4, 'metric')"
-        expect(repr(NumberedPoint(52.015, -0.221, 'Home'))) == \
-            "NumberedPoint(52.015, -0.221, 'Home', 'metric')"
+    @params(
+        ((52.015, -0.221, 4), "NumberedPoint(52.015, -0.221, 4, 'metric')"),
+        ((52.015, -0.221, 'Home'),
+         "NumberedPoint(52.015, -0.221, 'Home', 'metric')"),
+    )
+    def test___repr__(self, args, result):
+        expect(repr(NumberedPoint(*args))) == result
 
 
 class TestNumberedPoints(TestCase):
@@ -107,28 +110,17 @@ class TestNumberedPoints(TestCase):
         locs.display('extsquare')
         expect(stdout.getvalue()) == 'IO92va33\nJO02ae40\n'
 
+    @params(
+        ('metric', '24 kilometres'),
+        ('sm', '15 miles'),
+        ('nm', '13 nautical miles'),
+    )
     @patch('sys.stdout', new_callable=StringIO)
-    def test_distance(self, stdout):
-        locations = NumberedPoints(['52.015;-0.221', '52.168;0.040'])
-        locations.distance()
-        expect(stdout.getvalue()) == 'Location 1 to 2 is 24 kilometres\n'
-
-    @patch('sys.stdout', new_callable=StringIO)
-    def test_distance_sm(self, stdout):
+    def test_distance(self, units, result, stdout):
         locations = NumberedPoints(['52.015;-0.221', '52.168;0.040'],
-                                   units='sm')
+                                   units=units)
         locations.distance()
-        expect(stdout.getvalue()) == 'Location 1 to 2 is 15 miles\n'
-
-    @patch('sys.stdout', new_callable=StringIO)
-    def test_distance_nm(self, stdout):
-        locations = NumberedPoints(['52.015;-0.221', '52.168;0.040'],
-                                   units='nm')
-        locations.verbose = False
-        locations.distance()
-        # Manually convert to string here to workaround Python 2/3 float
-        # formatting differences
-        expect(stdout.getvalue()) == str(13.298957431655218) + '\n'
+        expect(stdout.getvalue()) == 'Location 1 to 2 is %s\n' % result
 
     @patch('sys.stdout', new_callable=StringIO)
     def test_distance_multi(self, stdout):
@@ -181,26 +173,29 @@ class TestNumberedPoints(TestCase):
         locations.bearing('final_bearing', True)
         expect(stdout.getvalue()) == 'North-east\n'
 
+    @params(
+        (20, False),
+        (30, True),
+    )
     @patch('sys.stdout', new_callable=StringIO)
-    def test_range(self, stdout):
+    def test_range(self, distance, result, stdout):
         locations = NumberedPoints(['52.015;-0.221', '52.168;0.040'])
-        locations.range(20)
-        expect(stdout.getvalue()) == \
-            'Location 2 is not within 20 kilometres of location 1\n'
+        locations.range(distance)
+        if result is True:
+            expect(stdout.getvalue()).contains('is within')
+        else:
+            expect(stdout.getvalue()).contains('is not within')
 
+    @params(
+        (20, 'False'),
+        (30, 'True'),
+    )
     @patch('sys.stdout', new_callable=StringIO)
-    def test_range2(self, stdout):
-        locations = NumberedPoints(['52.015;-0.221', '52.168;0.040'])
-        locations.range(30)
-        expect(stdout.getvalue()) == \
-            'Location 2 is within 30 kilometres of location 1\n'
-
-    @patch('sys.stdout', new_callable=StringIO)
-    def test_range_non_verbose(self, stdout):
+    def test_range_non_verbose(self, distance, result, stdout):
         locations = NumberedPoints(['52.015;-0.221', '52.168;0.040'])
         locations.verbose = False
-        locations.range(30)
-        expect(stdout.getvalue()) == 'True\n'
+        locations.range(distance)
+        expect(stdout.getvalue()) == result + '\n'
 
     @patch('sys.stdout', new_callable=StringIO)
     def test_destination(self, stdout):

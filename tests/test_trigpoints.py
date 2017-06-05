@@ -20,6 +20,7 @@
 from unittest import TestCase
 
 from expecter import expect
+from nose2.tools import params
 
 from upoints.trigpoints import (Trigpoint, Trigpoints)
 

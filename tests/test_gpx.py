@@ -20,6 +20,7 @@
 from unittest import TestCase
 
 from expecter import expect
+from nose2.tools import params
 
 from upoints.gpx import (_GpxElem, _GpxMeta, Routepoint, Routepoints,
                          Trackpoint, Trackpoints, Waypoint, Waypoints, etree)
@@ -30,41 +31,46 @@ from tests.utils import xml_compare
 
 
 class Test_GpxElem(TestCase):
-    def test___repr__(self):
-        expect(repr(_GpxElem(52, 0))) == \
-            '_GpxElem(52.0, 0.0, None, None, None, None)'
-        expect(repr(_GpxElem(52, 0, None))) == \
-            '_GpxElem(52.0, 0.0, None, None, None, None)'
-        expect(_GpxElem(52, 0, 'name', 'desc')) == \
-            "_GpxElem(52.0, 0.0, 'name', 'desc', None, None)"
+    @params(
+        ((52, 0), '_GpxElem(52.0, 0.0, None, None, None, None)'),
+        ((52, 0, None), '_GpxElem(52.0, 0.0, None, None, None, None)'),
+        ((52, 0, 'name', 'desc'),
+         "_GpxElem(52.0, 0.0, 'name', 'desc', None, None)"),
+    )
+    def test___repr__(self, args, result):
+        expect(repr(_GpxElem(*args))) == result
 
-    def test___str__(self):
-        expect(str(_GpxElem(52, 0))) == """52°00'00"N, 000°00'00"E"""
-        expect(str(_GpxElem(52, 0, 'name', 'desc', 40))) == \
-            """name (52°00'00"N, 000°00'00"E @ 40m) [desc]"""
-        expect(str(_GpxElem(52, 0, 'name', 'desc', 40,
-                   utils.Timestamp(2008, 7, 25)))) == \
-            ("""name (52°00'00"N, 000°00'00"E @ 40m on """
-             '2008-07-25T00:00:00+00:00) [desc]')
+    @params(
+        ((52, 0), """52°00'00"N, 000°00'00"E"""),
+        ((52, 0, 'name', 'desc', 40),
+         """name (52°00'00"N, 000°00'00"E @ 40m) [desc]"""),
+        ((52, 0, 'name', 'desc', 40, utils.Timestamp(2008, 7, 25)),
+         """name (52°00'00"N, 000°00'00"E @ 40m on """
+         '2008-07-25T00:00:00+00:00) [desc]')
+    )
+    def test___str__(self, args, result):
+        expect(str(_GpxElem(*args))) == result
 
 
 class Test_GpxMeta(TestCase):
-    def test_togpx(self):
+    @params(
+        (None,
+         b'<gpx:metadata xmlns:gpx="http://www.topografix.com/GPX/1/1">'
+         b'<gpx:time>2008-06-03T16:12:43+0000</gpx:time>'
+         b'</gpx:metadata>'),
+        ({'minlat': 52, 'maxlat': 54, 'minlon': -2, 'maxlon': 1},
+         b'<gpx:metadata xmlns:gpx="http://www.topografix.com/GPX/1/1">'
+         b'<gpx:time>2008-06-03T16:12:43+0000</gpx:time><gpx:bounds maxlat="54" maxlon="1" minlat="52" minlon="-2"/>'
+         b'</gpx:metadata>'),
+        ([point.Point(52.015, -0.221), point.Point(52.167, 0.390)],
+         b'<gpx:metadata xmlns:gpx="http://www.topografix.com/GPX/1/1">'
+         b'<gpx:time>2008-06-03T16:12:43+0000</gpx:time><gpx:bounds maxlat="52.167" maxlon="0.39" minlat="52.015" minlon="-0.221"/>'
+         b'</gpx:metadata>'),
+    )
+    def test_togpx(self, bounds, result):
         meta = _GpxMeta(time=(2008, 6, 3, 16, 12, 43, 1, 155, 0))
-        expect(etree.tostring(meta.togpx())) == \
-            b'<gpx:metadata xmlns:gpx="http://www.topografix.com/GPX/1/1">' \
-            b'<gpx:time>2008-06-03T16:12:43+0000</gpx:time>' \
-            b'</gpx:metadata>'
-        meta.bounds = {'minlat': 52, 'maxlat': 54, 'minlon': -2, 'maxlon': 1}
-        expect(etree.tostring(meta.togpx())) == \
-            b'<gpx:metadata xmlns:gpx="http://www.topografix.com/GPX/1/1">' \
-            b'<gpx:time>2008-06-03T16:12:43+0000</gpx:time><gpx:bounds maxlat="54" maxlon="1" minlat="52" minlon="-2"/>' \
-            b'</gpx:metadata>'
-        meta.bounds = [point.Point(52.015, -0.221), point.Point(52.167, 0.390)]
-        expect(etree.tostring(meta.togpx())) == \
-            b'<gpx:metadata xmlns:gpx="http://www.topografix.com/GPX/1/1">' \
-            b'<gpx:time>2008-06-03T16:12:43+0000</gpx:time><gpx:bounds maxlat="52.167" maxlon="0.39" minlat="52.015" minlon="-0.221"/>' \
-            b'</gpx:metadata>'
+        meta.bounds = bounds
+        expect(etree.tostring(meta.togpx())) == result
 
 
 class TestWaypoint(TestCase):
@@ -94,13 +100,14 @@ class TestWaypoints(TestCase):
 
 
 class TestTrackpoint(TestCase):
-    def test___repr__(self):
-        expect(Trackpoint(52, 0)) == \
-            'Trackpoint(52.0, 0.0, None, None, None, None)'
-        expect(Trackpoint(52, 0, None)) == \
-            'Trackpoint(52.0, 0.0, None, None, None, None)'
-        expect(Trackpoint(52, 0, 'name', 'desc')) == \
-            "Trackpoint(52.0, 0.0, 'name', 'desc', None, None)"
+    @params(
+        ((52, 0), 'Trackpoint(52.0, 0.0, None, None, None, None)'),
+        ((52, 0, None), 'Trackpoint(52.0, 0.0, None, None, None, None)'),
+        ((52, 0, 'name', 'desc'),
+         "Trackpoint(52.0, 0.0, 'name', 'desc', None, None)"),
+    )
+    def test___repr__(self, args, result):
+        expect(Trackpoint(*args)) == result
 
 
 class TestTrackpoints(TestCase):
@@ -121,13 +128,14 @@ class TestTrackpoints(TestCase):
 
 
 class TestRoutepoint(TestCase):
-    def test___repr__(self):
-        expect(Routepoint(52, 0)) == \
-            'Routepoint(52.0, 0.0, None, None, None, None)'
-        expect(Routepoint(52, 0, None)) == \
-            'Routepoint(52.0, 0.0, None, None, None, None)'
-        expect(Routepoint(52, 0, 'name', 'desc')) == \
-            "Routepoint(52.0, 0.0, 'name', 'desc', None, None)"
+    @params(
+        ((52, 0), 'Routepoint(52.0, 0.0, None, None, None, None)'),
+        ((52, 0, None), 'Routepoint(52.0, 0.0, None, None, None, None)'),
+        ((52, 0, 'name', 'desc'),
+         "Routepoint(52.0, 0.0, 'name', 'desc', None, None)"),
+    )
+    def test___repr__(self, args, result):
+        expect(Routepoint(*args)) == result
 
 
 class TestRoutepoints(TestCase):
