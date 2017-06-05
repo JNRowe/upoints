@@ -16,8 +16,21 @@ entries.  The file is a simple flat Unicode database, with records
 separated by ``//``, a format that would be as well suited to processing
 with awk_ as it would with Python_.
 
-.. literalinclude:: ../tests/data/cities.dat
-   :lines: 155-181
+::
+
+    ID          : 315
+    Type        : City
+    Population  :
+    Size        :
+    Name        : Cambridge
+    Country    : UK
+    Region     : England
+    Location    : Earth
+    Longitude  : 0.1
+    Latitude   : 52.25
+    Elevation  :
+    Date        : 19961207
+    Entered-By  : Rob.Hooft@EMBL-Heidelberg.DE
 
 You don't need to hand process the data though, I've added
 :mod:`~upoints.cities` to the ``upoints`` tarball that takes care of
