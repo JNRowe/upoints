@@ -32,7 +32,8 @@ def calc_checksum(sentence):
     NMEA checksums are a simple XOR of all the characters in the sentence
     between the leading "$" symbol, and the "*" checksum separator.
 
-    :param str sentence: NMEA 0183 formatted sentence
+    Args:
+        sentence (str): NMEA 0183 formatted sentence
     """
     if sentence.startswith('$'):
         sentence = sentence[1:]
@@ -43,9 +44,11 @@ def calc_checksum(sentence):
 def nmea_latitude(latitude):
     """Generate a NMEA-formatted latitude pair.
 
-    :param float latitude: Latitude to convert
-    :rtype: ``tuple``
-    :return: NMEA-formatted latitude values
+    Args:
+        latitude (float): Latitude to convert
+
+    Returns:
+        tuple: NMEA-formatted latitude values
     """
     return ('%02i%07.4f' % utils.to_dms(abs(latitude), 'dm'),
             'N' if latitude >= 0 else 'S')
@@ -54,9 +57,11 @@ def nmea_latitude(latitude):
 def nmea_longitude(longitude):
     """Generate a NMEA-formatted longitude pair.
 
-    :param float longitude: Longitude to convert
-    :rtype: ``tuple``
-    :return: NMEA-formatted longitude values
+    Args:
+        longitude (float): Longitude to convert
+
+    Returns:
+        tuple: NMEA-formatted longitude values
     """
     return ('%03i%07.4f' % utils.to_dms(abs(longitude), 'dm'),
             'E' if longitude >= 0 else 'W')
@@ -65,10 +70,12 @@ def nmea_longitude(longitude):
 def parse_latitude(latitude, hemisphere):
     """Parse a NMEA-formatted latitude pair.
 
-    :param str latitude: Latitude in DDMM.MMMM
-    :param str hemisphere: North or South
-    :rtype: ``float``
-    :return: Decimal representation of latitude
+    Args:
+        latitude (str): Latitude in DDMM.MMMM
+        hemisphere (str): North or South
+
+    Returns:
+        float: Decimal representation of latitude
     """
     latitude = int(latitude[:2]) + float(latitude[2:]) / 60
     if hemisphere == 'S':
@@ -81,10 +88,12 @@ def parse_latitude(latitude, hemisphere):
 def parse_longitude(longitude, hemisphere):
     """Parse a NMEA-formatted longitude pair.
 
-    :param str longitude: Longitude in DDDMM.MMMM
-    :param str hemisphere: East or West
-    :rtype: ``float``
-    :return: Decimal representation of longitude
+    Args:
+        longitude (str): Longitude in DDDMM.MMMM
+        hemisphere (str): East or West
+
+    Returns:
+        float: Decimal representation of longitude
     """
     longitude = int(longitude[:3]) + float(longitude[3:]) / 60
     if hemisphere == 'W':
@@ -113,11 +122,12 @@ class LoranPosition(point.Point):
     def __init__(self, latitude, longitude, time, status, mode=None):
         """Initialise a new ``LoranPosition`` object.
 
-        :param float latitude: Fix's latitude
-        :param float longitude: Fix's longitude
-        :param datetime.time time: Time the fix was taken
-        :param bool status: Whether the data is active
-        :param str mode: Type of reading
+        Args:
+            latitude (float): Fix's latitude
+            longitude (float): Fix's longitude
+            time (datetime.time): Time the fix was taken
+            status (bool): Whether the data is active
+            mode (str): Type of reading
         """
         super(LoranPosition, self).__init__(latitude, longitude)
         self.time = time
@@ -127,9 +137,11 @@ class LoranPosition(point.Point):
     def __str__(self, talker='GP'):
         """Pretty printed position string.
 
-        :param str talker: Talker ID
-        :rtype: ``str``
-        :return: Human readable string representation of ``Position`` object
+        Args:
+            talker (str): Talker ID
+
+        Returns:
+            str: Human readable string representation of ``Position`` object
         """
         if not len(talker) == 2:
             raise ValueError('Talker ID must be two characters %r' % talker)
@@ -147,8 +159,8 @@ class LoranPosition(point.Point):
     def mode_string(self):
         """Return a string version of the reading mode information.
 
-        :rtype: ``str``
-        :return: Quality information as string
+        Returns:
+            str: Quality information as string
         """
         return MODE_INDICATOR.get(self.mode, 'Unknown')
 
@@ -156,9 +168,11 @@ class LoranPosition(point.Point):
     def parse_elements(elements):
         """Parse position data elements.
 
-        :param list elements: Data values for fix
-        :rtype: ``Fix``
-        :return: Fix object representing data
+        Args:
+            elements (list): Data values for fix
+
+        Returns:
+            Fix: Fix object representing data
         """
         if not len(elements) in (6, 7):
             raise ValueError('Invalid GLL position data')
@@ -188,15 +202,16 @@ class Position(point.Point):
                  variation, mode=None):
         """Initialise a new ``Position`` object.
 
-        :param datetime.time time: Time the fix was taken
-        :param bool status: Whether the data is active
-        :param float latitude: Fix's latitude
-        :param float longitude: Fix's longitude
-        :param float speed: Ground speed
-        :param float track: Track angle
-        :param datetime.date date: Date when position was taken
-        :param float variation: Magnetic variation
-        :param str mode: Type of reading
+        Args:
+            time (datetime.time): Time the fix was taken
+            status (bool): Whether the data is active
+            latitude (float): Fix's latitude
+            longitude (float): Fix's longitude
+            speed (float): Ground speed
+            track (float): Track angle
+            date (datetime.date): Date when position was taken
+            variation (float): Magnetic variation
+            mode (str): Type of reading
         """
         super(Position, self).__init__(latitude, longitude)
         self.time = time
@@ -210,8 +225,8 @@ class Position(point.Point):
     def __str__(self):
         """Pretty printed position string.
 
-        :rtype: ``str``
-        :return: Human readable string representation of ``Position`` object
+        Returns:
+            str: Human readable string representation of ``Position`` object
         """
         data = ['GPRMC']
         data.append(self.time.strftime('%H%M%S'))
@@ -234,8 +249,8 @@ class Position(point.Point):
     def mode_string(self):
         """Return a string version of the reading mode information.
 
-        :rtype: ``str``
-        :return: Quality information as string
+        Returns:
+            str: Quality information as string
         """
         return MODE_INDICATOR.get(self.mode, 'Unknown')
 
@@ -243,9 +258,11 @@ class Position(point.Point):
     def parse_elements(elements):
         """Parse position data elements.
 
-        :param list elements: Data values for position
-        :rtype: ``Position``
-        :return: Position object representing data
+        Args:
+            elements (list): Data values for position
+
+        Returns:
+            Position: Position object representing data
         """
         if not len(elements) in (11, 12):
             raise ValueError('Invalid RMC position data')
@@ -297,17 +314,18 @@ class Fix(point.Point):
                  dgps_station=None, mode=None):
         """Initialise a new ``Fix`` object.
 
-        :param datetime.time time: Time the fix was taken
-        :param float latitude: Fix's latitude
-        :param float longitude: Fix's longitude
-        :param int quality: Mode under which the fix was taken
-        :param int satellites: Number of tracked satellites
-        :param float dilution: Horizontal dilution at reported position
-        :param float altitude: Altitude above MSL
-        :param float geoid_delta: Height of geoid's MSL above WGS84 ellipsoid
-        :param float dgps_delta: Number of seconds since last DGPS sync
-        :param int dgps_station: Identifier of the last synced DGPS station
-        :param str mode: Type of reading
+        Args:
+            time (datetime.time): Time the fix was taken
+            latitude (float): Fix's latitude
+            longitude (float): Fix's longitude
+            quality (int): Mode under which the fix was taken
+            satellites (int): Number of tracked satellites
+            dilution (float): Horizontal dilution at reported position
+            altitude (float): Altitude above MSL
+            geoid_delta (float): Height of geoid's MSL above WGS84 ellipsoid
+            dgps_delta (float): Number of seconds since last DGPS sync
+            dgps_station (int): Identifier of the last synced DGPS station
+            mode (str): Type of reading
         """
         super(Fix, self).__init__(latitude, longitude)
         self.time = time
@@ -323,8 +341,8 @@ class Fix(point.Point):
     def __str__(self):
         """Pretty printed location string.
 
-        :rtype: ``str``
-        :return: Human readable string representation of ``Fix`` object
+        Returns:
+            str: Human readable string representation of ``Fix`` object
         """
         data = ['GPGGA']
         data.append(self.time.strftime('%H%M%S'))
@@ -345,8 +363,8 @@ class Fix(point.Point):
     def quality_string(self):
         """Return a string version of the quality information.
 
-        :rtype: ``str``
-        :return: Quality information as string
+        Returns::
+            str: Quality information as string
         """
         return self.fix_quality[self.quality]
 
@@ -354,9 +372,11 @@ class Fix(point.Point):
     def parse_elements(elements):
         """Parse essential fix's data elements.
 
-        :param list elements: Data values for fix
-        :rtype: ``Fix``
-        :return: Fix object representing data
+        Args:
+            elements (list): Data values for fix
+
+        Returns:
+            Fix: Fix object representing data
         """
         if not len(elements) in (14, 15):
             raise ValueError('Invalid GGA fix data')
@@ -407,9 +427,10 @@ class Waypoint(point.Point):
     def __init__(self, latitude, longitude, name):
         """Initialise a new ``Waypoint`` object.
 
-        :param float latitude: Waypoint's latitude
-        :param float longitude: Waypoint's longitude
-        :param str name: Comment for waypoint
+        Args:
+            latitude (float): Waypoint's latitude
+            longitude (float): Waypoint's longitude
+            name (str): Comment for waypoint
         """
         super(Waypoint, self).__init__(latitude, longitude)
         self.name = name.upper()
@@ -417,8 +438,8 @@ class Waypoint(point.Point):
     def __str__(self):
         """Pretty printed location string.
 
-        :rtype: ``str``
-        :return: Human readable string representation of ``Waypoint`` object
+        Returns:
+            str: Human readable string representation of ``Waypoint`` object
         """
         data = ['GPWPL']
         data.extend(nmea_latitude(self.latitude))
@@ -435,9 +456,11 @@ class Waypoint(point.Point):
     def parse_elements(elements):
         """Parse waypoint data elements.
 
-        :param list elements: Data values for fix
-        :rtype: ``Waypoint``
-        :return: ``Waypoint`` object representing data
+        Args:
+            elements (list): Data values for fix
+
+        Returns:
+            nmea.Waypoint: Object representing data
         """
         if not len(elements) == 5:
             raise ValueError('Invalid WPL waypoint data')
@@ -502,18 +525,20 @@ class Locations(point.Points):
              Position(datetime.time(14, 21), True, 52.015, -3.27766666667,
                       123142.7, 188.1, datetime.date(2007, 11, 19), 5.0, 'A')]
 
-        .. note::
-           The standard is quite specific in that sentences *must* be less than
-           82 bytes, while it would be nice to add yet another validity check
-           it isn't all that uncommon for devices to break this requirement in
-           their "extensions" to the standard.
+        Note:
+            The standard is quite specific in that sentences *must* be less
+            than 82 bytes, while it would be nice to add yet another validity
+            check it isn't all that uncommon for devices to break this
+            requirement in their "extensions" to the standard.
+
         .. todo:: Add optional check for message length, on by default
 
-        :type gpsdata_file: ``file``, ``list`` or ``str``
-        :param gpsdata_file: NMEA data to read
-        :param bool checksum: Whether checksums should be tested
-        :rtype: ``list``
-        :return: Series of locations taken from the data
+        Args:
+            gpsdata_file (iter): NMEA data to read
+            checksum (bool): Whether checksums should be tested
+
+        Returns:
+            list: Series of locations taken from the data
 
         .. _the official documentation: http://en.wikipedia.org/wiki/NMEA_0183
         """

@@ -1,13 +1,22 @@
 ``upoints`` - Modules for working with points on Earth
 ======================================================
 
+.. image:: https://secure.travis-ci.org/JNRowe/upoints.png?branch=master
+   :target: http://travis-ci.org/JNRowe/upoints
+   :alt: Test state on master
+
+.. image:: https://pypip.in/v/upoints/badge.png
+   :target: https://pypi.python.org/pypi/upoints/
+   :alt: Current PyPI release
+
+.. image:: https://pypip.in/d/upoints/badge.png
+   :target: https://pypi.python.org/pypi/upoints/
+   :alt: Number of downloads from PyPI
+
 .. warning::
 
    At this point ``upoints`` only exists to assist the users who have been using
    it for years, I *absolutely* do **not** recommend its use to new users.
-
-Introduction
-------------
 
 ``upoints`` is a collection of `GPL v3`_ licensed modules for working with
 points on Earth, or other near spherical objects.  It allows you to calculate
@@ -27,17 +36,18 @@ aaargh_ and lxml_, and as such should run with Python 2.6 or newer [#]_.  If
 ``upoints`` doesn't work with the version of Python you have installed, drop me
 a mail_ and I'll endeavour to fix it.
 
-The modules have been tested on many UNIX-like systems, including Linux and OS
-X, but it should work fine on other systems too.  The modules and scripts
-contain a large collection of tests that can be checked with nose2_.
+The module has been tested on many UNIX-like systems, including Linux and OS X,
+but it should work fine on other systems too.
+
+To run the tests you'll need nose2_.  Once you have nose2_ installed you can run
+the tests with the following commands:
+
+.. code:: console
+
+    $ nose2 -v tests
 
 .. [#] If you still use Python v2.5 only small changes are required, for example
        to the property definitions.
-
-.. [#] Some tests may fail due to rounding errors depending on the system the
-       tests are being run on, but such instances should be obvious even to the
-       casual user and some effort has been put in to reduce the likelihood of
-       such failures.
 
 Example
 -------
@@ -62,16 +72,29 @@ more examples for ``trigpoints.py`` is online in `Trigpointing and point.py`_.
 Usage examples for ``cities.py`` is available in `Cities and cities.py`_.  And
 finally, `Pythons on a plane`_ contains information on ``weather_stations.py``.
 
-Thanks
-------
+Contributors
+------------
 
-The following people have submitted patches, testing and feedback:
+I'd like to thank the following people who have contributed to ``upoints``.
+
+Patches
+'''''''
 
 * Cédric Dufour - ``edist.py``'s CSV import, and flight plan output
 * Thomas Traber - GPX support enhancements, Points filtering, and some cool
   usage scenarios
+
+Bug reports
+'''''''''''
+
+Ideas
+'''''
+
 * Kelly Turner - Xearth_ import idea, and copious testing
-* Simon Woods - Testing
+* Simon Woods
+
+If I've forgotten to include your name I wholeheartedly apologise.  Just drop me
+a mail_ and I'll update the list!
 
 API Stability
 -------------
@@ -111,8 +134,11 @@ Greenwich as positive for example.
 Bugs
 ----
 
-If you find a bug don't hesitate to drop me a mail_ preferably including
-a minimal testcase, or even better a patch!
+If you find any problems, bugs or just have a question about this package either
+file an issue_ or drop me a mail_.
+
+If you've found a bug please attempt to include a minimal testcase so I can
+reproduce the problem, or even better a patch!
 
 .. _GPL v3: http://www.gnu.org/licenses/
 .. _xearth: http://hewgill.com/xearth/original/
@@ -129,3 +155,4 @@ a minimal testcase, or even better a patch!
 .. _lxml: http://codespeak.net/lxml/
 .. _Sphinx: http://sphinx.pocoo.org/
 .. _nose2: https://crate.io/packages/nose2/
+.. _issue: https://github.com/JNRowe/upoints/issues

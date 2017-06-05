@@ -40,17 +40,18 @@ class Cell(point.Point):
                  crange, samples, created, updated):
         """Initialise a new ``Cell`` object.
 
-        :param int ident: OpenCellID database identifier
-        :param float latitude: Cell's latitude
-        :param float longitude: Cell's longitude
-        :param int mcc: Cell's country code
-        :param int mnc: Cell's network code
-        :param int lac: Cell's local area code
-        :param int cellid: Cell's identifier
-        :param int crange: Cell's range
-        :param int samples: Number of samples for the cell
-        :param datetime.datetime created: Date the cell was first entered
-        :param datetime.datetime updated: Date of the last update
+        Args:
+            ident (int): OpenCellID database identifier
+            latitude (float): Cell's latitude
+            longitude (float): Cell's longitude
+            mcc (int): Cell's country code
+            mnc (int): Cell's network code
+            lac (int): Cell's local area code
+            cellid (int): Cell's identifier
+            crange (int): Cell's range
+            samples (int): Number of samples for the cell
+            created (datetime.datetime): Date the cell was first entered
+            updated (datetime.datetime): Date of the last update
         """
         super(Cell, self).__init__(latitude, longitude)
         self.ident = ident
@@ -66,12 +67,11 @@ class Cell(point.Point):
     def __str__(self):
         """OpenCellID.org-style location string.
 
-        .. seealso::
+        See also:
+           point.Point
 
-           :class:`point.Point`
-
-        :rtype: ``str``
-        :return: OpenCellID.org-style string representation of ``Cell`` object
+        Returns:
+            str: OpenCellID.org-style string representation of ``Cell`` object
         """
         return '%i,%.13f,%.13f,%i,%i,%i,%i,%i,%i,%s,%s' \
             % (self.ident, self.latitude, self.longitude, self.mcc, self.mnc,
@@ -96,8 +96,8 @@ class Cells(point.KeyedPoints):
     def __str__(self):
         """``Cells`` objects rendered as export from OpenCellID.org.
 
-        :rtype: ``str``
-        :return: OpenCellID.org formatted output
+        Returns:
+            str: OpenCellID.org formatted output
         """
         return '\n'.join(map(str, sorted(self.values(),
                                          key=attrgetter('ident'))))
@@ -131,10 +131,11 @@ class Cells(point.KeyedPoints):
                          4068, 0, 1, datetime.datetime(2008, 4, 5, 21, 32, 59),
                          datetime.datetime(2008, 4, 5, 21, 32, 59))}
 
-        :type cells_file: ``file``, ``list`` or ``str``
-        :param cells_file: Cell data to read
-        :rtype: ``dict``
-        :return: Cell data with their associated database identifier
+        Args:
+            cells_file (iter): Cell data to read
+
+        Returns:
+            dict: Cell data with their associated database identifier
 
         .. _OpenCellID.org: http://opencellid.org/
         """

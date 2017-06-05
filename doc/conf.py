@@ -32,7 +32,8 @@ import upoints  # NOQA
 
 extensions = \
     ['sphinx.ext.%s' % ext for ext in ['autodoc', 'coverage', 'doctest',
-                                       'intersphinx', 'todo', 'viewcode']] \
+                                       'intersphinx', 'napoleon', 'todo',
+                                       'viewcode']] \
     + ['sphinxcontrib.%s' % ext for ext in []]
 
 # Only activate spelling, if it is installed.  It is not required in the
@@ -55,9 +56,6 @@ version = '.'.join(map(str, upoints._version.tuple[:2]))
 release = upoints._version.dotted
 
 pygments_style = 'sphinx'
-html_theme_options = {
-    'externalrefs': True,
-}
 try:
     html_last_updated_fmt = check_output(['git', 'log',
                                           "--pretty=format:'%ad [%h]'",
@@ -69,15 +67,22 @@ man_pages = [
     ('edist.1', 'edist', u'upoints Documentation', [u'James Rowe'], 1)
 ]
 
-todo_include_todos = True
-
 # Autodoc extension settings
 autoclass_content = 'both'
 autodoc_default_flags = ['members', 'show-inheritance']
 
-intersphinx_mapping = {
-    'python': ('http://docs.python.org/', os.getenv('SPHINX_PYTHON_OBJECTS')),
-}
+# intersphinx extension settings
+intersphinx_mapping = {k: (v, os.getenv('SPHINX_%s_OBJECTS' % k.upper()))
+                       for k, v in {
+                           'python': 'http://docs.python.org/',
+}.items()}
 
+# spelling extension settings
 spelling_lang = 'en_GB'
 spelling_word_list_filename = 'wordlist.txt'
+
+# napoleon extension settings
+napoleon_numpy_docstring = False
+
+# todo extension settings
+todo_include_todos = True

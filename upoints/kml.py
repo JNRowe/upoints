@@ -41,11 +41,12 @@ class Placemark(trigpoints.Trigpoint):
                  description=None):
         """Initialise a new ``Placemark`` object.
 
-        :param float latitude: Placemarks's latitude
-        :param float longitude: Placemark's longitude
-        :param float altitude: Placemark's altitude
-        :param str name: Name for placemark
-        :param str description: Placemark's description
+        Args:
+            latitude (float): Placemarks's latitude
+            longitude (float): Placemark's longitude
+            altitude (float): Placemark's altitude
+            name (str): Name for placemark
+            description (str): Placemark's description
         """
         super(Placemark, self).__init__(latitude, longitude, altitude, name)
 
@@ -56,8 +57,8 @@ class Placemark(trigpoints.Trigpoint):
     def __str__(self):
         """Pretty printed location string.
 
-        :rtype: ``str``
-        :return: Human readable string representation of ``Placemark`` object
+        Returns:
+            str: Human readable string representation of ``Placemark`` object
         """
         location = super(Placemark, self).__format__('dms')
         if self.description:
@@ -68,8 +69,8 @@ class Placemark(trigpoints.Trigpoint):
     def tokml(self):
         """Generate a KML Placemark element subtree.
 
-        :rtype: :class:`etree.Element`
-        :return: KML Placemark element
+        Returns:
+            etree.Element: KML Placemark element
         """
         placemark = create_elem('Placemark')
         if self.name:
@@ -139,10 +140,11 @@ class Placemarks(point.KeyedPoints):
             {"Home": Placemark(52.015, -0.221, 60),
              "Cambridge": Placemark(52.167, 0.390, None)}
 
-        :type kml_file: ``file``, ``list`` or ``str``
-        :param kml_file: KML data to read
-        :rtype: ``dict``
-        :return: Named locations with optional comments
+        Args:
+            kml_file (iter): KML data to read
+
+        Returns:
+            dict: Named locations with optional comments
 
         .. _KML Reference:
            http://code.google.com/apis/kml/documentation/kmlreference.html
@@ -175,8 +177,8 @@ class Placemarks(point.KeyedPoints):
     def export_kml_file(self):
         """Generate KML element tree from ``Placemarks``.
 
-        :rtype: :class:`etree.ElementTree`
-        :return: KML element tree depicting ``Placemarks``
+        Returns:
+            etree.ElementTree: KML element tree depicting ``Placemarks``
         """
         kml = create_elem('kml')
         kml.Document = create_elem('Document')

@@ -36,9 +36,11 @@ create_elem = utils.element_creator()
 def _parse_flags(element):
     """Parse OSM XML element for generic data.
 
-    :param etree.Element element: Element to parse
-    :rtype: ``tuple``
-    :return: Generic OSM data for object instantiation
+    Args:
+        element (etree.Element): Element to parse
+
+    Returns:
+        tuple: Generic OSM data for object instantiation
     """
     visible = True if element.get('visible') else False
     user = element.get('user')
@@ -60,9 +62,11 @@ def _parse_flags(element):
 def _get_flags(osm_obj):
     """Create element independent flags output.
 
-    :param Node osm_obj: Object with OSM-style metadata
-    :rtype: ``list``
-    :return: Human readable flags output
+    Args:
+        osm_obj (Node): Object with OSM-style metadata
+
+    Returns:
+        list: Human readable flags output
     """
     flags = []
     if osm_obj.visible:
@@ -91,11 +95,13 @@ def get_area_url(location, distance):
     is simply because we are applying a flat transformation to a spherical
     object, however for all general cases the difference will be negligible.
 
-    :param Point location: Centre of the region
-    :param int distance: Boundary distance in kilometres
-    :rtype: ``str``
-    :return: URL that can be used to fetch the OSM data within ``distance`` of
-        ``location``
+    Args:
+        location (Point): Centre of the region
+        distance (int): Boundary distance in kilometres
+
+    Returns:
+        str: URL that can be used to fetch the OSM data within ``distance`` of
+            ``location``
     """
     locations = [location.destination(i, distance) for i in range(0, 360, 90)]
     latitudes = list(map(attrgetter('latitude'), locations))
@@ -119,13 +125,14 @@ class Node(point.Point):
                  timestamp=None, tags=None):
         """Initialise a new ``Node`` object.
 
-        :param int ident: Unique identifier for the node
-        :param float latitude: Nodes's latitude
-        :param float longitude: Node's longitude
-        :param bool visible: Whether the node is visible
-        :param str user: User who logged the node
-        :param str timestamp: The date and time a node was logged
-        :param dict tags: Tags associated with the node
+        Args:
+            ident (int): Unique identifier for the node
+            latitude (float): Nodes's latitude
+            longitude (float): Node's longitude
+            visible (bool): Whether the node is visible
+            user (str): User who logged the node
+            timestamp (str): The date and time a node was logged
+            tags (dict): Tags associated with the node
         """
         super(Node, self).__init__(latitude, longitude)
 
@@ -138,8 +145,8 @@ class Node(point.Point):
     def __str__(self):
         """Pretty printed location string.
 
-        :rtype: ``str``
-        :return: Human readable string representation of ``Node`` object
+        Returns:
+            str: Human readable string representation of ``Node`` object
         """
         text = ['Node %i (%s)' % (self.ident,
                                   super(Node, self).__format__('dms')), ]
@@ -152,8 +159,8 @@ class Node(point.Point):
     def toosm(self):
         """Generate a OSM node element subtree.
 
-        :rtype: :class:`etree.Element`
-        :return: OSM node element
+        Returns:
+            etree.Element: OSM node element
         """
         node = create_elem('node', {'id': str(self.ident),
                                     'lat': str(self.latitude),
@@ -172,19 +179,23 @@ class Node(point.Point):
     def get_area_url(self, distance):
         """Generate URL for downloading OSM data within a region.
 
-        :param int distance: Boundary distance in kilometres
-        :rtype: ``str``
-        :return: URL that can be used to fetch the OSM data within ``distance``
-            of ``location``
+        Args:
+            distance (int): Boundary distance in kilometres
+
+        Returns:
+            str: URL that can be used to fetch the OSM data within ``distance``
+                of ``location``
         """
         return get_area_url(self, distance)
 
     def fetch_area_osm(self, distance):
         """Fetch, and import, an OSM region.
 
-        :param int distance: Boundary distance in kilometres
-        :rtype: :class:`Osm`
-        :return: All the data OSM has on a region imported for use
+        Args:
+            distance (int): Boundary distance in kilometres
+
+        Returns:
+            Osm: All the data OSM has on a region imported for use
         """
         return Osm(urlopen(get_area_url(self, distance)))
 
@@ -192,9 +203,11 @@ class Node(point.Point):
     def parse_elem(element):
         """Parse a OSM node XML element.
 
-        :param etree.Element element: XML Element to parse
-        :rtype: ``Node``
-        :return: ``Node`` object representing parsed element
+        Args:
+            element (etree.Element): XML Element to parse
+
+        Returns:
+            Node: Object representing parsed element
         """
         ident = int(element.get('id'))
         latitude = element.get('lat')
@@ -218,13 +231,13 @@ class Way(point.Points):
                  tags=None):
         """Initialise a new ``Way`` object.
 
-        :param int ident: Unique identifier for the way
-        :type nodes: ``list`` of ``str`` objects
-        :param nodes: Identifiers of the nodes that form this way
-        :param bool visible: Whether the way is visible
-        :param str user: User who logged the way
-        :param str timestamp: The date and time a way was logged
-        :param dict tags: Tags associated with the way
+        Args:
+            ident (int): Unique identifier for the way
+            nodes (list of str): Identifiers of the nodes that form this way
+            visible (bool): Whether the way is visible
+            user (str): User who logged the way
+            timestamp (str): The date and time a way was logged
+            tags (dict): Tags associated with the way
         """
         super(Way, self).__init__()
 
@@ -239,17 +252,19 @@ class Way(point.Points):
     def __repr__(self):
         """Self-documenting string representation.
 
-        :rtype: ``str``
-        :return: String to recreate ``Way`` object
+        Returns::
+            str: String to recreate ``Way`` object
         """
         return utils.repr_assist(self, {'nodes': self[:]})
 
     def __str__(self, nodes=False):
         """Pretty printed location string.
 
-        :param list nodes: Nodes to be used in expanding references
-        :rtype: ``str``
-        :return: Human readable string representation of ``Way`` object
+        Args:
+            nodes (list): Nodes to be used in expanding references
+
+        Returns:
+            str: Human readable string representation of ``Way`` object
         """
         text = ['Way %i' % (self.ident), ]
         if not nodes:
@@ -267,8 +282,8 @@ class Way(point.Points):
     def toosm(self):
         """Generate a OSM way element subtree.
 
-        :rtype: :class:`etree.Element`
-        :return: OSM way element
+        Returns:
+            etree.Element: OSM way element
         """
         way = create_elem('way', {'id': str(self.ident)})
         way.set('visible', 'true' if self.visible else 'false')
@@ -289,9 +304,11 @@ class Way(point.Points):
     def parse_elem(element):
         """Parse a OSM way XML element.
 
-        :param etree.Element element: XML Element to parse
-        :rtype: ``Way``
-        :return: `Way` object representing parsed element
+        Args:
+            element (etree.Element): XML Element to parse
+
+        Returns:
+            Way: `Way` object representing parsed element
         """
         ident = int(element.get('id'))
         flags = _parse_flags(element)
@@ -359,10 +376,11 @@ class Osm(point.Points):
                     {"ref": "My Way", "highway": "primary"})],
                 generator="upoints/0.9.0")
 
-        :type osm_file: ``file``, ``list`` or ``str``
-        :param osm_file: OpenStreetMap data to read
-        :rtype: ``Osm``
-        :return: Nodes and ways from the data
+        Args:
+            osm_file (iter): OpenStreetMap data to read
+
+        Returns:
+            Osm: Nodes and ways from the data
 
         .. _OpenStreetMap 0.5 DTD:
             http://wiki.openstreetmap.org/wiki/OSM_Protocol_Version_0.5/DTD

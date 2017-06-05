@@ -35,10 +35,11 @@ class Zone(point.Point):
     def __init__(self, location, country, zone, comments=None):
         """Initialise a new ``Zone`` object.
 
-        :param str location: Primary location in ISO 6709 format
-        :param str country: Location's ISO 3166 country code
-        :param str zone: Location's zone name as used in zoneinfo database
-        :param list comments: Location's alternate names
+        Args:
+            location (str): Primary location in ISO 6709 format
+            country (str): Location's ISO 3166 country code
+            zone (str): Location's zone name as used in zoneinfo database
+            comments (list): Location's alternate names
         """
         latitude, longitude = utils.from_iso6709(location + '/')[:2]
         super(Zone, self).__init__(latitude, longitude)
@@ -50,8 +51,8 @@ class Zone(point.Point):
     def __repr__(self):
         """Self-documenting string representation.
 
-        :rtype: ``str``
-        :return: String to recreate ``Zone`` object
+        Returns:
+            str: String to recreate ``Zone`` object
         """
         location = utils.to_iso6709(self.latitude, self.longitude,
                                     format='dms')[:-1]
@@ -60,9 +61,11 @@ class Zone(point.Point):
     def __str__(self):
         """Pretty printed location string.
 
-        :param str mode: Coordinate formatting system to use
-        :rtype: ``str``
-        :return: Human readable string representation of ``Zone`` object
+        Args:
+            mode (str): Coordinate formatting system to use
+
+        Returns:
+            str: Human readable string representation of ``Zone`` object
         """
         text = ['%s (%s: %s' % (self.zone, self.country,
                                 super(Zone, self).__format__('dms')), ]
@@ -109,11 +112,14 @@ class Zones(point.Points):
              Zone(None, None, "AO", "Antartica/McMurdo",
                   ["McMurdo Station", "Ross Island"])]
 
-        :type zone_file: ``file``, ``list`` or ``str``
-        :param zone_file: ``zone.tab`` data to read
-        :rtype: ``list``
-        :return: Locations as :class:`Zone` objects
-        :raise FileFormatError: Unknown file format
+        Args:
+            zone_file (iter): ``zone.tab`` data to read
+
+        Returns:
+            list: Locations as :class:`Zone` objects
+
+        Raises:
+            FileFormatError: Unknown file format
 
         .. _standard distribution site: ftp://elsie.nci.nih.gov/pub/
         """
@@ -130,8 +136,8 @@ class Zones(point.Points):
     def dump_zone_file(self):
         """Generate a zoneinfo compatible zone description table.
 
-        :rtype: ``list``
-        :return: zoneinfo descriptions
+        Returns:
+            list: zoneinfo descriptions
         """
         data = []
         for zone in sorted(self, key=attrgetter('country')):
