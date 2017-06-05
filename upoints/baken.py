@@ -45,20 +45,21 @@ class Baken(point.Point):
                  operator=None, power=None, qth=None):
         """Initialise a new ``Baken`` object.
 
-        :param float latitude: Location's latitude
-        :param float longitude: Location's longitude
-        :param str antenna: Location's antenna type
-        :type direction: ``tuple`` of ``int``
-        :param direction: Antenna's direction
-        :param float frequency: Transmitter's frequency
-        :param float height: Antenna's height
-        :param str locator: Location's Maidenhead locator string
-        :param str mode: Transmitter's mode
-        :type operator: ``tuple`` of ``str``
-        :param operator: Transmitter's operator
-        :param float power: Transmitter's power
-        :param str qth: Location's qth
-        :raise LookupError: No position data to use
+        Args:
+            latitude (float): Location's latitude
+            longitude (float): Location's longitude
+            antenna (str): Location's antenna type
+            direction (tuple of int): Antenna's direction
+            frequency (float): Transmitter's frequency
+            height (float): Antenna's height
+            locator (str): Location's Maidenhead locator string
+            mode (str): Transmitter's mode
+            operator (tuple of str): Transmitter's operator
+            power (float): Transmitter's power
+            qth (str): Location's qth
+
+        Raises:
+            LookupError: No position data to use
         """
         if not latitude is None:
             super(Baken, self).__init__(latitude, longitude)
@@ -87,7 +88,8 @@ class Baken(point.Point):
     def locator(self, value):
         """Update the locator, and trigger a latitude and longitude update.
 
-        :param str value: New Maidenhead locator string
+        Args:
+            value (str): New Maidenhead locator string
         """
         self._locator = value
         self._latitude, self._longitude = utils.from_grid_locator(value)
@@ -95,9 +97,11 @@ class Baken(point.Point):
     def __str__(self):
         """Pretty printed location string.
 
-        :param str mode: Coordinate formatting system to use
-        :rtype: ``str``
-        :return: Human readable string representation of ``Baken`` object
+        Args:
+            mode (str): Coordinate formatting system to use
+
+        Returns:
+            str: Human readable string representation of ``Baken`` object
         """
         text = super(Baken, self).__format__('dms')
         if self._locator:
@@ -152,10 +156,11 @@ class Bakens(point.KeyedPoints):
              "GB3BUX": : Baken(None, None, "2 x Turnstile", None, 50.000,
                                460.000, "IO93BF", "A1A", None, 25, None)}
 
-        :type baken_file: ``file``, ``list`` or ``str``
-        :param baken_file: Baken data to read
-        :rtype: ``dict``
-        :return: Named locations and their associated values
+        Args::
+            baken_file (iter): Baken data to read
+
+        Returns:
+            dict: Named locations and their associated values
 
         .. _baken: http://www.qsl.net:80/g4klx/
         """

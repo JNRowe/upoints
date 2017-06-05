@@ -92,7 +92,8 @@ class FileFormatError(ValueError):
     def __init__(self, site=None):
         """Initialise a new ``FileFormatError`` object.
 
-        :param str site: Remote site name to display in error message
+        Args:
+            site (str): Remote site name to display in error message
         """
         super(FileFormatError, self).__init__()
         self.site = site
@@ -100,8 +101,8 @@ class FileFormatError(ValueError):
     def __str__(self):
         """Pretty printed error string.
 
-        :rtype: ``str``
-        :return: Human readable error string
+        Returns:
+            str: Human readable error string
         """
         if self.site:
             return ("Incorrect data format, if you're using a file downloaded "
@@ -115,9 +116,11 @@ class FileFormatError(ValueError):
 def value_or_empty(value):
     """Return an empty string for display when value is ``None``.
 
-    :param str value: Value to prepare for display
-    :rtype: ``str``
-    :return: String representation of ``value``
+    Args:
+        value (str): Value to prepare for display
+
+    Returns:
+        str: String representation of ``value``
     """
     return value if value else ''
 
@@ -125,10 +128,12 @@ def value_or_empty(value):
 def repr_assist(obj, remap=None):
     """Helper function to simplify ``__repr__`` methods.
 
-    :param obj: Object to pull argument values for
-    :param dict remap: Argument pairs to remap before output
-    :rtype: ``str``
-    :return: Self-documenting representation of ``value``
+    Args:
+        obj: Object to pull argument values for
+        remap (dict): Argument pairs to remap before output
+
+    Returns:
+        str: Self-documenting representation of ``value``
     """
     if not remap:
         remap = {}
@@ -154,13 +159,16 @@ def repr_assist(obj, remap=None):
 def prepare_read(data, method='readlines', mode='r'):
     """Prepare various input types for parsing.
 
-    :type data: ``file`` like object, ``list``, ``str``
-    :param data: Data to read
-    :param str method: Method to process data with
-    :param str mode: Custom mode to process with, if data is a file
-    :rtype: ``list``
-    :return: List suitable for parsing
-    :raise TypeError: Invalid value for data
+    Args:
+        data (iter): Data to read
+        method (str): Method to process data with
+        mode (str): Custom mode to process with, if data is a file
+
+    Returns:
+        list: List suitable for parsing
+
+    Raises:
+        TypeError: Invalid value for data
     """
     if hasattr(data, 'readlines'):
         data = getattr(data, method)()
@@ -177,13 +185,15 @@ def prepare_read(data, method='readlines', mode='r'):
 def prepare_csv_read(data, field_names, *args, **kwargs):
     """Prepare various input types for CSV parsing.
 
-    :type data: ``file`` like object, ``list``, ``str``
-    :param data: Data to read
-    :type field_names: ``tuple`` of ``str``
-    :param field_names: Ordered names to assign to fields
-    :rtype: `csv.DictReader`
-    :return: CSV reader suitable for parsing
-    :raise TypeError: Invalid value for data
+    Args:
+        data (iter): Data to read
+        field_names (tuple of str): Ordered names to assign to fields
+
+    Returns:
+        csv.DictReader: CSV reader suitable for parsing
+
+    Raises:
+        TypeError: Invalid value for data
     """
     if hasattr(data, 'readlines') or isinstance(data, list):
         pass
@@ -197,13 +207,15 @@ def prepare_csv_read(data, field_names, *args, **kwargs):
 def prepare_xml_read(data, objectify=False):
     """Prepare various input types for XML parsing.
 
-    :type data: ``file`` like object, ``list``, ``str``
-    :param data: Data to read
-    :type objectify: bool
-    :param objectify: Parse using lxml's objectify data binding
-    :rtype: :class:`etree.ElementTree`
-    :return: Tree suitable for parsing
-    :raise TypeError: Invalid value for data
+    Args:
+        data (iter): Data to read
+        objectify (bool): Parse using lxml's objectify data binding
+
+    Returns:
+        etree.ElementTree: Tree suitable for parsing
+
+    Raises:
+        TypeError: Invalid value for data
     """
     mod = _objectify if objectify else etree
     if hasattr(data, 'readlines'):
@@ -220,9 +232,11 @@ def prepare_xml_read(data, objectify=False):
 def element_creator(namespace=None):
     """Create a simple namespace-aware objectify element creator.
 
-    :param str namespace: Namespace to work in
-    :rtype: ``function``
-    :return: Namespace-aware element creator
+    Args:
+        namespace (str): Namespace to work in
+
+    Returns:
+        function: Namespace-aware element creator
     """
     ELEMENT_MAKER = _objectify.ElementMaker(namespace=namespace,
                                             annotate=False)
@@ -230,11 +244,13 @@ def element_creator(namespace=None):
     def create_elem(tag, attr=None, text=None):
         """:class:`objectify.Element` wrapper with namespace defined.
 
-        :param str tag: Tag name
-        :param dict attr: Default attributes for tag
-        :param str text: Text content for the tag
-        :rtype: ``_objectify.ObjectifiedElement``
-        :return: objectify element
+        Args:
+            tag (str): Tag name
+            attr (dict): Default attributes for tag
+            text (str): Text content for the tag
+
+        Returns:
+            _objectify.ObjectifiedElement: objectify element
         """
         if not attr:
             attr = {}
@@ -253,11 +269,15 @@ def element_creator(namespace=None):
 def to_dms(angle, style='dms'):
     """Convert decimal angle to degrees, minutes and possibly seconds.
 
-    :param float angle: Angle to convert
-    :param str style: Return fractional or whole minutes values
-    :rtype: ``tuple`` of ``int`` objects for values
-    :return: Angle converted to degrees, minutes and possibly seconds
-    :raise ValueError: Unknown value for ``style``
+    Args:
+        angle (float): Angle to convert
+        style (str): Return fractional or whole minutes values
+
+    Returns:
+        tuple of int: Angle converted to degrees, minutes and possibly seconds
+
+    Raises:
+        ValueError: Unknown value for ``style``
     """
     sign = 1 if angle >= 0 else -1
     angle = abs(angle) * 3600
@@ -276,11 +296,13 @@ def to_dms(angle, style='dms'):
 def to_dd(degrees, minutes, seconds=0):
     """Convert degrees, minutes and optionally seconds to decimal angle.
 
-    :param float degrees: Number of degrees
-    :param float minutes: Number of minutes
-    :param float seconds: Number of seconds
-    :rtype: ``float``
-    :return: Angle converted to decimal degrees
+    Args:
+        degrees (float): Number of degrees
+        minutes (float): Number of minutes
+        seconds (float): Number of seconds
+
+    Returns:
+        float: Angle converted to decimal degrees
     """
     sign = -1 if any(i < 0 for i in (degrees, minutes, seconds)) else 1
     return sign * (abs(degrees) + abs(minutes) / 60 + abs(seconds) / 3600)
@@ -289,10 +311,12 @@ def to_dd(degrees, minutes, seconds=0):
 def __chunk(segment, abbr=False):
     """Generate a ``tuple`` of compass direction names.
 
-    :param list segment: Compass segment to generate names for
-    :param bool abbr: Names should use single letter abbreviations
-    :rtype: ``tuple``
-    :return: Direction names for compass segment
+    Args:
+        segment (list): Compass segment to generate names for
+        abbr (bool): Names should use single letter abbreviations
+
+    Returns:
+        bool: Direction names for compass segment
     """
     names = ('north', 'east', 'south', 'west', 'north')
     if not abbr:
@@ -321,11 +345,13 @@ COMPASS_NAMES_ABBR = reduce(add, [__chunk(x, True) for x in range(4)])
 def angle_to_name(angle, segments=8, abbr=False):
     """Convert angle in to direction name.
 
-    :param float angle: Angle in degrees to convert to direction name
-    :param int segments: Number of segments to split compass in to
-    :param bool abbr: Whether to return abbreviated direction string
-    :rtype: ``str``
-    :return: Direction name for ``angle``
+    Args:
+        angle (float): Angle in degrees to convert to direction name
+        segments (int): Number of segments to split compass in to
+        abbr (bool): Whether to return abbreviated direction string
+
+    Returns:
+        str: Direction name for ``angle``
     """
     if segments == 4:
         string = COMPASS_NAMES[int((angle + 45) / 90) % 4 * 2]
@@ -352,7 +378,8 @@ class TzOffset(datetime.tzinfo):
     def __init__(self, tzstring):
         """Initialise a new ``TzOffset`` object.
 
-        :param str tzstring: `ISO 8601`_ style timezone definition
+        Args::
+            tzstring (str): `ISO 8601`_ style timezone definition
 
         .. _ISO 8601: http://www.cl.cam.ac.uk/~mgk25/iso-time.html
         """
@@ -364,27 +391,28 @@ class TzOffset(datetime.tzinfo):
     def __repr__(self):
         """Self-documenting string representation.
 
-        :rtype: ``str``
-        :return: String to recreate ``TzOffset`` object
+        Returns:
+            str: String to recreate ``TzOffset`` object
         """
         return repr_assist(self, {'tzstring': self.as_timezone()})
 
     def dst(self, dt=None):
         """Daylight Savings Time offset.
 
-        .. note::
-           This method is only for compatibility with the ``tzinfo`` interface,
-           and does nothing
+        Note:
+            This method is only for compatibility with the ``tzinfo``
+            interface, and does nothing
 
-        :param dt: For compatibility with parent classes
+        Args:
+            dt (any): For compatibility with parent classes
         """
         return datetime.timedelta(0)
 
     def as_timezone(self):
         """Create a human-readable timezone string.
 
-        :rtype: ``str``
-        :return: Human-readable timezone definition
+        Returns:
+            str: Human-readable timezone definition
         """
         offset = self.utcoffset()
         hours, minutes = divmod(offset.seconds / 60, 60)
@@ -396,7 +424,8 @@ class TzOffset(datetime.tzinfo):
     def utcoffset(self, dt=None):
         """Return the offset in minutes from UTC.
 
-        :param dt: For compatibility with parent classes
+        Args:
+            dt (any): For compatibility with parent classes
         """
         return self.__offset
 
@@ -408,8 +437,8 @@ class Timestamp(datetime.datetime):
     def isoformat(self):
         """Generate an ISO 8601 formatted time stamp.
 
-        :rtype: ``str``
-        :return: `ISO 8601`_ formatted time stamp
+        Returns:
+            str: `ISO 8601`_ formatted time stamp
 
         .. _ISO 8601: http://www.cl.cam.ac.uk/~mgk25/iso-time.html
         """
@@ -424,9 +453,11 @@ class Timestamp(datetime.datetime):
     def parse_isoformat(timestamp):
         """Parse an ISO 8601 formatted time stamp.
 
-        :param str timestamp: Timestamp to parse
-        :rtype: ``Timestamp``
-        :return: Parsed timestamp
+        Args:
+            timestamp (str): Timestamp to parse
+
+        Returns:
+            Timestamp: Parsed timestamp
         """
         if len(timestamp) == 20:
             zone = TzOffset('+00:00')
@@ -461,17 +492,20 @@ def from_iso6709(coordinates):
     received widespread support as yet, but hopefully it will grow just as the
     `simplified ISO 8601 profile`_ has.
 
-    .. seealso::
+    See also:
+        to_iso6709
 
-       :func:`to_iso6709`
+    Args:
+        coordinates (str): ISO 6709 coordinates string
 
-    :page str coordinates: ISO 6709 coordinates string
-    :rtype: ``tuple``
-    :return: A tuple consisting of latitude and longitude in degrees, along
-        with the elevation in metres
-    :raise ValueError: Input string is not ISO 6709 compliant
-    :raise ValueError: Invalid value for latitude
-    :raise ValueError: Invalid value for longitude
+    Returns:
+        tuple: A tuple consisting of latitude and longitude in degrees, along
+            with the elevation in metres
+
+    Raises:
+        ValueError: Input string is not ISO 6709 compliant
+        ValueError: Invalid value for latitude
+        ValueError: Invalid value for longitude
 
     .. _simplified ISO 8601 profile: http://www.w3.org/TR/NOTE-datetime
     """
@@ -514,18 +548,21 @@ def to_iso6709(latitude, longitude, altitude=None, format='dd', precision=4):
     This function will produce ISO 6709-1983(E) "Standard representation of
     latitude, longitude and altitude for geographic point locations" elements.
 
-    .. seealso::
+    See also:
+       from_iso6709
 
-       :func:`from_iso6709`
+    Args:
+        latitude (float): Location's latitude
+        longitude (float): Location's longitude
+        altitude (float): Location's altitude
+        format (str): Format type for string
+        precision (int): Latitude/longitude precision
 
-    :param float latitude: Location's latitude
-    :param float longitude: Location's longitude
-    :param float altitude: Location's altitude
-    :param str format: Format type for string
-    :param int precision: Latitude/longitude precision
-    :rtype: ``str``
-    :return: ISO 6709 coordinates string
-    :raise ValueError: Unknown value for ``format``
+    Returns:
+        str: ISO 6709 coordinates string
+
+    Raises:
+        ValueError: Unknown value for ``format``
 
     .. _Latitude, Longitude and Altitude format for geospatial information:
        http://www.w3.org/2005/Incubator/geo/Wiki/LatitudeLongitudeAltitude
@@ -568,11 +605,15 @@ def to_iso6709(latitude, longitude, altitude=None, format='dd', precision=4):
 def angle_to_distance(angle, units='metric'):
     """Convert angle in to distance along a great circle.
 
-    :param float angle: Angle in degrees to convert to distance
-    :param str units: Unit type to be used for distances
-    :rtype: ``float``
-    :return: Distance in ``units``
-    :raise ValueError: Unknown value for ``units``
+    Args:
+        angle (float): Angle in degrees to convert to distance
+        units (str): Unit type to be used for distances
+
+    Returns:
+        float: Distance in ``units``
+
+    Raises:
+        ValueError: Unknown value for ``units``
     """
     distance = math.radians(angle) * BODY_RADIUS
 
@@ -589,11 +630,15 @@ def angle_to_distance(angle, units='metric'):
 def distance_to_angle(distance, units='metric'):
     """Convert a distance in to an angle along a great circle.
 
-    :param float distance: Distance to convert to degrees
-    :param str units: Unit type to be used for distances
-    :rtype: ``float``
-    :return: Angle in degrees
-    :raise ValueError: Unknown value for ``units``
+    Args:
+        distance (float): Distance to convert to degrees
+        units (str): Unit type to be used for distances
+
+    Returns:
+        float: Angle in degrees
+
+    Raises:
+        ValueError: Unknown value for ``units``
     """
     if units in ('km', 'metric'):
         pass
@@ -610,11 +655,15 @@ def distance_to_angle(distance, units='metric'):
 def from_grid_locator(locator):
     """Calculate geodesic latitude/longitude from Maidenhead locator.
 
-    :param str locator: Maidenhead locator string
-    :rtype: ``tuple`` of ``float`` objects
-    :return: Geodesic latitude and longitude values
-    :raise ValueError: Incorrect grid locator length
-    :raise ValueError: Invalid values in locator string
+    Args:
+        locator (str): Maidenhead locator string
+
+    Returns:
+        tuple of float: Geodesic latitude and longitude values
+
+    Raises:
+        ValueError: Incorrect grid locator length
+        ValueError: Invalid values in locator string
     """
     if not len(locator) in (4, 6, 8):
         raise ValueError('Locator must be 4, 6 or 8 characters long %r'
@@ -689,13 +738,17 @@ def from_grid_locator(locator):
 def to_grid_locator(latitude, longitude, precision='square'):
     """Calculate Maidenhead locator from latitude and longitude.
 
-    :param float latitude: Position's latitude
-    :param float longitude: Position's longitude
-    :param str precision: Precision with which generate locator string
-    :rtype: ``str``
-    :return: Maidenhead locator for latitude and longitude
-    :raise ValueError: Invalid precision identifier
-    :raise ValueError: Invalid latitude or longitude value
+    Args:
+        latitude (float): Position's latitude
+        longitude (float): Position's longitude
+        precision (str): Precision with which generate locator string
+
+    Returns:
+        str: Maidenhead locator for latitude and longitude
+
+    Raise:
+        ValueError: Invalid precision identifier
+        ValueError: Invalid latitude or longitude value
     """
     if not precision in ('square', 'subsquare', 'extsquare'):
         raise ValueError('Unsupported precision value %r' % precision)
@@ -748,17 +801,21 @@ def to_grid_locator(latitude, longitude, precision='square'):
 def parse_location(location):
     """Parse latitude and longitude from string location.
 
-    :param str location: String to parse
-    :rtype: ``tuple`` of ``float`` objects
-    :return: Latitude and longitude of location
+    Args:
+        location (str): String to parse
+
+    Returns:
+        tuple of float: Latitude and longitude of location
     """
 
     def split_dms(text, hemisphere):
         """Split degrees, minutes and seconds string.
 
-        :param str text: Text to split
-        :rtype: ``float``
-        :return: Decimal degrees
+        Args:
+            text (str): Text to split
+
+        Returns::
+            float: Decimal degrees
         """
         out = []
         sect = []
@@ -843,16 +900,20 @@ def sun_rise_set(latitude, longitude, date, mode='rise', timezone=0,
         United States Naval Observatory
         Washington, DC 20392
 
-    :param float latitude: Location's latitude
-    :param float longitude: Location's longitude
-    :param datetime.date date: Calculate rise or set for given date
-    :param str mode: Which time to calculate
-    :param int timezone: Offset from UTC in minutes
-    :param str zenith: Calculate rise/set events, or twilight times
-    :rtype: :class:`datetime.time` or ``None``
-    :return: The time for the given event in the specified timezone, or
-        ``None`` if the event doesn't occur on the given date
-    :raise ValueError: Unknown value for ``mode``
+    Args:
+        latitude (float): Location's latitude
+        longitude (float): Location's longitude
+        date (datetime.date): Calculate rise or set for given date
+        mode (str): Which time to calculate
+        timezone (int): Offset from UTC in minutes
+        zenith (str): Calculate rise/set events, or twilight times
+
+    Returns:
+        datetime.time or None: The time for the given event in the specified
+            timezone, or ``None`` if the event doesn't occur on the given date
+
+    Raises:
+        ValueError: Unknown value for ``mode``
     """
     if not date:
         date = datetime.date.today()
@@ -950,13 +1011,16 @@ def sun_events(latitude, longitude, date, timezone=0, zenith=None):
     Astronomical twilight starts/ends when the Sun's centre is 18 degrees below
     the horizon.
 
-    :param float latitude: Location's latitude
-    :param float longitude: Location's longitude
-    :param datetime.date date: Calculate rise or set for given date
-    :param int timezone: Offset from UTC in minutes
-    :param str zenith: Calculate rise/set events, or twilight times
-    :rtype: ``tuple`` of :class:`datetime.time`
-    :return: The time for the given events in the specified timezone
+    Args:
+        latitude (float): Location's latitude
+        longitude (float): Location's longitude
+        date (datetime.date): Calculate rise or set for given date
+        timezone (int): Offset from UTC in minutes
+        zenith (str): Calculate rise/set events, or twilight times
+
+    Returns:
+        tuple of datetime.time: The time for the given events in the specified
+            timezone
     """
     return (sun_rise_set(latitude, longitude, date, 'rise', timezone, zenith),
             sun_rise_set(latitude, longitude, date, 'set', timezone, zenith))
@@ -1001,20 +1065,23 @@ def dump_xearth_markers(markers, name='identifier'):
         52.010585 -0.173443 "Bygrave"
         51.910886 -0.186462 "Sish Lane"
 
-    .. note:
-       xplanet_ also supports xearth marker files, and as such can use the
-       output from this function.
+    Note:
+        xplanet_ also supports xearth marker files, and as such can use the
+        output from this function.
 
-    .. seealso:
+    See also:
+       upoints.xearth.Xearths.import_locations
 
-       :func:`upoints.xearth.Xearths.import_locations`
+    Args:
+        markers (dict): Dictionary of identifier keys, with :class:`Trigpoint`
+            values
+        name (str): Value to use as Xearth display string
 
-    :param dict markers: Dictionary of identifier keys, with :class:`Trigpoint`
-        values
-    :param str name: Value to use as Xearth display string
-    :rtype: ``list``
-    :return: List of strings representing an Xearth marker file
-    :raise ValueError: Unsupported value for ``name``
+    Returns:
+        list: List of strings representing an Xearth marker file
+
+    Raises:
+        ValueError: Unsupported value for ``name``
 
     .. _xearth: http://hewgill.com/xearth/original/
     .. _xplanet: http://xplanet.sourceforge.net/
@@ -1053,11 +1120,12 @@ def calc_radius(latitude, ellipsoid='WGS84'):
     for use with trigpointing databases that are keyed on the OSGB36 datum, but
     it has been expanded to cover other ellipsoids.
 
-    :param float latitude: Latitude to calculate earth radius for
-    :type ellipsoid: ``tuple`` of ``float`` objects
-    :param ellipsoid: Ellipsoid model to use for calculation
-    :rtype: ``float``
-    :return: Approximated Earth radius at the given latitude
+    Args:
+        latitude (float): Latitude to calculate earth radius for
+        ellipsoid (tuple of float): Ellipsoid model to use for calculation
+
+    Returns:
+        float: Approximated Earth radius at the given latitude
     """
 
     ellipsoids = {

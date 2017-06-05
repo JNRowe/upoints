@@ -53,12 +53,13 @@ class _GpxElem(point.TimedPoint):
                  elevation=None, time=None):
         """Initialise a new ``_GpxElem`` object.
 
-        :param float latitude: Element's latitude
-        :param float longitude: Element's longitude
-        :param str name: Name for Element
-        :param str description: Element's description
-        :param float elevation: Element's elevation
-        :param utils.Timestamp time: Time the data was generated
+        Args:
+            latitude (float): Element's latitude
+            longitude (float): Element's longitude
+            name (str): Name for Element
+            description (str): Element's description
+            elevation (float): Element's elevation
+            time (utils.Timestamp): Time the data was generated
         """
         super(_GpxElem, self).__init__(latitude, longitude, time=time)
         self.name = name
@@ -68,9 +69,9 @@ class _GpxElem(point.TimedPoint):
     def __str__(self):
         """Pretty printed location string.
 
-        :rtype: ``str``
-        :return: Human readable string representation of :class:`_GpxElem`
-            object
+        Returns:
+            str: Human readable string representation of :class:`_GpxElem`
+                object
         """
         location = super(_GpxElem, self).__format__('dms')
         if self.elevation:
@@ -88,8 +89,8 @@ class _GpxElem(point.TimedPoint):
     def togpx(self):
         """Generate a GPX waypoint element subtree.
 
-        :rtype: :class:`etree.Element`
-        :return: GPX element
+        Returns:
+            etree.Element: GPX element
         """
         element = create_elem(self.__class__._elem_name,
                               {'lat': str(self.latitude),
@@ -123,12 +124,12 @@ class _SegWrap(list):
     def distance(self, method='haversine'):
         """Calculate distances between locations in segments.
 
-        :Parameters:
-            method : ``str``
-                Method used to calculate distance
+        Args:
+            method (str): Method used to calculate distance
 
-        :rtype: ``list`` of ``list`` of ``float``
-        :return: Groups of distance between points in segments
+        Returns:
+            list of list of float: Groups of distance between points in
+                segments
         """
         distances = []
         for segment in self:
@@ -141,9 +142,12 @@ class _SegWrap(list):
     def bearing(self, format='numeric'):
         """Calculate bearing between locations in segments.
 
-        :param str format: Format of the bearing string to return
-        :rtype: ``list`` of ``list`` of ``float``
-        :return: Groups of bearings between points in segments
+        Args:
+            format (str): Format of the bearing string to return
+
+        Returns:
+            list of list of float: Groups of bearings between points in
+                segments
         """
         bearings = []
         for segment in self:
@@ -156,9 +160,12 @@ class _SegWrap(list):
     def final_bearing(self, format='numeric'):
         """Calculate final bearing between locations in segments.
 
-        :param str format: Format of the bearing string to return
-        :rtype: ``list`` of ``list`` of ``float``
-        :return: Groups of bearings between points in segments
+        Args:
+            format (str): Format of the bearing string to return
+
+        Returns:
+            list of list of float: Groups of bearings between points in
+                segments
         """
         bearings = []
         for segment in self:
@@ -171,8 +178,9 @@ class _SegWrap(list):
     def inverse(self):
         """Calculate the inverse geodesic between locations in segments.
 
-        :rtype: ``list`` of 2 ``tuple`` of ``float``
-        :return: Groups in bearing and distance between points in segments
+        Returns:
+            list of 2-tuple of float: Groups in bearing and distance between
+                points in segments
         """
         inverses = []
         for segment in self:
@@ -185,8 +193,8 @@ class _SegWrap(list):
     def midpoint(self):
         """Calculate the midpoint between locations in segments.
 
-        :rtype: ``list`` of ``Point`` instance
-        :return: Groups of midpoint between points in segments
+        Returns:
+            list of Point: Groups of midpoint between points in segments
         """
         midpoints = []
         for segment in self:
@@ -199,21 +207,25 @@ class _SegWrap(list):
     def range(self, location, distance):
         """Test whether locations are within a given range of ``location``.
 
-        :param Point location: Location to test range against
-        :param float distance: Distance to test location is within
-        :rtype: ``list`` of ``list`` of ``Point`` objects within specified
-            range
-        :return: Groups of points in range per segment
+        Args:
+            location (Point): Location to test range against
+            distance (float): Distance to test location is within
+
+        Returns:
+            list of list of Point: Groups of points in range per segment
         """
         return (segment.range(location, distance) for segment in self)
 
     def destination(self, bearing, distance):
         """Calculate destination locations for given distance and bearings.
 
-        :param float bearing: Bearing to move on in degrees
-        :param float distance: Distance in kilometres
-        :rtype: ``list`` of ``list`` of ``Point``
-        :return: Groups of points shifted by ``distance`` and ``bearing``
+        Args:
+            bearing (float): Bearing to move on in degrees
+            distance (float): Distance in kilometres
+
+        Returns:
+            list of list of Point: Groups of points shifted by ``distance``
+                and ``bearing``
         """
         return (segment.destination(bearing, distance) for segment in self)
     forward = destination
@@ -221,49 +233,58 @@ class _SegWrap(list):
     def sunrise(self, date=None, zenith=None):
         """Calculate sunrise times for locations.
 
-        :param datetime.date date: Calculate rise or set for given date
-        :param str zenith: Calculate sunrise events, or end of twilight
-        :rtype: ``list`` of ``list`` of :class:`datetime.datetime`
-        :return: The time for the sunrise for each point in each segment
+        Args:
+            date (datetime.date): Calculate rise or set for given date
+            zenith (str): Calculate sunrise events, or end of twilight
+        Returns:
+            list of list of datetime.datetime: The time for the sunrise for
+                each point in each segment
         """
         return (segment.sunrise(date, zenith) for segment in self)
 
     def sunset(self, date=None, zenith=None):
         """Calculate sunset times for locations.
 
-        :param datetime.date date: Calculate rise or set for given date
-        :param str zenith: Calculate sunset events, or start of twilight times
-        :rtype: ``list`` of ``list`` of :class:`datetime.datetime`
-        :return: The time for the sunset for each point in each segment
+        Args:
+            date (datetime.date): Calculate rise or set for given date
+            zenith (str): Calculate sunset events, or start of twilight times
+
+        Returns:
+            list of list of datetime.datetime: The time for the sunset for each
+                point in each segment
         """
         return (segment.sunset(date, zenith) for segment in self)
 
     def sun_events(self, date=None, zenith=None):
         """Calculate sunrise/sunset times for locations.
 
-        :param datetime.date date: Calculate rise or set for given date
-        :param str zenith: Calculate rise/set events, or twilight times
-        :rtype: ``list`` of ``list`` of 2 ``tuple`` of
-            :class:`datetime.datetime`
-        :return: The time for the sunrise and sunset events for each point in
-            each segment
+        Args:
+            date (datetime.date): Calculate rise or set for given date
+            zenith (str): Calculate rise/set events, or twilight times
+
+        Returns:
+            list of list of 2-tuple of datetime.datetime: The time for the
+                sunrise and sunset events for each point in each segment
         """
         return (segment.sun_events(date, zenith) for segment in self)
 
     def to_grid_locator(self, precision='square'):
         """Calculate Maidenhead locator for locations.
 
-        :param str precision: Precision with which generate locator string
-        :rtype: ``list`` of ``list`` of ``str``
-        :return: Groups of Maidenhead locator for each point in segments
+        Args:
+            precision (str): Precision with which generate locator string
+
+        Returns:
+            list of list of str: Groups of Maidenhead locator for each point in
+                segments
         """
         return (segment.to_grid_locator(precision) for segment in self)
 
     def speed(self):
         """Calculate speed between locations per segment.
 
-        :rtype: ``list`` of ``list`` of ``float``
-        :return: Speed between points in each segment in km/h
+        Returns:
+            list of list of float: Speed between points in each segment in km/h
         """
         return (segment.speed() for segment in self)
 
@@ -283,18 +304,17 @@ class _GpxMeta(object):
                  extensions=None):
         """Initialise a new `_GpxMeta` object.
 
-        :param str name: Name for the export
-        :param str desc: Description for the GPX export
-        :param dict author: Author of the entire GPX data
-        :param dict copyright: Copyright data for the exported data
-        :type link: ``list`` of ``str`` or ``dict``
-        :param link: Links associated with the data
-        :param utils.Timestamp time:Time the data was generated
-        :param str keywords: Keywords associated with the data
-        :type bounds: ``dict`` or ``list`` of ``Point`` objects
-        :param bounds: Area used in the data
-        :type extensions: ``list`` of :class:`etree.Element` objects
-        :param extensions: Any external data associated with the export
+        Args:
+            name (str): Name for the export
+            desc (str): Description for the GPX export
+            author (dict): Author of the entire GPX data
+            copyright (dict): Copyright data for the exported data
+            link (list of str or dict): Links associated with the data
+            time (utils.Timestamp):Time the data was generated
+            keywords (str): Keywords associated with the data
+            bounds (dict or list of Point): Area used in the data
+            extensions (list of etree.Element): Any external data associated
+                with the export
         """
         super(_GpxMeta, self).__init__()
         self.name = name
@@ -310,8 +330,8 @@ class _GpxMeta(object):
     def togpx(self):
         """Generate a GPX metadata element subtree.
 
-        :rtype: :class:`etree.Element`
-        :return: GPX metadata element
+        Returns:
+            etree.Element: GPX metadata element
         """
         metadata = create_elem('metadata')
         if self.name:
@@ -384,7 +404,8 @@ class _GpxMeta(object):
     def import_metadata(self, elements):
         """Import information from GPX metadata.
 
-        :param etree.Element elements: GPX metadata subtree
+        Args:
+            elements (etree.Element): GPX metadata subtree
         """
         metadata_elem = lambda name: etree.QName(GPX_NS, name)
 
@@ -432,9 +453,8 @@ class Waypoint(_GpxElem):
 
     .. versionadded:: 0.8.0
 
-    .. seealso::
-
-        :class:`_GpxElem`
+    See also:
+        _GpxElem
     """
 
     __slots__ = ('name', 'description', )
@@ -444,7 +464,7 @@ class Waypoint(_GpxElem):
 
 class Waypoints(point.TimedPoints):
 
-    """Class for representing a group of :class:`Waypoint` objects.
+    """Class for representing a group of ``Waypoint`` objects.
 
     .. versionadded:: 0.8.0
     """
@@ -460,7 +480,8 @@ class Waypoints(point.TimedPoints):
     def import_locations(self, gpx_file):
         """Import GPX data files.
 
-        ``import_locations()`` returns a list with :class:`Waypoint` objects.
+        ``import_locations()`` returns a list with :class:`~gpx.Waypoint`
+        objects.
 
         It expects data files in GPX format, as specified in `GPX 1.1 Schema
         Documentation`_, which is XML such as::
@@ -488,10 +509,11 @@ class Waypoints(point.TimedPoints):
             [Waypoint(52.015, -0.221, "Home", "My place"),
              Waypoint(52.167, 0.390, "MSR", "Microsoft Research, Cambridge")]
 
-        :type gpx_file: ``file``, ``list`` or ``str``
-        :param gpx_file: GPX data to read
-        :rtype: ``list``
-        :return: Locations with optional comments
+        Args:
+            gpx_file (iter): GPX data to read
+
+        Returns:
+            list: Locations with optional comments
 
         .. _GPX 1.1 Schema Documentation: http://www.topografix.com/GPX/1/1/
         """
@@ -528,8 +550,8 @@ class Waypoints(point.TimedPoints):
     def export_gpx_file(self):
         """Generate GPX element tree from ``Waypoints`` object.
 
-        :rtype: :class:`etree.ElementTree`
-        :return: GPX element tree depicting ``Waypoints`` object
+        Returns:
+            etree.ElementTree: GPX element tree depicting ``Waypoints`` object
         """
         gpx = create_elem('gpx', GPX_ELEM_ATTRIB)
         if not self.metadata.bounds:
@@ -547,9 +569,8 @@ class Trackpoint(_GpxElem):
 
     .. versionadded:: 0.10.0
 
-    .. seealso::
-
-        :class:`_GpxElem`
+    See also:
+        _GpxElem
     """
 
     __slots__ = ('name', 'description', )
@@ -599,10 +620,11 @@ class Trackpoints(_SegWrap):
             [[Trackpoint(52.015, -0.221, "Home", "My place"),
               Trackpoint(52.167, 0.390, "MSR", "Microsoft Research, Cambridge")], ]
 
-        :type gpx_file: ``file``, ``list`` or ``str``
-        :param gpx_file: GPX data to read
-        :rtype: ``list``
-        :return: Locations with optional comments
+        Args:
+            gpx_file (iter): GPX data to read
+
+        Returns:
+            list: Locations with optional comments
 
         .. _GPX 1.1 Schema Documentation: http://www.topografix.com/GPX/1/1/
         """
@@ -642,8 +664,9 @@ class Trackpoints(_SegWrap):
     def export_gpx_file(self):
         """Generate GPX element tree from ``Trackpoints``.
 
-        :rtype: :class:`etree.ElementTree`
-        :return: GPX element tree depicting ``Trackpoints`` objects
+        Returns:
+            etree.ElementTree: GPX element tree depicting ``Trackpoints``
+                objects
         """
         gpx = create_elem('gpx', GPX_ELEM_ATTRIB)
         if not self.metadata.bounds:
@@ -666,9 +689,8 @@ class Routepoint(_GpxElem):
 
     .. versionadded:: 0.10.0
 
-    .. seealso:
-
-         :class:`_GpxElem`
+    See also:
+         _GpxElem
     """
 
     __slots__ = ('name', 'description', )
@@ -716,10 +738,11 @@ class Routepoints(_SegWrap):
             [[Routepoint(52.015, -0.221, "Home", "My place"),
               Routepoint(52.167, 0.390, "MSR", "Microsoft Research, Cambridge")], ]
 
-        :type gpx_file: ``file``, ``list`` or ``str``
-        :param gpx_file: GPX data to read
-        :rtype: ``list``
-        :return: Locations with optional comments
+        Args:
+            gpx_file (iter): GPX data to read
+
+        Returns:
+            list: Locations with optional comments
 
         .. _GPX 1.1 Schema Documentation: http://www.topografix.com/GPX/1/1/
         """
@@ -759,8 +782,9 @@ class Routepoints(_SegWrap):
     def export_gpx_file(self):
         """Generate GPX element tree from :class:`Routepoints`
 
-        :rtype: :class:`etree.ElementTree`
-        :return: GPX element tree depicting :class:`Routepoints` objects
+        Returns:
+            etree.ElementTree: GPX element tree depicting :class:`Routepoints`
+                objects
         """
         gpx = create_elem('gpx', GPX_ELEM_ATTRIB)
         if not self.metadata.bounds:

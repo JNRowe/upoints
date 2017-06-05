@@ -41,9 +41,9 @@ In the second example the locations are separated by ``--``, which stops
 processing options and allows you to specify locations beginning with
 a hyphen(such as anywhere in the Southern hemisphere).
 
-.. note::
-   In most shells the locations must be quoted because of the special nature of
-   the semicolon.
+Note:
+    In most shells the locations must be quoted because of the special nature
+    of the semicolon.
 
 .. currentmodule:: edist
 .. moduleauthor:: `%s <mailto:%s>`__
@@ -86,19 +86,16 @@ class LocationsError(ValueError):
 
     .. versionadded:: 0.6.0
 
-    .. attribute:: function
-
-       Function where error is raised.
-
-    .. attribute:: data
-
-       Location number and data
+    Attributes:
+        function: Function where error is raised.
+        data: Location number and data
     """
     def __init__(self, function=None, data=None):
         """Initialise a new ``LocationsError`` object.
 
-        :param str function: Function where error is raised
-        :param tuple data: Location number and data
+        Args:
+            function (str): Function where error is raised
+            data (tuple): Location number and data
         """
         super(LocationsError, self).__init__()
         self.function = function
@@ -107,8 +104,8 @@ class LocationsError(ValueError):
     def __str__(self):
         """Pretty printed error string.
 
-        :rtype: ``str``
-        :return: Human readable error string
+        Returns:
+            str: Human readable error string
         """
         if self.function:
             return 'More than one location is required for %s.' % self.function
@@ -121,19 +118,14 @@ class LocationsError(ValueError):
 class NumberedPoint(point.Point):
     """Class for representing locations from command line.
 
-    .. seealso::
-
-       :class:`upoints.point.Point`.
+    See also:
+       upoints.point.Point
 
     .. versionadded:: 0.6.0
 
-    .. attribute:: name
-
-       A name for location, or its position on the command line
-
-    .. attribute:: units
-
-       Unit type to be used for distances
+    Attributes:
+        name: A name for location, or its position on the command line
+        units: Unit type to be used for distances
     """
 
     __slots__ = ('name')
@@ -141,10 +133,11 @@ class NumberedPoint(point.Point):
     def __init__(self, latitude, longitude, name, units='km'):
         """Initialise a new ``NumberedPoint`` object.
 
-        :param float latitude: Location's latitude
-        :param float longitude: Location's longitude
-        :param str name: Location's name or command line position
-        :param str units: Unit type to be used for distances
+        Args:
+            latitude (float): Location's latitude
+            longitude (float): Location's longitude
+            name (str): Location's name or command line position
+            units (str): Unit type to be used for distances
         """
         super(NumberedPoint, self).__init__(latitude, longitude, units)
 
@@ -153,11 +146,15 @@ class NumberedPoint(point.Point):
     def __format__(self, format_spec='dd'):
         """Extended pretty printing for location strings.
 
-        :param str format_spec: Coordinate formatting system to use
-        :rtype: ``str``
-        :return: Human readable string representation of ``NumberedPoint``
-            object
-        :raise ValueError: Unknown value for ``format_spec``
+        Args:
+            format_spec (str): Coordinate formatting system to use
+
+        Returns:
+            str: Human readable string representation of ``NumberedPoint``
+                object
+
+        Raises:
+            ValueError: Unknown value for ``format_spec``
         """
         return super(NumberedPoint, self).__format__('dm')
 
@@ -173,13 +170,13 @@ class NumberedPoints(point.Points):
                  config_locations=None, units='km'):
         """Initialise a new ``NumberedPoints`` object.
 
-        :type locations: ``list`` of ``str`` objects
-        :param locations: Location identifiers
-        :param str format: Coordinate formatting system to use
-        :param bool verbose: Whether to generate verbose output
-        :param dict config_locations: Locations imported from user's config
-            file
-        :param str units: Unit type to be used for distances
+        Args:
+            locations (list of str): Location identifiers
+            format (str): Coordinate formatting system to use
+            verbose (bool): Whether to generate verbose output
+            config_locations (dict): Locations imported from user's config
+                file
+            units (str): Unit type to be used for distances
         """
         super(NumberedPoints, self).__init__()
         self.format = format
@@ -192,17 +189,17 @@ class NumberedPoints(point.Points):
     def __repr__(self):
         """Self-documenting string representation.
 
-        :rtype: ``str``
-        :return: String to recreate ``NumberedPoints`` object
+        Returns:
+            str: String to recreate ``NumberedPoints`` object
         """
         return utils.repr_assist(self, {'locations': self[:]})
 
     def import_locations(self, locations, config_locations):
         """Import locations from arguments.
 
-        :type locations: ``list`` of ``str``
-        :param locations: Location identifiers
-        :param dict config_locations: Locations imported from user's config
+        Args:
+            locations (list of str): Location identifiers
+            config_locations (dict): Locations imported from user's config
             file
         """
         for number, location in enumerate(locations):
@@ -225,7 +222,8 @@ class NumberedPoints(point.Points):
     def display(self, locator):
         """Pretty print locations.
 
-        :param str locator: Accuracy of Maidenhead locator output
+        Args:
+            locator (str): Accuracy of Maidenhead locator output
         """
         for location in self:
             if self.format == 'locator':
@@ -264,8 +262,9 @@ class NumberedPoints(point.Points):
     def bearing(self, mode, string):
         """Calculate bearing/final bearing between locations.
 
-        :param str mode: Type of bearing to calculate
-        :param bool string: Use named directions
+        Args:
+            mode (str): Type of bearing to calculate
+            string (bool): Use named directions
         """
         bearings = getattr(super(NumberedPoints, self), mode)()
         if string:
@@ -286,7 +285,8 @@ class NumberedPoints(point.Points):
     def range(self, distance):
         """Test whether locations are within a given range of the first.
 
-        :param float distance: Distance to test location is within
+        Args:
+            distance (float): Distance to test location is within
         """
         test_location = self[0]
         for location in self[1:]:
@@ -310,9 +310,10 @@ class NumberedPoints(point.Points):
     def destination(self, distance, bearing, locator):
         """Calculate destination locations for given distance and bearings.
 
-        :param float distance: Distance to travel
-        :param float bearing: Direction of travel
-        :param str locator: Accuracy of Maidenhead locator output
+        Args:
+            distance (float): Distance to travel
+            bearing (float): Direction of travel
+            locator (str): Accuracy of Maidenhead locator output
         """
         destinations = super(NumberedPoints, self).destination(bearing,
                                                                distance)
@@ -330,7 +331,8 @@ class NumberedPoints(point.Points):
     def sun_events(self, mode):
         """Calculate sunrise/sunset times for locations.
 
-        :param str mode: Sun event to display
+        Args:
+            mode (str): Sun event to display
         """
         mode_str = mode.capitalize()
         times = getattr(super(NumberedPoints, self), mode)()
@@ -350,8 +352,9 @@ class NumberedPoints(point.Points):
 
         .. todo:: Description
 
-        :param float speed: Speed to use for elapsed time calculation
-        :param str time: Time unit to use for output
+        Args:
+            speed (float): Speed to use for elapsed time calculation
+            time (str): Time unit to use for output
         """
         if len(self) == 1:
             raise LocationsError('flight_plan')
@@ -463,9 +466,11 @@ def flight_plan(args):
 def read_locations(filename):
     """Pull locations from a user's config file.
 
-    :param str filename: Config file to parse
-    :rtype: ``dict``
-    :return: List of locations from config file
+    Args:
+        filename (str): Config file to parse
+
+    Returns:
+        dict: List of locations from config file
     """
     data = ConfigParser()
     data.read(filename)
@@ -492,9 +497,11 @@ def read_csv(filename):
 
     .. _gpsbabel: http://www.gpsbabel.org/
 
-    :param str filename: CSV file to parse (STDIN if '-')
-    :rtype: ``tuple`` of ``dict`` and ``list``
-    :return: List of locations as ``str`` objects
+    Args:
+        filename (str): CSV file to parse (STDIN if '-')
+
+    Returns:
+        tuple of dict and list: List of locations as ``str`` objects
     """
     if filename == '-':
         filename = sys.stdin
@@ -514,8 +521,8 @@ def read_csv(filename):
 def main():
     """Main script handler.
 
-    :rtype: ``int``
-    :return: 0 for success, >1 error code
+    Returns:
+        int: 0 for success, >1 error code
     """
     logging.basicConfig(format='%(asctime)s %(levelname)s:%(message)s')
 

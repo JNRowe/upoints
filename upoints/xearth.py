@@ -38,9 +38,10 @@ class Xearth(point.Point):
     def __init__(self, latitude, longitude, comment=None):
         """Initialise a new ``Xearth`` object.
 
-        :param float latitude: Location's latitude
-        :param float longitude: Location's longitude
-        :param str comment: Comment for location
+        Args:
+            latitude (float): Location's latitude
+            longitude (float): Location's longitude
+            comment (str): Comment for location
         """
         super(Xearth, self).__init__(latitude, longitude)
         self.comment = comment
@@ -48,12 +49,11 @@ class Xearth(point.Point):
     def __str__(self):
         """Pretty printed location string.
 
-        .. seealso:
+        See also:
+           ``point.Point``
 
-           :class:`point.Point`
-
-        :rtype: ``str``
-        :return: Human readable string representation of ``Xearth`` object
+        Returns:
+            str: Human readable string representation of ``Xearth`` object
         """
         text = super(Xearth, self).__str__()
 
@@ -80,8 +80,8 @@ class Xearths(point.KeyedPoints):
     def __str__(self):
         """``Xearth`` objects rendered for use with Xearth/Xplanet.
 
-        :rtype: ``str``
-        :return: Xearth/Xplanet marker file formatted output
+        Returns:
+            str: Xearth/Xplanet marker file formatted output
         """
         return '\n'.join(utils.dump_xearth_markers(self, 'comment'))
 
@@ -107,15 +107,15 @@ class Xearths(point.KeyedPoints):
             {'Home': point.Point(52.015, -0.221, "James Rowe's home"),
              'Telford': point.Point(52.6333, -2.5, None)}
 
-        .. note:
-           This function also handles the extended xplanet_ marker files whose
-           points can optionally contain added xplanet specific keywords for
-           defining colours and fonts.
+        Note:
+            This function also handles the extended xplanet_ marker files whose
+            points can optionally contain added xplanet specific keywords for
+            defining colours and fonts.
 
-        :type marker_file: ``file``, ``list`` or ``str``
-        :param marker_file: Xearth marker data to read
-        :rtype: ``dict``
-        :return: Named locations with optional comments
+        Args:
+            marker_file (iter): Xearth marker data to read
+        Returns:
+            dict: Named locations with optional comments
 
         .. _xearth: http://hewgill.com/xearth/original/
         .. _xplanet: http://xplanet.sourceforge.net/

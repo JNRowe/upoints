@@ -32,7 +32,8 @@ import upoints
 
 extensions = \
     ['sphinx.ext.%s' % ext for ext in ['autodoc', 'coverage', 'doctest',
-                                       'intersphinx', 'viewcode', 'todo']] \
+                                       'intersphinx', 'napoleon', 'todo',
+                                       'viewcode']] \
     + ['sphinxcontrib.%s' % ext for ext in []]
 
 # Only activate spelling, if it is installed.  It is not required in the
@@ -79,6 +80,9 @@ intersphinx_mapping = {k: (v, os.getenv('SPHINX_%s_OBJECTS' % k.upper()))
 # spelling extension settings
 spelling_lang = 'en_GB'
 spelling_word_list_filename = 'wordlist.txt'
+
+# napoleon extension settings
+napoleon_numpy_docstring = False
 
 # todo extension settings
 todo_include_todos = True

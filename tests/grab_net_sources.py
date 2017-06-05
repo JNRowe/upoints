@@ -51,9 +51,10 @@ def data_file(resource):
     >>> print data_file(SOURCES[3])
     tests/data/alltrigs-wgs84.txt
 
-    :parameters str resource: Source
-    :rtype: `str`
-    :return: Local filename
+    Args:
+        resource (str): Source
+    Returns:
+        str: Local filename
     """
     filename = os.path.join(os.path.dirname(__file__), 'data',
                             os.path.basename(urlparse(resource[0]).path))
@@ -67,7 +68,8 @@ def data_file(resource):
 def main(argv=None):
     """Main script handler.
 
-    :param list argv: Command line arguments
+    Args:
+        argv (list): Command line arguments
     """
     print('*WARNING* This script will fetch some data files that can not be '
           'distributed legally!  In some jurisdictions you may not even be '

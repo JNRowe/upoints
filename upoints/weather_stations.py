@@ -43,18 +43,19 @@ class Station(trigpoints.Trigpoint):
                  ua_latitude, ua_longitude, altitude, ua_altitude, rbsn):
         """Initialise a new ``Station`` object.
 
-        :param str alt_id: Alternate location identifier
-        :param str name: Station's name
-        :param str state: State name, if station is in the US
-        :param str country: Country name
-        :param int wmo: WMO region code
-        :param float latitude: Station's latitude
-        :param float longitude: Station's longitude
-        :param float ua_latitude: Station's upper air latitude
-        :param float ua_longitude: Station's upper air longitude
-        :param int altitude: Station's elevation
-        :param int ua_altitude: Station's upper air elevation
-        :param bool rbsn: True if station belongs to RSBN
+        Args:
+            alt_id (str): Alternate location identifier
+            name (str): Station's name
+            state (str): State name, if station is in the US
+            country (str): Country name
+            wmo (int): WMO region code
+            latitude (float): Station's latitude
+            longitude (float): Station's longitude
+            ua_latitude (float): Station's upper air latitude
+            ua_longitude (float): Station's upper air longitude
+            altitude (int): Station's elevation
+            ua_altitude (int): Station's upper air elevation
+            rbsn (bool): True if station belongs to RSBN
         """
         super(Station, self).__init__(latitude, longitude, altitude, name)
         self.alt_id = alt_id
@@ -69,22 +70,25 @@ class Station(trigpoints.Trigpoint):
     def __str__(self):
         """Pretty printed location string.
 
-        .. seealso::
+        See also:
+           ``trigpoints.point.Point``
 
-           :type :class:`trigpoints.point.Point`
-
-        :rtype: ``str``
-        :return: Human readable string representation of ``Station`` object
+        Returns:
+            str: Human readable string representation of ``Station`` object
         """
         return self.__format__()
 
     def __format__(self, format_spec='dd'):
         """Extended pretty printing for location strings.
 
-        :param str format_spec: Coordinate formatting system to use
-        :rtype: ``str``
-        :return: Human readable string representation of ``Point`` object
-        :raise ValueError: Unknown value for ``format_spec``
+        Args:
+            format_spec str: Coordinate formatting system to use
+
+        Returns:
+            Human readable string representation of ``Point`` object
+
+        Raises:
+            ValueError: Unknown value for ``format_spec``
         """
         text = super(Station.__base__, self).__format__(format_spec)
 
@@ -158,12 +162,15 @@ class Stations(point.KeyedPoints):
                              5, -9.433333, 147.216667, -9.433333, 147.216667,
                              38, 49, True}
 
-        :type data: ``file``, ``list`` or ``str``
-        :param data: NOAA station data to read
-        :param str index: The identifier type used in the file
-        :rtype: ``dict``
-        :return: WMO locations with `Station` objects
-        :raise FileFormatError: Unknown file format
+        Args:
+            data (iter): NOAA station data to read
+            index (str): The identifier type used in the file
+
+        Returns:
+            dict: WMO locations with `Station` objects
+
+        Raises:
+            FileFormatError: Unknown file format
 
         .. _NOAA: http://weather.noaa.gov/
         .. _station location page: http://weather.noaa.gov/tg/site.shtml

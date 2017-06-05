@@ -56,31 +56,31 @@ class Location(trigpoints.Trigpoint):
                  tzname, modified_date, timezone=None):
         """Initialise a new ``Location`` object.
 
-        :param int geonameid: ID of record in geonames database
-        :param unicode name: Name of geographical location
-        :param str asciiname: Name of geographical location in ASCII encoding
-        :type alt_names: ``list`` of ``unicode``
-        :param alt_names: Alternate names for the location
-        :param float latitude: Location's latitude
-        :param float longitude: Location's longitude
-        :param str feature_class: Location's type
-        :param str feature_code: Location's code
-        :param str country: Location's country
-        :param str alt_country: Alternate country codes for location
-        :param str admin1: FIPS code (subject to change to ISO code), ISO code
-            for the US and CH
-        :param str admin2: Code for the second administrative division, a county
-            in the US
-        :param str admin3: Code for third level administrative division
-        :param str admin4: Code for fourth level administrative division
-        :param int population: Location's population, if applicable
-        :param int altitude: Location's elevation
-        :param int gtopo30: Average elevation of 900 square metre region, if
-            available
-        :param str tzname: The timezone identifier using POSIX timezone names
-        :param datetime.date modified_date: Location's last modification date
-            in the geonames databases
-        :param int timezone: The non-DST timezone offset from UTC in minutes
+        Args:
+            geonameid (int): ID of record in geonames database
+            name (unicode): Name of geographical location
+            asciiname (str): Name of geographical location in ASCII encoding
+            alt_names (list of unicode): Alternate names for the location
+            latitude (float): Location's latitude
+            longitude (float): Location's longitude
+            feature_class (str): Location's type
+            feature_code (str): Location's code
+            country (str): Location's country
+            alt_country (str): Alternate country codes for location
+            admin1 (str): FIPS code (subject to change to ISO code), ISO code
+                for the US and CH
+            admin2 (str): Code for the second administrative division, a county
+                in the US
+            admin3 (str): Code for third level administrative division
+            admin4 (str): Code for fourth level administrative division
+            population (int): Location's population, if applicable
+            altitude (int): Location's elevation
+            gtopo30 (int): Average elevation of 900 square metre region, if
+                available
+            tzname (str): The timezone identifier using POSIX timezone names
+            modified_date (datetime.date): Location's last modification date
+                in the geonames databases
+            timezone (int): The non-DST timezone offset from UTC in minutes
         """
         super(Location, self).__init__(latitude, longitude, altitude, name)
         self.geonameid = geonameid
@@ -116,22 +116,25 @@ class Location(trigpoints.Trigpoint):
     def __str__(self):
         """Pretty printed location string.
 
-        .. seealso::
+        See also:
+            trigpoints.point.Point
 
-           :type :class:`trigpoints.point.Point`
-
-        :rtype: ``str``
-        :return: Human readable string representation of ``Location`` object
+        Returns:
+            str: Human readable string representation of ``Location`` object
         """
         return self.__format__()
 
     def __format__(self, format_spec='dd'):
         """Extended pretty printing for location strings.
 
-        :param str format_spec: Coordinate formatting system to use
-        :rtype: ``str``
-        :return: Human readable string representation of ``Point`` object
-        :raise ValueError: Unknown value for ``format_spec``
+        Args:
+            format_spec (str): Coordinate formatting system to use
+
+        Returns:
+            str: Human readable string representation of ``Point`` object
+
+        Raises:
+            ValueError: Unknown value for ``format_spec``
         """
         text = super(Location.__base__, self).__format__(format_spec)
 
@@ -196,11 +199,14 @@ class Locations(point.Points):
                       None, 0, None, 28, "Europe/London",
                       datetime.date(2006, 8, 21))]
 
-        :type data: ``file``, ``list`` or ``str``
-        :param data: geonames.org locations data to read
-        :rtype: ``list``
-        :return: geonames.org identifiers with :class:`Location` objects
-        :raise FileFormatError: Unknown file format
+        Args:
+            data (iter): geonames.org locations data to read
+
+        Returns:
+            list: geonames.org identifiers with :class:`Location` objects
+
+        Raises:
+            FileFormatError: Unknown file format
 
         .. _geonames.org: http://www.geonames.org/
         .. _database export page: http://download.geonames.org/export/dump/
@@ -256,11 +262,14 @@ class Locations(point.Points):
              "Asia/Dubai": (240, 240),
              "Asia/Kabul": (270, 270)}
 
-        :type data: ``file``, ``list`` or ``str``
-        :param data: geonames.org timezones data to read
-        :rtype: ``list``
-        :return: geonames.org timezone identifiers with their UTC offsets
-        :raise FileFormatError: Unknown file format
+        Args:
+            data (iter): geonames.org timezones data to read
+
+        Returns:
+            list: geonames.org timezone identifiers with their UTC offsets
+
+        Raises:
+            FileFormatError: Unknown file format
 
         .. _geonames.org: http://www.geonames.org/
         .. _database export page: http://download.geonames.org/export/dump/

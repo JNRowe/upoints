@@ -32,12 +32,13 @@ class Trigpoint(point.Point):
 
     """Class for representing a location from a trigpoint marker file.
 
-    .. warning::
-       Although this class stores and presents the representation of altitude
-       it doesn't take it in to account when making calculations.  For example,
-       consider a point at the base of Mount Everest and a point at the peak of
-       Mount Everest the actual distance travelled between the two would be
-       considerably larger than the reported value calculated at ground level.
+    Warning:
+        Although this class stores and presents the representation of altitude
+        it doesn't take it in to account when making calculations.  For
+        example, consider a point at the base of Mount Everest and a point at
+        the peak of Mount Everest the actual distance travelled between the two
+        would be considerably larger than the reported value calculated at
+        ground level.
 
     .. versionadded:: 0.2.0
     """
@@ -48,11 +49,12 @@ class Trigpoint(point.Point):
                  identity=None):
         """Initialise a new ``Trigpoint`` object.
 
-        :param float latitude: Location's latitude
-        :param float longitude: Location's longitude
-        :param float altitude: Location's altitude
-        :param str name: Name for location
-        :param int identity: Database identifier, if known
+        Args:
+            latitude (float): Location's latitude
+            longitude (float): Location's longitude
+            altitude (float): Location's altitude
+            name (str): Name for location
+            identity (int): Database identifier, if known
         """
         super(Trigpoint, self).__init__(latitude, longitude)
         self.altitude = altitude
@@ -62,22 +64,25 @@ class Trigpoint(point.Point):
     def __str__(self):
         """Pretty printed location string.
 
-        .. seealso::
+        See also:
+           trigpoints.point.Point
 
-           :type :class:`trigpoints.point.Point`
-
-        :rtype: ``str``
-        :return: Human readable string representation of ``Station`` object
+        Returns:
+            str: Human readable string representation of ``Station`` object
         """
         return self.__format__()
 
     def __format__(self, format_spec='dms'):
         """Extended pretty printing for location strings.
 
-        :param str format_spec: Coordinate formatting system to use
-        :rtype: ``str``
-        :return: Human readable string representation of ``Trigpoint`` object
-        :raise ValueError: Unknown value for ``format_spec``
+        Args:
+            format_spec (str): Coordinate formatting system to use
+
+        Returns:
+            str: Human readable string representation of ``Trigpoint`` object
+
+        Raises:
+            ValueError: Unknown value for ``format_spec``
         """
         location = [super(Trigpoint, self).__format__(format_spec), ]
         if self.altitude:
@@ -129,11 +134,14 @@ class Trigpoints(point.KeyedPoints):
              501097: point.Point(52.010585, -0.173443, 97.0, "Bygrave"),
              505392: point.Point(51.910886, -0.186462, 136.0, "Sish Lane")}
 
-        :type marker_file: ``file``, ``list`` or ``str``
-        :param marker_file: Trigpoint marker data to read
-        :rtype: ``dict``
-        :return: Named locations with :class:`Trigpoint` objects
-        :raise ValueError: Invalid value for ``marker_file``
+        Args:
+            marker_file (iter): Trigpoint marker data to read
+
+        Returns:
+            dict: Named locations with :class:`Trigpoint` objects
+
+        Raises:
+            ValueError: Invalid value for ``marker_file``
 
         .. _alltrigs-wgs84.txt: http://www.haroldstreet.org.uk/trigpoints/
         """

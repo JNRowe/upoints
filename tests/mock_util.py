@@ -34,11 +34,11 @@ BASEDIR = os.path.dirname(__file__)
 def isfile(path):
     """Mock `isfile` to check existence of test files.
 
-    :Parameters:
-        path : `str`
-            File to check for existence
-    :rtype: `bool`
-    :return: `True` if file exists, `False` otherwise
+    Args:
+        path (str): File to check for existence
+
+    Returns:
+        bool: `True` if file exists
     """
     filename = os.path.basename(path)
     try:
@@ -50,12 +50,14 @@ def isfile(path):
 def _get_test_file(filename):
     """Open a test data file.
 
-    :Parameters:
-        filename : `str`
-            Basename of the test data to open
-    :rtype: `file`
-    :return: Test data
-    :raise IOError: When the file can't be opened for reading
+    Args:
+        filename (str): Basename of the test data to open
+
+    Returns:
+        file: Test data
+
+    Raises:
+        IOError: When the file can't be opened for reading
     """
     if isfile(filename):
         return __builtin__.open(os.path.join(BASEDIR, 'data', filename))
@@ -70,15 +72,16 @@ def _get_test_file(filename):
 def open(filename, mode='rb'):
     """Mock `open` function to open test data files.
 
-    :Parameters:
-        filename : `str`
-            File to simulate, basename is used as local file name
-        mode : `str`
-            Valid `file` mode string
-    :rtype: `file`
-    :return: File object opened from test data directory, or ``StringIO.StringIO``
-        object if a writable file is expected
-    :raise NotImplementedError: When attempting to use an unhandled file mode
+    Args:
+        filename (str): File to simulate, basename is used as local file name
+        mode (str): Valid `file` mode string
+
+    Returns::
+        file: File object opened from test data directory, or
+            ``StringIO.StringIO`` object if a writable file is expected
+
+    Raises:
+        NotImplementedError: When attempting to use an unhandled file mode
     """
     if 'r' in mode:
         return _get_test_file(os.path.basename(filename))
@@ -90,15 +93,13 @@ def open(filename, mode='rb'):
 def urlopen(url, data=None, proxies=None):
     """Mock `urlopen` to open test data files.
 
-    :Parameters:
-        url : `str`
-            URL to simulate, basename is used as local file name
-        data : any
-            Ignored, just for compatibility with `urlopen` callers
-        proxies : any
-            Ignored, just for compatibility with `urlopen` callers
-    :rtype: `file`
-    :return: File object from test data directory
+    Args:
+        url (str): URL to simulate, basename is used as local file name
+        data (any): Ignored, just for compatibility with `urlopen` callers
+        proxies (any): Ignored, just for compatibility with `urlopen` callers
+
+    Returns:
+        file: File object from test data directory
     """
     return _get_test_file(os.path.basename(url))
 urllib.urlopen = urlopen
@@ -106,18 +107,18 @@ urllib.urlopen = urlopen
 class pymetar(ModuleType):
     """Mock `pymetar` infrastructure for tests.
 
-    :since: 0.6.0
+    .. versionadded:: 0.6.0
 
-    :see: `pymetar <http://www.schwarzvogel.de/software-pymetar.shtml>`__
+    See also:
+        `pymetar <http://www.schwarzvogel.de/software-pymetar.shtml>`__
     """
     class ReportFetcher(object):
         def __init__(self, StationCode=None):
             """Mock `ReportFetcher` initialisation for tests.
 
-            :Parameters:
-                StationCode : any
-                    Ignored, just for compatibility with `ReportFetcher`
-                    callers
+            Args:
+                StationCode (any): Ignored, just for compatibility with
+                    `ReportFetcher` callers
             """
             super(pymetar.ReportFetcher, self).__init__()
 
@@ -132,10 +133,9 @@ class pymetar(ModuleType):
             def __init__(self, MetarReport=None):
                 """Mock ``ParseReport`` object to return test data.
 
-                :Parameters:
-                    MetarReport : any
-                        Ignored, just for compatibility with ``FetchReport``
-                        callers
+                Args:
+                    MetarReport (any): Ignored, just for compatibility with
+                        ``FetchReport`` callers
                 """
                 super(pymetar.ReportParser.ParseReport, self).__init__()
 
@@ -143,8 +143,8 @@ class pymetar(ModuleType):
             def getTemperatureCelsius():
                 """Mock `getTemperatureCelsius`
 
-                :rtype: `float`
-                :return: Sample temperature data for tests
+                Returns:
+                    float: Sample temperature data for tests
                 """
                 return 10.3
 
@@ -152,8 +152,8 @@ class pymetar(ModuleType):
             def getISOTime():
                 """Mock `getISOTime`
 
-                :rtype: `str`
-                :return: Sample ISO time string
+                Returns:
+                    str: Sample ISO time string
                 """
                 return '2007-11-28 19:20:00Z'
 

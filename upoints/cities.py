@@ -62,19 +62,20 @@ class City(trigpoints.Trigpoint):
                  entered):
         """Initialise a new ``City`` object.
 
-        :param int identifier: Numeric identifier for object
-        :param str name: Place name
-        :param str ptype: Type of place
-        :param str region: Region place can be found
-        :param str country: Country name place can be found
-        :param str location: Body place can be found
-        :param int population: Place's population
-        :param int size: Place's area
-        :param float latitude: Station's latitude
-        :param float longitude: Station's longitude
-        :param int altitude: Station's elevation
-        :param time.struct_time date: Date the entry was added
-        :param str entered: Entry's author
+        Args:
+            identifier (int): Numeric identifier for object
+            name (str): Place name
+            ptype (str): Type of place
+            region (str): Region place can be found
+            country (str): Country name place can be found
+            location (str): Body place can be found
+            population (int): Place's population
+            size (int): Place's area
+            latitude (float): Station's latitude
+            longitude (float): Station's longitude
+            altitude (int): Station's elevation
+            date (time.struct_time): Date the entry was added
+            entered (str): Entry's author
         """
         super(City, self).__init__(latitude, longitude, altitude, name)
         self.identifier = identifier
@@ -90,8 +91,8 @@ class City(trigpoints.Trigpoint):
     def __str__(self):
         """Pretty printed location string.
 
-        :rtype: ``str``
-        :return: Human readable string representation of ``City`` object
+        Returns:
+            str: Human readable string representation of ``City`` object
         """
         values = map(utils.value_or_empty,
                      (self.identifier, self.ptype,
@@ -165,13 +166,15 @@ class Cities(point.Points):
                   "Earth", -3.867, 5.333, None, (1996, 12, 6, 0, 0, 0, 4,
                   341, -1), "Rob.Hooft@EMBL-Heidelberg.DE")])
 
-        :type data: ``file``, ``list`` or ``str``
-        :param data:
-            :abbr:`NOAA (National Oceanographic and Atmospheric Administration)`
-            station data to read
-        :rtype: ``list``
-        :return: Places as ``City`` objects
-        :raise TypeError: Invalid value for data
+        Args:
+            data (iter): :abbr:`NOAA (National Oceanographic and Atmospheric Administration)`
+                station data to read
+
+        Returns:
+            list: Places as ``City`` objects
+
+        Raises:
+            TypeError: Invalid value for data
 
         .. _GNU miscfiles: http://directory.fsf.org/project/miscfiles/
         """
