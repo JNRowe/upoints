@@ -28,15 +28,17 @@ import urllib
 from types import ModuleType
 
 from tests import grab_net_sources
+
+
 SOURCES = dict((os.path.basename(s), s) for s in grab_net_sources.SOURCES)
 BASEDIR = os.path.dirname(__file__)
 
-def isfile(path):
-    """Mock `isfile` to check existence of test files.
 
-    :Parameters:
-        path : `str`
-            File to check for existence
+def isfile(path):
+    """Mock ``isfile`` to check existence of test files.
+
+    :type path: str
+    :param path: File to check for existence
     :rtype: `bool`
     :return: `True` if file exists, `False` otherwise
     """
@@ -47,12 +49,12 @@ def isfile(path):
         return False
     return True
 
+
 def _get_test_file(filename):
     """Open a test data file.
 
-    :Parameters:
-        filename : `str`
-            Basename of the test data to open
+    :type filename: str
+    :param filename: Basename of the test data to open
     :rtype: `file`
     :return: Test data
     :raise IOError: When the file can't be opened for reading
@@ -67,8 +69,9 @@ def _get_test_file(filename):
         else:
             raise IOError('Can not open %r' % filename)
 
+
 def open(filename, mode='rb'):
-    """Mock `open` function to open test data files.
+    """Mock ``open`` function to open test data files.
 
     :Parameters:
         filename : `str`
@@ -76,8 +79,8 @@ def open(filename, mode='rb'):
         mode : `str`
             Valid `file` mode string
     :rtype: `file`
-    :return: File object opened from test data directory, or ``StringIO.StringIO``
-        object if a writable file is expected
+    :return: File object opened from test data directory, or
+        ``StringIO.StringIO`` object if a writable file is expected
     :raise NotImplementedError: When attempting to use an unhandled file mode
     """
     if 'r' in mode:
@@ -87,8 +90,9 @@ def open(filename, mode='rb'):
     else:
         raise NotImplementedError
 
+
 def urlopen(url, data=None, proxies=None):
-    """Mock `urlopen` to open test data files.
+    """Mock ``urlopen`` to open test data files.
 
     :Parameters:
         url : `str`
@@ -103,8 +107,9 @@ def urlopen(url, data=None, proxies=None):
     return _get_test_file(os.path.basename(url))
 urllib.urlopen = urlopen
 
+
 class pymetar(ModuleType):
-    """Mock `pymetar` infrastructure for tests.
+    """Mock ``pymetar`` infrastructure for tests.
 
     :since: 0.6.0
 
@@ -125,7 +130,6 @@ class pymetar(ModuleType):
         def FetchReport():
             """Mock ``FetchReport`` function to pass tests."""
             pass
-
 
     class ReportParser(object):
         class ParseReport(object):
@@ -156,4 +160,3 @@ class pymetar(ModuleType):
                 :return: Sample ISO time string
                 """
                 return '2007-11-28 19:20:00Z'
-

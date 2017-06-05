@@ -98,7 +98,6 @@ class TestWaypoints(TestCase):
             xml_compare(e1, e2)
 
 
-
 class TestTrackpoint(TestCase):
     @params(
         ((52, 0), 'Trackpoint(52.0, 0.0, None, None, None, None)'),
@@ -124,7 +123,6 @@ class TestTrackpoints(TestCase):
         tracks_xml = etree.parse('tests/data/gpx_tracks')
         for e1, e2 in zip(export.getiterator(), tracks_xml.getiterator()):
             xml_compare(e1, e2)
-
 
 
 class TestRoutepoint(TestCase):

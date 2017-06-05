@@ -94,7 +94,7 @@ class TestNode(TestCase):
     def test_fetch_area_osm(self):
         # FIXME: The following test is skipped, because the Osm object doesn't
         # support a reliable way __repr__ method.
-        #expect(Home.fetch_area_osm(3)
+        # expect(Home.fetch_area_osm(3)
         pass
 
 
