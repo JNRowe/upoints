@@ -302,7 +302,7 @@ class TestPoints(TestCase):
 
 
 class TestTimedPoints(TestCase):
-    def speed(self):
+    def test_speed(self):
         locations = TimedPoints()
         locations.extend([
             TimedPoint(52.015, -0.221,
