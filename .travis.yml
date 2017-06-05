@@ -1,24 +1,27 @@
-language:
-    python
+sudo: false
+language: python
+cache:
+    directories:
+        - $HOME/.cache/pip
+git:
+    depth:
+        - 1
+matrix:
+    allow_failures:
+        python: 2.6
+    fast_finish: true
 python:
   - 2.6
   - 2.7
-  - 3.2
   - 3.3
   - 3.4
   - 3.5
   - 3.6
 install:
-  # We don't want to support external fetches, but the 2.6 case is forcing it on
-  # us for argparse
-  - if [[ $TRAVIS_PYTHON_VERSION == '2.6' ]]; then
-      pip install --allow-external argparse -r extra/requirements-test.txt;
-    else
-      pip install -r extra/requirements-test.txt;
-    fi
-  - pip install .
+  - pip install -r extra/requirements.txt
+  - pip install -r extra/requirements-test.txt
 script:
-    nose2 tests
+  - nose2 tests
 branches:
   except:
     - /^play\/.*$/
