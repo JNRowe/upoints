@@ -22,6 +22,7 @@ import datetime
 from unittest import TestCase
 
 from expecter import expect
+from nose2.tools import params
 
 from upoints.geonames import (Location, Locations)
 from upoints.utils import FileFormatError
@@ -40,29 +41,31 @@ class TestLocation(TestCase):
              "-0.2166667, 'P', 'PPL', 'GB', None, 'F8', None, None, None, "
              "6245, None, 77, 'Europe/London', datetime.date(2007, 6, 15), 0)")
 
-    def test___str__(self):
-        expect(str(self.x)) == 'Stotfold (N52.000°; W000.217°)'
-        self.x.alt_names = ['Home', 'Target']
-        expect(str(self.x)) == 'Stotfold (Home, Target - N52.000°; W000.217°)'
-        self.x.alt_names = None
+    @params(
+        (None, 'Stotfold (N52.000°; W000.217°)'),
+        (['Home', 'Target'], 'Stotfold (Home, Target - N52.000°; W000.217°)'),
+    )
+    def test___str__(self, names, result):
+        self.x.alt_names = names
+        expect(str(self.x)) == result
 
-    def test___format__(self):
-        expect(format(self.x, 'dms')) == \
-            """Stotfold (52°00'00"N, 000°13'00"W)"""
-        expect(format(self.x, 'dm')) == \
-            "Stotfold (52°00.00'N, 000°13.00'W)"
+    @params(
+        ('dms', """Stotfold (52°00'00"N, 000°13'00"W)"""),
+        ('dm', "Stotfold (52°00.00'N, 000°13.00'W)"),
+    )
+    def test___format__(self, style, result):
+        expect(format(self.x, style)) == result
 
 
 class TestLocations(TestCase):
     def test_import_locations(self):
-        locations = Locations(open('tests/data/geonames'))
-        expect(str(locations[0])) == \
-            'Afon Wyre (River Wayrai, River Wyrai, Wyre - N52.317°; W004.167°)'
-        expect(str(locations[1])) == \
-            'Wyre (Viera - N59.117°; W002.967°)'
-        expect(str(locations[2])) == \
-            'Wraysbury (Wyrardisbury - N51.450°; W000.550°)'
+        expect([str(l) for l in Locations(open('tests/data/geonames'))]) == [
+            'Afon Wyre (River Wayrai, River Wyrai, Wyre - N52.317°; W004.167°)',
+            'Wyre (Viera - N59.117°; W002.967°)',
+            'Wraysbury (Wyrardisbury - N51.450°; W000.550°)',
+        ]
 
+    def test_import_locations_error(self):
         with expect.raises(FileFormatError,
                            "Incorrect data format, if you're using a file "
                            'downloaded from geonames.org please report this '
@@ -71,15 +74,18 @@ class TestLocations(TestCase):
 
     def test_import_timezones_file(self):
         locations = Locations(None, open('tests/data/geonames_timezones'))
-        timezones = locations.timezones
-        expect(timezones['Asia/Dubai']) == [240, 240]
-        expect(timezones['Asia/Kabul']) == [270, 270]
-        expect(timezones['Europe/Andorra']) == [60, 120]
+        expect(locations.timezones) == {
+            'Asia/Dubai': [240, 240],
+            'Asia/Kabul': [270, 270],
+            'Europe/Andorra': [60, 120],
+        }
 
+    def test_import_timezones_file_header(self):
         header_skip_check = Locations(None,
                                       open('tests/data/geonames_timezones_header'))
         expect(header_skip_check) == Locations()
 
+    def test_import_timezones_file_error(self):
         with expect.raises(FileFormatError,
                            "Incorrect data format, if you're using a file "
                            'downloaded from geonames.org please report this '

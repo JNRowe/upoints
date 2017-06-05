@@ -22,17 +22,22 @@ import datetime
 from unittest import TestCase
 
 from expecter import expect
+from nose2.tools import params
 
 from upoints.nmea import (Fix, Locations, LoranPosition, Position, Waypoint,
                           calc_checksum, nmea_latitude, nmea_longitude,
                           parse_latitude, parse_longitude)
 
 
-def test_calc_checksum():
-    expect(calc_checksum('$GPGGA,142058,5308.6414,N,00300.9257,W,1,04,5.6,1374.6,M,34.5,M,,*6B')) == 107
-    expect(calc_checksum('GPGGA,142058,5308.6414,N,00300.9257,W,1,04,5.6,1374.6,M,34.5,M,,*6B')) == 107
-    expect(calc_checksum('$GPGGA,142058,5308.6414,N,00300.9257,W,1,04,5.6,1374.6,M,34.5,M,,')) == 107
-    expect(calc_checksum('GPGGA,142058,5308.6414,N,00300.9257,W,1,04,5.6,1374.6,M,34.5,M,,')) == 107
+@params(
+    ('$', '*6B'),
+    ('', '*6B'),
+    ('$', ''),
+    ('', ''),
+)
+def test_calc_checksum(start, end):
+    s = 'GPGGA,142058,5308.6414,N,00300.9257,W,1,04,5.6,1374.6,M,34.5,M,,'
+    expect(calc_checksum(start + s + end)) == 107
 
 
 def test_nmea_latitude():
@@ -52,23 +57,29 @@ def test_parse_longitude():
 
 
 class TestLoranPosition(TestCase):
-    def test___repr__(self):
-        expect(repr(LoranPosition(53.1440233333, -3.01542833333,
-                                  datetime.time(14, 20, 58, 14), True, None))) == \
-            ('LoranPosition(53.1440233333, -3.01542833333, '
-             'datetime.time(14, 20, 58, 14), True, None)')
-        expect(repr(LoranPosition(53.1440233333, -3.01542833333,
-                                  datetime.time(14, 20, 58, 14), True, 'A'))) == \
-            ('LoranPosition(53.1440233333, -3.01542833333, '
-             "datetime.time(14, 20, 58, 14), True, 'A')")
+    @params(
+        ((53.1440233333, -3.01542833333, datetime.time(14, 20, 58, 14), True,
+          None),
+         'LoranPosition(53.1440233333, -3.01542833333, '
+                        'datetime.time(14, 20, 58, 14), True, None)'),
+        ((53.1440233333, -3.01542833333, datetime.time(14, 20, 58, 14), True,
+          'A'),
+         'LoranPosition(53.1440233333, -3.01542833333, '
+                        "datetime.time(14, 20, 58, 14), True, 'A')"),
+    )
+    def test___repr__(self, args, result):
+        expect(repr(LoranPosition(*args))) == result
 
-    def test___str__(self):
-        expect(str(LoranPosition(53.1440233333, -3.01542833333,
-                                 datetime.time(14, 20, 58), True, None))) == \
-            '$GPGLL,5308.6414,N,00300.9257,W,142058.00,A*1F\r'
-        expect(str(LoranPosition(53.1440233333, -3.01542833333,
-                                 datetime.time(14, 20, 58), True, 'A'))) == \
-            '$GPGLL,5308.6414,N,00300.9257,W,142058.00,A,A*72\r'
+    @params(
+        ((53.1440233333, -3.01542833333, datetime.time(14, 20, 58, 14), True,
+          None),
+         '$GPGLL,5308.6414,N,00300.9257,W,142058.00,A*1F\r'),
+        ((53.1440233333, -3.01542833333, datetime.time(14, 20, 58, 14), True,
+          'A'),
+         '$GPGLL,5308.6414,N,00300.9257,W,142058.00,A,A*72\r'),
+    )
+    def test___str__(self, args, result):
+        expect(str(LoranPosition(*args))) == result
 
     def test_mode_string(self):
         position = LoranPosition(53.1440233333, -3.01542833333,
@@ -146,17 +157,18 @@ class TestFix(TestCase):
     def test_quality_string(self):
         expect(str(self.x.quality_string())) == 'GPS'
 
-    def parse_elements(self):
-        expect(repr(Fix.parse_elements(['142058', '5308.6414', 'N',
-                                        '00300.9257', 'W', '1', '04', '5.6',
-                                        '1374.6', 'M', '34.5', 'M', '', '']))) == \
-            ('Fix(datetime.time(14, 20, 58), 53.1440233333, -3.01542833333, '
-             '1, 4, 5.6, 1374.6, 34.5, None, None, None)')
-        expect(repr(Fix.parse_elements(['142100', '5200.9000', 'N',
-                                        '00316.6600', 'W', '1', '04', '5.6',
-                                        '1000.0', 'M', '34.5', 'M', '', '']))) == \
-            ('Fix(datetime.time(14, 21), 52.015, -3.27766666667, 1, 4, 5.6, '
-             '1000.0, 34.5, None, None, None)')
+    @params(
+        (['142058', '5308.6414', 'N', '00300.9257', 'W', '1', '04', '5.6',
+          '1374.6', 'M', '34.5', 'M', '', ''],
+         'Fix(datetime.time(14, 20, 58), %s, %s, 1, 4, 5.6, 1374.6, 34.5, '
+         'None, None, None)' % (53.14402333333334, -3.0154283333333334)),
+        (['142100', '5200.9000', 'N', '00316.6600', 'W', '1', '04', '5.6',
+          '1000.0', 'M', '34.5', 'M', '', ''],
+         'Fix(datetime.time(14, 21), %s, %s, 1, 4, 5.6, 1000.0, 34.5, None, '
+         'None, None)' % (52.015, -3.2776666666666667)),
+    )
+    def test_parse_elements(self, elements, result):
+        expect(repr(Fix.parse_elements(elements))) == result
 
 
 class TestWaypoint(TestCase):
@@ -177,14 +189,10 @@ class TestWaypoint(TestCase):
 class TestLocations(TestCase):
     def test_import_locations(self):
         locations = Locations(open('tests/data/gpsdata'))
-        data = list(map(str, locations))
-        expect(data[0]) == \
-            '$GPGGA,142058,5308.6414,N,00300.9257,W,1,04,5.6,1374.6,M,34.5,M,,*6B\r'
-        expect(data[1]) == \
-            '$GPRMC,142058,A,5308.6414,N,00300.9257,W,109394.7,202.9,191107,5,E,A*2C\r'
-        expect(data[2]) == \
-            '$GPWPL,5200.9000,N,00013.2600,W,HOME*5E\r'
-        expect(data[3]) == \
-            '$GPGGA,142100,5200.9000,N,00316.6600,W,1,04,5.6,1000.0,M,34.5,M,,*68\r'
-        expect(data[4]) == \
-            '$GPRMC,142100,A,5200.9000,N,00316.6600,W,123142.7,188.1,191107,5,E,A*21\r'
+        expect([str(x) for x in locations]) == [
+            '$GPGGA,142058,5308.6414,N,00300.9257,W,1,04,5.6,1374.6,M,34.5,M,,*6B\r',
+            '$GPRMC,142058,A,5308.6414,N,00300.9257,W,109394.7,202.9,191107,5,E,A*2C\r',
+            '$GPWPL,5200.9000,N,00013.2600,W,HOME*5E\r',
+            '$GPGGA,142100,5200.9000,N,00316.6600,W,1,04,5.6,1000.0,M,34.5,M,,*68\r',
+            '$GPRMC,142100,A,5200.9000,N,00316.6600,W,123142.7,188.1,191107,5,E,A*21\r',
+        ]

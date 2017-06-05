@@ -20,6 +20,7 @@
 from unittest import TestCase
 
 from expecter import expect
+from nose2.tools import params
 
 from upoints.weather_stations import (Station, Stations)
 
@@ -44,11 +45,13 @@ class TestStation(TestCase):
             'London / Heathrow Airport (N51.483°; W000.450°)'
         self.x.alt_id = 'EGLL'
 
-    def test___format__(self):
-        expect(format(self.x, 'dms')) == \
-            """London / Heathrow Airport (EGLL - 51°28'59"N, 000°27'00"W)"""
-        expect(format(self.x, 'dm')) == \
-            "London / Heathrow Airport (EGLL - 51°29.00'N, 000°27.00'W)"
+    @params(
+        ('dms',
+         """London / Heathrow Airport (EGLL - 51°28'59"N, 000°27'00"W)"""),
+        ('dm', "London / Heathrow Airport (EGLL - 51°29.00'N, 000°27.00'W)"),
+    )
+    def test___format__(self, style, result):
+        expect(format(self.x, style)) == result
 
 
 class TestStations(TestCase):

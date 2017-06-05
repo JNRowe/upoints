@@ -28,16 +28,17 @@ import urllib
 from types import ModuleType
 
 from tests import grab_net_sources
+
+
 SOURCES = dict((os.path.basename(s), s) for s in grab_net_sources.SOURCES)
 BASEDIR = os.path.dirname(__file__)
 
 
 def isfile(path):
-    """Mock `isfile` to check existence of test files.
+    """Mock ``isfile`` to check existence of test files.
 
-    :Parameters:
-        path : `str`
-            File to check for existence
+    :type path: str
+    :param path: File to check for existence
     :rtype: `bool`
     :return: `True` if file exists, `False` otherwise
     """
@@ -52,9 +53,8 @@ def isfile(path):
 def _get_test_file(filename):
     """Open a test data file.
 
-    :Parameters:
-        filename : `str`
-            Basename of the test data to open
+    :type filename: str
+    :param filename: Basename of the test data to open
     :rtype: `file`
     :return: Test data
     :raise IOError: When the file can't be opened for reading
@@ -71,7 +71,7 @@ def _get_test_file(filename):
 
 
 def open(filename, mode='rb'):
-    """Mock `open` function to open test data files.
+    """Mock ``open`` function to open test data files.
 
     :Parameters:
         filename : `str`
@@ -92,7 +92,7 @@ def open(filename, mode='rb'):
 
 
 def urlopen(url, data=None, proxies=None):
-    """Mock `urlopen` to open test data files.
+    """Mock ``urlopen`` to open test data files.
 
     :Parameters:
         url : `str`
@@ -111,7 +111,7 @@ urllib.urlopen = urlopen
 
 
 class pymetar(ModuleType):
-    """Mock `pymetar` infrastructure for tests.
+    """Mock ``pymetar`` infrastructure for tests.
 
     :since: 0.6.0
 

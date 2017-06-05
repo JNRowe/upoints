@@ -21,6 +21,7 @@ from operator import attrgetter
 from unittest import TestCase
 
 from expecter import expect
+from nose2.tools import params
 
 from upoints.tzdata import (Zone, Zones)
 
@@ -30,26 +31,30 @@ class TestZone(TestCase):
         expect(repr(Zone('+513030-0000731', 'GB', 'Europe/London'))) == \
             "Zone('+513030-0000730', 'GB', 'Europe/London', None)"
 
-    def test___str__(self):
-        expect(str(Zone('+513030-0000731', 'GB', 'Europe/London'))) == \
-            """Europe/London (GB: 51°30'30"N, 000°07'30"W)"""
-        expect(str(Zone('+0658-15813', 'FM', 'Pacific/Ponape',
-                        ['Ponape (Pohnpei)', ]))) == \
-            """Pacific/Ponape (FM: 06°58'00"N, 158°13'00"W also Ponape (Pohnpei))"""
+    @params(
+        (('+513030-0000731', 'GB', 'Europe/London'),
+         """Europe/London (GB: 51°30'30"N, 000°07'30"W)"""),
+        (('+0658-15813', 'FM', 'Pacific/Ponape', ['Ponape (Pohnpei)', ]),
+         """Pacific/Ponape (FM: 06°58'00"N, 158°13'00"W also Ponape (Pohnpei))"""),
+    )
+    def test___str__(self, args, result):
+        expect(str(Zone(*args))) == result
 
 
 class TestZones(TestCase):
+    def setUp(self):
+        self.zones = Zones(open('tests/data/timezones'))
+
     def test_import_locations(self):
-        zones = Zones(open('tests/data/timezones'))
-        data = [str(v) for v in sorted(zones, key=attrgetter('zone'))]
-        expect(data[0]) == """Africa/Luanda (AO: 08°48'00"S, 013°14'00"E)"""
-        expect(data[1]) == """America/Curacao (AN: 12°11'00"N, 069°00'00"W)"""
-        expect(data[2]) == \
-            """Antarctica/McMurdo (AQ: 77°50'00"S, 166°36'00"E also McMurdo Station, Ross Island)"""
+        data = [str(v) for v in sorted(self.zones, key=attrgetter('zone'))]
+        expect(data) == [
+            """Africa/Luanda (AO: 08°48'00"S, 013°14'00"E)""",
+            """America/Curacao (AN: 12°11'00"N, 069°00'00"W)""",
+            """Antarctica/McMurdo (AQ: 77°50'00"S, 166°36'00"E also McMurdo Station, Ross Island)""",
+        ]
 
     def test_dump_zone_file(self):
-        zones = Zones(open('tests/data/timezones'))
-        expect(Zones.dump_zone_file(zones)) == \
+        expect(Zones.dump_zone_file(self.zones)) == \
             ['AN\t+121100-0690000\tAmerica/Curacao',
              'AO\t-084800+0131400\tAfrica/Luanda',
              'AQ\t-775000+1663600\tAntarctica/McMurdo\tMcMurdo Station, Ross Island']

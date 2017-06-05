@@ -39,19 +39,21 @@ class TestCity(TestCase):
 
     def test___str__(self):
         data = str(self.t).splitlines()
-        expect(data[0]) == 'ID          : 498'
-        expect(data[1]) == 'Type        : City'
-        expect(data[2]) == 'Population  : 108835'
-        expect(data[3]) == 'Size        : '
-        expect(data[4]) == 'Name        : Zwickau'
-        expect(data[5]) == ' Country    : DE'
-        expect(data[6]) == ' Region     : Sachsen'
-        expect(data[7]) == 'Location    : Earth'
-        expect(data[8]) == ' Longitude  : 12.5'
-        expect(data[9]) == ' Latitude   : 50.72'
-        expect(data[10]) == ' Elevation  : '
-        expect(data[11]) == 'Date        : 19970410'
-        expect(data[12]) == 'Entered-By  : M.Dowling@tu-bs.de'
+        expect(data) == [
+            'ID          : 498',
+            'Type        : City',
+            'Population  : 108835',
+            'Size        : ',
+            'Name        : Zwickau',
+            ' Country    : DE',
+            ' Region     : Sachsen',
+            'Location    : Earth',
+            ' Longitude  : 12.5',
+            ' Latitude   : 50.72',
+            ' Elevation  : ',
+            'Date        : 19970410',
+            'Entered-By  : M.Dowling@tu-bs.de',
+        ]
 
 
 class TestCities(TestCase):
@@ -61,9 +63,11 @@ class TestCities(TestCase):
         data = [('%i - %s (%s;%s)' % (city.identifier, city.name,
                                       city.latitude, city.longitude))
                 for city in sorted(cities, key=lambda x: x.identifier)]
-        expect(data[0]) == '126 - London (51.5;-0.083)'
-        expect(data[1]) == '127 - Luxembourg (49.617;6.117)'
-        expect(data[2]) == '128 - Lyon (45.767;4.867)'
+        expect(data) == [
+            '126 - London (51.5;-0.083)',
+            '127 - Luxembourg (49.617;6.117)',
+            '128 - Lyon (45.767;4.867)',
+        ]
         cities_file.seek(0)
         manual_list = cities_file.read().split('//\\n')
         cities = Cities(manual_list)
