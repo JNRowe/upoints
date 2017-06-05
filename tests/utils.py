@@ -24,6 +24,10 @@ from lxml import etree
 
 
 def xml_compare(elem1, elem2, ellipsis=False):
+    """Compare XML elements
+
+    :param bool ellipsis: Support ellipsis for 'any' match
+    """
     expect(elem1.tag) == elem2.tag
     for key, value in elem1.attrib.items():
         expect(elem2.attrib.get(key)) == value
@@ -51,6 +55,10 @@ def xml_compare(elem1, elem2, ellipsis=False):
 
 
 def xml_str_compare(string1, string2, ellipsis=False):
+    """Compare XML string representations
+
+    :param bool ellipsis: Support ellipsis for 'any' match
+    """
     doc1 = etree.fromstring(string1)
     doc2 = etree.fromstring(string2)
     xml_compare(doc1, doc2, ellipsis)
