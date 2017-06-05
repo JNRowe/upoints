@@ -49,11 +49,15 @@ class TestPoint(TestCase):
 
     def test___dict__(self):
         home = Point(52.015, -0.221)
-        expect(sorted(home.__dict__.items())) == \
-            [('_angle', 'degrees'), ('_latitude', 52.015),
-             ('_longitude', -0.221), ('_rad_latitude', 0.9078330104248505),
-             ('_rad_longitude', -0.0038571776469074684), ('timezone', 0),
-             ('units', 'metric')]
+        expect(home.__dict__) == {
+            '_angle': 'degrees',
+            '_latitude': 52.015,
+            '_longitude': -0.221,
+            '_rad_latitude': 0.9078330104248505,
+            '_rad_longitude': -0.0038571776469074684,
+            'timezone': 0,
+            'units': 'metric',
+        }
 
         class Test(Point):
             __slots__ = ('TEST', )
@@ -62,13 +66,16 @@ class TestPoint(TestCase):
                 super(Test, self).__init__(latitude, longitude)
                 self.TEST = 'tested'
 
-        a = Test(52.015, -0.221)
-        expect(sorted(a.__dict__.items())) == \
-            [('TEST', 'tested'), ('_angle', 'degrees'),
-             ('_latitude', 52.015), ('_longitude', -0.221),
-             ('_rad_latitude', 0.9078330104248505),
-             ('_rad_longitude', -0.0038571776469074684), ('timezone', 0),
-             ('units', 'metric')]
+        expect(Test(52.015, -0.221).__dict__) == {
+            'TEST': 'tested',
+            '_angle': 'degrees',
+            '_latitude':  52.015,
+            '_longitude': -0.221,
+            '_rad_latitude': 0.9078330104248505,
+            '_rad_longitude': -0.0038571776469074684,
+            'timezone': 0,
+            'units': 'metric',
+        }
 
     def test___repr__(self):
         expect(repr(Point(52.015, -0.221))) == \

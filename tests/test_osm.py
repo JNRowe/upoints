@@ -121,17 +121,15 @@ class TestWay(TestCase):
                  utils.Timestamp(2008, 1, 25, 12, 52, 30),
                  {'amenity': 'pub'}),
         ]
-        data = self.tagged.__str__(nodes).splitlines()
-        expect(data[0]) == 'Way 0 [key: value]'
-        expect(data[1]) == \
-            ("""    Node 0 (52°00'56"N, 000°13'18"W) [visible, user: """
-             'jnrowe, timestamp: 2008-01-25T12:52:11+00:00]')
-        expect(data[2]) == \
-            ("""    Node 1 (52°00'56"N, 000°13'18"W) [visible, timestamp: """
-             '2008-01-25T12:53:14+00:00, created_by: hand, highway: crossing]')
-        expect(data[3]) == \
-            ("""    Node 2 (52°00'56"N, 000°13'18"W) [visible, user: """
-             'jnrowe, timestamp: 2008-01-25T12:52:30+00:00, amenity: pub]')
+        expect(self.tagged.__str__(nodes).splitlines()) == [
+            'Way 0 [key: value]',
+            """    Node 0 (52°00'56"N, 000°13'18"W) [visible, user: """
+            'jnrowe, timestamp: 2008-01-25T12:52:11+00:00]',
+            """    Node 1 (52°00'56"N, 000°13'18"W) [visible, timestamp: """
+            '2008-01-25T12:53:14+00:00, created_by: hand, highway: crossing]',
+            """    Node 2 (52°00'56"N, 000°13'18"W) [visible, user: """
+            'jnrowe, timestamp: 2008-01-25T12:52:30+00:00, amenity: pub]',
+        ]
 
     def test_toosm(self):
         xml_str_compare(
@@ -150,17 +148,16 @@ class TestOsm(TestCase):
         self.region = Osm(open('tests/data/osm'))
 
     def test_import_locations(self):
-        data = list(map(str, sorted([x for x in self.region if isinstance(x, Node)],
-                                    key=lambda x: x.ident)))
-        expect(data[0]) == \
-            ("""Node 0 (52°00'56"N, 000°13'18"W) [visible, user: jnrowe, """
-             'timestamp: 2008-01-25T12:52:11+00:00]')
-        expect(data[1]) == \
-            ("""Node 1 (52°00'56"N, 000°13'18"W) [visible, timestamp: """
-             '2008-01-25T12:53:00+00:00, created_by: hand, highway: crossing]')
-        expect(data[2]) == \
-            ("""Node 2 (52°00'56"N, 000°13'18"W) [visible, user: jnrowe, """
-             'timestamp: 2008-01-25T12:52:30+00:00, amenity: pub]')
+        expect([str(x) for x in sorted([x for x in self.region
+                                        if isinstance(x, Node)],
+                                       key=lambda x: x.ident)]) == [
+            """Node 0 (52°00'56"N, 000°13'18"W) [visible, user: jnrowe, """
+            'timestamp: 2008-01-25T12:52:11+00:00]',
+            """Node 1 (52°00'56"N, 000°13'18"W) [visible, timestamp: """
+            '2008-01-25T12:53:00+00:00, created_by: hand, highway: crossing]',
+            """Node 2 (52°00'56"N, 000°13'18"W) [visible, user: jnrowe, """
+            'timestamp: 2008-01-25T12:52:30+00:00, amenity: pub]',
+        ]
 
     def test_export_osm_file(self):
         export = self.region.export_osm_file()

@@ -372,15 +372,17 @@ def test_dump_xearth_markers():
         501097: Trigpoint(52.010585, -0.173443, 97.000000, 'Bygrave'),
         505392: Trigpoint(51.910886, -0.186462, 136.000000, 'Sish Lane')
     }
-    data = dump_xearth_markers(markers)
-    expect(data[0]) == '52.066035 -0.281449 "500936" # Broom Farm, alt 37m'
-    expect(data[1]) == '52.010585 -0.173443 "501097" # Bygrave, alt 97m'
-    expect(data[2]) == '51.910886 -0.186462 "505392" # Sish Lane, alt 136m'
+    expect(dump_xearth_markers(markers)) == [
+        '52.066035 -0.281449 "500936" # Broom Farm, alt 37m',
+        '52.010585 -0.173443 "501097" # Bygrave, alt 97m',
+        '51.910886 -0.186462 "505392" # Sish Lane, alt 136m',
+    ]
 
-    data = dump_xearth_markers(markers, 'name')
-    expect(data[0]) == '52.066035 -0.281449 "Broom Farm" # 500936, alt 37m'
-    expect(data[1]) == '52.010585 -0.173443 "Bygrave" # 501097, alt 97m'
-    expect(data[2]) == '51.910886 -0.186462 "Sish Lane" # 505392, alt 136m'
+    expect(dump_xearth_markers(markers, 'name')) == [
+        '52.066035 -0.281449 "Broom Farm" # 500936, alt 37m',
+        '52.010585 -0.173443 "Bygrave" # 501097, alt 97m',
+        '51.910886 -0.186462 "Sish Lane" # 505392, alt 136m',
+    ]
 
     with expect.raises(ValueError, "Unknown name type 'falseKey'"):
         dump_xearth_markers(markers, 'falseKey')
@@ -390,10 +392,11 @@ def test_dump_xearth_markers():
         'Bygrave': Point(52.010585, -0.173443),
         'Sish Lane': Point(51.910886, -0.186462)
     }
-    data = dump_xearth_markers(points)
-    expect(data[0]) == '52.066035 -0.281449 "Broom Farm"'
-    expect(data[1]) == '52.010585 -0.173443 "Bygrave"'
-    expect(data[2]) == '51.910886 -0.186462 "Sish Lane"'
+    expect(dump_xearth_markers(points)) == [
+        '52.066035 -0.281449 "Broom Farm"',
+        '52.010585 -0.173443 "Bygrave"',
+        '51.910886 -0.186462 "Sish Lane"',
+    ]
 
 
 def test_calc_radius():

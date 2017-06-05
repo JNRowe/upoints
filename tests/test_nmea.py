@@ -177,14 +177,10 @@ class TestWaypoint(TestCase):
 class TestLocations(TestCase):
     def test_import_locations(self):
         locations = Locations(open('tests/data/gpsdata'))
-        data = list(map(str, locations))
-        expect(data[0]) == \
-            '$GPGGA,142058,5308.6414,N,00300.9257,W,1,04,5.6,1374.6,M,34.5,M,,*6B\r'
-        expect(data[1]) == \
-            '$GPRMC,142058,A,5308.6414,N,00300.9257,W,109394.7,202.9,191107,5,E,A*2C\r'
-        expect(data[2]) == \
-            '$GPWPL,5200.9000,N,00013.2600,W,HOME*5E\r'
-        expect(data[3]) == \
-            '$GPGGA,142100,5200.9000,N,00316.6600,W,1,04,5.6,1000.0,M,34.5,M,,*68\r'
-        expect(data[4]) == \
-            '$GPRMC,142100,A,5200.9000,N,00316.6600,W,123142.7,188.1,191107,5,E,A*21\r'
+        expect([str(x) for x in locations]) == [
+            '$GPGGA,142058,5308.6414,N,00300.9257,W,1,04,5.6,1374.6,M,34.5,M,,*6B\r',
+            '$GPRMC,142058,A,5308.6414,N,00300.9257,W,109394.7,202.9,191107,5,E,A*2C\r',
+            '$GPWPL,5200.9000,N,00013.2600,W,HOME*5E\r',
+            '$GPGGA,142100,5200.9000,N,00316.6600,W,1,04,5.6,1000.0,M,34.5,M,,*68\r',
+            '$GPRMC,142100,A,5200.9000,N,00316.6600,W,123142.7,188.1,191107,5,E,A*21\r',
+        ]

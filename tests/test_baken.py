@@ -59,8 +59,12 @@ class TestBakens(TestCase):
     def test_import_locations(self):
         locations = Bakens(open('tests/data/baken_data'))
         data = ['%s - %s' % (k, v) for k, v in sorted(locations.items())]
-        expect(data[0]) == """Abeche, Chad - 14°27'36"N, 020°40'48"E"""
-        expect(data[1]) == """GB3BUX - IO93BF (53°13'45"N, 001°52'30"W)"""
-        expect(data[2]) == """IW1RCT - JN44FH (44°18'45"N, 008°27'29"E)"""
+
+        expect(data) == [
+            """Abeche, Chad - 14°27'36"N, 020°40'48"E""",
+            """GB3BUX - IO93BF (53°13'45"N, 001°52'30"W)""",
+            """IW1RCT - JN44FH (44°18'45"N, 008°27'29"E)""",
+        ]
+
         locations = Bakens(open('tests/data/no_valid_baken'))
         expect(len(locations)) == 0
