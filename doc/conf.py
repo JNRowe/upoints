@@ -66,15 +66,19 @@ man_pages = [
     ('edist.1', 'edist', u'upoints Documentation', [u'James Rowe'], 1)
 ]
 
-todo_include_todos = True
-
 # Autodoc extension settings
 autoclass_content = 'both'
 autodoc_default_flags = ['members', 'show-inheritance']
 
-intersphinx_mapping = {
-    'python': ('http://docs.python.org/', os.getenv('SPHINX_PYTHON_OBJECTS')),
-}
+# intersphinx extension settings
+intersphinx_mapping = {k: (v, os.getenv('SPHINX_%s_OBJECTS' % k.upper()))
+                       for k, v in {
+                           'python': 'http://docs.python.org/',
+}.items()}
 
+# spelling extension settings
 spelling_lang = 'en_GB'
 spelling_word_list_filename = 'wordlist.txt'
+
+# todo extension settings
+todo_include_todos = True
