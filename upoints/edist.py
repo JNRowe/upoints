@@ -34,34 +34,21 @@ Note:
 # You should have received a copy of the GNU General Public License along with
 # upoints.  If not, see <http://www.gnu.org/licenses/>.
 
-from __future__ import print_function
-
 import logging
 import os
 import sys
 
 from operator import itemgetter
 
-import aaargh
+import click
 
 try:
     from configparser import ConfigParser
 except ImportError:
     from ConfigParser import ConfigParser
 
-from . import __version__
 from .compat import mangle_repr_type
-from . import (point, utils)
-
-
-# Pull the first paragraph from the docstring
-USAGE = __doc__[:__doc__.find('\n\n', 100)].splitlines()[2:]
-# Replace script name with optparse's substitution var, and rebuild string
-USAGE = '\n'.join(USAGE).replace('edist', '%(prog)s')
-
-EPILOG = 'Please report bugs at https://github.com/JNRowe/upoints/'
-
-APP = aaargh.App(description=USAGE, epilog=EPILOG)
+from . import (_version, point, utils)
 
 
 class LocationsError(ValueError):
@@ -112,7 +99,7 @@ class NumberedPoint(point.Point):
         units: Unit type to be used for distances
     """
 
-    __slots__ = ('name')
+    __slots__ = ('name', )
 
     def __init__(self, latitude, longitude, name, units='km'):
         """Initialise a new ``NumberedPoint`` object.
@@ -210,14 +197,14 @@ class NumberedPoints(point.Points):
             locator (str): Accuracy of Maidenhead locator output
         """
         for location in self:
-            if self.format == 'locator':
+            if locator:
                 output = location.to_grid_locator(locator)
             else:
                 output = format(location, self.format)
             if self.verbose:
-                print('Location %s is %s' % (location.name, output))
+                click.echo('Location %s is %s' % (location.name, output))
             else:
-                print(output)
+                click.echo(output)
 
     def distance(self):
         """Calculate distances between locations."""
@@ -235,13 +222,13 @@ class NumberedPoints(point.Points):
             total_msg.append('kilometres')
         if self.verbose:
             for number, distance in enumerate(distances):
-                print(' '.join(leg_msg) % (self[number].name,
-                                           self[number + 1].name,
-                                           distance))
+                click.echo(' '.join(leg_msg)
+                           % (self[number].name, self[number + 1].name,
+                              distance))
             if len(distances) > 1:
-                print(' '.join(total_msg) % sum(distances))
+                click.echo(' '.join(total_msg) % sum(distances))
         else:
-            print(sum(distances))
+            click.echo(sum(distances))
 
     def bearing(self, mode, string):
         """Calculate bearing/final bearing between locations.
@@ -261,10 +248,11 @@ class NumberedPoints(point.Points):
             verbose_fmt = 'Final bearing from location %s to %s is %s'
         for number, bearing in enumerate(bearings):
             if self.verbose:
-                print(verbose_fmt % (self[number].name, self[number + 1].name,
-                                     bearing))
+                click.echo(verbose_fmt % (self[number].name,
+                                          self[number + 1].name,
+                                          bearing))
             else:
-                print(bearing)
+                click.echo(bearing)
 
     def range(self, distance):
         """Test whether locations are within a given range of the first.
@@ -287,9 +275,10 @@ class NumberedPoints(point.Points):
                 else:
                     text.append('kilometres')
                 text.append('of location %s')
-                print(' '.join(text) % (location.name, distance, self[0].name))
+                click.echo(' '.join(text) % (location.name, distance,
+                                             self[0].name))
             else:
-                print(in_range)
+                click.echo(in_range)
 
     def destination(self, distance, bearing, locator):
         """Calculate destination locations for given distance and bearings.
@@ -302,15 +291,15 @@ class NumberedPoints(point.Points):
         destinations = super(NumberedPoints, self).destination(bearing,
                                                                distance)
         for location, destination in zip(self, destinations):
-            if self.format == 'locator':
+            if locator:
                 output = destination.to_grid_locator(locator)
             else:
                 output = format(location, self.format)
             if self.verbose:
-                print('Destination from location %s is %s' % (location.name,
-                                                              output))
+                click.echo('Destination from location %s is %s'
+                           % (location.name, output))
             else:
-                print(output)
+                click.echo(output)
 
     def sun_events(self, mode):
         """Calculate sunrise/sunset times for locations.
@@ -323,13 +312,13 @@ class NumberedPoints(point.Points):
         for location, time in zip(self, times):
             if self.verbose:
                 if time:
-                    print('%s at %s UTC in location %s' % (mode_str, time,
-                                                           location.name))
+                    click.echo('%s at %s UTC in location %s'
+                               % (mode_str, time, location.name))
                 else:
-                    print("The sun doesn't %s at location %s on this date"
-                          % (mode_str[3:], location.name))
+                    click.echo("The sun doesn't %s at location %s on this date"
+                               % (mode_str[3:], location.name))
             else:
-                print(time)
+                click.echo(time)
 
     def flight_plan(self, speed, time):
         """Output the flight plan corresponding to the given locations.
@@ -343,17 +332,18 @@ class NumberedPoints(point.Points):
         if len(self) == 1:
             raise LocationsError('flight_plan')
         if self.verbose:
-            print('WAYPOINT,BEARING[°],DISTANCE[%s],ELAPSED_TIME[%s],'
-                  'LATITUDE[d.dd],LONGITUDE[d.dd]' % (self.units, time))
+            click.echo('WAYPOINT,BEARING[°],DISTANCE[%s],ELAPSED_TIME[%s],'
+                       'LATITUDE[d.dd],LONGITUDE[d.dd]' % (self.units, time))
         legs = [(0, 0), ] + list(self.inverse())
         for leg, loc in zip(legs, self):
             if leg == (0, 0):
-                print('%s,,,,%f,%f' % (loc.name, loc.latitude, loc.longitude))
+                click.echo('%s,,,,%f,%f' % (loc.name, loc.latitude,
+                                            loc.longitude))
             else:
                 leg_speed = '%.1f' % (leg[1] / speed) if speed != 0 else ''
-                print('%s,%i,%.1f,%s,%f,%f'
-                      % (loc.name, leg[0], leg[1], leg_speed, loc.latitude,
-                         loc.longitude))
+                click.echo('%s,%i,%.1f,%s,%f,%f'
+                           % (loc.name, leg[0], leg[1], leg_speed,
+                              loc.latitude, loc.longitude))
         if self.verbose:
             overall_distance = sum(map(itemgetter(1), legs))
             direct_distance = self[0].distance(self[-1])
@@ -365,86 +355,137 @@ class NumberedPoints(point.Points):
                 speed_marker = ''
                 overall_speed = '%.1f' % (overall_distance / speed)
                 direct_speed = '%.1f' % (direct_distance / speed)
-            print('-- OVERALL --%s,,%.1f,%s,,'
-                  % (speed_marker, overall_distance, overall_speed))
-            print('-- DIRECT --%s,%i,%.1f,%s,,'
-                  % (speed_marker, self[0].bearing(self[-1]), direct_distance,
-                     direct_speed))
+            click.echo('-- OVERALL --%s,,%.1f,%s,,'
+                       % (speed_marker, overall_distance, overall_speed))
+            click.echo('-- DIRECT --%s,%i,%.1f,%s,,'
+                       % (speed_marker, self[0].bearing(self[-1]),
+                          direct_distance, direct_speed))
 
 
-@APP.cmd(help='pretty print the location(s)')
-@APP.cmd_arg('-l', '--locator', choices=('square', 'subsquare', 'extsquare'),
-             default='subsquare',
-             help='accuracy of Maidenhead locator output')
-@APP.cmd_arg('location', nargs='+', help='Locations to operate on')
-def display(args):
-    args.locations.display(args.locator)
+@click.group(help=__doc__[__doc__.find('\n\n')+2:__doc__.rfind('\n\n')],
+             epilog='Please report bugs at '
+                    'https://github.com/JNRowe/upoints/issues',
+             context_settings={'help_option_names': ['-h', '--help']})
+@click.version_option(_version.dotted)
+@click.option('-v', '--verbose/--quiet',
+              help='Change verbosity level of output.')
+@click.option('--config',
+              type=click.Path(dir_okay=False, resolve_path=True,
+                              allow_dash=True),
+              metavar='~/.edist.conf',
+              default=os.path.expanduser('~/.edist.conf'),
+              help='Config file to read custom locations from.')
+@click.option('--csv-file',
+              type=click.Path(exists=True, dir_okay=False, resolve_path=True),
+              help='CSV file (gpsbabel format) to read route/locations from.')
+@click.option('-o', '--format',
+              type=click.Choice(['dms', 'dm', 'dd']),
+              default='dms',
+              help='Produce output in dms, dm or dd format.')
+@click.option('-u', '--units',
+              type=click.Choice(['km', 'sm', 'nm']), metavar='km',
+              default='km',
+              help='Display distances in kilometres, statute miles or '
+                   'nautical miles.')
+@click.option('-l', '--location', multiple=True,
+              help='Location to operate on.')
+@click.pass_context
+def cli(ctx, verbose, config, csv_file, format, units, location):
+    if csv_file:
+        config_locations, location = read_csv(csv_file)
+    else:
+        config_locations = read_locations(config)
+
+    try:
+        locations = NumberedPoints(location, format, verbose, config_locations,
+                                   units)
+    except LocationsError as error:
+        raise click.BadParameter(str(error))
+
+    class Obj:
+        pass
+    ctx.obj = Obj()
+    ctx.obj.locations = locations
 
 
-@APP.cmd(help='calculate the distance between locations')
-@APP.cmd_arg('location', nargs='+', help='Locations to operate on')
-def distance(args):
-    args.locations.distance()
+@cli.command()
+@click.option('-g', '--string', is_flag=True, help='Display named bearings.')
+@click.pass_obj
+def bearing(globs, string):
+    """Calculate initial bearing between locations."""
+    globs.locations.bearing('bearing', string)
 
 
-@APP.cmd(help='calculate the initial bearing between locations')
-@APP.cmd_arg('-g', '--string', action='store_true',
-             help='display named bearings')
-@APP.cmd_arg('location', nargs='+', help='Locations to operate on')
-def bearing(args):
-    args.locations.bearing('bearing', args.string)
+@cli.command()
+@click.option('-l', '--locator',
+              type=click.Choice(['square', 'subsquare', 'extsquare']),
+              default='subsquare',
+              help='Accuracy of Maidenhead locator output.')
+@click.argument('distance', type=float)
+@click.argument('bearing', type=float)
+@click.pass_obj
+def destination(globs, locator, distance, bearing):
+    """Calculate destination from locations."""
+    globs.locations.destination(distance, bearing, locator)
 
 
-@APP.cmd(name='final-bearing',
-         help='calculate the final bearing between locations')
-@APP.cmd_arg('-g', '--string', action='store_true',
-             help='display named bearings')
-@APP.cmd_arg('location', nargs='+', help='Locations to operate on')
-def final_bearing(args):
-    args.locations.bearing('final_bearing', args.string)
+@cli.command()
+@click.option('-l', '--locator',
+              type=click.Choice(['square', 'subsquare', 'extsquare']),
+              help='Accuracy of Maidenhead locator output.')
+@click.pass_obj
+def display(globs, locator):
+    """Pretty print the locations."""
+    globs.locations.display(locator)
 
 
-@APP.cmd(help='calculate whether locations are within a given range')
-@APP.cmd_arg('-d', '--distance', type=float, help='range radius')
-@APP.cmd_arg('location', nargs='+', help='Locations to operate on')
-def range(args):
-    args.locations.range(args.distance)
+@cli.command()
+@click.pass_obj
+def distance(globs):
+    """Calculate distance between locations."""
+    globs.locations.distance()
 
 
-@APP.cmd(help='calculate the destination for a given distance and bearing')
-@APP.cmd_arg('-l', '--locator', choices=('square', 'subsquare', 'extsquare'),
-             default='subsquare',
-             help='accuracy of Maidenhead locator output')
-@APP.cmd_arg('-d', '--distance', required=True, type=float,
-             help='distance from start point')
-@APP.cmd_arg('-b', '--bearing', required=True, type=float,
-             help='bearing from start point')
-@APP.cmd_arg('location', nargs='+', help='Locations to operate on')
-def destination(args):
-    args.locations.destination(args.distance, args.bearing, args.locator)
+@cli.command()
+@click.option('-g', '--string', is_flag=True,
+              help='Display named bearings.')
+@click.pass_obj
+def final_bearing(globs, string):
+    """Calculate final bearing between locations."""
+    globs.locations.bearing('final_bearing', string)
 
 
-@APP.cmd(help='calculate the sunrise time for a given location')
-@APP.cmd_arg('location', nargs='+', help='Locations to operate on')
-def sunrise(args):
-    args.locations.sun_events('sunrise')
+@cli.command()
+@click.option('-s', '--speed', default=0, type=float,
+              help='Speed to calculate elapsed time.')
+@click.option('-t', '--time', type=click.Choice(['h', 'm', 's']),
+              help='Display time in hours, minutes or seconds.')
+@click.pass_obj
+def flight_plan(globs, speed, time):
+    """Calculate flight plan for locations."""
+    globs.locations.flight_plan(speed, time)
 
 
-@APP.cmd(help='calculate the sunset time for a given location')
-@APP.cmd_arg('location', nargs='+', help='Locations to operate on')
-def sunset(args):
-    args.locations.sun_events('sunset')
+@cli.command()
+@click.argument('distance', type=float)
+@click.pass_obj
+def range(globs, distance):
+    """Check locations are within a given range."""
+    globs.locations.range(distance)
 
 
-@APP.cmd(name='flight-plan',
-         help='calculate the flight plan corresponding to locations (route)')
-@APP.cmd_arg('-s', '--speed', default=0, type=float,
-             help='speed to calculate elapsed time')
-@APP.cmd_arg('-t', '--time', choices=('h', 'm', 's'),
-             help='display time in hours, minutes or seconds')
-@APP.cmd_arg('location', nargs='+', help='Locations to operate on')
-def flight_plan(args):
-    args.locations.flight_plan(args.speed, args.time)
+@cli.command()
+@click.pass_obj
+def sunrise(globs):
+    """Calculate the sunrise time for locations."""
+    globs.locations.sun_events('sunrise')
+
+
+@cli.command()
+@click.pass_obj
+def sunset(globs):
+    """Calculate the sunset time for locations."""
+    globs.locations.sun_events('sunset')
 
 
 def read_locations(filename):
@@ -457,10 +498,12 @@ def read_locations(filename):
         dict: List of locations from config file
     """
     data = ConfigParser()
-    data.read(filename)
+    if filename == '-':
+        data.read_file(sys.stdin)
+    else:
+        data.read(filename)
     if not data.sections():
-        logging.debug('Config file %r is empty' % filename)
-        return {}
+        logging.debug('Config file is empty')
 
     locations = {}
     for name in data.sections():
@@ -482,20 +525,16 @@ def read_csv(filename):
     .. _gpsbabel: http://www.gpsbabel.org/
 
     Args:
-        filename (str): CSV file to parse (STDIN if '-')
+        filename (str): CSV file to parse
 
     Returns:
         tuple of dict and list: List of locations as ``str`` objects
     """
-    if filename == '-':
-        filename = sys.stdin
     field_names = ('latitude', 'longitude', 'name')
     data = utils.prepare_csv_read(filename, field_names, skipinitialspace=True)
-    index = 0
     locations = {}
     args = []
-    for row in data:
-        index += 1
+    for index, row in enumerate(data):
         name = '%02i:%s' % (index, row['name'])
         locations[name] = (row['latitude'], row['longitude'])
         args.append(name)
@@ -510,50 +549,14 @@ def main():
     """
     logging.basicConfig(format='%(asctime)s %(levelname)s:%(message)s')
 
-    APP.arg('--version', action='version',
-            version='%%(prog)s v%s' % __version__)
-
-    APP.arg('-v', '--verbose', action='store_true', dest='verbose',
-            default=True,
-            help='produce verbose output')
-    APP.arg('-q', '--quiet', action='store_false', dest='verbose',
-            help='output only results and errors')
-
-    APP.arg('--config-file', metavar='~/.edist.conf',
-            default=os.path.expanduser('~/.edist.conf'),
-            help='config file to read custom locations from')
-    APP.arg('--csv-file',
-            help='CSV file (gpsbabel format) to read route/locations from '
-                 "('-' for STDIN)")
-
-    APP.arg('-o', '--format', choices=('dms', 'dm', 'dd', 'locator'),
-            default='dms',
-            help='produce output in dms, dm, d format or Maidenhead locator')
-    APP.arg('-g', '--string', action='store_true',
-            help='display named bearings')
-    APP.arg('-u', '--units', choices=('km', 'sm', 'nm'), metavar='km',
-            default='km',
-            help='display distances in kilometres(default), statute miles or '
-                 'nautical miles')
-    APP.arg('-t', '--time', choices=('h', 'm', 's'), metavar='h', default='h',
-            help='display time in hours(default), minutes or seconds')
-
-    args = APP._parser.parse_args()
-    func = args._func
-
-    if args.csv_file:
-        config_locations, args.location = read_csv(args.csv_file)
-    else:
-        config_locations = read_locations(args.config_file)
-
     try:
-        args.locations = NumberedPoints(args.location, args.format,
-                                        args.verbose, config_locations,
-                                        args.units)
+        cli()
+        return 0
     except LocationsError as error:
-        APP._parser.error(error)
-
-    try:
-        return func(args)
+        print(error)
+        return 2
     except RuntimeError as error:
-        APP._parser.error(error)
+        print(error)
+        return 255
+    except OSError as error:
+        return error.errno
