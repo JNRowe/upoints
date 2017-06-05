@@ -66,5 +66,6 @@ class TestBakens(TestCase):
             """IW1RCT - JN44FH (44°18'45"N, 008°27'29"E)""",
         ]
 
+    def test_import_locations2(self):
         locations = Bakens(open('tests/data/no_valid_baken'))
         expect(len(locations)) == 0

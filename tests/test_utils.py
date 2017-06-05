@@ -402,6 +402,8 @@ def test_dump_xearth_markers():
     with expect.raises(ValueError, "Unknown name type 'falseKey'"):
         dump_xearth_markers(markers, 'falseKey')
 
+
+def test_dump_xearth_markers2():
     points = {
         'Broom Farm': Point(52.066035, -0.281449),
         'Bygrave': Point(52.010585, -0.173443),

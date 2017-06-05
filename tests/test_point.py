@@ -39,6 +39,7 @@ class TestPoint(TestCase):
         expect('%.3f' % test.latitude) == '50.336'
         expect('%.3f' % test.longitude) == '-1.053'
 
+    def test___init___validity(self):
         with expect.raises(ValueError, 'Unknown angle type None'):
             Point(52.015, -0.221, angle=None)
         with expect.raises(ValueError, 'Invalid latitude value -92'):
@@ -60,6 +61,7 @@ class TestPoint(TestCase):
             'units': 'metric',
         }
 
+    def test___dict___custom_class(self):
         class Test(Point):
             __slots__ = ('TEST', )
 

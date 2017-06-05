@@ -65,6 +65,7 @@ class TestLocations(TestCase):
             'Wraysbury (Wyrardisbury - N51.450°; W000.550°)',
         ]
 
+    def test_import_locations_error(self):
         with expect.raises(FileFormatError,
                            "Incorrect data format, if you're using a file "
                            'downloaded from geonames.org please report this '
@@ -79,10 +80,12 @@ class TestLocations(TestCase):
             'Europe/Andorra': [60, 120],
         }
 
+    def test_import_timezones_file_header(self):
         header_skip_check = Locations(None,
                                       open('tests/data/geonames_timezones_header'))
         expect(header_skip_check) == Locations()
 
+    def test_import_timezones_file_error(self):
         with expect.raises(FileFormatError,
                            "Incorrect data format, if you're using a file "
                            'downloaded from geonames.org please report this '
