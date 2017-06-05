@@ -9,12 +9,9 @@ values can be specified with a ``+`` prefix, but it isn't required.
 
 For example::
 
-    $ ./edist.py --sunrise --sunset --ascii '52.015;-0.221'
-    $ ./edist.py --destination 20@45 -- '-52.015;0.221'
-
-In the second example the locations are separated by ``--``, which stops
-processing options and allows you to specify locations beginning with
-a hyphen(such as anywhere in the Southern hemisphere).
+    \b
+    $ ./edist.py --location '52.015;-0.221' sunrise
+    $ ./edist.py --location '52.015;0.221' destination 20 45
 
 Note:
     In most shells the locations must be quoted because of the special nature
