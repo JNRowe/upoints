@@ -1,2 +1,2 @@
 aaargh>=0.7
-lxml
+lxml==4.1.0
