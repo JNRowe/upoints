@@ -32,6 +32,7 @@ try:
 except ImportError:
     from mock import patch
 
+from click.testing import CliRunner
 from expecter import expect
 from nose2.tools import params
 
@@ -290,13 +291,12 @@ def test_read_csv():
     expect(names) == ['01:My place', '02:Microsoft Research Cambridge']
 
 
-@patch('sys.stdout', new_callable=StringIO)
-@patch.object(sys, 'argv', ['edist', 'display', '52.015;-0.221'])
 def test_main(stdout):
-    main()
+    runner = CliRunner()
+    result = runner.invoke(main, ['--location', '52.015;-0.221', 'display'])
     if PY2:
-        expect(stdout.getvalue()) == \
+        expect(result.output) == \
             "Location 1 is 52\xc2\xb000.90'N, 000\xc2\xb013.26'W\n"
     else:
-        expect(stdout.getvalue()) == \
+        expect(result.output) == \
             "Location 1 is 52°00.90'N, 000°13.26'W\n"
