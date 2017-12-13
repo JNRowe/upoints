@@ -534,7 +534,7 @@ def read_csv(filename):
     data = utils.prepare_csv_read(filename, field_names, skipinitialspace=True)
     locations = {}
     args = []
-    for index, row in enumerate(data):
+    for index, row in enumerate(data, 1):
         name = '%02i:%s' % (index, row['name'])
         locations[name] = (row['latitude'], row['longitude'])
         args.append(name)
