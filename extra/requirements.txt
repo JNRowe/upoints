@@ -1,2 +1,2 @@
-aaargh>=0.7
+click>=6.6
 lxml
