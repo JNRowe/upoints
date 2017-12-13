@@ -1,7 +1,7 @@
 #
 # coding=utf-8
 """conf - Sphinx configuration information."""
-# Copyright © 2007-2017  James Rowe <jnrowe@gmail.com>
+# Copyright © 2008-2017  James Rowe <jnrowe@gmail.com>
 #
 # This file is part of upoints.
 #

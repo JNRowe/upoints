@@ -1,7 +1,7 @@
 #
 # coding=utf-8
 """utils - Utilities for test support."""
-# Copyright © 2007-2017  James Rowe <jnrowe@gmail.com>
+# Copyright © 2013-2017  James Rowe <jnrowe@gmail.com>
 #
 # This file is part of upoints.
 #
