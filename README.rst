@@ -5,11 +5,11 @@
    :target: http://travis-ci.org/JNRowe/upoints
    :alt: Test state on master
 
-.. image:: https://pypip.in/v/upoints/badge.png
+.. image:: https://img.shields.io/pypi/v/upoints.svg
    :target: https://pypi.python.org/pypi/upoints/
    :alt: Current PyPI release
 
-.. image:: https://pypip.in/d/upoints/badge.png
+.. image:: https://img.shields.io/pypi/dm/upoints.svg
    :target: https://pypi.python.org/pypi/upoints/
    :alt: Number of downloads from PyPI
 
