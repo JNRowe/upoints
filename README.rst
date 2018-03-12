@@ -1,17 +1,7 @@
 ``upoints`` - Modules for working with points on Earth
 ======================================================
 
-.. image:: https://secure.travis-ci.org/JNRowe/upoints.png?branch=master
-   :target: http://travis-ci.org/JNRowe/upoints
-   :alt: Test state on master
-
-.. image:: https://pypip.in/v/upoints/badge.png
-   :target: https://pypi.python.org/pypi/upoints/
-   :alt: Current PyPI release
-
-.. image:: https://pypip.in/d/upoints/badge.png
-   :target: https://pypi.python.org/pypi/upoints/
-   :alt: Number of downloads from PyPI
+|travis| |coveralls| |pypi| |readthedocs|
 
 .. warning::
 
@@ -156,3 +146,19 @@ reproduce the problem, or even better a patch!
 .. _Sphinx: http://sphinx.pocoo.org/
 .. _nose2: https://crate.io/packages/nose2/
 .. _issue: https://github.com/JNRowe/upoints/issues
+
+.. |travis| image:: https://img.shields.io/travis/JNRowe/upoints.png
+   :target: https://travis-ci.org/JNRowe/upoints
+   :alt: Test state on master
+
+.. |coveralls| image:: https://img.shields.io/coveralls/github/JNRowe/upoints/master.png
+   :target: https://coveralls.io/repos/JNRowe/upoints
+   :alt: Coverage state on master
+
+.. |pypi| image:: https://img.shields.io/pypi/v/upoints.png
+   :target: https://pypi.python.org/pypi/upoints/
+   :alt: Current PyPI release
+
+.. |readthedocs| image:: https://img.shields.io/readthedocs/upoints/stable.png
+   :target: https://upoints.readthedocs.io/
+   :alt: Documentation
