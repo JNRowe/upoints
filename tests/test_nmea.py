@@ -22,19 +22,19 @@ import datetime
 from unittest import TestCase
 
 from expecter import expect
-from nose2.tools import params
+from pytest import mark
 
 from upoints.nmea import (Fix, Locations, LoranPosition, Position, Waypoint,
                           calc_checksum, nmea_latitude, nmea_longitude,
                           parse_latitude, parse_longitude)
 
 
-@params(
+@mark.parametrize('start, end', [
     ('$', '*6B'),
     ('', '*6B'),
     ('$', ''),
     ('', ''),
-)
+])
 def test_calc_checksum(start, end):
     s = 'GPGGA,142058,5308.6414,N,00300.9257,W,1,04,5.6,1374.6,M,34.5,M,,'
     expect(calc_checksum(start + s + end)) == 107
@@ -57,7 +57,7 @@ def test_parse_longitude():
 
 
 class TestLoranPosition(TestCase):
-    @params(
+    @mark.parametrize('args, result', [
         ((53.1440233333, -3.01542833333, datetime.time(14, 20, 58, 14), True,
           None),
          'LoranPosition(53.1440233333, -3.01542833333, '
@@ -66,18 +66,18 @@ class TestLoranPosition(TestCase):
           'A'),
          'LoranPosition(53.1440233333, -3.01542833333, '
                         "datetime.time(14, 20, 58, 14), True, 'A')"),
-    )
+    ])
     def test___repr__(self, args, result):
         expect(repr(LoranPosition(*args))) == result
 
-    @params(
+    @mark.parametrize('args, result', [
         ((53.1440233333, -3.01542833333, datetime.time(14, 20, 58, 14), True,
           None),
          '$GPGLL,5308.6414,N,00300.9257,W,142058.00,A*1F\r'),
         ((53.1440233333, -3.01542833333, datetime.time(14, 20, 58, 14), True,
           'A'),
          '$GPGLL,5308.6414,N,00300.9257,W,142058.00,A,A*72\r'),
-    )
+    ])
     def test___str__(self, args, result):
         expect(str(LoranPosition(*args))) == result
 
@@ -157,7 +157,7 @@ class TestFix(TestCase):
     def test_quality_string(self):
         expect(str(self.x.quality_string())) == 'GPS'
 
-    @params(
+    @mark.parametrize('elements, result', [
         (['142058', '5308.6414', 'N', '00300.9257', 'W', '1', '04', '5.6',
           '1374.6', 'M', '34.5', 'M', '', ''],
          'Fix(datetime.time(14, 20, 58), %s, %s, 1, 4, 5.6, 1374.6, 34.5, '
@@ -166,7 +166,7 @@ class TestFix(TestCase):
           '1000.0', 'M', '34.5', 'M', '', ''],
          'Fix(datetime.time(14, 21), %s, %s, 1, 4, 5.6, 1000.0, 34.5, None, '
          'None, None)' % (52.015, -3.2776666666666667)),
-    )
+    ])
     def test_parse_elements(self, elements, result):
         expect(repr(Fix.parse_elements(elements))) == result
 

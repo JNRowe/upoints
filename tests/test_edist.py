@@ -34,7 +34,7 @@ except ImportError:
 
 from click.testing import CliRunner
 from expecter import expect
-from nose2.tools import params
+from pytest import mark
 
 from upoints.compat import PY2
 from upoints.edist import (LocationsError, NumberedPoint, NumberedPoints,
@@ -53,11 +53,11 @@ class TestLocationsError(TestCase):
 
 
 class TestNumberedPoint(TestCase):
-    @params(
+    @mark.parametrize('args, result', [
         ((52.015, -0.221, 4), "NumberedPoint(52.015, -0.221, 4, 'metric')"),
         ((52.015, -0.221, 'Home'),
          "NumberedPoint(52.015, -0.221, 'Home', 'metric')"),
-    )
+    ])
     def test___repr__(self, args, result):
         expect(repr(NumberedPoint(*args))) == result
 
@@ -111,16 +111,16 @@ class TestNumberedPoints(TestCase):
         locs.display('extsquare')
         expect(stdout.getvalue()) == 'IO92va33\nJO02ae40\n'
 
-    @params(
+    @mark.parametrize('units, result', [
         ('metric', '24 kilometres'),
         ('sm', '15 miles'),
         ('nm', '13 nautical miles'),
-    )
-    @patch('sys.stdout', new_callable=StringIO)
-    def test_distance(self, units, result, stdout):
+    ])
+    def test_distance(self, units, result):
         locations = NumberedPoints(['52.015;-0.221', '52.168;0.040'],
                                    units=units)
-        locations.distance()
+        with patch('sys.stdout', new_callable=StringIO):
+            locations.distance()
         expect(stdout.getvalue()) == 'Location 1 to 2 is %s\n' % result
 
     @patch('sys.stdout', new_callable=StringIO)
@@ -174,28 +174,28 @@ class TestNumberedPoints(TestCase):
         locations.bearing('final_bearing', True)
         expect(stdout.getvalue()) == 'North-east\n'
 
-    @params(
+    @mark.parametrize('distance, result', [
         (20, False),
         (30, True),
-    )
-    @patch('sys.stdout', new_callable=StringIO)
-    def test_range(self, distance, result, stdout):
+    ])
+    def test_range(self, distance, result):
         locations = NumberedPoints(['52.015;-0.221', '52.168;0.040'])
-        locations.range(distance)
+        with patch('sys.stdout', new_callable=StringIO):
+            locations.range(distance)
         if result is True:
             expect(stdout.getvalue()).contains('is within')
         else:
             expect(stdout.getvalue()).contains('is not within')
 
-    @params(
+    @mark.parametrize('distance, result', [
         (20, 'False'),
         (30, 'True'),
-    )
-    @patch('sys.stdout', new_callable=StringIO)
-    def test_range_non_verbose(self, distance, result, stdout):
+    ])
+    def test_range_non_verbose(self, distance, result):
         locations = NumberedPoints(['52.015;-0.221', '52.168;0.040'])
         locations.verbose = False
-        locations.range(distance)
+        with patch('sys.stdout', new_callable=StringIO):
+            locations.range(distance)
         expect(stdout.getvalue()) == result + '\n'
 
     @patch('sys.stdout', new_callable=StringIO)

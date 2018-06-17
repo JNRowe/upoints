@@ -20,7 +20,7 @@
 from unittest import TestCase
 
 from expecter import expect
-from nose2.tools import params
+from pytest import mark
 
 from upoints.gpx import (_GpxElem, _GpxMeta, Routepoint, Routepoints,
                          Trackpoint, Trackpoints, Waypoint, Waypoints, etree)
@@ -31,29 +31,29 @@ from tests.utils import xml_compare
 
 
 class Test_GpxElem(TestCase):
-    @params(
+    @mark.parametrize('args, result', [
         ((52, 0), '_GpxElem(52.0, 0.0, None, None, None, None)'),
         ((52, 0, None), '_GpxElem(52.0, 0.0, None, None, None, None)'),
         ((52, 0, 'name', 'desc'),
          "_GpxElem(52.0, 0.0, 'name', 'desc', None, None)"),
-    )
+    ])
     def test___repr__(self, args, result):
         expect(repr(_GpxElem(*args))) == result
 
-    @params(
+    @mark.parametrize('args, result', [
         ((52, 0), """52°00'00"N, 000°00'00"E"""),
         ((52, 0, 'name', 'desc', 40),
          """name (52°00'00"N, 000°00'00"E @ 40m) [desc]"""),
         ((52, 0, 'name', 'desc', 40, utils.Timestamp(2008, 7, 25)),
          """name (52°00'00"N, 000°00'00"E @ 40m on """
          '2008-07-25T00:00:00+00:00) [desc]')
-    )
+    ])
     def test___str__(self, args, result):
         expect(str(_GpxElem(*args))) == result
 
 
 class Test_GpxMeta(TestCase):
-    @params(
+    @mark.parametrize('bounds, result', [
         (None,
          b'<gpx:metadata xmlns:gpx="http://www.topografix.com/GPX/1/1">'
          b'<gpx:time>2008-06-03T16:12:43+0000</gpx:time>'
@@ -66,7 +66,7 @@ class Test_GpxMeta(TestCase):
          b'<gpx:metadata xmlns:gpx="http://www.topografix.com/GPX/1/1">'
          b'<gpx:time>2008-06-03T16:12:43+0000</gpx:time><gpx:bounds maxlat="52.167" maxlon="0.39" minlat="52.015" minlon="-0.221"/>'
          b'</gpx:metadata>'),
-    )
+    ])
     def test_togpx(self, bounds, result):
         meta = _GpxMeta(time=(2008, 6, 3, 16, 12, 43, 1, 155, 0))
         meta.bounds = bounds
@@ -99,12 +99,12 @@ class TestWaypoints(TestCase):
 
 
 class TestTrackpoint(TestCase):
-    @params(
+    @mark.parametrize('args, result', [
         ((52, 0), 'Trackpoint(52.0, 0.0, None, None, None, None)'),
         ((52, 0, None), 'Trackpoint(52.0, 0.0, None, None, None, None)'),
         ((52, 0, 'name', 'desc'),
          "Trackpoint(52.0, 0.0, 'name', 'desc', None, None)"),
-    )
+    ])
     def test___repr__(self, args, result):
         expect(Trackpoint(*args)) == result
 
@@ -126,12 +126,12 @@ class TestTrackpoints(TestCase):
 
 
 class TestRoutepoint(TestCase):
-    @params(
+    @mark.parametrize('args, result', [
         ((52, 0), 'Routepoint(52.0, 0.0, None, None, None, None)'),
         ((52, 0, None), 'Routepoint(52.0, 0.0, None, None, None, None)'),
         ((52, 0, 'name', 'desc'),
          "Routepoint(52.0, 0.0, 'name', 'desc', None, None)"),
-    )
+    ])
     def test___repr__(self, args, result):
         expect(Routepoint(*args)) == result
 

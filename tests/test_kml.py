@@ -20,7 +20,7 @@
 from unittest import TestCase
 
 from expecter import expect
-from nose2.tools import params
+from pytest import mark
 
 from upoints.kml import (Placemark, Placemarks, etree)
 
@@ -28,27 +28,27 @@ from tests.utils import xml_compare
 
 
 class TestPlacemark(TestCase):
-    @params(
+    @mark.parametrize('args, result', [
         ((52, 0, 4), 'Placemark(52.0, 0.0, 4.0, None, None)'),
         ((52, 0, None), 'Placemark(52.0, 0.0, None, None, None)'),
         ((52, 0, None, 'name', 'desc'),
          "Placemark(52.0, 0.0, None, 'name', 'desc')"),
-    )
+    ])
     def test___repr__(self, args, result):
         expect(Placemark(*args)) == result
 
-    @params(
+    @mark.parametrize('args, result', [
         ((52, 0, 4), """52°00'00"N, 000°00'00"E alt 4m"""),
         ((52, 0, None), """52°00'00"N, 000°00'00"E"""),
         ((52, 0, None, 'name', 'desc'),
          """name (52°00'00"N, 000°00'00"E) [desc]"""),
         ((52, 0, 42, 'name', 'desc'),
          """name (52°00'00"N, 000°00'00"E alt 42m) [desc]"""),
-    )
+    ])
     def test___str__(self, args, result):
         expect(str(Placemark(*args))) == result
 
-    @params(
+    @mark.parametrize('args, result', [
         ((52, 0, 4),
          b'<kml:Placemark xmlns:kml="http://earth.google.com/kml/2.2">'
          b'<kml:Point><kml:coordinates>0.0,52.0,4</kml:coordinates></kml:Point>'
@@ -65,16 +65,16 @@ class TestPlacemark(TestCase):
          b'<kml:name>Cambridge</kml:name><kml:description>in the UK</kml:description>'
          b'<kml:Point><kml:coordinates>0.0,52.0,4</kml:coordinates></kml:Point>'
          b'</kml:Placemark>'),
-    )
+    ])
     def test_tokml(self, args, result):
         expect(etree.tostring(Placemark(*args).tokml())) == result
 
 
 class TestPlacemarks(TestCase):
-    @params(
+    @mark.parametrize('name, result', [
         ('Cambridge', """Cambridge (52°10'01"N, 000°23'24"E)"""),
         ('Home', """Home (52°00'54"N, 000°13'15"W alt 60m)"""),
-    )
+    ])
     def test_import_locations(self, name, result):
         locations = Placemarks(open('tests/data/kml'))
         expect(str(locations[name])) == result

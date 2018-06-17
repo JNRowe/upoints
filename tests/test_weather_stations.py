@@ -20,7 +20,7 @@
 from unittest import TestCase
 
 from expecter import expect
-from nose2.tools import params
+from pytest import mark
 
 from upoints.weather_stations import (Station, Stations)
 
@@ -45,11 +45,11 @@ class TestStation(TestCase):
             'London / Heathrow Airport (N51.483°; W000.450°)'
         self.x.alt_id = 'EGLL'
 
-    @params(
+    @mark.parametrize('style, result', [
         ('dms',
          """London / Heathrow Airport (EGLL - 51°28'59"N, 000°27'00"W)"""),
         ('dm', "London / Heathrow Airport (EGLL - 51°29.00'N, 000°27.00'W)"),
-    )
+    ])
     def test___format__(self, style, result):
         expect(format(self.x, style)) == result
 

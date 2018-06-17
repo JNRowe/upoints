@@ -20,7 +20,7 @@
 from unittest import TestCase
 
 from expecter import expect
-from nose2.tools import params
+from pytest import mark
 
 from upoints.trigpoints import (Trigpoint, Trigpoints)
 
@@ -36,10 +36,10 @@ class TestTrigpoint(TestCase):
         expect(str(Trigpoint(52.010585, -0.173443, 97.0, 'Bygrave'))) == \
             """Bygrave (52°00'38"N, 000°10'24"W alt 97m)"""
 
-    @params(
+    @mark.parametrize('style, result', [
         ('dd', """N52.011°; W000.173° alt 97m"""),
         ('dm', """52°00.64'N, 000°10.41'W alt 97m"""),
-    )
+    ])
     def test___format__(self, style, result):
         expect(format(Trigpoint(52.010585, -0.173443, 97.0), style)) == result
 

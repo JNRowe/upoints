@@ -21,7 +21,7 @@ from operator import attrgetter
 from unittest import TestCase
 
 from expecter import expect
-from nose2.tools import params
+from pytest import mark
 
 from upoints.tzdata import (Zone, Zones)
 
@@ -31,12 +31,12 @@ class TestZone(TestCase):
         expect(repr(Zone('+513030-0000731', 'GB', 'Europe/London'))) == \
             "Zone('+513030-0000730', 'GB', 'Europe/London', None)"
 
-    @params(
+    @mark.parametrize('args, result', [
         (('+513030-0000731', 'GB', 'Europe/London'),
          """Europe/London (GB: 51°30'30"N, 000°07'30"W)"""),
         (('+0658-15813', 'FM', 'Pacific/Ponape', ['Ponape (Pohnpei)', ]),
          """Pacific/Ponape (FM: 06°58'00"N, 158°13'00"W also Ponape (Pohnpei))"""),
-    )
+    ])
     def test___str__(self, args, result):
         expect(str(Zone(*args))) == result
 

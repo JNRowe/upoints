@@ -22,7 +22,7 @@ import datetime
 from unittest import TestCase
 
 from expecter import expect
-from nose2.tools import params
+from pytest import mark
 
 from upoints.geonames import (Location, Locations)
 from upoints.utils import FileFormatError
@@ -41,18 +41,18 @@ class TestLocation(TestCase):
              "-0.2166667, 'P', 'PPL', 'GB', None, 'F8', None, None, None, "
              "6245, None, 77, 'Europe/London', datetime.date(2007, 6, 15), 0)")
 
-    @params(
+    @mark.parametrize('names, result', [
         (None, 'Stotfold (N52.000°; W000.217°)'),
         (['Home', 'Target'], 'Stotfold (Home, Target - N52.000°; W000.217°)'),
-    )
+    ])
     def test___str__(self, names, result):
         self.x.alt_names = names
         expect(str(self.x)) == result
 
-    @params(
+    @mark.parametrize('style, result', [
         ('dms', """Stotfold (52°00'00"N, 000°13'00"W)"""),
         ('dm', "Stotfold (52°00.00'N, 000°13.00'W)"),
-    )
+    ])
     def test___format__(self, style, result):
         expect(format(self.x, style)) == result
 
