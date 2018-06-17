@@ -1,5 +1,4 @@
 #
-# coding=utf-8
 """osm - Imports OpenStreetMap data files.."""
 # Copyright © 2008-2017  James Rowe <jnrowe@gmail.com>
 #

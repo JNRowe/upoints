@@ -1,5 +1,4 @@
 #! /usr/bin/env python
-# coding=utf-8
 """setup.py - Setuptools tasks and config for upoints."""
 # Copyright © 2007-2017  James Rowe <jnrowe@gmail.com>
 #                        Petr Viktorin <encukou@gmail.com>

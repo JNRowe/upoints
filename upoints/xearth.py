@@ -1,5 +1,4 @@
 #
-# coding=utf-8
 """xearth - Imports xearth-style marker files."""
 # Copyright © 2007-2017  James Rowe <jnrowe@gmail.com>
 #

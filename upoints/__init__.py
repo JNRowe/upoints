@@ -1,5 +1,4 @@
 #
-# coding=utf-8
 """upoints - Modules for working with points on Earth
 
 ``upoints`` is a collection of `GPL v3`_ licensed modules for working with

@@ -1,5 +1,4 @@
 #
-# coding=utf-8
 """edist - Simple command line coordinate processing.
 
 edist operates on one, or more, locations specified in the following format

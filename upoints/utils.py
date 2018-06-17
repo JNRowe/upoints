@@ -1,5 +1,4 @@
 #
-# coding=utf-8
 """utils - Support code for :mod:`upoints`."""
 # Copyright © 2007-2017  James Rowe <jnrowe@gmail.com>
 #

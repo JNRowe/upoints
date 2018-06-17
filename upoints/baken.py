@@ -1,5 +1,4 @@
 #
-# coding=utf-8
 """baken - Imports baken data files."""
 # Copyright © 2007-2017  James Rowe <jnrowe@gmail.com>
 #

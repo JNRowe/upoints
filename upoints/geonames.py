@@ -1,5 +1,4 @@
 #
-# coding=utf-8
 """geonames - Imports geonames.org data files."""
 # Copyright © 2007-2017  James Rowe <jnrowe@gmail.com>
 #

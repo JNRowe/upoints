@@ -1,5 +1,4 @@
 #
-# coding=utf-8
 """tzdata - Imports timezone data files from UNIX zoneinfo."""
 # Copyright © 2007-2017  James Rowe <jnrowe@gmail.com>
 #

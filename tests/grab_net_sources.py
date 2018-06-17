@@ -1,5 +1,4 @@
 #! /usr/bin/env python
-# coding=utf-8
 """grab_net_sources - Fetch sources for tests."""
 # Copyright © 2007-2017  James Rowe <jnrowe@gmail.com>
 #

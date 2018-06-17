@@ -1,5 +1,4 @@
 #
-# coding=utf-8
 """gpx - Imports GPS eXchange format data files."""
 # Copyright © 2008-2017  James Rowe <jnrowe@gmail.com>
 #

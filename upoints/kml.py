@@ -1,5 +1,4 @@
 #
-# coding=utf-8
 """kml - Imports KML data files."""
 # Copyright © 2007-2017  James Rowe <jnrowe@gmail.com>
 #

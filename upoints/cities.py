@@ -1,5 +1,4 @@
 #
-# coding=utf-8
 """cities - Imports GNU miscfiles cities data files."""
 # Copyright © 2007-2017  James Rowe <jnrowe@gmail.com>
 #

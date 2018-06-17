@@ -1,5 +1,4 @@
 #
-# coding=utf-8
 """mock - Mock objects for doctest code snippets"""
 # Copyright © 2007-2017  James Rowe <jnrowe@gmail.com>
 #

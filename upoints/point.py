@@ -1,5 +1,4 @@
 #
-# coding=utf-8
 """point - Classes for working with locations on Earth."""
 # Copyright © 2008-2017  James Rowe <jnrowe@gmail.com>
 #
