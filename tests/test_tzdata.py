@@ -18,14 +18,13 @@
 # upoints.  If not, see <http://www.gnu.org/licenses/>.
 
 from operator import attrgetter
-from unittest import TestCase
 
 from pytest import mark
 
 from upoints.tzdata import (Zone, Zones)
 
 
-class TestZone(TestCase):
+class TestZone:
     def test___repr__(self):
         assert repr(Zone('+513030-0000731', 'GB', 'Europe/London')) == \
             "Zone('+513030-0000730', 'GB', 'Europe/London', None)"
@@ -40,8 +39,8 @@ class TestZone(TestCase):
         assert str(Zone(*args)) == result
 
 
-class TestZones(TestCase):
-    def setUp(self):
+class TestZones:
+    def setup(self):
         self.zones = Zones(open('tests/data/timezones'))
 
     def test_import_locations(self):

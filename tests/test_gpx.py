@@ -17,8 +17,6 @@
 # You should have received a copy of the GNU General Public License along with
 # upoints.  If not, see <http://www.gnu.org/licenses/>.
 
-from unittest import TestCase
-
 from pytest import mark
 
 from upoints.gpx import (_GpxElem, _GpxMeta, Routepoint, Routepoints,
@@ -29,7 +27,7 @@ from upoints import utils
 from tests.utils import xml_compare
 
 
-class Test_GpxElem(TestCase):
+class Test_GpxElem:
     @mark.parametrize('args, result', [
         ((52, 0), '_GpxElem(52.0, 0.0, None, None, None, None)'),
         ((52, 0, None), '_GpxElem(52.0, 0.0, None, None, None, None)'),
@@ -51,7 +49,7 @@ class Test_GpxElem(TestCase):
         assert str(_GpxElem(*args)) == result
 
 
-class Test_GpxMeta(TestCase):
+class Test_GpxMeta:
     @mark.parametrize('bounds, result', [
         (None,
          b'<gpx:metadata xmlns:gpx="http://www.topografix.com/GPX/1/1">'
@@ -72,7 +70,7 @@ class Test_GpxMeta(TestCase):
         assert etree.tostring(meta.togpx()) == result
 
 
-class TestWaypoint(TestCase):
+class TestWaypoint:
     assert repr(Waypoint(52, 0)) == \
         'Waypoint(52.0, 0.0, None, None, None, None)'
     assert repr(Waypoint(52, 0, None)) == \
@@ -81,7 +79,7 @@ class TestWaypoint(TestCase):
         "Waypoint(52.0, 0.0, 'name', 'desc', None, None)"
 
 
-class TestWaypoints(TestCase):
+class TestWaypoints:
     def test_import_locations(self):
         waypoints = Waypoints(open('tests/data/gpx'))
         assert [str(x) for x in sorted(waypoints, key=lambda x: x.name)] == [
@@ -97,7 +95,7 @@ class TestWaypoints(TestCase):
             xml_compare(e1, e2)
 
 
-class TestTrackpoint(TestCase):
+class TestTrackpoint:
     @mark.parametrize('args, result', [
         ((52, 0), 'Trackpoint(52.0, 0.0, None, None, None, None)'),
         ((52, 0, None), 'Trackpoint(52.0, 0.0, None, None, None, None)'),
@@ -108,7 +106,7 @@ class TestTrackpoint(TestCase):
         assert Trackpoint(*args) == result
 
 
-class TestTrackpoints(TestCase):
+class TestTrackpoints:
     def test_import_locations(self):
         trackpoints = Trackpoints(open('tests/data/gpx_tracks'))
         assert [str(x) for x in sorted(trackpoints[0], key=lambda x: x.name)] == [
@@ -124,7 +122,7 @@ class TestTrackpoints(TestCase):
             xml_compare(e1, e2)
 
 
-class TestRoutepoint(TestCase):
+class TestRoutepoint:
     @mark.parametrize('args, result', [
         ((52, 0), 'Routepoint(52.0, 0.0, None, None, None, None)'),
         ((52, 0, None), 'Routepoint(52.0, 0.0, None, None, None, None)'),
@@ -135,7 +133,7 @@ class TestRoutepoint(TestCase):
         assert Routepoint(*args) == result
 
 
-class TestRoutepoints(TestCase):
+class TestRoutepoints:
     def test_import_locations(self):
         routepoints = Routepoints(open('tests/data/gpx_routes'))
         assert [str(x) for x in sorted(routepoints[0], key=lambda x: x.name)] == [

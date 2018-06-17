@@ -20,7 +20,7 @@
 import sys
 
 from doctest import _ellipsis_match as ellipsis_match
-from unittest import (TestCase, skipIf)
+from unittest import skipIf
 
 try:
     from StringIO import StringIO
@@ -35,7 +35,7 @@ from upoints.edist import (LocationsError, NumberedPoint, NumberedPoints,
                            main, read_csv)
 
 
-class TestLocationsError(TestCase):
+class TestLocationsError:
     with raises(LocationsError, message='Invalid location data.'):
         raise LocationsError()
     with raises(LocationsError,
@@ -46,7 +46,7 @@ class TestLocationsError(TestCase):
         raise LocationsError(data=(4, '52;None'))
 
 
-class TestNumberedPoint(TestCase):
+class TestNumberedPoint:
     @mark.parametrize('args, result', [
         ((52.015, -0.221, 4), "NumberedPoint(52.015, -0.221, 4, 'metric')"),
         ((52.015, -0.221, 'Home'),
@@ -56,7 +56,7 @@ class TestNumberedPoint(TestCase):
         assert repr(NumberedPoint(*args)) == result
 
 
-class TestNumberedPoints(TestCase):
+class TestNumberedPoints:
     def test___repr__(self):
         locations = ['0;0'] * 4
         assert repr(NumberedPoints(locations)) == \

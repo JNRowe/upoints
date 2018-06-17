@@ -17,15 +17,13 @@
 # You should have received a copy of the GNU General Public License along with
 # upoints.  If not, see <http://www.gnu.org/licenses/>.
 
-from unittest import TestCase
-
 from pytest import mark
 
 from upoints.weather_stations import (Station, Stations)
 
 
-class TestStation(TestCase):
-    def setUp(self):
+class TestStation:
+    def setup(self):
         self.x = Station('EGLL', 'London / Heathrow Airport', None,
                          'United Kingdom', 6, 51.4833333333, -0.45, None, None,
                          24, 0, True)
@@ -53,7 +51,7 @@ class TestStation(TestCase):
         assert format(self.x, style) == result
 
 
-class TestStations(TestCase):
+class TestStations:
     def test_import_locations_wmo(self):
         stations = Stations(open('tests/data/WMO_stations'))
         data = sorted(stations.items())

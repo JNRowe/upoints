@@ -20,15 +20,13 @@
 import datetime
 import math
 
-from unittest import TestCase
-
 from pytest import mark, raises
 
 from upoints import utils
 from upoints.point import (KeyedPoints, Point, Points, TimedPoint, TimedPoints)
 
 
-class TestPoint(TestCase):
+class TestPoint:
     def test___init__(self):
         test = Point(math.pi / 4, math.pi / 2, angle='radians')
         assert test.latitude == 45
@@ -219,8 +217,8 @@ class TestPoint(TestCase):
         assert int(dist) == 169
 
 
-class TestPoints(TestCase):
-    def setUp(self):
+class TestPoints:
+    def setup(self):
         self.locs = Points(['52.015;-0.221', '52.168;0.040', '52.855;0.657'],
                            parse=True)
 
@@ -300,7 +298,7 @@ class TestPoints(TestCase):
         assert list(self.locs.to_grid_locator(accuracy)) == result
 
 
-class TestTimedPoints(TestCase):
+class TestTimedPoints:
     def test_speed(self):
         locations = TimedPoints()
         locations.extend([
@@ -315,8 +313,8 @@ class TestTimedPoints(TestCase):
             ['12.315', '133.849']
 
 
-class TestKeyedPoints(TestCase):
-    def setUp(self):
+class TestKeyedPoints:
+    def setup(self):
         self.locs = KeyedPoints([('home', '52.015;-0.221'),
                                  ('Carol', '52.168;0.040'),
                                  ('Kenny', '52.855;0.657')],

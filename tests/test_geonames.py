@@ -19,16 +19,14 @@
 
 import datetime
 
-from unittest import TestCase
-
 from pytest import mark, raises
 
 from upoints.geonames import (Location, Locations)
 from upoints.utils import FileFormatError
 
 
-class TestLocation(TestCase):
-    def setUp(self):
+class TestLocation:
+    def setup(self):
         self.x = Location(2636782, 'Stotfold', 'Stotfold', None, 52.0,
                           -0.2166667, 'P', 'PPL', 'GB', None, 'F8', None, None,
                           None, 6245, None, 77, 'Europe/London',
@@ -56,7 +54,7 @@ class TestLocation(TestCase):
         assert format(self.x, style) == result
 
 
-class TestLocations(TestCase):
+class TestLocations:
     def test_import_locations(self):
         assert [str(l) for l in Locations(open('tests/data/geonames'))] == [
             'Afon Wyre (River Wayrai, River Wyrai, Wyre - N52.317°; W004.167°)',

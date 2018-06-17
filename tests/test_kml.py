@@ -17,8 +17,6 @@
 # You should have received a copy of the GNU General Public License along with
 # upoints.  If not, see <http://www.gnu.org/licenses/>.
 
-from unittest import TestCase
-
 from pytest import mark
 
 from upoints.kml import (Placemark, Placemarks, etree)
@@ -26,7 +24,7 @@ from upoints.kml import (Placemark, Placemarks, etree)
 from tests.utils import xml_compare
 
 
-class TestPlacemark(TestCase):
+class TestPlacemark:
     @mark.parametrize('args, result', [
         ((52, 0, 4), 'Placemark(52.0, 0.0, 4.0, None, None)'),
         ((52, 0, None), 'Placemark(52.0, 0.0, None, None, None)'),
@@ -69,7 +67,7 @@ class TestPlacemark(TestCase):
         assert etree.tostring(Placemark(*args).tokml()) == result
 
 
-class TestPlacemarks(TestCase):
+class TestPlacemarks:
     @mark.parametrize('name, result', [
         ('Cambridge', """Cambridge (52°10'01"N, 000°23'24"E)"""),
         ('Home', """Home (52°00'54"N, 000°13'15"W alt 60m)"""),

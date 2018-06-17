@@ -19,8 +19,6 @@
 
 import datetime
 
-from unittest import TestCase
-
 from pytest import mark, raises
 
 from upoints.point import Point
@@ -34,7 +32,7 @@ from upoints.utils import (FileFormatError, Timestamp, TzOffset,
                            to_grid_locator, to_iso6709, value_or_empty)
 
 
-class TestFileFormatError(TestCase):
+class TestFileFormatError:
     with raises(FileFormatError, message='Unsupported data format.'):
         raise FileFormatError
     with raises(
@@ -128,7 +126,7 @@ def test_angle_to_name(args, result):
     assert angle_to_name(*args) == result
 
 
-class TestTzOffset(TestCase):
+class TestTzOffset:
     @mark.parametrize('string, result', [
         ('+00:00', datetime.timedelta(0)),
         ('-00:00', datetime.timedelta(0)),
@@ -150,7 +148,7 @@ class TestTzOffset(TestCase):
         assert repr(TzOffset('-00:00')) == "TzOffset('+00:00')"
 
 
-class TestTimestamp(TestCase):
+class TestTimestamp:
     @mark.parametrize('string, result', [
         ('2008-02-06T13:33:26+0000', TzOffset('+00:00')),
         ('2008-02-06T13:33:26+00:00', TzOffset('+00:00')),

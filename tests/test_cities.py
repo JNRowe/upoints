@@ -17,13 +17,11 @@
 # You should have received a copy of the GNU General Public License along with
 # upoints.  If not, see <http://www.gnu.org/licenses/>.
 
-from unittest import TestCase
-
 from upoints.cities import (City, Cities)
 
 
-class TestCity(TestCase):
-    def setUp(self):
+class TestCity:
+    def setup(self):
         self.t = City(498, 'Zwickau', 'City', 'Sachsen', 'DE', 'Earth', 108835,
                       None, 12.5, 50.72, None,
                       (1997, 4, 10, 0, 0, 0, 3, 100, -1),
@@ -54,7 +52,7 @@ class TestCity(TestCase):
         ]
 
 
-class TestCities(TestCase):
+class TestCities:
     def test_import_locations(self):
         cities_file = open('tests/data/city_data')
         cities = Cities(cities_file)

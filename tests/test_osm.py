@@ -17,8 +17,6 @@
 # You should have received a copy of the GNU General Public License along with
 # upoints.  If not, see <http://www.gnu.org/licenses/>.
 
-from unittest import TestCase
-
 from pytest import mark
 
 from upoints import (point, utils)
@@ -38,8 +36,8 @@ def test_get_area_url(size, results):
         'http://api.openstreetmap.org/api/0.5/map?bbox=%s,%s,%s,%s' % results
 
 
-class TestNode(TestCase):
-    def setUp(self):
+class TestNode:
+    def setup(self):
         self.bare = Node(0, 52, 0)
         self.named = Node(0, 52, 0, True, 'jnrowe',
                           utils.Timestamp(2008, 1, 25))
@@ -97,8 +95,8 @@ class TestNode(TestCase):
         pass
 
 
-class TestWay(TestCase):
-    def setUp(self):
+class TestWay:
+    def setup(self):
         self.bare = Way(0, (0, 1, 2))
         self.named = Way(0, (0, 1, 2), True, 'jnrowe',
                          utils.Timestamp(2008, 1, 25))
@@ -165,8 +163,8 @@ class TestWay(TestCase):
         xml_str_compare(result, etree.tostring(getattr(self, node).toosm()))
 
 
-class TestOsm(TestCase):
-    def setUp(self):
+class TestOsm:
+    def setup(self):
         self.region = Osm(open('tests/data/osm'))
 
     def test_import_locations(self):

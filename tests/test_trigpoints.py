@@ -17,14 +17,12 @@
 # You should have received a copy of the GNU General Public License along with
 # upoints.  If not, see <http://www.gnu.org/licenses/>.
 
-from unittest import TestCase
-
 from pytest import mark
 
 from upoints.trigpoints import (Trigpoint, Trigpoints)
 
 
-class TestTrigpoint(TestCase):
+class TestTrigpoint:
     def test___repr__(self):
         assert repr(Trigpoint(52.010585, -0.173443, 97.0, 'Bygrave')) == \
             "Trigpoint(52.010585, -0.173443, 97.0, 'Bygrave', None)"
@@ -43,7 +41,7 @@ class TestTrigpoint(TestCase):
         assert format(Trigpoint(52.010585, -0.173443, 97.0), style) == result
 
 
-class TestTrigpoints(TestCase):
+class TestTrigpoints:
     def test_import_locations(self):
         markers = Trigpoints(open('tests/data/trigpoints'))
         data = ['%s - %s' % (k, v) for k, v in sorted(markers.items())]

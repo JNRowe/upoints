@@ -17,14 +17,12 @@
 # You should have received a copy of the GNU General Public License along with
 # upoints.  If not, see <http://www.gnu.org/licenses/>.
 
-from unittest import TestCase
-
 from pytest import raises
 
 from upoints.baken import (Baken, Bakens)
 
 
-class TestBaken(TestCase):
+class TestBaken:
     def test___repr__(self):
         assert repr(Baken(14.460, 20.680, None, None, None, 0.000, None, None,
                           None, None, None)) == \
@@ -55,7 +53,7 @@ class TestBaken(TestCase):
             """IO93BF (53°13'45"N, 001°52'30"W)"""
 
 
-class TestBakens(TestCase):
+class TestBakens:
     def test_import_locations(self):
         locations = Bakens(open('tests/data/baken_data'))
         data = ['%s - %s' % (k, v) for k, v in sorted(locations.items())]

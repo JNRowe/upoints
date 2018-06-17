@@ -17,14 +17,12 @@
 # You should have received a copy of the GNU General Public License along with
 # upoints.  If not, see <http://www.gnu.org/licenses/>.
 
-from unittest import TestCase
-
 import datetime
 
 from upoints.cellid import (Cell, Cells)
 
 
-class TestCell(TestCase):
+class TestCell:
     def test___repr__(self):
         assert repr(Cell(4, 52.015, -0.221, 21, 46, 40000, 10, 0, 1,
                          datetime.datetime(2008, 4, 15, 15, 21, 35),
@@ -41,8 +39,8 @@ class TestCell(TestCase):
              '2008-04-15 15:21:35,2008-04-15 15:28:49')
 
 
-class TestCells(TestCase):
-    def setUp(self):
+class TestCells:
+    def setup(self):
         self.cells = Cells(open('tests/data/cells'))
 
     def test___str__(self):

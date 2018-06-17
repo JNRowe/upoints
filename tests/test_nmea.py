@@ -19,8 +19,6 @@
 
 import datetime
 
-from unittest import TestCase
-
 from pytest import mark
 
 from upoints.nmea import (Fix, Locations, LoranPosition, Position, Waypoint,
@@ -55,7 +53,7 @@ def test_parse_longitude():
     assert parse_longitude('00300.9257', 'W') == -3.0154283333333334
 
 
-class TestLoranPosition(TestCase):
+class TestLoranPosition:
     @mark.parametrize('args, result', [
         ((53.1440233333, -3.01542833333, datetime.time(14, 20, 58, 14), True,
           None),
@@ -94,8 +92,8 @@ class TestLoranPosition(TestCase):
                           datetime.time(14, 20, 59, 140000), True, None)
 
 
-class TestPosition(TestCase):
-    def setUp(self):
+class TestPosition:
+    def setup(self):
         self.x = Position(datetime.time(14, 20, 58), True, 53.1440233333,
                           -3.01542833333, 109394.7, 202.9,
                           datetime.date(2007, 11, 19), 5.0)
@@ -130,8 +128,8 @@ class TestPosition(TestCase):
              % (-3.2776666666666667))
 
 
-class TestFix(TestCase):
-    def setUp(self):
+class TestFix:
+    def setup(self):
         self.x = Fix(datetime.time(14, 20, 27), 52.1380333333, -2.56861166667,
                      1, 4, 5.6, 1052.3, 34.5)
 
@@ -170,7 +168,7 @@ class TestFix(TestCase):
         assert repr(Fix.parse_elements(elements)) == result
 
 
-class TestWaypoint(TestCase):
+class TestWaypoint:
     def test___repr__(self):
         assert repr(Waypoint(52.015, -0.221, 'Home')) == \
             "Waypoint(52.015, -0.221, 'HOME')"
@@ -185,7 +183,7 @@ class TestWaypoint(TestCase):
             "Waypoint(52.015, -0.221, 'HOME')"
 
 
-class TestLocations(TestCase):
+class TestLocations:
     def test_import_locations(self):
         locations = Locations(open('tests/data/gpsdata'))
         assert [str(x) for x in locations] == [

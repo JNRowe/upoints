@@ -17,14 +17,12 @@
 # You should have received a copy of the GNU General Public License along with
 # upoints.  If not, see <http://www.gnu.org/licenses/>.
 
-from unittest import TestCase
-
 from pytest import mark
 
 from upoints.xearth import (Xearth, Xearths)
 
 
-class TestXearth(TestCase):
+class TestXearth:
     def test___repr__(self):
         assert repr(Xearth(52.015, -0.221, "James Rowe's house")) == \
             """Xearth(52.015, -0.221, "James Rowe's house")"""
@@ -42,8 +40,8 @@ class TestXearth(TestCase):
         assert format(Xearth(52.015, -0.221), style) == result
 
 
-class TestXearths(TestCase):
-    def setUp(self):
+class TestXearths:
+    def setup(self):
         self.markers = Xearths(open('tests/data/xearth'))
 
     def test___str__(self):
