@@ -27,11 +27,6 @@ try:
 except ImportError:
     from io import StringIO  # NOQA
 
-try:
-    from unittest.mock import patch
-except ImportError:
-    from mock import patch
-
 from click.testing import CliRunner
 from expecter import expect
 from pytest import mark
@@ -75,188 +70,172 @@ class TestNumberedPoints(TestCase):
                               config_locations={'Home': (52.015, -0.221)})
         expect(repr(locs)) == "NumberedPoints([NumberedPoint(0.0, 0.0, 1, 'metric'), NumberedPoint(52.015, -0.221, 'Home', 'metric'), NumberedPoint(0.0, 0.0, 3, 'metric')], 'dd', True, {'Home': (52.015, -0.221)}, 'km')"
 
-    @patch('sys.stdout', new_callable=StringIO)
-    def test_display(self, stdout):
+    def test_display(self, capsys):
         locs = NumberedPoints(['Home', '52.168;0.040'],
                               config_locations={'Home': (52.015, -0.221)})
         locs.display(None)
+        stdout = capsys.readouterr()[0]
         if PY2:
-            expect(stdout.getvalue()) == (
+            expect(stdout) == (
                 "Location Home is 52\xc2\xb000.90'N, 000\xc2\xb013.26'W\n"
                 "Location 2 is 52\xc2\xb010.08'N, 000\xc2\xb002.40'E\n"
             )
         else:
-            expect(stdout.getvalue()) == (
+            expect(stdout) == (
                 "Location Home is 52°00.90'N, 000°13.26'W\n"
                 "Location 2 is 52°10.08'N, 000°02.40'E\n"
             )
 
-    @patch('sys.stdout', new_callable=StringIO)
-    def test_display_locator(self, stdout):
+    def test_display_locator(self, capsys):
         locs = NumberedPoints(['Home', '52.168;0.040'],
                               config_locations={'Home': (52.015, -0.221)})
         locs.format = 'locator'
         locs.display('extsquare')
-        expect(stdout.getvalue()) == (
+        expect(capsys.readouterr()[0]) == (
             'Location Home is IO92va33\n'
             'Location 2 is JO02ae40\n'
         )
 
-    @patch('sys.stdout', new_callable=StringIO)
-    def test_display_non_verbose(self, stdout):
+    def test_display_non_verbose(self, capsys):
         locs = NumberedPoints(['Home', '52.168;0.040'],
                               config_locations={'Home': (52.015, -0.221)})
         locs.format = 'locator'
         locs.verbose = False
         locs.display('extsquare')
-        expect(stdout.getvalue()) == 'IO92va33\nJO02ae40\n'
+        expect(capsys.readouterr()[0]) == 'IO92va33\nJO02ae40\n'
 
     @mark.parametrize('units, result', [
         ('metric', '24 kilometres'),
         ('sm', '15 miles'),
         ('nm', '13 nautical miles'),
     ])
-    def test_distance(self, units, result):
+    def test_distance(self, units, result, capsys):
         locations = NumberedPoints(['52.015;-0.221', '52.168;0.040'],
                                    units=units)
-        with patch('sys.stdout', new_callable=StringIO):
-            locations.distance()
-        expect(stdout.getvalue()) == 'Location 1 to 2 is %s\n' % result
+        locations.distance()
+        expect(capsys.readouterr()[0]) == 'Location 1 to 2 is %s\n' % result
 
-    @patch('sys.stdout', new_callable=StringIO)
-    def test_distance_multi(self, stdout):
+    def test_distance_multi(self, capsys):
         locations = NumberedPoints(['52.015;-0.221', '52.168;0.040',
                                     '51.420;-1.500'])
         locations.distance()
-        expect(stdout.getvalue()) == (
+        expect(capsys.readouterr()[0]) == (
             'Location 1 to 2 is 24 kilometres\n'
             'Location 2 to 3 is 134 kilometres\n'
             'Total distance is 159 kilometres\n'
         )
 
-    @patch('sys.stdout', new_callable=StringIO)
-    def test_bearing(self, stdout):
+    def test_bearing(self, capsys):
         locations = NumberedPoints(['52.015;-0.221', '52.168;0.040'])
         locations.bearing('bearing', False)
-        expect(stdout.getvalue()) == 'Location 1 to 2 is 46°\n'
+        expect(capsys.readouterr()[0]) == 'Location 1 to 2 is 46°\n'
 
-    @patch('sys.stdout', new_callable=StringIO)
-    def test_bearing_symbolic(self, stdout):
+    def test_bearing_symbolic(self, capsys):
         locations = NumberedPoints(['52.015;-0.221', '52.168;0.040'])
         locations.bearing('bearing', True)
-        expect(stdout.getvalue()) == 'Location 1 to 2 is North-east\n'
+        expect(capsys.readouterr()[0]) == 'Location 1 to 2 is North-east\n'
 
-    @patch('sys.stdout', new_callable=StringIO)
-    def test_final_bearing(self, stdout):
+    def test_final_bearing(self, capsys):
         locations = NumberedPoints(['52.015;-0.221', '52.168;0.040'])
         locations.bearing('final_bearing', False)
-        expect(stdout.getvalue()) == \
+        expect(capsys.readouterr()[0]) == \
             'Final bearing from location 1 to 2 is 46°\n'
 
-    @patch('sys.stdout', new_callable=StringIO)
-    def test_final_bearing_symbolic(self, stdout):
+    def test_final_bearing_symbolic(self, capsys):
         locations = NumberedPoints(['52.015;-0.221', '52.168;0.040'])
         locations.bearing('final_bearing', True)
-        expect(stdout.getvalue()) == \
+        expect(capsys.readouterr()[0]) == \
             'Final bearing from location 1 to 2 is North-east\n'
 
-    @patch('sys.stdout', new_callable=StringIO)
-    def test_bearing_non_verbose(self, stdout):
+    def test_bearing_non_verbose(self, capsys):
         locations = NumberedPoints(['52.015;-0.221', '52.168;0.040'])
         locations.verbose = False
         locations.bearing('bearing', True)
-        expect(stdout.getvalue()) == 'North-east\n'
+        expect(capsys.readouterr()[0]) == 'North-east\n'
 
-    @patch('sys.stdout', new_callable=StringIO)
-    def test_final_bearing_non_verbose(self, stdout):
+    def test_final_bearing_non_verbose(self, capsys):
         locations = NumberedPoints(['52.015;-0.221', '52.168;0.040'])
         locations.verbose = False
         locations.bearing('final_bearing', True)
-        expect(stdout.getvalue()) == 'North-east\n'
+        expect(capsys.readouterr()[0]) == 'North-east\n'
 
     @mark.parametrize('distance, result', [
         (20, False),
         (30, True),
     ])
-    def test_range(self, distance, result):
+    def test_range(self, distance, result, capsys):
         locations = NumberedPoints(['52.015;-0.221', '52.168;0.040'])
-        with patch('sys.stdout', new_callable=StringIO):
-            locations.range(distance)
+        locations.range(distance)
+        stdout = capsys.readouterr()[0]
         if result is True:
-            expect(stdout.getvalue()).contains('is within')
+            expect(stdout).contains('is within')
         else:
-            expect(stdout.getvalue()).contains('is not within')
+            expect(stdout).contains('is not within')
 
     @mark.parametrize('distance, result', [
         (20, 'False'),
         (30, 'True'),
     ])
-    def test_range_non_verbose(self, distance, result):
+    def test_range_non_verbose(self, distance, result, capsys):
         locations = NumberedPoints(['52.015;-0.221', '52.168;0.040'])
         locations.verbose = False
-        with patch('sys.stdout', new_callable=StringIO):
-            locations.range(distance)
-        expect(stdout.getvalue()) == result + '\n'
+        locations.range(distance)
+        expect(capsys.readouterr()[0]) == result + '\n'
 
-    @patch('sys.stdout', new_callable=StringIO)
-    def test_destination(self, stdout):
+    def test_destination(self, capsys):
         locations = NumberedPoints(['52.015;-0.221', '52.168;0.040'])
         locations.destination(42, 240, False)
+        stdout = capsys.readouterr()[0]
         if PY2:
-            expect(stdout.getvalue()) == (
+            expect(stdout) == (
                 "Destination from location 1 is 52\xc2\xb000.90'N, 000\xc2\xb013.26'W\n"
                 "Destination from location 2 is 52\xc2\xb010.08'N, 000\xc2\xb002.40'E\n"
             )
         else:
-            expect(stdout.getvalue()) == (
+            expect(stdout) == (
                 "Destination from location 1 is 52°00.90'N, 000°13.26'W\n"
                 "Destination from location 2 is 52°10.08'N, 000°02.40'E\n"
             )
 
-    @patch('sys.stdout', new_callable=StringIO)
-    def test_destination_locator(self, stdout):
+    def test_destination_locator(self, capsys):
         locations = NumberedPoints(['52.015;-0.221', '52.168;0.040'])
         locations.format = 'locator'
         locations.destination(42, 240, 'subsquare')
-        expect(stdout.getvalue()) == (
+        expect(capsys.readouterr()[0]) == (
             'Destination from location 1 is IO91ot\n'
             'Destination from location 2 is IO91sx\n'
         )
 
-    @patch('sys.stdout', new_callable=StringIO)
-    def test_destination_locator_non_verbose(self, stdout):
+    def test_destination_locator_non_verbose(self, capsys):
         locations = NumberedPoints(['52.015;-0.221', '52.168;0.040'])
         locations.format = 'locator'
         locations.verbose = False
         locations.destination(42, 240, 'extsquare')
-        expect(stdout.getvalue()) == 'IO91ot97\nIO91sx14\n'
+        expect(capsys.readouterr()[0]) == 'IO91ot97\nIO91sx14\n'
 
-    @patch('sys.stdout', new_callable=StringIO)
-    def test_sunrise(self, stdout):
+    def test_sunrise(self, capsys):
         locations = NumberedPoints(['52.015;-0.221', '52.168;0.040'])
         locations.sun_events('sunrise')
-        lines = stdout.getvalue().splitlines()
+        lines = capsys.readouterr()[0].splitlines()
         expect(ellipsis_match('Sunrise at ... in location 1', lines[0])) \
             == True
         expect(ellipsis_match('Sunrise at ... in location 2', lines[1])) \
             == True
 
-    @patch('sys.stdout', new_callable=StringIO)
-    def test_sunset(self, stdout):
+    def test_sunset(self, capsys):
         locations = NumberedPoints(['52.015;-0.221', '52.168;0.040'])
         locations.sun_events('sunset')
-        lines = stdout.getvalue().splitlines()
+        lines = capsys.readouterr()[0].splitlines()
         expect(ellipsis_match('Sunset at ... in location 1', lines[0])) \
             == True
         expect(ellipsis_match('Sunset at ... in location 2', lines[1])) \
             == True
 
-    @patch('sys.stdout', new_callable=StringIO)
-    def test_flight_plan(self, stdout):
+    def test_flight_plan(self, capsys):
         locations = NumberedPoints(['52.015;-0.221', '52.168;0.040',
                                     '52.249;0.130', '52.494;0.654'])
         locations.flight_plan(0, 'h')
-        expect(stdout.getvalue()) == (
+        expect(capsys.readouterr()[0]) == (
             'WAYPOINT,BEARING[°],DISTANCE[km],ELAPSED_TIME[h],LATITUDE[d.dd],LONGITUDE[d.dd]\n'
             '1,,,,52.015000,-0.221000\n'
             '2,46,24.6,,52.168000,0.040000\n'
@@ -266,13 +245,12 @@ class TestNumberedPoints(TestCase):
             '-- DIRECT --#,47,79.9,,,\n'
         )
 
-    @patch('sys.stdout', new_callable=StringIO)
-    def test_flight_plan_minute(self, stdout):
+    def test_flight_plan_minute(self, capsys):
         locations = NumberedPoints(['52.015;-0.221', '52.168;0.040',
                                     '52.249;0.130', '52.494;0.654'],
                                    units='nm')
         locations.flight_plan(20, 'm')
-        expect(stdout.getvalue()) == (
+        expect(capsys.readouterr()[0]) == (
             'WAYPOINT,BEARING[°],DISTANCE[nm],ELAPSED_TIME[m],LATITUDE[d.dd],LONGITUDE[d.dd]\n'
             '1,,,,52.015000,-0.221000\n'
             '2,46,13.3,0.7,52.168000,0.040000\n'
