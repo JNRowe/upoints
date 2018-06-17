@@ -22,6 +22,7 @@ from __future__ import print_function
 import os
 import sys
 
+from contextlib import suppress
 from subprocess import (CalledProcessError, run)
 
 root_dir = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
@@ -56,12 +57,10 @@ version = '.'.join(map(str, upoints._version.tuple[:2]))
 release = upoints._version.dotted
 
 pygments_style = 'sphinx'
-try:
+with suppress(CalledProcessError):
     proc = run(['git', 'log', "--pretty=format:'%ad [%h]'", '--date=short',
                 '-n1'], stdout=PIPE)
     html_last_updated_fmt = proc.stdout.decode()
-except CalledProcessError:
-    pass
 
 man_pages = [
     ('edist.1', 'edist', u'upoints Documentation', [u'James Rowe'], 1)

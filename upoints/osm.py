@@ -17,6 +17,7 @@
 # You should have received a copy of the GNU General Public License along with
 # upoints.  If not, see <http://www.gnu.org/licenses/>.
 
+from contextlib import suppress
 from operator import attrgetter
 
 try:
@@ -47,13 +48,11 @@ def _parse_flags(element):
     if timestamp:
         timestamp = utils.Timestamp.parse_isoformat(timestamp)
     tags = {}
-    try:
+    with suppress(AttributeError):
         for tag in element['tag']:
             key = tag.get('k')
             value = tag.get('v')
             tags[key] = value
-    except AttributeError:
-        pass
 
     return visible, user, timestamp, tags
 

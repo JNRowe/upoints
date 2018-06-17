@@ -19,6 +19,7 @@
 
 import time
 
+from contextlib import suppress
 from operator import attrgetter
 
 from lxml import etree
@@ -518,10 +519,8 @@ class Waypoints(point.TimedPoints):
         self._gpx_file = gpx_file
         data = utils.prepare_xml_read(gpx_file, objectify=True)
 
-        try:
+        with suppress(AttributeError):
             self.metadata.import_metadata(data.metadata)
-        except AttributeError:
-            pass
 
         for waypoint in data.wpt:
             latitude = waypoint.get('lat')
@@ -627,10 +626,8 @@ class Trackpoints(_SegWrap):
         self._gpx_file = gpx_file
         data = utils.prepare_xml_read(gpx_file, objectify=True)
 
-        try:
+        with suppress(AttributeError):
             self.metadata.import_metadata(data.metadata)
-        except AttributeError:
-            pass
 
         for segment in data.trk.trkseg:
             points = point.TimedPoints()
@@ -743,10 +740,8 @@ class Routepoints(_SegWrap):
         self._gpx_file = gpx_file
         data = utils.prepare_xml_read(gpx_file, objectify=True)
 
-        try:
+        with suppress(AttributeError):
             self.metadata.import_metadata(data.metadata)
-        except AttributeError:
-            pass
 
         for route in data.rte:
             points = point.TimedPoints()
