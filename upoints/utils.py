@@ -134,7 +134,8 @@ def repr_assist(obj, remap=None):
     if not remap:
         remap = {}
     data = []
-    for arg in inspect.getargspec(getattr(obj.__class__, '__init__'))[0]:
+    sig = inspect.signature(getattr(obj.__class__, '__init__'))
+    for arg in sig.parameters:
         if arg == 'self':
             continue
         elif arg in remap:
