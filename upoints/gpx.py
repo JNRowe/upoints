@@ -363,7 +363,7 @@ class _GpxMeta(object):
             metadata.append(element)
         if self.link:
             for link in self.link:
-                if isinstance(link, basestring):
+                if isinstance(link, str):
                     element = create_elem('link', {'href': link})
                 else:
                     element = create_elem('link', {'href': link['href']})

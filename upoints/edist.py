@@ -47,7 +47,6 @@ try:
 except ImportError:
     from ConfigParser import ConfigParser
 
-from .compat import mangle_repr_type
 from . import (_version, point, utils)
 
 
@@ -130,7 +129,6 @@ class NumberedPoint(point.Point):
         return super(NumberedPoint, self).__format__('dm')
 
 
-@mangle_repr_type
 class NumberedPoints(point.Points):
     """Class for representing a group of :class:`NumberedPoint` objects.
 
