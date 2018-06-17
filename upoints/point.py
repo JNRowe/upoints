@@ -66,7 +66,7 @@ def _dms_formatter(latitude, longitude, mode, unistr=False):
     return text
 
 
-class Point(object):
+class Point:
     """Simple class for representing a location on a sphere.
 
     .. versionadded:: 0.2.0

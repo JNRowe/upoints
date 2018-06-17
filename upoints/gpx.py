@@ -289,7 +289,7 @@ class _SegWrap(list):
         return (segment.speed() for segment in self)
 
 
-class _GpxMeta(object):
+class _GpxMeta:
     """Class for representing GPX global metadata.
 
     .. versionadded:: 0.12.0
