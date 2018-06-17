@@ -21,7 +21,6 @@ import datetime
 
 from unittest import TestCase
 
-from expecter import expect
 from pytest import mark
 
 from upoints.nmea import (Fix, Locations, LoranPosition, Position, Waypoint,
@@ -37,23 +36,23 @@ from upoints.nmea import (Fix, Locations, LoranPosition, Position, Waypoint,
 ])
 def test_calc_checksum(start, end):
     s = 'GPGGA,142058,5308.6414,N,00300.9257,W,1,04,5.6,1374.6,M,34.5,M,,'
-    expect(calc_checksum(start + s + end)) == 107
+    assert calc_checksum(start + s + end) == 107
 
 
 def test_nmea_latitude():
-    expect(nmea_latitude(53.144023333333337)) == ('5308.6414', 'N')
+    assert nmea_latitude(53.144023333333337) == ('5308.6414', 'N')
 
 
 def test_nmea_longitude():
-    expect(nmea_longitude(-3.0154283333333334)) == ('00300.9257', 'W')
+    assert nmea_longitude(-3.0154283333333334) == ('00300.9257', 'W')
 
 
 def test_parse_latitude():
-    expect(parse_latitude('5308.6414', 'N')) == 53.14402333333334
+    assert parse_latitude('5308.6414', 'N') == 53.14402333333334
 
 
 def test_parse_longitude():
-    expect(parse_longitude('00300.9257', 'W')) == -3.0154283333333334
+    assert parse_longitude('00300.9257', 'W') == -3.0154283333333334
 
 
 class TestLoranPosition(TestCase):
@@ -68,7 +67,7 @@ class TestLoranPosition(TestCase):
                         "datetime.time(14, 20, 58, 14), True, 'A')"),
     ])
     def test___repr__(self, args, result):
-        expect(repr(LoranPosition(*args))) == result
+        assert repr(LoranPosition(*args)) == result
 
     @mark.parametrize('args, result', [
         ((53.1440233333, -3.01542833333, datetime.time(14, 20, 58, 14), True,
@@ -79,18 +78,18 @@ class TestLoranPosition(TestCase):
          '$GPGLL,5308.6414,N,00300.9257,W,142058.00,A,A*72\r'),
     ])
     def test___str__(self, args, result):
-        expect(str(LoranPosition(*args))) == result
+        assert str(LoranPosition(*args)) == result
 
     def test_mode_string(self):
         position = LoranPosition(53.1440233333, -3.01542833333,
                                  datetime.time(14, 20, 58), True, None)
-        expect(str(position.mode_string())) == 'Unknown'
+        assert str(position.mode_string()) == 'Unknown'
         position.mode = 'A'
-        expect(str(position.mode_string())) == 'Autonomous'
+        assert str(position.mode_string()) == 'Autonomous'
 
     def test_parse_elements(self):
-        expect(LoranPosition.parse_elements(['52.32144', 'N', '00300.9257', 'W',
-                                             '14205914', 'A'])) == \
+        assert LoranPosition.parse_elements(['52.32144', 'N', '00300.9257', 'W',
+                                             '14205914', 'A']) == \
             LoranPosition(52.005357333333336, -3.0154283333333334,
                           datetime.time(14, 20, 59, 140000), True, None)
 
@@ -102,30 +101,30 @@ class TestPosition(TestCase):
                           datetime.date(2007, 11, 19), 5.0)
 
     def test___repr__(self):
-        expect(repr(self.x)) == \
+        assert repr(self.x) == \
             ('Position(datetime.time(14, 20, 58), True, 53.1440233333, '
              '-3.01542833333, 109394.7, 202.9, datetime.date(2007, 11, 19), '
              '5.0, None)')
 
     def test___str__(self):
-        expect(str(self.x)) == \
+        assert str(self.x) == \
             '$GPRMC,142058,A,5308.6414,N,00300.9257,W,109394.7,202.9,191107,5,E*41\r'
 
     def test_mode_string(self):
-        expect(str(self.x.mode_string())) == 'Unknown'
+        assert str(self.x.mode_string()) == 'Unknown'
         self.x.mode = 'A'
-        expect(str(self.x.mode_string())) == 'Autonomous'
+        assert str(self.x.mode_string()) == 'Autonomous'
 
     def test_parse_elements(self):
-        expect(repr(Position.parse_elements(['142058', 'A', '5308.6414', 'N',
+        assert repr(Position.parse_elements(['142058', 'A', '5308.6414', 'N',
                                              '00300.9257', 'W', '109394.7',
-                                             '202.9', '191107', '5', 'E', 'A']))) == \
+                                             '202.9', '191107', '5', 'E', 'A'])) == \
             ('Position(datetime.time(14, 20, 58), True, %s, %s, 109394.7, '
              "202.9, datetime.date(2007, 11, 19), 5.0, 'A')"
              % (53.14402333333334, -3.0154283333333334))
-        expect(repr(Position.parse_elements(['142100', 'A', '5200.9000', 'N',
+        assert repr(Position.parse_elements(['142100', 'A', '5200.9000', 'N',
                                              '00316.6600', 'W', '123142.7',
-                                             '188.1', '191107', '5', 'E', 'A']))) == \
+                                             '188.1', '191107', '5', 'E', 'A'])) == \
             ('Position(datetime.time(14, 21), True, 52.015, %s, 123142.7, '
              "188.1, datetime.date(2007, 11, 19), 5.0, 'A')"
              % (-3.2776666666666667))
@@ -137,25 +136,25 @@ class TestFix(TestCase):
                      1, 4, 5.6, 1052.3, 34.5)
 
     def test___repr__(self):
-        expect(repr(self.x)) == \
+        assert repr(self.x) == \
             ('Fix(datetime.time(14, 20, 27), 52.1380333333, -2.56861166667, '
              '1, 4, 5.6, 1052.3, 34.5, None, None, None)')
         self.x.dgps_delta = 12
         self.x.dgps_station = 4
-        expect(repr(self.x)) == \
+        assert repr(self.x) == \
             ('Fix(datetime.time(14, 20, 27), 52.1380333333, -2.56861166667, '
              '1, 4, 5.6, 1052.3, 34.5, 12, 4, None)')
 
     def test___str__(self):
-        expect(str(self.x)) == \
+        assert str(self.x) == \
             '$GPGGA,142027,5208.2820,N,00234.1167,W,1,04,5.6,1052.3,M,34.5,M,,*61\r'
         self.x.dgps_delta = 12
         self.x.dgps_station = 4
-        expect(str(self.x)) == \
+        assert str(self.x) == \
             '$GPGGA,142027,5208.2820,N,00234.1167,W,1,04,5.6,1052.3,M,34.5,M,12.0,0004*78\r'
 
     def test_quality_string(self):
-        expect(str(self.x.quality_string())) == 'GPS'
+        assert str(self.x.quality_string()) == 'GPS'
 
     @mark.parametrize('elements, result', [
         (['142058', '5308.6414', 'N', '00300.9257', 'W', '1', '04', '5.6',
@@ -168,28 +167,28 @@ class TestFix(TestCase):
          'None, None)' % (52.015, -3.2776666666666667)),
     ])
     def test_parse_elements(self, elements, result):
-        expect(repr(Fix.parse_elements(elements))) == result
+        assert repr(Fix.parse_elements(elements)) == result
 
 
 class TestWaypoint(TestCase):
     def test___repr__(self):
-        expect(repr(Waypoint(52.015, -0.221, 'Home'))) == \
+        assert repr(Waypoint(52.015, -0.221, 'Home')) == \
             "Waypoint(52.015, -0.221, 'HOME')"
 
     def test___str__(self):
-        expect(str(Waypoint(52.015, -0.221, 'Home'))) == \
+        assert str(Waypoint(52.015, -0.221, 'Home')) == \
             '$GPWPL,5200.9000,N,00013.2600,W,HOME*5E\r'
 
     def test_parse_elements(self):
-        expect(repr(Waypoint.parse_elements(['5200.9000', 'N', '00013.2600',
-                                             'W', 'HOME']))) == \
+        assert repr(Waypoint.parse_elements(['5200.9000', 'N', '00013.2600',
+                                             'W', 'HOME'])) == \
             "Waypoint(52.015, -0.221, 'HOME')"
 
 
 class TestLocations(TestCase):
     def test_import_locations(self):
         locations = Locations(open('tests/data/gpsdata'))
-        expect([str(x) for x in locations]) == [
+        assert [str(x) for x in locations] == [
             '$GPGGA,142058,5308.6414,N,00300.9257,W,1,04,5.6,1374.6,M,34.5,M,,*6B\r',
             '$GPRMC,142058,A,5308.6414,N,00300.9257,W,109394.7,202.9,191107,5,E,A*2C\r',
             '$GPWPL,5200.9000,N,00013.2600,W,HOME*5E\r',

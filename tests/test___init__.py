@@ -19,21 +19,19 @@
 
 import datetime
 
-from expecter import expect
-
 from upoints import point
 
 
 def test_base():
     home = point.Point(52.015, -0.221)
     telford = point.Point(52.6333, -2.5000)
-    expect(int(home.distance(telford))) == 169
-    expect(int(home.bearing(telford))) == 294
-    expect(int(home.final_bearing(telford))) == 293
+    assert int(home.distance(telford)) == 169
+    assert int(home.bearing(telford)) == 294
+    assert int(home.final_bearing(telford)) == 293
 
-    expect(home.sun_events(datetime.date(2007, 6, 28))) == \
+    assert home.sun_events(datetime.date(2007, 6, 28)) == \
         (datetime.time(3, 42), datetime.time(20, 24))
-    expect(home.sunrise(datetime.date(2007, 6, 28))) == \
+    assert home.sunrise(datetime.date(2007, 6, 28)) == \
         datetime.time(3, 42)
-    expect(home.sunset(datetime.date(2007, 6, 28))) == \
+    assert home.sunset(datetime.date(2007, 6, 28)) == \
         datetime.time(20, 24)

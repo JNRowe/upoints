@@ -19,7 +19,6 @@
 
 from doctest import _ellipsis_match as ellipsis_match
 
-from expecter import expect
 from lxml import etree
 
 
@@ -28,11 +27,11 @@ def xml_compare(elem1, elem2, ellipsis=False):
 
     :param bool ellipsis: Support ellipsis for 'any' match
     """
-    expect(elem1.tag) == elem2.tag
+    assert elem1.tag == elem2.tag
     for key, value in elem1.attrib.items():
-        expect(elem2.attrib.get(key)) == value
+        assert elem2.attrib.get(key) == value
     for key in elem2.attrib.keys():
-        expect(elem1.attrib).contains(key)
+        assert key in elem1.attrib
     text1 = elem1.text.strip() if elem1.text else ''
     text2 = elem2.text.strip() if elem2.text else ''
     tail1 = elem1.tail.strip() if elem1.tail else ''
@@ -45,11 +44,11 @@ def xml_compare(elem1, elem2, ellipsis=False):
             raise ValueError('tail mismatch: %r != %r' % (elem1.text,
                                                           elem2.text))
     else:
-        expect(text1) == text2
-        expect(tail1) == tail2
+        assert text1 == text2
+        assert tail1 == tail2
     children1 = elem1.getchildren()
     children2 = elem2.getchildren()
-    expect(len(children1)) == len(children2)
+    assert len(children1) == len(children2)
     for child1, child2 in zip(children1, children2):
         xml_compare(child1, child2, ellipsis)
 

@@ -19,7 +19,6 @@
 
 from unittest import TestCase
 
-from expecter import expect
 from pytest import mark
 
 from upoints.xearth import (Xearth, Xearths)
@@ -27,12 +26,12 @@ from upoints.xearth import (Xearth, Xearths)
 
 class TestXearth(TestCase):
     def test___repr__(self):
-        expect(repr(Xearth(52.015, -0.221, "James Rowe's house"))) == \
+        assert repr(Xearth(52.015, -0.221, "James Rowe's house")) == \
             """Xearth(52.015, -0.221, "James Rowe's house")"""
 
     def test___str__(self):
-        expect(str(Xearth(52.015, -0.221))) == 'N52.015°; W000.221°'
-        expect(str(Xearth(52.015, -0.221, "James Rowe's house"))) == \
+        assert str(Xearth(52.015, -0.221)) == 'N52.015°; W000.221°'
+        assert str(Xearth(52.015, -0.221, "James Rowe's house")) == \
             "James Rowe's house (N52.015°; W000.221°)"
 
     @mark.parametrize('style, result', [
@@ -40,7 +39,7 @@ class TestXearth(TestCase):
         ('dm', "52°00.90'N, 000°13.26'W"),
     ])
     def test___format__(self, style, result):
-        expect(format(Xearth(52.015, -0.221), style)) == result
+        assert format(Xearth(52.015, -0.221), style) == result
 
 
 class TestXearths(TestCase):
@@ -48,7 +47,7 @@ class TestXearths(TestCase):
         self.markers = Xearths(open('tests/data/xearth'))
 
     def test___str__(self):
-        expect(self.markers.__str__().splitlines()) == \
+        assert self.markers.__str__().splitlines() == \
             ['52.015000 -0.221000 "Home"', '52.633300 -2.500000 "Telford"']
 
     @mark.parametrize('marker, result', [
@@ -56,4 +55,4 @@ class TestXearths(TestCase):
         ('Telford', 'N52.633°; W002.500°'),
     ])
     def test_import_locations(self, marker, result):
-        expect(str(self.markers[marker])) == result
+        assert str(self.markers[marker]) == result

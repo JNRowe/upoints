@@ -19,7 +19,6 @@
 
 from unittest import TestCase
 
-from expecter import expect
 from pytest import mark
 
 from upoints import (point, utils)
@@ -35,7 +34,7 @@ from tests.utils import (xml_compare, xml_str_compare)
           52.12298639141776)),
 ])
 def test_get_area_url(size, results):
-    expect(get_area_url(point.Point(52.015, -0.221), size)) == \
+    assert get_area_url(point.Point(52.015, -0.221), size) == \
         'http://api.openstreetmap.org/api/0.5/map?bbox=%s,%s,%s,%s' % results
 
 
@@ -54,7 +53,7 @@ class TestNode(TestCase):
         ('tagged', "Node(0, 52.0, 0.0, False, None, None, {'key': 'value'})"),
     ])
     def test___repr__(self, node, result):
-        expect(repr(getattr(self, node))) == result
+        assert repr(getattr(self, node)) == result
 
     @mark.parametrize('node, result', [
         ('bare', """Node 0 (52°00'00"N, 000°00'00"E)"""),
@@ -64,7 +63,7 @@ class TestNode(TestCase):
         ('tagged', """Node 0 (52°00'00"N, 000°00'00"E) [key: value]"""),
     ])
     def test___str__(self, node, result):
-        expect(str(getattr(self, node))) == result
+        assert str(getattr(self, node)) == result
 
     @mark.parametrize('node, result', [
         ('bare', '<node id="0" lat="52.0" lon="0.0" visible="false"/>'),
@@ -87,14 +86,14 @@ class TestNode(TestCase):
               52.10798639141778)),
     ])
     def test_get_area_url(self, size, results):
-        expect(self.bare.get_area_url(size)) == \
+        assert self.bare.get_area_url(size) == \
             'http://api.openstreetmap.org/api/0.5/map?bbox=%s,%s,%s,%s' \
             % results
 
     def test_fetch_area_osm(self):
         # FIXME: The following test is skipped, because the Osm object doesn't
         # support a reliable way __repr__ method.
-        # expect(Home.fetch_area_osm(3)
+        # assert Home.fetch_area_osm(3
         pass
 
 
@@ -113,7 +112,7 @@ class TestWay(TestCase):
         ('tagged', "Way(0, [0, 1, 2], False, None, None, {'key': 'value'})"),
     ])
     def test___repr__(self, node, result):
-        expect(repr(getattr(self, node))) == result
+        assert repr(getattr(self, node)) == result
 
     @mark.parametrize('node, result', [
         ('bare', 'Way 0 (nodes: 0, 1, 2)'),
@@ -123,7 +122,7 @@ class TestWay(TestCase):
         ('tagged', 'Way 0 (nodes: 0, 1, 2) [key: value]'),
     ])
     def test___str__(self, node, result):
-        expect(str(getattr(self, node))) == result
+        assert str(getattr(self, node)) == result
 
     def test___str___list(self):
         nodes = [
@@ -136,7 +135,7 @@ class TestWay(TestCase):
                  utils.Timestamp(2008, 1, 25, 12, 52, 30),
                  {'amenity': 'pub'}),
         ]
-        expect(self.tagged.__str__(nodes).splitlines()) == [
+        assert self.tagged.__str__(nodes).splitlines() == [
             'Way 0 [key: value]',
             """    Node 0 (52°00'56"N, 000°13'18"W) [visible, user: """
             'jnrowe, timestamp: 2008-01-25T12:52:11+00:00]',
@@ -171,9 +170,9 @@ class TestOsm(TestCase):
         self.region = Osm(open('tests/data/osm'))
 
     def test_import_locations(self):
-        expect([str(x) for x in sorted([x for x in self.region
+        assert [str(x) for x in sorted([x for x in self.region
                                         if isinstance(x, Node)],
-                                       key=lambda x: x.ident)]) == [
+                                       key=lambda x: x.ident)] == [
             """Node 0 (52°00'56"N, 000°13'18"W) [visible, user: jnrowe, """
             'timestamp: 2008-01-25T12:52:11+00:00]',
             """Node 1 (52°00'56"N, 000°13'18"W) [visible, timestamp: """

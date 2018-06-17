@@ -99,5 +99,5 @@ setup(
     ],
     obsoletes=['earth_distance'],
     install_requires=install_requires,
-    tests_require=['nose2', 'expecter'],
+    tests_require=['nose2', ],
 )

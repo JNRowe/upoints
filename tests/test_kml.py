@@ -19,7 +19,6 @@
 
 from unittest import TestCase
 
-from expecter import expect
 from pytest import mark
 
 from upoints.kml import (Placemark, Placemarks, etree)
@@ -35,7 +34,7 @@ class TestPlacemark(TestCase):
          "Placemark(52.0, 0.0, None, 'name', 'desc')"),
     ])
     def test___repr__(self, args, result):
-        expect(Placemark(*args)) == result
+        assert Placemark(*args) == result
 
     @mark.parametrize('args, result', [
         ((52, 0, 4), """52°00'00"N, 000°00'00"E alt 4m"""),
@@ -46,7 +45,7 @@ class TestPlacemark(TestCase):
          """name (52°00'00"N, 000°00'00"E alt 42m) [desc]"""),
     ])
     def test___str__(self, args, result):
-        expect(str(Placemark(*args))) == result
+        assert str(Placemark(*args)) == result
 
     @mark.parametrize('args, result', [
         ((52, 0, 4),
@@ -67,7 +66,7 @@ class TestPlacemark(TestCase):
          b'</kml:Placemark>'),
     ])
     def test_tokml(self, args, result):
-        expect(etree.tostring(Placemark(*args).tokml())) == result
+        assert etree.tostring(Placemark(*args).tokml()) == result
 
 
 class TestPlacemarks(TestCase):
@@ -77,7 +76,7 @@ class TestPlacemarks(TestCase):
     ])
     def test_import_locations(self, name, result):
         locations = Placemarks(open('tests/data/kml'))
-        expect(str(locations[name])) == result
+        assert str(locations[name]) == result
 
     def test_export_kml_file(self):
         filename = 'tests/data/kml'

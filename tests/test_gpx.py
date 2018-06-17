@@ -19,7 +19,6 @@
 
 from unittest import TestCase
 
-from expecter import expect
 from pytest import mark
 
 from upoints.gpx import (_GpxElem, _GpxMeta, Routepoint, Routepoints,
@@ -38,7 +37,7 @@ class Test_GpxElem(TestCase):
          "_GpxElem(52.0, 0.0, 'name', 'desc', None, None)"),
     ])
     def test___repr__(self, args, result):
-        expect(repr(_GpxElem(*args))) == result
+        assert repr(_GpxElem(*args)) == result
 
     @mark.parametrize('args, result', [
         ((52, 0), """52°00'00"N, 000°00'00"E"""),
@@ -49,7 +48,7 @@ class Test_GpxElem(TestCase):
          '2008-07-25T00:00:00+00:00) [desc]')
     ])
     def test___str__(self, args, result):
-        expect(str(_GpxElem(*args))) == result
+        assert str(_GpxElem(*args)) == result
 
 
 class Test_GpxMeta(TestCase):
@@ -70,22 +69,22 @@ class Test_GpxMeta(TestCase):
     def test_togpx(self, bounds, result):
         meta = _GpxMeta(time=(2008, 6, 3, 16, 12, 43, 1, 155, 0))
         meta.bounds = bounds
-        expect(etree.tostring(meta.togpx())) == result
+        assert etree.tostring(meta.togpx()) == result
 
 
 class TestWaypoint(TestCase):
-    expect(repr(Waypoint(52, 0))) == \
+    assert repr(Waypoint(52, 0)) == \
         'Waypoint(52.0, 0.0, None, None, None, None)'
-    expect(repr(Waypoint(52, 0, None))) == \
+    assert repr(Waypoint(52, 0, None)) == \
         'Waypoint(52.0, 0.0, None, None, None, None)'
-    expect(repr(Waypoint(52, 0, 'name', 'desc'))) == \
+    assert repr(Waypoint(52, 0, 'name', 'desc')) == \
         "Waypoint(52.0, 0.0, 'name', 'desc', None, None)"
 
 
 class TestWaypoints(TestCase):
     def test_import_locations(self):
         waypoints = Waypoints(open('tests/data/gpx'))
-        expect([str(x) for x in sorted(waypoints, key=lambda x: x.name)]) == [
+        assert [str(x) for x in sorted(waypoints, key=lambda x: x.name)] == [
             """Home (52°00'54"N, 000°13'15"W on 2008-07-26T00:00:00+00:00) [My place]""",
             """MSR (52°10'01"N, 000°23'24"E on 2008-07-27T00:00:00+00:00) [Microsoft Research, Cambridge]""",
         ]
@@ -106,13 +105,13 @@ class TestTrackpoint(TestCase):
          "Trackpoint(52.0, 0.0, 'name', 'desc', None, None)"),
     ])
     def test___repr__(self, args, result):
-        expect(Trackpoint(*args)) == result
+        assert Trackpoint(*args) == result
 
 
 class TestTrackpoints(TestCase):
     def test_import_locations(self):
         trackpoints = Trackpoints(open('tests/data/gpx_tracks'))
-        expect([str(x) for x in sorted(trackpoints[0], key=lambda x: x.name)]) == [
+        assert [str(x) for x in sorted(trackpoints[0], key=lambda x: x.name)] == [
             """Home (52°00'54"N, 000°13'15"W on 2008-07-26T00:00:00+00:00) [My place]""",
             """MSR (52°10'01"N, 000°23'24"E on 2008-07-27T00:00:00+00:00) [Microsoft Research, Cambridge]""",
         ]
@@ -133,13 +132,13 @@ class TestRoutepoint(TestCase):
          "Routepoint(52.0, 0.0, 'name', 'desc', None, None)"),
     ])
     def test___repr__(self, args, result):
-        expect(Routepoint(*args)) == result
+        assert Routepoint(*args) == result
 
 
 class TestRoutepoints(TestCase):
     def test_import_locations(self):
         routepoints = Routepoints(open('tests/data/gpx_routes'))
-        expect([str(x) for x in sorted(routepoints[0], key=lambda x: x.name)]) == [
+        assert [str(x) for x in sorted(routepoints[0], key=lambda x: x.name)] == [
             """Home (52°00'54"N, 000°13'15"W on 2008-07-26T00:00:00+00:00) [My place]""",
             """MSR (52°10'01"N, 000°23'24"E on 2008-07-27T00:00:00+00:00) [Microsoft Research, Cambridge]""",
         ]

@@ -19,8 +19,6 @@
 
 from unittest import TestCase
 
-from expecter import expect
-
 import datetime
 
 from upoints.cellid import (Cell, Cells)
@@ -28,17 +26,17 @@ from upoints.cellid import (Cell, Cells)
 
 class TestCell(TestCase):
     def test___repr__(self):
-        expect(repr(Cell(4, 52.015, -0.221, 21, 46, 40000, 10, 0, 1,
+        assert repr(Cell(4, 52.015, -0.221, 21, 46, 40000, 10, 0, 1,
                          datetime.datetime(2008, 4, 15, 15, 21, 35),
-                         datetime.datetime(2008, 4, 15, 15, 28, 49)))) == \
+                         datetime.datetime(2008, 4, 15, 15, 28, 49))) == \
             ('Cell(4, 52.015, -0.221, 21, 46, 40000, 10, 0, 1, '
              'datetime.datetime(2008, 4, 15, 15, 21, 35), '
              'datetime.datetime(2008, 4, 15, 15, 28, 49))')
 
     def test___str__(self):
-        expect(str(Cell(4, 52.015, -0.221, 21, 46, 40000, 10, 0, 1,
+        assert str(Cell(4, 52.015, -0.221, 21, 46, 40000, 10, 0, 1,
                         datetime.datetime(2008, 4, 15, 15, 21, 35),
-                        datetime.datetime(2008, 4, 15, 15, 28, 49)))) == \
+                        datetime.datetime(2008, 4, 15, 15, 28, 49))) == \
             ('4,52.0150000000000,-0.2210000000000,21,46,40000,10,0,1,'
              '2008-04-15 15:21:35,2008-04-15 15:28:49')
 
@@ -48,7 +46,7 @@ class TestCells(TestCase):
         self.cells = Cells(open('tests/data/cells'))
 
     def test___str__(self):
-        expect(sorted(str(x) for x in self.cells.values())) == [
+        assert sorted(str(x) for x in self.cells.values()) == [
             ('22747,52.0438995361328,-0.2246370017529,234,33,2319,647,0,1,'
              '2008-04-05 21:32:40,2008-04-05 21:32:40'),
             ('22995,52.3305015563965,-0.2255620062351,234,10,20566,4068,0,1,'
@@ -58,7 +56,7 @@ class TestCells(TestCase):
         ]
 
     def test_import_locations(self):
-        expect(self.cells['22747']) == \
+        assert self.cells['22747'] == \
             Cell(22747, 52.0438995361328, -0.224637001752853, 234, 33, 2319,
                  647, 0, 1, datetime.datetime(2008, 4, 5, 21, 32, 40),
                  datetime.datetime(2008, 4, 5, 21, 32, 40))

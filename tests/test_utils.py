@@ -21,8 +21,7 @@ import datetime
 
 from unittest import TestCase
 
-from expecter import expect
-from pytest import mark
+from pytest import mark, raises
 
 from upoints.point import Point
 from upoints.trigpoints import Trigpoint
@@ -36,13 +35,13 @@ from upoints.utils import (FileFormatError, Timestamp, TzOffset,
 
 
 class TestFileFormatError(TestCase):
-    with expect.raises(FileFormatError, 'Unsupported data format.'):
+    with raises(FileFormatError, message='Unsupported data format.'):
         raise FileFormatError
-    with expect.raises(
+    with raises(
         FileFormatError,
-        ("Incorrect data format, if you're using a file downloaded "
-         'from test site please report this to James Rowe '
-         '<jnrowe@gmail.com>')):
+        message=("Incorrect data format, if you're using a file downloaded "
+                 'from test site please report this to James Rowe '
+                 '<jnrowe@gmail.com>')):
         raise FileFormatError('test site')
 
 
@@ -51,7 +50,7 @@ class TestFileFormatError(TestCase):
     ('test', 'test'),
 ])
 def test_value_or_empty(val, result):
-    expect(value_or_empty(val)) == result
+    assert value_or_empty(val) == result
 
 
 @mark.parametrize('data, result', [
@@ -60,12 +59,12 @@ def test_value_or_empty(val, result):
      ['This is a test list-type object', 'with two elements']),
 ])
 def test_prepare_read(data, result):
-    expect(prepare_read(data)) == result
+    assert prepare_read(data) == result
 
 
-def test_prepare_read_read(data, result):
-    expect(prepare_read(open('tests/data/real_file'), 'read')) == \
-        'This is a test file-type object\n'
+def test_prepare_read_read():
+    assert prepare_read(open('tests/data/real_file', 'r')) == \
+        ['This is a test file-type object\n', ]
 
 
 @mark.parametrize('data, keys, result', [
@@ -75,7 +74,7 @@ def test_prepare_read_read(data, result):
      [{'last': 'Rowe', 'first': 'James'}, {'last': 'caro', 'first': 'ell'}]),
 ])
 def test_prepare_csv_read(data, keys, result):
-    expect(list(prepare_csv_read(data, keys))) == result
+    assert list(prepare_csv_read(data, keys)) == result
 
 
 @mark.parametrize('data, result', [
@@ -85,7 +84,7 @@ def test_prepare_csv_read(data, keys, result):
 ])
 def test_prepare_xml_read(data, result):
     xml = prepare_xml_read(data)
-    expect(xml.find('tag').text) == result
+    assert xml.find('tag').text == result
 
 
 @mark.parametrize('angle, result', [
@@ -93,15 +92,15 @@ def test_prepare_xml_read(data, result):
     (-0.221, (0, -13, -15.600000000000023)),
 ])
 def test_to_dms(angle, result):
-    expect(to_dms(angle)) == result
+    assert to_dms(angle) == result
 
 
 def test_to_dms_style():
-    expect(to_dms(-0.221, style='dm')) == (0, -13.26)
+    assert to_dms(-0.221, style='dm') == (0, -13.26)
 
 
 def test_to_dms_error():
-    with expect.raises(ValueError, 'Unknown style type None'):
+    with raises(ValueError, message='Unknown style type None'):
         to_dms(-0.221, style=None)
 
 
@@ -111,7 +110,7 @@ def test_to_dms_error():
     ((0, -13.25), '-0.221'),
 ])
 def test_to_dd(angle, result):
-    expect('%.3f' % to_dd(*angle)) == result
+    assert '%.3f' % to_dd(*angle) == result
 
 
 @mark.parametrize('args, result', [
@@ -126,7 +125,7 @@ def test_to_dd(angle, result):
     ((292, 16, True), 'WNW'),
 ])
 def test_angle_to_name(args, result):
-    expect(angle_to_name(*args)) == result
+    assert angle_to_name(*args) == result
 
 
 class TestTzOffset(TestCase):
@@ -137,7 +136,7 @@ class TestTzOffset(TestCase):
         ('-08:00', datetime.timedelta(-1, 57600)),
     ])
     def test__offset(self, string, result):
-        expect(TzOffset(string).utcoffset()) == result
+        assert TzOffset(string).utcoffset() == result
 
     @mark.parametrize('string', [
         '+00:00',
@@ -145,10 +144,10 @@ class TestTzOffset(TestCase):
         '-08:00',
     ])
     def test___repr__(self, string):
-        expect(repr(TzOffset(string))) == "TzOffset('%s')" % string
+        assert repr(TzOffset(string)) == "TzOffset('%s')" % string
 
     def test___repr___normalise(self):
-        expect(repr(TzOffset('-00:00'))) == "TzOffset('+00:00')"
+        assert repr(TzOffset('-00:00')) == "TzOffset('+00:00')"
 
 
 class TestTimestamp(TestCase):
@@ -160,8 +159,8 @@ class TestTimestamp(TestCase):
         ('2008-02-06T13:33:26z', TzOffset('+00:00')),
     ])
     def test_parse_isoformat(self, string, result):
-        expect(Timestamp.parse_isoformat(string)) == \
-            Timestamp(2008, 2, 6, 13, 33, 26, tzinfo=result),
+        assert Timestamp.parse_isoformat(string) == \
+            Timestamp(2008, 2, 6, 13, 33, 26, tzinfo=result)
 
 
 @mark.parametrize('string, result', [
@@ -180,7 +179,7 @@ class TestTimestamp(TestCase):
 def test_from_iso6709_wiki_page(string, result):
     # These tests are from the examples contained in the wikipedia ISO 6709
     # page(http://en.wikipedia.org/wiki/ISO_6709)
-    expect(from_iso6709(string)) == result
+    assert from_iso6709(string) == result
 
 
 @mark.parametrize('string, result', [
@@ -193,11 +192,11 @@ def test_from_iso6709_location_page(string, result):
     # These tests are from the Latitude, Longitude and Altitude format for
     # geospatial information page
     # (http://www.w3.org/2005/Incubator/geo/Wiki/LatitudeLongitudeAltitude)
-    expect(from_iso6709(string)) == result
+    assert from_iso6709(string) == result
 
 
 def test_from_iso6709_error():
-    with expect.raises(ValueError, "Incorrect format for longitude '+1'"):
+    with raises(ValueError, message="Incorrect format for longitude '+1'"):
         from_iso6709('+35.658632+1/')
 
 
@@ -218,7 +217,7 @@ def test_from_iso6709_error():
 def test_to_iso6709_wiki_page(data, result):
     # These tests are from the examples contained in the wikipedia ISO 6709
     # page(http://en.wikipedia.org/wiki/ISO_6709)
-    expect(to_iso6709(*data)) == result
+    assert to_iso6709(*data) == result
 
 
 @mark.parametrize('args, kwargs, result', [
@@ -237,22 +236,22 @@ def test_to_iso6709_location_page(args, kwargs, result):
     # geospatial information page
     # (http://www.w3.org/2005/Incubator/geo/Wiki/LatitudeLongitudeAltitude)
 
-    expect(to_iso6709(*args, **kwargs)) == result
+    assert to_iso6709(*args, **kwargs) == result
 
 
 def test_angle_to_distance():
-    expect('%.3f' % angle_to_distance(1)) == '111.125'
-    expect('%i' % angle_to_distance(360, 'imperial')) == '24863'
-    expect('%i' % angle_to_distance(1.0 / 60, 'nautical')) == '1'
+    assert '%.3f' % angle_to_distance(1) == '111.125'
+    assert '%i' % angle_to_distance(360, 'imperial') == '24863'
+    assert '%i' % angle_to_distance(1.0 / 60, 'nautical') == '1'
 
-    with expect.raises(ValueError, "Unknown units type 'baseless'"):
+    with raises(ValueError, message="Unknown units type 'baseless'"):
         '%i' % angle_to_distance(10, 'baseless')
 
 
 def test_distance_to_angle():
-    expect('%.3f' % round(distance_to_angle(111.212))) == '1.000'
-    expect('%i' % round(distance_to_angle(24882, 'imperial'))) == '360'
-    expect('%i' % round(distance_to_angle(60, 'nautical'))) == '1'
+    assert '%.3f' % round(distance_to_angle(111.212)) == '1.000'
+    assert '%i' % round(distance_to_angle(24882, 'imperial')) == '360'
+    assert '%i' % round(distance_to_angle(60, 'nautical')) == '1'
 
 
 @mark.parametrize('locator, result', [
@@ -261,7 +260,7 @@ def test_distance_to_angle():
     ('IO92', '52.021, -1.958'),
 ])
 def test_from_grid_locator(locator, result):
-    expect('%.3f, %.3f' % from_grid_locator(locator)) == result
+    assert '%.3f, %.3f' % from_grid_locator(locator) == result
 
 
 @mark.parametrize('data, result', [
@@ -270,7 +269,7 @@ def test_from_grid_locator(locator, result):
     ((52.021, -1.958), 'IO92'),
 ])
 def test_to_grid_locator(data, result):
-    expect(to_grid_locator(*data)) == result
+    assert to_grid_locator(*data) == result
 
 
 @mark.parametrize('location, result', [
@@ -284,7 +283,7 @@ def test_to_grid_locator(data, result):
     ('''52d0'54" N 000d13'15" W''', '52.015;-0.221'),
 ])
 def test_parse_location(location, result):
-    expect('%.3f;%.3f' % parse_location(location)) == result
+    assert '%.3f;%.3f' % parse_location(location) == result
 
 
 @mark.parametrize('date, result', [
@@ -294,16 +293,16 @@ def test_parse_location(location, result):
     (datetime.date(2007, 1, 21), datetime.time(7, 56)),
 ])
 def test_sun_rise(date, result):
-    expect(sun_rise_set(52.015, -0.221, date)) == result
+    assert sun_rise_set(52.015, -0.221, date) == result
 
 
 def test_sun_no_rise():
-    expect(sun_rise_set(89, 0, datetime.date(2007, 12, 21))) == None
+    assert sun_rise_set(89, 0, datetime.date(2007, 12, 21)) == None
 
 
 def test_sun_rise_zone():
-    expect(sun_rise_set(52.015, -0.221, datetime.date(2007, 6, 15),
-                        timezone=60)) == datetime.time(4, 40)
+    assert sun_rise_set(52.015, -0.221, datetime.date(2007, 6, 15),
+                        timezone=60) == datetime.time(4, 40)
 
 
 @mark.parametrize('date, result', [
@@ -311,12 +310,12 @@ def test_sun_rise_zone():
     (datetime.date(1993, 12, 11), datetime.time(15, 49)),
 ])
 def test_sun_set(date, result):
-    expect(sun_rise_set(52.015, -0.221, date, 'set')) == result
+    assert sun_rise_set(52.015, -0.221, date, 'set') == result
 
 
 def test_sun_set_zone():
-    expect(sun_rise_set(52.015, -0.221, datetime.date(2007, 6, 15), 'set',
-                        60)) == datetime.time(21, 22)
+    assert sun_rise_set(52.015, -0.221, datetime.date(2007, 6, 15), 'set',
+                        60) == datetime.time(21, 22)
 
 
 @mark.parametrize('date, result', [
@@ -328,11 +327,11 @@ def test_sun_set_zone():
      (datetime.time(3, 40), datetime.time(20, 22))),
 ])
 def test_sun_events(date, result):
-    expect(sun_events(52.015, -0.221, date)) == result
+    assert sun_events(52.015, -0.221, date) == result
 
 
 def test_sun_events_zone():
-    expect(sun_events(52.015, -0.221, datetime.date(2007, 6, 15), 60)) == \
+    assert sun_events(52.015, -0.221, datetime.date(2007, 6, 15), 60) == \
         (datetime.time(4, 40), datetime.time(21, 22))
 
 
@@ -341,12 +340,12 @@ def test_sun_events_zone():
     (datetime.date(2007, 6, 15), (datetime.time(9, 23), datetime.time(0, 27))),
 ])
 def test_sun_events2(date, result):
-    expect(sun_events(40.638611, -73.762222, date)) == result
+    assert sun_events(40.638611, -73.762222, date) == result
 
 
 def test_sun_events3():
-    expect(sun_events(35.549999, 139.78333333,
-                      datetime.date(2007, 6, 15))) == \
+    assert sun_events(35.549999, 139.78333333,
+                      datetime.date(2007, 6, 15)) == \
         (datetime.time(19, 24), datetime.time(9, 57))
 
 
@@ -371,14 +370,14 @@ def test_sun_events3():
      ]),
 ])
 def test_sun_events_zenith(zenith, results):
-    expect(sun_events(52.015, -0.221, datetime.date(2007, 6, 15),
-                      zenith=zenith)) == results[0]
-    expect(sun_events(40.638611, -73.762222, datetime.date(2007, 6, 15),
-                      zenith=zenith)) == results[1]
-    expect(sun_events(49.016666, -2.5333333, datetime.date(2007, 6, 15),
-                      zenith=zenith)) == results[2]
-    expect(sun_events(35.549999, 139.78333333, datetime.date(2007, 6, 15),
-                      zenith=zenith)) == results[3]
+    assert sun_events(52.015, -0.221, datetime.date(2007, 6, 15),
+                      zenith=zenith) == results[0]
+    assert sun_events(40.638611, -73.762222, datetime.date(2007, 6, 15),
+                      zenith=zenith) == results[1]
+    assert sun_events(49.016666, -2.5333333, datetime.date(2007, 6, 15),
+                      zenith=zenith) == results[2]
+    assert sun_events(35.549999, 139.78333333, datetime.date(2007, 6, 15),
+                      zenith=zenith) == results[3]
 
 
 def test_dump_xearth_markers():
@@ -387,19 +386,19 @@ def test_dump_xearth_markers():
         501097: Trigpoint(52.010585, -0.173443, 97.000000, 'Bygrave'),
         505392: Trigpoint(51.910886, -0.186462, 136.000000, 'Sish Lane')
     }
-    expect(dump_xearth_markers(markers)) == [
+    assert dump_xearth_markers(markers) == [
         '52.066035 -0.281449 "500936" # Broom Farm, alt 37m',
         '52.010585 -0.173443 "501097" # Bygrave, alt 97m',
         '51.910886 -0.186462 "505392" # Sish Lane, alt 136m',
     ]
 
-    expect(dump_xearth_markers(markers, 'name')) == [
+    assert dump_xearth_markers(markers, 'name') == [
         '52.066035 -0.281449 "Broom Farm" # 500936, alt 37m',
         '52.010585 -0.173443 "Bygrave" # 501097, alt 97m',
         '51.910886 -0.186462 "Sish Lane" # 505392, alt 136m',
     ]
 
-    with expect.raises(ValueError, "Unknown name type 'falseKey'"):
+    with raises(ValueError, message="Unknown name type 'falseKey'"):
         dump_xearth_markers(markers, 'falseKey')
 
 
@@ -409,7 +408,7 @@ def test_dump_xearth_markers2():
         'Bygrave': Point(52.010585, -0.173443),
         'Sish Lane': Point(51.910886, -0.186462)
     }
-    expect(dump_xearth_markers(points)) == [
+    assert dump_xearth_markers(points) == [
         '52.066035 -0.281449 "Broom Farm"',
         '52.010585 -0.173443 "Bygrave"',
         '51.910886 -0.186462 "Sish Lane"',
@@ -425,4 +424,4 @@ def test_dump_xearth_markers2():
     ((90, 'International'), 6399.936553871439),
 ])
 def test_calc_radius(args, result):
-    expect(calc_radius(*args)) == result
+    assert calc_radius(*args) == result

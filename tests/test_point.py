@@ -22,8 +22,7 @@ import math
 
 from unittest import TestCase
 
-from expecter import expect
-from pytest import mark
+from pytest import mark, raises
 
 from upoints import utils
 from upoints.point import (KeyedPoints, Point, Points, TimedPoint, TimedPoints)
@@ -32,26 +31,26 @@ from upoints.point import (KeyedPoints, Point, Points, TimedPoint, TimedPoints)
 class TestPoint(TestCase):
     def test___init__(self):
         test = Point(math.pi / 4, math.pi / 2, angle='radians')
-        expect(test.latitude) == 45
-        expect(test.longitude) == 90
+        assert test.latitude == 45
+        assert test.longitude == 90
 
         test = Point((50, 20, 10), (-1, -3, -12))
-        expect('%.3f' % test.latitude) == '50.336'
-        expect('%.3f' % test.longitude) == '-1.053'
+        assert '%.3f' % test.latitude == '50.336'
+        assert '%.3f' % test.longitude == '-1.053'
 
     def test___init___validity(self):
-        with expect.raises(ValueError, 'Unknown angle type None'):
+        with raises(ValueError, message='Unknown angle type None'):
             Point(52.015, -0.221, angle=None)
-        with expect.raises(ValueError, 'Invalid latitude value -92'):
+        with raises(ValueError, message='Invalid latitude value -92'):
             Point(-92, -0.221)
-        with expect.raises(ValueError, 'Invalid longitude value 185'):
+        with raises(ValueError, message='Invalid longitude value 185'):
             Point(52.015, 185)
-        with expect.raises(ValueError, 'Unknown units type None'):
+        with raises(ValueError, message='Unknown units type None'):
             Point(52.015, -0.221, units=None)
 
     def test___dict__(self):
         home = Point(52.015, -0.221)
-        expect(home.__dict__) == {
+        assert home.__dict__ == {
             '_angle': 'degrees',
             '_latitude': 52.015,
             '_longitude': -0.221,
@@ -69,7 +68,7 @@ class TestPoint(TestCase):
                 super(Test, self).__init__(latitude, longitude)
                 self.TEST = 'tested'
 
-        expect(Test(52.015, -0.221).__dict__) == {
+        assert Test(52.015, -0.221).__dict__ == {
             'TEST': 'tested',
             '_angle': 'degrees',
             '_latitude':  52.015,
@@ -81,11 +80,11 @@ class TestPoint(TestCase):
         }
 
     def test___repr__(self):
-        expect(repr(Point(52.015, -0.221))) == \
+        assert repr(Point(52.015, -0.221)) == \
             "Point(52.015, -0.221, 'metric', 'degrees', 0)"
 
     def test___str__(self):
-        expect(str(Point(52.015, -0.221))) == 'N52.015°; W000.221°'
+        assert str(Point(52.015, -0.221)) == 'N52.015°; W000.221°'
 
     @mark.parametrize('style, result', [
         ('dm', "52°00.90'N, 000°13.26'W"),
@@ -93,34 +92,34 @@ class TestPoint(TestCase):
         ('locator', 'IO92'),
     ])
     def test___format__(self, style, result):
-        expect(format(Point(52.015, -0.221), style)) == result
+        assert format(Point(52.015, -0.221), style) == result
 
     def test___unicode__(self):
-        expect(str(Point(52.015, -0.221))) == 'N52.015°; W000.221°'
+        assert str(Point(52.015, -0.221)) == 'N52.015°; W000.221°'
 
     def test___eq__(self):
-        expect(Point(52.015, -0.221)) == Point(52.015, -0.221)
+        assert Point(52.015, -0.221) == Point(52.015, -0.221)
 
     def test___ne__(self):
-        expect(Point(52.015, -0.221)) != Point(52.6333, -2.5)
+        assert Point(52.015, -0.221) != Point(52.6333, -2.5)
 
     @mark.parametrize('accuracy, result', [
         ('extsquare', 'IO92va33'),
         ('subsquare', 'IO92va'),
     ])
     def test_to_grid_locator(self, accuracy, result):
-        expect(Point(52.015, -0.221).to_grid_locator(accuracy)) == result
+        assert Point(52.015, -0.221).to_grid_locator(accuracy) == result
 
     def test_to_grid_locator_default(self):
-        expect(Point(52.015, -0.221).to_grid_locator()) == 'IO92'
+        assert Point(52.015, -0.221).to_grid_locator() == 'IO92'
 
     def test_distance(self):
         home = Point(52.015, -0.221)
         dest = Point(52.6333, -2.5)
-        expect('%i kM' % home.distance(dest)) == '169 kM'
-        expect('%i kM' % home.distance(dest, method='sloc')) == '169 kM'
+        assert '%i kM' % home.distance(dest) == '169 kM'
+        assert '%i kM' % home.distance(dest, method='sloc') == '169 kM'
 
-        with expect.raises(ValueError, "Unknown method type 'Invalid'"):
+        with raises(ValueError, message="Unknown method type 'Invalid'"):
             home.distance(dest, method='Invalid')
 
     @mark.parametrize('units, result', [
@@ -131,7 +130,7 @@ class TestPoint(TestCase):
     def test_distance2(self, units, result):
         start = Point(36.1200, -86.6700, units=units)
         dest = Point(33.9400, -118.4000)
-        expect(int(start.distance(dest))) == result
+        assert int(start.distance(dest)) == result
 
     @mark.parametrize('p1, p2, result', [
         (Point(52.015, -0.221), Point(52.6333, -2.5), 294),
@@ -140,11 +139,11 @@ class TestPoint(TestCase):
         (Point(33.9400, -118.4000), Point(36.1200, -86.6700), 76),
     ])
     def test_bearing(self, p1, p2, result):
-        expect(int(p1.bearing(p2))) == result
+        assert int(p1.bearing(p2)) == result
 
     def test_bearing_format(self):
-        expect(Point(52.015, -0.221).bearing(Point(52.6333, -2.5),
-                                             format='string')) == 'North-west'
+        assert Point(52.015, -0.221).bearing(Point(52.6333, -2.5),
+                                             format='string') == 'North-west'
 
     @mark.parametrize('p1, p2, result', [
         (Point(52.015, -0.221), Point(52.6333, -2.5),
@@ -153,7 +152,7 @@ class TestPoint(TestCase):
          Point(36.08239491900365, -102.75217370539663)),
     ])
     def test_midpoint(self, p1, p2, result):
-        expect(p1.midpoint(p2)) == result
+        assert p1.midpoint(p2) == result
 
     @mark.parametrize('p1, p2, result', [
         (Point(52.015, -0.221), Point(52.6333, -2.5), 293),
@@ -162,11 +161,11 @@ class TestPoint(TestCase):
         (Point(33.9400, -118.4000), Point(36.1200, -86.6700), 94),
     ])
     def test_final_bearing(self, p1, p2, result):
-        expect(int(p1.final_bearing(p2))) == result
+        assert int(p1.final_bearing(p2)) == result
 
     def test_final_bearing_format(self):
-        expect(Point(52.015, -0.221).bearing(Point(52.6333, -2.5),
-                                             format='string')) == 'North-west'
+        assert Point(52.015, -0.221).bearing(Point(52.6333, -2.5),
+                                             format='string') == 'North-west'
 
     @mark.parametrize('units, multiplier', [
         ('metric', 1),
@@ -175,11 +174,11 @@ class TestPoint(TestCase):
     ])
     def test_destination(self, units, multiplier):
         home = Point(52.015, -0.221, units=units)
-        expect(home.destination(294, 169 / multiplier)) == \
+        assert home.destination(294, 169 / multiplier) == \
             Point(52.611638750214745, -2.509374081952352)
 
     def test_destination2(self):
-        expect(Point(36.1200, -86.6700).destination(274, 2885)) == \
+        assert Point(36.1200, -86.6700).destination(274, 2885) == \
             Point(33.6872799137609, -118.32721842114393)
 
     @mark.parametrize('p1, result', [
@@ -190,7 +189,7 @@ class TestPoint(TestCase):
     ])
     def test_sunrise(self, p1, result):
         date = datetime.date(2007, 6, 15)
-        expect(p1.sunrise(date)) == result
+        assert p1.sunrise(date) == result
 
     @mark.parametrize('p1, result', [
         (Point(52.015, -0.221), datetime.time(20, 22)),
@@ -200,7 +199,7 @@ class TestPoint(TestCase):
     ])
     def test_sunset(self, p1, result):
         date = datetime.date(2007, 6, 15)
-        expect(p1.sunset(date)) == result
+        assert p1.sunset(date) == result
 
     @mark.parametrize('p1, result', [
         (Point(52.015, -0.221), (datetime.time(3, 40), datetime.time(20, 22))),
@@ -212,12 +211,12 @@ class TestPoint(TestCase):
     ])
     def test_sun_events(self, p1, result):
         date = datetime.date(2007, 6, 15)
-        expect(p1.sun_events(date)) == result
+        assert p1.sun_events(date) == result
 
     def test_inverse(self):
         bearing, dist = Point(52.015, -0.221).inverse(Point(52.6333, -2.5))
-        expect(int(bearing)) == 294
-        expect(int(dist)) == 169
+        assert int(bearing) == 294
+        assert int(dist) == 169
 
 
 class TestPoints(TestCase):
@@ -227,7 +226,7 @@ class TestPoints(TestCase):
 
     def test___repr__(self):
         locations = [Point(0, 0)] * 4
-        expect(repr(Points(locations))) == \
+        assert repr(Points(locations)) == \
             ("Points([Point(0.0, 0.0, 'metric', 'degrees', 0), "
              "Point(0.0, 0.0, 'metric', 'degrees', 0), "
              "Point(0.0, 0.0, 'metric', 'degrees', 0), "
@@ -237,40 +236,40 @@ class TestPoints(TestCase):
     def test_import_locations(self):
         locations = Points()
         locations.import_locations(['0;0', '52.015 -0.221'])
-        expect(repr(locations)) == \
+        assert repr(locations) == \
             ("Points([Point(0.0, 0.0, 'metric', 'degrees', 0), "
              "Point(52.015, -0.221, 'metric', 'degrees', 0)], "
              "False, 'metric')")
 
     def test_distance(self):
-        expect('%.3f' % sum(self.locs.distance())) == '111.632'
+        assert '%.3f' % sum(self.locs.distance()) == '111.632'
 
     def test_bearing(self):
-        expect(['%.3f' % x for x in self.locs.bearing()]) == \
+        assert ['%.3f' % x for x in self.locs.bearing()] == \
             ['46.242', '28.416']
 
     def test_final_bearing(self):
-        expect(['%.3f' % x for x in self.locs.final_bearing()]) == \
+        assert ['%.3f' % x for x in self.locs.final_bearing()] == \
             ['46.448', '28.906']
 
     def test_inverse(self):
-        expect(list(self.locs.inverse())) == \
+        assert list(self.locs.inverse()) == \
             [(46.24239319802467, 24.629669163425465),
              (28.41617384845358, 87.00207583308533)]
 
     def test_midpoint(self):
-        expect(list(self.locs.midpoint())) == \
+        assert list(self.locs.midpoint()) == \
             [Point(52.09157204324692, -0.09072375391429187, 'metric',
                    'degrees', 0),
              Point(52.51190105089283, 0.3460886030865466, 'metric',
                    'degrees', 0)]
 
     def test_range(self):
-        expect(list(self.locs.range(Point(52.015, -0.221), 20))) == \
+        assert list(self.locs.range(Point(52.015, -0.221), 20)) == \
             [Point(52.015, -0.221, 'metric', 'degrees', 0)]
 
     def test_destination(self):
-        expect(list(self.locs.destination(42, 240))) == \
+        assert list(self.locs.destination(42, 240)) == \
             [Point(53.59560782169536, 2.2141813683976777, 'metric', 'degrees',
                    0),
              Point(53.74846914951471, 2.4840382137470614, 'metric', 'degrees',
@@ -279,16 +278,16 @@ class TestPoints(TestCase):
                    0)]
 
     def test_sunrise(self):
-        expect(list(self.locs.sunrise(datetime.date(2008, 5, 2)))) == \
+        assert list(self.locs.sunrise(datetime.date(2008, 5, 2))) == \
             [datetime.time(4, 28), datetime.time(4, 26), datetime.time(4, 21)]
 
     def test_sunset(self):
-        expect(list(self.locs.sunset(datetime.date(2008, 5, 2)))) == \
+        assert list(self.locs.sunset(datetime.date(2008, 5, 2))) == \
             [datetime.time(19, 28), datetime.time(19, 27),
              datetime.time(19, 27)]
 
     def test_sun_events(self):
-        expect(list(self.locs.sun_events(datetime.date(2008, 5, 2)))) == \
+        assert list(self.locs.sun_events(datetime.date(2008, 5, 2))) == \
             [(datetime.time(4, 28), datetime.time(19, 28)),
              (datetime.time(4, 26), datetime.time(19, 27)),
              (datetime.time(4, 21), datetime.time(19, 27))]
@@ -298,7 +297,7 @@ class TestPoints(TestCase):
         ('subsquare', ['IO92va', 'JO02ae', 'JO02hu']),
     ])
     def test_to_grid_locator(self, accuracy, result):
-        expect(list(self.locs.to_grid_locator(accuracy))) == result
+        assert list(self.locs.to_grid_locator(accuracy)) == result
 
 
 class TestTimedPoints(TestCase):
@@ -312,7 +311,7 @@ class TestTimedPoints(TestCase):
             TimedPoint(52.855, 0.657,
                        time=datetime.datetime(2008, 7, 28, 19, 17)),
         ])
-        expect(['%.3f' % s for s in locations.speed()]) == \
+        assert ['%.3f' % s for s in locations.speed()] == \
             ['12.315', '133.849']
 
 
@@ -327,41 +326,41 @@ class TestKeyedPoints(TestCase):
         locations = KeyedPoints()
         locations.import_locations([('prime', '0;0'),
                                     ('home', '52.015 -0.221')])
-        expect(locations) == \
+        assert locations == \
             KeyedPoints({'prime': Point(0.0, 0.0, 'metric', 'degrees', 0),
                          'home': Point(52.015, -0.221, 'metric', 'degrees',
                                        0)},
                         False, 'metric')
 
     def test_distance(self):
-        expect('%.3f' % sum(self.locs.distance(('home', 'Carol', 'Kenny')))) == '111.632'
+        assert '%.3f' % sum(self.locs.distance(('home', 'Carol', 'Kenny'))) == '111.632'
 
     def test_bearing(self):
-        expect(['%.3f' % x for x in self.locs.bearing(('home', 'Carol', 'Kenny'))]) == \
+        assert ['%.3f' % x for x in self.locs.bearing(('home', 'Carol', 'Kenny'))] == \
             ['46.242', '28.416']
 
     def test_final_bearing(self):
-        expect(['%.3f' % x for x in self.locs.final_bearing(('home', 'Carol', 'Kenny'))]) == \
+        assert ['%.3f' % x for x in self.locs.final_bearing(('home', 'Carol', 'Kenny'))] == \
             ['46.448', '28.906']
 
     def test_inverse(self):
-        expect(list(self.locs.inverse(('home', 'Carol', 'Kenny')))) == \
+        assert list(self.locs.inverse(('home', 'Carol', 'Kenny'))) == \
             [(46.24239319802467, 24.629669163425465),
              (28.41617384845358, 87.00207583308533)]
 
     def test_midpoint(self):
-        expect(list(self.locs.midpoint(('home', 'Carol', 'Kenny')))) == \
+        assert list(self.locs.midpoint(('home', 'Carol', 'Kenny'))) == \
             [Point(52.09157204324692, -0.09072375391429187, 'metric',
                    'degrees', 0),
              Point(52.51190105089283, 0.3460886030865466, 'metric', 'degrees',
                    0)]
 
     def test_range(self):
-        expect(list(self.locs.range(Point(52.015, -0.221), 20))) == \
+        assert list(self.locs.range(Point(52.015, -0.221), 20)) == \
             [('home', Point(52.015, -0.221, 'metric', 'degrees', 0))]
 
     def test_destination(self):
-        expect(sorted(self.locs.destination(42, 240))) == \
+        assert sorted(self.locs.destination(42, 240)) == \
             [('Carol', Point(53.74846914951471, 2.4840382137470614, 'metric',
                              'degrees', 0)),
              ('Kenny', Point(54.43483380445103, 3.1418347849815293, 'metric',
@@ -370,19 +369,19 @@ class TestKeyedPoints(TestCase):
                             'degrees', 0))]
 
     def test_sunrise(self):
-        expect(sorted(self.locs.sunrise(datetime.date(2008, 5, 2)))) == \
+        assert sorted(self.locs.sunrise(datetime.date(2008, 5, 2))) == \
             [('Carol', datetime.time(4, 26)),
              ('Kenny', datetime.time(4, 21)),
              ('home', datetime.time(4, 28))]
 
     def test_sunset(self):
-        expect(sorted(self.locs.sunset(datetime.date(2008, 5, 2)))) == \
+        assert sorted(self.locs.sunset(datetime.date(2008, 5, 2))) == \
             [('Carol', datetime.time(19, 27)),
              ('Kenny', datetime.time(19, 27)),
              ('home', datetime.time(19, 28))]
 
     def test_sun_events(self):
-        expect(sorted(self.locs.sun_events(datetime.date(2008, 5, 2)))) == \
+        assert sorted(self.locs.sun_events(datetime.date(2008, 5, 2))) == \
             [('Carol', (datetime.time(4, 26), datetime.time(19, 27))),
              ('Kenny', (datetime.time(4, 21), datetime.time(19, 27))),
              ('home', (datetime.time(4, 28), datetime.time(19, 28)))]
@@ -394,4 +393,4 @@ class TestKeyedPoints(TestCase):
          [('Carol', 'JO02ae'), ('Kenny', 'JO02hu'), ('home', 'IO92va')]),
     ])
     def test_to_grid_locator(self, accuracy, result):
-        expect(sorted(self.locs.to_grid_locator(accuracy))) == result
+        assert sorted(self.locs.to_grid_locator(accuracy)) == result
