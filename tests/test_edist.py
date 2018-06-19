@@ -32,7 +32,7 @@ from pytest import mark, raises
 
 from upoints.compat import PY2
 from upoints.edist import (LocationsError, NumberedPoint, NumberedPoints,
-                           main, read_csv)
+                           cli, read_csv)
 
 
 class TestLocationsError:
@@ -268,9 +268,10 @@ def test_read_csv():
     assert names == ['01:My place', '02:Microsoft Research Cambridge']
 
 
-def test_main(stdout):
+def test_cli():
     runner = CliRunner()
-    result = runner.invoke(main, ['--location', '52.015;-0.221', 'display'])
+    result = runner.invoke(cli, ['--location', '52.015;-0.221', '--verbose',
+                                 'display'])
     if PY2:
         assert result.output == \
             "Location 1 is 52\xc2\xb000.90'N, 000\xc2\xb013.26'W\n"
