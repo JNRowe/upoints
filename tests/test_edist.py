@@ -75,15 +75,11 @@ class TestNumberedPoints:
         locs.display(None)
         stdout = capsys.readouterr()[0]
         if PY2:
-            assert stdout == (
-                "Location Home is 52\xc2\xb000.90'N, 000\xc2\xb013.26'W\n"
-                "Location 2 is 52\xc2\xb010.08'N, 000\xc2\xb002.40'E\n"
-            )
-        else:
-            assert stdout == (
-                "Location Home is 52°00.90'N, 000°13.26'W\n"
-                "Location 2 is 52°10.08'N, 000°02.40'E\n"
-            )
+            stdout = stdout.encode('utf-8')
+        assert stdout == (
+            "Location Home is 52°00.90'N, 000°13.26'W\n"
+            "Location 2 is 52°10.08'N, 000°02.40'E\n"
+        )
 
     def test_display_locator(self, capsys):
         locs = NumberedPoints(['Home', '52.168;0.040'],
@@ -127,7 +123,11 @@ class TestNumberedPoints:
     def test_bearing(self, capsys):
         locations = NumberedPoints(['52.015;-0.221', '52.168;0.040'])
         locations.bearing('bearing', False)
-        assert capsys.readouterr()[0] == 'Location 1 to 2 is 46°\n'
+        if PY2:
+            output = capsys.readouterr()[0].encode('utf-8')
+        else:
+            output = capsys.readouterr()[0]
+        assert output == 'Location 1 to 2 is 46°\n'
 
     def test_bearing_symbolic(self, capsys):
         locations = NumberedPoints(['52.015;-0.221', '52.168;0.040'])
@@ -137,8 +137,11 @@ class TestNumberedPoints:
     def test_final_bearing(self, capsys):
         locations = NumberedPoints(['52.015;-0.221', '52.168;0.040'])
         locations.bearing('final_bearing', False)
-        assert capsys.readouterr()[0] == \
-            'Final bearing from location 1 to 2 is 46°\n'
+        if PY2:
+            output = capsys.readouterr()[0].encode('utf-8')
+        else:
+            output = capsys.readouterr()[0]
+        assert output == 'Final bearing from location 1 to 2 is 46°\n'
 
     def test_final_bearing_symbolic(self, capsys):
         locations = NumberedPoints(['52.015;-0.221', '52.168;0.040'])
@@ -186,15 +189,11 @@ class TestNumberedPoints:
         locations.destination(42, 240, False)
         stdout = capsys.readouterr()[0]
         if PY2:
-            assert stdout == (
-                "Destination from location 1 is 52\xc2\xb000.90'N, 000\xc2\xb013.26'W\n"
-                "Destination from location 2 is 52\xc2\xb010.08'N, 000\xc2\xb002.40'E\n"
-            )
-        else:
-            assert stdout == (
-                "Destination from location 1 is 52°00.90'N, 000°13.26'W\n"
-                "Destination from location 2 is 52°10.08'N, 000°02.40'E\n"
-            )
+            stdout = stdout.encode('utf-8')
+        assert stdout == (
+            "Destination from location 1 is 52°00.90'N, 000°13.26'W\n"
+            "Destination from location 2 is 52°10.08'N, 000°02.40'E\n"
+        )
 
     def test_destination_locator(self, capsys):
         locations = NumberedPoints(['52.015;-0.221', '52.168;0.040'])
@@ -234,7 +233,11 @@ class TestNumberedPoints:
         locations = NumberedPoints(['52.015;-0.221', '52.168;0.040',
                                     '52.249;0.130', '52.494;0.654'])
         locations.flight_plan(0, 'h')
-        assert capsys.readouterr()[0] == (
+        if PY2:
+            output = capsys.readouterr()[0].encode('utf-8')
+        else:
+            output = capsys.readouterr()[0]
+        assert output == (
             'WAYPOINT,BEARING[°],DISTANCE[km],ELAPSED_TIME[h],LATITUDE[d.dd],LONGITUDE[d.dd]\n'
             '1,,,,52.015000,-0.221000\n'
             '2,46,24.6,,52.168000,0.040000\n'
@@ -249,7 +252,11 @@ class TestNumberedPoints:
                                     '52.249;0.130', '52.494;0.654'],
                                    units='nm')
         locations.flight_plan(20, 'm')
-        assert capsys.readouterr()[0] == (
+        if PY2:
+            output = capsys.readouterr()[0].encode('utf-8')
+        else:
+            output = capsys.readouterr()[0]
+        assert output == (
             'WAYPOINT,BEARING[°],DISTANCE[nm],ELAPSED_TIME[m],LATITUDE[d.dd],LONGITUDE[d.dd]\n'
             '1,,,,52.015000,-0.221000\n'
             '2,46,13.3,0.7,52.168000,0.040000\n'
@@ -273,8 +280,8 @@ def test_cli():
     result = runner.invoke(cli, ['--location', '52.015;-0.221', '--verbose',
                                  'display'])
     if PY2:
-        assert result.output == \
-            "Location 1 is 52\xc2\xb000.90'N, 000\xc2\xb013.26'W\n"
+        output = result.output.encode('utf-8')
     else:
-        assert result.output == \
-            "Location 1 is 52°00.90'N, 000°13.26'W\n"
+        output = result.output
+    assert output == \
+        "Location 1 is 52°00.90'N, 000°13.26'W\n"
