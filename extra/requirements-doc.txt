@@ -1,2 +1,4 @@
 -r requirements.txt
-sphinx
+
+sphinx>=1.6
+sphinx_rtd_theme>=0.2.4
