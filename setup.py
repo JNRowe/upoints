@@ -23,6 +23,19 @@ import io
 import sys
 
 from setuptools import setup
+from setuptools.command.test import test
+
+class PytestTest(test):
+    def finalize_options(self):
+        test.finalize_options(self)
+        self.test_args = ['tests/', ]
+        self.test_suite = True
+
+    def run_tests(self):
+        from sys import exit
+        from pytest import main
+        exit(main(self.test_args))
+
 
 # Hack to import _version file without importing upoints/__init__.py, its
 # purpose is to allow import without requiring dependencies at this point.
@@ -99,5 +112,7 @@ setup(
     ],
     obsoletes=['earth_distance'],
     install_requires=install_requires,
-    tests_require=['nose2', 'expecter'],
+    tests_require=['pytest', 'pytest-cov'],
+    tests_require=['pytest', ],
+    cmdclass={'test': PytestTest},
 )

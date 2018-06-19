@@ -17,29 +17,25 @@
 # You should have received a copy of the GNU General Public License along with
 # upoints.  If not, see <http://www.gnu.org/licenses/>.
 
-from unittest import TestCase
-
-from expecter import expect
-
 from upoints.cities import (City, Cities)
 
 
-class TestCity(TestCase):
-    def setUp(self):
+class TestCity:
+    def setup(self):
         self.t = City(498, 'Zwickau', 'City', 'Sachsen', 'DE', 'Earth', 108835,
                       None, 12.5, 50.72, None,
                       (1997, 4, 10, 0, 0, 0, 3, 100, -1),
                       'M.Dowling@tu-bs.de')
 
     def test___repr__(self):
-        expect(repr(self.t)) == \
+        assert repr(self.t) == \
             ("City(498, 'Zwickau', 'City', 'Sachsen', 'DE', 'Earth', 108835, "
              'None, 12.5, 50.72, None, (1997, 4, 10, 0, 0, 0, 3, 100, -1), '
              "'M.Dowling@tu-bs.de')")
 
     def test___str__(self):
         data = str(self.t).splitlines()
-        expect(data) == [
+        assert data == [
             'ID          : 498',
             'Type        : City',
             'Population  : 108835',
@@ -56,14 +52,14 @@ class TestCity(TestCase):
         ]
 
 
-class TestCities(TestCase):
+class TestCities:
     def test_import_locations(self):
         cities_file = open('tests/data/city_data')
         cities = Cities(cities_file)
         data = [('%i - %s (%s;%s)' % (city.identifier, city.name,
                                       city.latitude, city.longitude))
                 for city in sorted(cities, key=lambda x: x.identifier)]
-        expect(data) == [
+        assert data == [
             '126 - London (51.5;-0.083)',
             '127 - Luxembourg (49.617;6.117)',
             '128 - Lyon (45.767;4.867)',
@@ -71,4 +67,4 @@ class TestCities(TestCase):
         cities_file.seek(0)
         manual_list = cities_file.read().split('//\\n')
         cities = Cities(manual_list)
-        expect(len(cities)) == 1
+        assert len(cities) == 1

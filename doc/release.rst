@@ -12,9 +12,9 @@ Release HOWTO
 Test
 ----
 
-In the general case tests can be run via ``nose2``::
+In the general case tests can be run via ``pytest``::
 
-    $ nose2 -vv tests
+    $ pytest tests
 
 When preparing a release it is important to check that :mod:`upoints` works with
 all currently supported Python versions, and that the documentation is correct.

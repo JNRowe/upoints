@@ -6,7 +6,6 @@ include edist.py
 include extra/_edist
 include extra/doap.rdf
 include extra/requirements*.txt
-include nose2.cfg
 
 recursive-include doc *.rst
 include doc/conf.py

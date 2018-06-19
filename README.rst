@@ -29,12 +29,12 @@ a mail_ and I'll endeavour to fix it.
 The module has been tested on many UNIX-like systems, including Linux and OS X,
 but it should work fine on other systems too.
 
-To run the tests you'll need nose2_.  Once you have nose2_ installed you can run
+To run the tests you'll need pytest_.  Once you have pytest_ installed you can run
 the tests with the following commands:
 
 .. code:: console
 
-    $ nose2 -v tests
+    $ pytest tests
 
 .. [#] If you still use Python v2.5 only small changes are required, for example
        to the property definitions.
@@ -144,7 +144,7 @@ reproduce the problem, or even better a patch!
 .. _aaargh: https://crate.io/packages/aaargh/
 .. _lxml: http://codespeak.net/lxml/
 .. _Sphinx: http://sphinx.pocoo.org/
-.. _nose2: https://crate.io/packages/nose2/
+.. _pytest: https://pypi.python.org/packages/pytest/
 .. _issue: https://github.com/JNRowe/upoints/issues
 
 .. |travis| image:: https://img.shields.io/travis/JNRowe/upoints.png

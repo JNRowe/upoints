@@ -17,10 +17,7 @@
 # You should have received a copy of the GNU General Public License along with
 # upoints.  If not, see <http://www.gnu.org/licenses/>.
 
-from unittest import TestCase
-
-from expecter import expect
-from nose2.tools import params
+from pytest import mark
 
 from upoints.gpx import (_GpxElem, _GpxMeta, Routepoint, Routepoints,
                          Trackpoint, Trackpoints, Waypoint, Waypoints, etree)
@@ -30,30 +27,30 @@ from upoints import utils
 from tests.utils import xml_compare
 
 
-class Test_GpxElem(TestCase):
-    @params(
+class Test_GpxElem:
+    @mark.parametrize('args, result', [
         ((52, 0), '_GpxElem(52.0, 0.0, None, None, None, None)'),
         ((52, 0, None), '_GpxElem(52.0, 0.0, None, None, None, None)'),
         ((52, 0, 'name', 'desc'),
          "_GpxElem(52.0, 0.0, 'name', 'desc', None, None)"),
-    )
+    ])
     def test___repr__(self, args, result):
-        expect(repr(_GpxElem(*args))) == result
+        assert repr(_GpxElem(*args)) == result
 
-    @params(
+    @mark.parametrize('args, result', [
         ((52, 0), """52°00'00"N, 000°00'00"E"""),
         ((52, 0, 'name', 'desc', 40),
          """name (52°00'00"N, 000°00'00"E @ 40m) [desc]"""),
         ((52, 0, 'name', 'desc', 40, utils.Timestamp(2008, 7, 25)),
          """name (52°00'00"N, 000°00'00"E @ 40m on """
          '2008-07-25T00:00:00+00:00) [desc]')
-    )
+    ])
     def test___str__(self, args, result):
-        expect(str(_GpxElem(*args))) == result
+        assert str(_GpxElem(*args)) == result
 
 
-class Test_GpxMeta(TestCase):
-    @params(
+class Test_GpxMeta:
+    @mark.parametrize('bounds, result', [
         (None,
          b'<gpx:metadata xmlns:gpx="http://www.topografix.com/GPX/1/1">'
          b'<gpx:time>2008-06-03T16:12:43+0000</gpx:time>'
@@ -66,26 +63,26 @@ class Test_GpxMeta(TestCase):
          b'<gpx:metadata xmlns:gpx="http://www.topografix.com/GPX/1/1">'
          b'<gpx:time>2008-06-03T16:12:43+0000</gpx:time><gpx:bounds maxlat="52.167" maxlon="0.39" minlat="52.015" minlon="-0.221"/>'
          b'</gpx:metadata>'),
-    )
+    ])
     def test_togpx(self, bounds, result):
         meta = _GpxMeta(time=(2008, 6, 3, 16, 12, 43, 1, 155, 0))
         meta.bounds = bounds
-        expect(etree.tostring(meta.togpx())) == result
+        assert etree.tostring(meta.togpx()) == result
 
 
-class TestWaypoint(TestCase):
-    expect(repr(Waypoint(52, 0))) == \
+class TestWaypoint:
+    assert repr(Waypoint(52, 0)) == \
         'Waypoint(52.0, 0.0, None, None, None, None)'
-    expect(repr(Waypoint(52, 0, None))) == \
+    assert repr(Waypoint(52, 0, None)) == \
         'Waypoint(52.0, 0.0, None, None, None, None)'
-    expect(repr(Waypoint(52, 0, 'name', 'desc'))) == \
+    assert repr(Waypoint(52, 0, 'name', 'desc')) == \
         "Waypoint(52.0, 0.0, 'name', 'desc', None, None)"
 
 
-class TestWaypoints(TestCase):
+class TestWaypoints:
     def test_import_locations(self):
         waypoints = Waypoints(open('tests/data/gpx'))
-        expect([str(x) for x in sorted(waypoints, key=lambda x: x.name)]) == [
+        assert [str(x) for x in sorted(waypoints, key=lambda x: x.name)] == [
             """Home (52°00'54"N, 000°13'15"W on 2008-07-26T00:00:00+00:00) [My place]""",
             """MSR (52°10'01"N, 000°23'24"E on 2008-07-27T00:00:00+00:00) [Microsoft Research, Cambridge]""",
         ]
@@ -98,21 +95,21 @@ class TestWaypoints(TestCase):
             xml_compare(e1, e2)
 
 
-class TestTrackpoint(TestCase):
-    @params(
+class TestTrackpoint:
+    @mark.parametrize('args, result', [
         ((52, 0), 'Trackpoint(52.0, 0.0, None, None, None, None)'),
         ((52, 0, None), 'Trackpoint(52.0, 0.0, None, None, None, None)'),
         ((52, 0, 'name', 'desc'),
          "Trackpoint(52.0, 0.0, 'name', 'desc', None, None)"),
-    )
+    ])
     def test___repr__(self, args, result):
-        expect(Trackpoint(*args)) == result
+        assert Trackpoint(*args) == result
 
 
-class TestTrackpoints(TestCase):
+class TestTrackpoints:
     def test_import_locations(self):
         trackpoints = Trackpoints(open('tests/data/gpx_tracks'))
-        expect([str(x) for x in sorted(trackpoints[0], key=lambda x: x.name)]) == [
+        assert [str(x) for x in sorted(trackpoints[0], key=lambda x: x.name)] == [
             """Home (52°00'54"N, 000°13'15"W on 2008-07-26T00:00:00+00:00) [My place]""",
             """MSR (52°10'01"N, 000°23'24"E on 2008-07-27T00:00:00+00:00) [Microsoft Research, Cambridge]""",
         ]
@@ -125,21 +122,21 @@ class TestTrackpoints(TestCase):
             xml_compare(e1, e2)
 
 
-class TestRoutepoint(TestCase):
-    @params(
+class TestRoutepoint:
+    @mark.parametrize('args, result', [
         ((52, 0), 'Routepoint(52.0, 0.0, None, None, None, None)'),
         ((52, 0, None), 'Routepoint(52.0, 0.0, None, None, None, None)'),
         ((52, 0, 'name', 'desc'),
          "Routepoint(52.0, 0.0, 'name', 'desc', None, None)"),
-    )
+    ])
     def test___repr__(self, args, result):
-        expect(Routepoint(*args)) == result
+        assert Routepoint(*args) == result
 
 
-class TestRoutepoints(TestCase):
+class TestRoutepoints:
     def test_import_locations(self):
         routepoints = Routepoints(open('tests/data/gpx_routes'))
-        expect([str(x) for x in sorted(routepoints[0], key=lambda x: x.name)]) == [
+        assert [str(x) for x in sorted(routepoints[0], key=lambda x: x.name)] == [
             """Home (52°00'54"N, 000°13'15"W on 2008-07-26T00:00:00+00:00) [My place]""",
             """MSR (52°10'01"N, 000°23'24"E on 2008-07-27T00:00:00+00:00) [Microsoft Research, Cambridge]""",
         ]
