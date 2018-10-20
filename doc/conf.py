@@ -50,6 +50,7 @@ master_doc = 'index'
 source_suffix = '.rst'
 
 project = u'upoints'
+author = 'James Rowe'
 copyright = upoints.__copyright__
 
 version = '.'.join(map(str, upoints._version.tuple[:2]))
@@ -63,13 +64,17 @@ try:
 except CalledProcessError:
     pass
 
+html_baseurl = 'https://hubugs.readthedocs.io/'
+
 man_pages = [
     ('edist.1', 'edist', u'upoints Documentation', [u'James Rowe'], 1)
 ]
 
 # Autodoc extension settings
 autoclass_content = 'both'
-autodoc_default_flags = ['members', 'show-inheritance']
+autodoc_default_options = {
+    'members': None,
+}
 
 # intersphinx extension settings
 intersphinx_mapping = {k: (v, os.getenv('SPHINX_%s_OBJECTS' % k.upper()))
