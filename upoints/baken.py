@@ -164,11 +164,11 @@ class Bakens(point.KeyedPoints):
         self._baken_file = baken_file
         data = ConfigParser()
         if hasattr(baken_file, 'readlines'):
-            data.readfp(baken_file)
+            data.read_file(baken_file)
         elif isinstance(baken_file, list):
             data.read(baken_file)
         elif isinstance(baken_file, str):
-            data.readfp(open(baken_file))
+            data.read_file(open(baken_file))
         else:
             raise TypeError('Unable to handle data of type %r'
                             % type(baken_file))
