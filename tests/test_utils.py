@@ -294,7 +294,7 @@ def test_sun_rise(date, result):
 
 
 def test_sun_no_rise():
-    assert sun_rise_set(89, 0, datetime.date(2007, 12, 21)) == None
+    assert sun_rise_set(89, 0, datetime.date(2007, 12, 21)) is None
 
 
 def test_sun_rise_zone():
