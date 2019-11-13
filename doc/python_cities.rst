@@ -44,7 +44,8 @@ On my Gentoo_ desktop the cities database is installed as
 :file:`/usr/share/misc/cities.dat`, and can be imported as simply as::
 
     >>> from upoints import cities
-    >>> Cities = cities.Cities(open("/usr/share/misc/cities.dat"))
+    >>> with open("/usr/share/misc/cities.dat") as f:
+    ..      Cities = cities.Cities(f)
 
 And the imported database can be used in a variety of ways::
 
@@ -71,9 +72,8 @@ And the imported database can be used in a variety of ways::
 
 You can recreate the database as a smoke test using the following::
 
-    >>> f = open("cities.dat", "w")
-    >>> f.write("\n//\n".join(map(str, Cities)))
-    >>> f.close()
+    >>> with open("cities.dat", "w") as f:
+    ...     f.write("\n//\n".join(map(str, Cities)))
 
 unfortunately the files aren't simply comparable using :command:`diff`
 because of some unusual formatting in the original file, but visually

@@ -184,7 +184,8 @@ class TestWaypoint:
 
 class TestLocations:
     def test_import_locations(self):
-        locations = Locations(open('tests/data/gpsdata'))
+        with open('tests/data/gpsdata') as f:
+            locations = Locations(f)
         assert [str(x) for x in locations] == [
             '$GPGGA,142058,5308.6414,N,00300.9257,W,1,04,5.6,1374.6,M,34.5,M,,*6B\r',
             '$GPRMC,142058,A,5308.6414,N,00300.9257,W,109394.7,202.9,191107,5,E,A*2C\r',

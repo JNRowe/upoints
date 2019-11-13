@@ -42,17 +42,20 @@ class TestTrigpoint:
 
 class TestTrigpoints:
     def test_import_locations(self):
-        markers = Trigpoints(open('tests/data/trigpoints'))
+        with open('tests/data/trigpoints') as f:
+            markers = Trigpoints(f)
         data = ['%s - %s' % (k, v) for k, v in sorted(markers.items())]
         assert data == [
             """500936 - Broom Farm (52°03'57"N, 000°16'53"W alt 37m)""",
             """501097 - Bygrave (52°00'38"N, 000°10'24"W alt 97m)""",
             """505392 - Sish Lane (51°54'39"N, 000°11'11"W alt 136m)""",
         ]
-        markers = Trigpoints(open('tests/data/southern_trigpoints'))
+        with open('tests/data/southern_trigpoints') as f:
+            markers = Trigpoints(f)
         assert str(markers[1]) == \
             """FakeLand (48°07'23"S, 000°07'23"W alt 12m)"""
-        markers = Trigpoints(open('tests/data/broken_trigpoints'))
+        with open('tests/data/broken_trigpoints') as f:
+            markers = Trigpoints(f)
         data = ['%s - %s' % (k, v) for k, v in sorted(markers.items())]
         assert data == [
             """500968 - Brown Hill Nm  See The Heights (53°38'23"N, 001°39'34"W)""",

@@ -97,9 +97,8 @@ trigpoints above 1000m above sea level::
     >>> for identifier, trigpoint in Trigpoints.items():
     ...     if trigpoint.altitude > 1000:
     ...         high_markers[identifier] = trigpoint
-    >>> f = open("high_markers.txt", "w")
-    >>> f.write("\n".join(dump_xearth_markers(high_markers)))
-    >>> f.close()
+    >>> with open("high_markers.txt", "w") as f:
+    ...     f.write("\n".join(dump_xearth_markers(high_markers)))
 
 .. figure:: .static/Scotland_trigpoints.png
    :alt: xearth showing trigpoints higher than 1000m in Scotland
@@ -140,10 +139,8 @@ names as labels.
     >>> for identifier, trigpoint in Trigpoints.items():
     ...     if 900 < trigpoint.altitude < 910:
     ...         display_markers[identifier] = trigpoint
-    >>> f = open("display_markers.txt", "w")
-    >>> f.write("\n".join(dump_xearth_markers(display_markers,
-    ...                                            "name")))
-    >>> f.close()
+    >>> with open("display_markers.txt", "w") as f:
+    ...     f.write("\n".join(dump_xearth_markers(display_markers, "name")))
 
 The result of how that query could be shown with xplanet can be found to the
 right.

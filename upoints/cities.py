@@ -122,28 +122,28 @@ class Cities(point.Points):
             ID          : 1
             Type        : City
             Population  : 210700
-            Size        : 
+            Size        :
             Name        : Aberdeen
              Country    : UK
              Region     : Scotland
             Location    : Earth
              Longitude  : -2.083
              Latitude   :   57.150
-             Elevation  : 
+             Elevation  :
             Date        : 19961206
             Entered-By  : Rob.Hooft@EMBL-Heidelberg.DE
             //
             ID          : 2
             Type        : City
             Population  : 1950000
-            Size        : 
+            Size        :
             Name        : Abidjan
              Country    : Ivory Coast
-             Region     : 
+             Region     :
             Location    : Earth
              Longitude  : -3.867
              Latitude   :    5.333
-             Elevation  : 
+             Elevation  :
             Date        : 19961206
             Entered-By  : Rob.Hooft@EMBL-Heidelberg.DE
 
@@ -175,7 +175,8 @@ class Cities(point.Points):
         elif isinstance(data, list):
             pass
         elif isinstance(data, str):
-            data = open(data).read().split('//\n')
+            with open(data) as f:
+                data = f.read().split('//\n')
         else:
             raise TypeError('Unable to handle data of type %r' % type(data))
 

@@ -40,7 +40,8 @@ class TestCell:
 
 class TestCells:
     def setup(self):
-        self.cells = Cells(open('tests/data/cells'))
+        with open('tests/data/cells') as f:
+            self.cells = Cells(f)
 
     def test___str__(self):
         assert sorted(str(x) for x in self.cells.values()) == [

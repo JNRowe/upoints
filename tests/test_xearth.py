@@ -41,7 +41,8 @@ class TestXearth:
 
 class TestXearths:
     def setup(self):
-        self.markers = Xearths(open('tests/data/xearth'))
+        with open('tests/data/xearth') as f:
+            self.markers = Xearths(f)
 
     def test___str__(self):
         assert self.markers.__str__().splitlines() == \

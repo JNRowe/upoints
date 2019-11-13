@@ -54,7 +54,8 @@ class TestBaken:
 
 class TestBakens:
     def test_import_locations(self):
-        locations = Bakens(open('tests/data/baken_data'))
+        with open('tests/data/baken_data') as f:
+            locations = Bakens(f)
         data = ['%s - %s' % (k, v) for k, v in sorted(locations.items())]
 
         assert data == [
@@ -64,5 +65,6 @@ class TestBakens:
         ]
 
     def test_import_locations2(self):
-        locations = Bakens(open('tests/data/no_valid_baken'))
+        with open('tests/data/no_valid_baken') as f:
+            locations = Bakens(f)
         assert len(locations) == 0

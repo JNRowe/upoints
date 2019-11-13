@@ -173,7 +173,8 @@ def prepare_read(data, method='readlines', mode='r'):
         if method == 'read':
             return ''.join(data)
     elif isinstance(data, str):
-        data = getattr(open(data, mode), method)()
+        with open(data, mode) as f:
+            data = getattr(f, method)()
     else:
         raise TypeError('Unable to handle data of type %r' % type(data))
     return data
@@ -220,7 +221,8 @@ def prepare_xml_read(data, objectify=False):
     elif isinstance(data, list):
         data = mod.fromstring(''.join(data))
     elif isinstance(data, str):
-        data = mod.parse(open(data)).getroot()
+        with open(data) as f:
+            data = mod.parse(f).getroot()
     else:
         raise TypeError('Unable to handle data of type %r' % type(data))
     return data

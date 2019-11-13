@@ -40,7 +40,8 @@ class TestZone:
 
 class TestZones:
     def setup(self):
-        self.zones = Zones(open('tests/data/timezones'))
+        with open('tests/data/timezones') as f:
+            self.zones = Zones(f)
 
     def test_import_locations(self):
         data = [str(v) for v in sorted(self.zones, key=attrgetter('zone'))]

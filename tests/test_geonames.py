@@ -55,7 +55,9 @@ class TestLocation:
 
 class TestLocations:
     def test_import_locations(self):
-        assert [str(l) for l in Locations(open('tests/data/geonames'))] == [
+        with open('tests/data/geonames') as f:
+            locs = Locations(f)
+        assert [str(l) for l in locs] == [
             'Afon Wyre (River Wayrai, River Wyrai, Wyre - N52.317°; W004.167°)',
             'Wyre (Viera - N59.117°; W002.967°)',
             'Wraysbury (Wyrardisbury - N51.450°; W000.550°)',
@@ -66,10 +68,12 @@ class TestLocations:
                     match=("Incorrect data format, if you're using a file "
                            'downloaded from geonames.org please report this '
                            'to James Rowe <jnrowe@gmail.com>')):
-            Locations(open('tests/data/broken_geonames'))
+            with open('tests/data/broken_geonames') as f:
+                Locations(f)
 
     def test_import_timezones_file(self):
-        locations = Locations(None, open('tests/data/geonames_timezones'))
+        with open('tests/data/geonames_timezones') as f:
+            locations = Locations(None, f)
         assert locations.timezones == {
             'Asia/Dubai': [240, 240],
             'Asia/Kabul': [270, 270],
@@ -77,8 +81,8 @@ class TestLocations:
         }
 
     def test_import_timezones_file_header(self):
-        header_skip_check = Locations(None,
-                                      open('tests/data/geonames_timezones_header'))
+        with open('tests/data/geonames_timezones_header') as f:
+            header_skip_check = Locations(None, f)
         assert header_skip_check == Locations()
 
     def test_import_timezones_file_error(self):
@@ -86,4 +90,5 @@ class TestLocations:
                     match=("Incorrect data format, if you're using a file "
                            'downloaded from geonames.org please report this '
                            'to James Rowe <jnrowe@gmail.com>')):
-            Locations(None, open('tests/data/geonames_timezones_broken'))
+            with open('tests/data/geonames_timezones_broken') as f:
+                Locations(None, f)

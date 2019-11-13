@@ -93,10 +93,9 @@ example, create a nice graphical view of your trip with xplanet_::
     >>> Trip = dict(zip(("2007-06-29", "2007-06-30", "2007-07-12",
     ...                  "2007-07-14"),
     ...                 Trip))
-    >>> f = open("trip.txt", "w")
     >>> from upoints import utils
-    >>> f.write("\n".join(utils.dump_xearth_markers(Trip, "name")))
-    >>> f.close()
+    >>> with open("trip.txt", "w") as f:
+    ...     f.write("\n".join(utils.dump_xearth_markers(Trip, "name")))
 
 .. figure:: .static/xearth_trip.png
    :alt: Xplanet showing the locations for a small European trip

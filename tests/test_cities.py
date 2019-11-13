@@ -53,8 +53,8 @@ class TestCity:
 
 class TestCities:
     def test_import_locations(self):
-        cities_file = open('tests/data/city_data')
-        cities = Cities(cities_file)
+        with open('tests/data/city_data') as f:
+            cities = Cities(f)
         data = [('%i - %s (%s;%s)' % (city.identifier, city.name,
                                       city.latitude, city.longitude))
                 for city in sorted(cities, key=lambda x: x.identifier)]
@@ -63,7 +63,7 @@ class TestCities:
             '127 - Luxembourg (49.617;6.117)',
             '128 - Lyon (45.767;4.867)',
         ]
-        cities_file.seek(0)
-        manual_list = cities_file.read().split('//\\n')
+        with open('tests/data/city_data') as f:
+            manual_list = f.read().split('//\\n')
         cities = Cities(manual_list)
         assert len(cities) == 1

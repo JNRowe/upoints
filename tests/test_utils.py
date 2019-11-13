@@ -60,8 +60,8 @@ def test_prepare_read(data, result):
 
 
 def test_prepare_read_read():
-    assert prepare_read(open('tests/data/real_file', 'r')) == \
-        ['This is a test file-type object\n', ]
+    with open('tests/data/real_file') as f:
+        assert prepare_read(f) == ['This is a test file-type object\n', ]
 
 
 @mark.parametrize('data, keys, result', [

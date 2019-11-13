@@ -72,12 +72,14 @@ class TestPlacemarks:
         ('Home', """Home (52°00'54"N, 000°13'15"W alt 60m)"""),
     ])
     def test_import_locations(self, name, result):
-        locations = Placemarks(open('tests/data/kml'))
+        with open('tests/data/kml') as f:
+            locations = Placemarks(f)
         assert str(locations[name]) == result
 
     def test_export_kml_file(self):
         filename = 'tests/data/kml'
-        locations = Placemarks(open(filename))
+        with open(filename) as f:
+            locations = Placemarks(f)
         export = locations.export_kml_file()
         kml_xml = etree.parse(filename)
         for e1, e2 in zip(export.getiterator(), kml_xml.getiterator()):

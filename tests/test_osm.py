@@ -164,7 +164,8 @@ class TestWay:
 
 class TestOsm:
     def setup(self):
-        self.region = Osm(open('tests/data/osm'))
+        with open('tests/data/osm') as f:
+            self.region = Osm(f)
 
     def test_import_locations(self):
         assert [str(x) for x in sorted([x for x in self.region

@@ -244,7 +244,8 @@ class TestNumberedPoints:
 
 
 def test_read_csv():
-    locations, names = read_csv(open('tests/data/gpsbabel'))
+    with open('tests/data/gpsbabel') as f:
+        locations, names = read_csv(f)
     assert sorted(locations.items()) == \
         [('01:My place', ('52.01500', '-0.22100')),
          ('02:Microsoft Research Cambridge', ('52.16700', '00.39000'))]

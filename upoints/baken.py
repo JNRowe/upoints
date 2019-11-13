@@ -168,7 +168,8 @@ class Bakens(point.KeyedPoints):
         elif isinstance(baken_file, list):
             data.read(baken_file)
         elif isinstance(baken_file, str):
-            data.read_file(open(baken_file))
+            with open(baken_file) as f:
+                data.readfp(f)
         else:
             raise TypeError('Unable to handle data of type %r'
                             % type(baken_file))

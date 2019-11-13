@@ -38,15 +38,15 @@ class PytestTest(test):
 
 # Hack to import _version file without importing upoints/__init__.py, its
 # purpose is to allow import without requiring dependencies at this point.
-ver_file = open('upoints/_version.py')
-_version = imp.load_module('_version', ver_file, ver_file.name,
-                           ('.py', ver_file.mode, imp.PY_SOURCE))
+with open('upoints/_version.py') as ver_file:
+    _version = imp.load_module('_version', ver_file, ver_file.name,
+                            ('.py', ver_file.mode, imp.PY_SOURCE))
 
 
 def parse_requires(file):
     deps = []
-    req_file = open('extra/%s' % file)
-    entries = map(str.strip, req_file.readlines())
+    with open('extra/%s' % file) as req_file:
+        entries = map(str.strip, req_file.readlines())
     for dep in entries:
         if dep.startswith('-r '):
             deps.extend(parse_requires(dep.split()[1]))
@@ -62,11 +62,14 @@ def parse_requires(file):
 
 install_requires = parse_requires('requirements.txt')
 
+with io.open('README.rst', encoding='UTF-8') as f:
+    long_description = f.read()
+
 setup(
     name='upoints',
     version=_version.dotted,
     description='Modules for working with points on Earth',
-    long_description=io.open('README.rst', encoding='UTF-8').read(),
+    long_description=long_description,
     author='James Rowe',
     author_email='jnrowe@gmail.com',
     url='https://github.com/JNRowe/upoints/',
