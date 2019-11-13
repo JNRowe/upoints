@@ -1,5 +1,4 @@
 #
-# coding=utf-8
 """tzdata - Imports timezone data files from UNIX zoneinfo."""
 # Copyright © 2007-2017  James Rowe <jnrowe@gmail.com>
 #
@@ -20,10 +19,8 @@
 from operator import attrgetter
 
 from . import (point, utils)
-from .compat import mangle_repr_type
 
 
-@mangle_repr_type
 class Zone(point.Point):
     """Class for representing timezone descriptions from zoneinfo data.
 

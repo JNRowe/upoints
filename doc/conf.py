@@ -1,5 +1,4 @@
 #
-# coding=utf-8
 """conf - Sphinx configuration information."""
 # Copyright © 2008-2017  James Rowe <jnrowe@gmail.com>
 #
@@ -22,9 +21,10 @@ from __future__ import print_function
 import os
 import sys
 
-from subprocess import (CalledProcessError, check_output)
+from contextlib import suppress
+from subprocess import (CalledProcessError, run)
 
-root_dir = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
+root_dir = os.path.dirname(os.path.dirname(__file__))
 sys.path.insert(0, root_dir)
 
 
@@ -57,12 +57,10 @@ version = '.'.join(map(str, upoints._version.tuple[:2]))
 release = upoints._version.dotted
 
 pygments_style = 'sphinx'
-try:
-    html_last_updated_fmt = check_output(['git', 'log',
-                                          "--pretty=format:'%ad [%h]'",
-                                          '--date=short', '-n1'])
-except CalledProcessError:
-    pass
+with suppress(CalledProcessError):
+    proc = run(['git', 'log', "--pretty=format:'%ad [%h]'", '--date=short',
+                '-n1'], stdout=PIPE)
+    html_last_updated_fmt = proc.stdout.decode()
 
 html_baseurl = 'https://hubugs.readthedocs.io/'
 

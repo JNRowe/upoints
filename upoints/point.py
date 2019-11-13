@@ -1,5 +1,4 @@
 #
-# coding=utf-8
 """point - Classes for working with locations on Earth."""
 # Copyright © 2008-2017  James Rowe <jnrowe@gmail.com>
 #
@@ -22,7 +21,6 @@ from __future__ import division
 import math
 
 from . import utils
-from .compat import mangle_repr_type
 
 
 def _manage_location(attr):
@@ -68,8 +66,7 @@ def _dms_formatter(latitude, longitude, mode, unistr=False):
     return text
 
 
-@mangle_repr_type
-class Point(object):
+class Point:
     """Simple class for representing a location on a sphere.
 
     .. versionadded:: 0.2.0
@@ -520,7 +517,6 @@ class TimedPoint(Point):
         self.time = time
 
 
-@mangle_repr_type
 class Points(list):
     """Class for representing a group of :class:`Point` objects.
 
@@ -723,7 +719,6 @@ class TimedPoints(Points):
                 for i, distance in enumerate(self.distance()))
 
 
-@mangle_repr_type
 class KeyedPoints(dict):
     """Class for representing a keyed group of :class:`Point` objects.
 

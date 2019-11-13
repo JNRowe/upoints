@@ -1,5 +1,4 @@
 #
-# coding=utf-8
 """nmea - Imports GPS NMEA-formatted data files."""
 # Copyright © 2008-2017  James Rowe <jnrowe@gmail.com>
 #

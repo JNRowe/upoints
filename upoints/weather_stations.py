@@ -1,5 +1,4 @@
 #
-# coding=utf-8
 """weather_stations - Imports weather station data files."""
 # Copyright © 2007-2017  James Rowe <jnrowe@gmail.com>
 #

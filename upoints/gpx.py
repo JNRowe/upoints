@@ -1,5 +1,4 @@
 #
-# coding=utf-8
 """gpx - Imports GPS eXchange format data files."""
 # Copyright © 2008-2017  James Rowe <jnrowe@gmail.com>
 #
@@ -19,6 +18,7 @@
 
 import time
 
+from contextlib import suppress
 from operator import attrgetter
 
 from lxml import etree
@@ -289,7 +289,7 @@ class _SegWrap(list):
         return (segment.speed() for segment in self)
 
 
-class _GpxMeta(object):
+class _GpxMeta:
     """Class for representing GPX global metadata.
 
     .. versionadded:: 0.12.0
@@ -363,7 +363,7 @@ class _GpxMeta(object):
             metadata.append(element)
         if self.link:
             for link in self.link:
-                if isinstance(link, basestring):
+                if isinstance(link, str):
                     element = create_elem('link', {'href': link})
                 else:
                     element = create_elem('link', {'href': link['href']})
@@ -518,10 +518,8 @@ class Waypoints(point.TimedPoints):
         self._gpx_file = gpx_file
         data = utils.prepare_xml_read(gpx_file, objectify=True)
 
-        try:
+        with suppress(AttributeError):
             self.metadata.import_metadata(data.metadata)
-        except AttributeError:
-            pass
 
         for waypoint in data.wpt:
             latitude = waypoint.get('lat')
@@ -627,10 +625,8 @@ class Trackpoints(_SegWrap):
         self._gpx_file = gpx_file
         data = utils.prepare_xml_read(gpx_file, objectify=True)
 
-        try:
+        with suppress(AttributeError):
             self.metadata.import_metadata(data.metadata)
-        except AttributeError:
-            pass
 
         for segment in data.trk.trkseg:
             points = point.TimedPoints()
@@ -743,10 +739,8 @@ class Routepoints(_SegWrap):
         self._gpx_file = gpx_file
         data = utils.prepare_xml_read(gpx_file, objectify=True)
 
-        try:
+        with suppress(AttributeError):
             self.metadata.import_metadata(data.metadata)
-        except AttributeError:
-            pass
 
         for route in data.rte:
             points = point.TimedPoints()

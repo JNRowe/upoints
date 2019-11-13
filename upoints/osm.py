@@ -1,5 +1,4 @@
 #
-# coding=utf-8
 """osm - Imports OpenStreetMap data files.."""
 # Copyright © 2008-2017  James Rowe <jnrowe@gmail.com>
 #
@@ -17,6 +16,7 @@
 # You should have received a copy of the GNU General Public License along with
 # upoints.  If not, see <http://www.gnu.org/licenses/>.
 
+from contextlib import suppress
 from operator import attrgetter
 
 try:
@@ -28,7 +28,6 @@ from lxml import etree
 
 from . import (point, utils)
 from ._version import web as ua_string
-from .compat import mangle_repr_type
 
 create_elem = utils.element_creator()
 
@@ -48,13 +47,11 @@ def _parse_flags(element):
     if timestamp:
         timestamp = utils.Timestamp.parse_isoformat(timestamp)
     tags = {}
-    try:
+    with suppress(AttributeError):
         for tag in element['tag']:
             key = tag.get('k')
             value = tag.get('v')
             tags[key] = value
-    except AttributeError:
-        pass
 
     return visible, user, timestamp, tags
 
@@ -218,7 +215,6 @@ class Node(point.Point):
         return Node(ident, latitude, longitude, *flags)
 
 
-@mangle_repr_type
 class Way(point.Points):
     """Class for representing a way element from OSM data files.
 

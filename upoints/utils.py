@@ -1,5 +1,4 @@
 #
-# coding=utf-8
 """utils - Support code for :mod:`upoints`."""
 # Copyright © 2007-2017  James Rowe <jnrowe@gmail.com>
 #
@@ -34,8 +33,6 @@ from lxml import etree
 from lxml import objectify as _objectify
 
 from operator import add
-
-from .compat import (basestring, mangle_repr_type)
 
 
 #: Body radii of various solar system objects
@@ -137,7 +134,8 @@ def repr_assist(obj, remap=None):
     if not remap:
         remap = {}
     data = []
-    for arg in inspect.getargspec(getattr(obj.__class__, '__init__'))[0]:
+    sig = inspect.signature(getattr(obj.__class__, '__init__'))
+    for arg in sig.parameters:
         if arg == 'self':
             continue
         elif arg in remap:
@@ -147,7 +145,7 @@ def repr_assist(obj, remap=None):
                 value = getattr(obj, arg)
             except AttributeError:
                 value = getattr(obj, '_%s' % arg)
-        if isinstance(value, (type(None), list, basestring, datetime.date,
+        if isinstance(value, (type(None), list, str, datetime.date,
                               datetime.time)):
             data.append(repr(value))
         else:
@@ -174,7 +172,7 @@ def prepare_read(data, method='readlines', mode='r'):
     elif isinstance(data, list):
         if method == 'read':
             return ''.join(data)
-    elif isinstance(data, basestring):
+    elif isinstance(data, str):
         data = getattr(open(data, mode), method)()
     else:
         raise TypeError('Unable to handle data of type %r' % type(data))
@@ -196,7 +194,7 @@ def prepare_csv_read(data, field_names, *args, **kwargs):
     """
     if hasattr(data, 'readlines') or isinstance(data, list):
         pass
-    elif isinstance(data, basestring):
+    elif isinstance(data, str):
         data = open(data)
     else:
         raise TypeError('Unable to handle data of type %r' % type(data))
@@ -221,7 +219,7 @@ def prepare_xml_read(data, objectify=False):
         data = mod.parse(data).getroot()
     elif isinstance(data, list):
         data = mod.fromstring(''.join(data))
-    elif isinstance(data, basestring):
+    elif isinstance(data, str):
         data = mod.parse(open(data)).getroot()
     else:
         raise TypeError('Unable to handle data of type %r' % type(data))
@@ -371,7 +369,6 @@ def angle_to_name(angle, segments=8, abbr=False):
 
 
 # Date and time handling utilities {{{
-@mangle_repr_type
 class TzOffset(datetime.tzinfo):
     """Time offset from UTC."""
 

@@ -1,5 +1,4 @@
 #
-# coding=utf-8
 """cities - Imports GNU miscfiles cities data files."""
 # Copyright © 2007-2017  James Rowe <jnrowe@gmail.com>
 #
@@ -175,7 +174,7 @@ class Cities(point.Points):
             data = data.read().split('//\n')
         elif isinstance(data, list):
             pass
-        elif isinstance(data, basestring):
+        elif isinstance(data, str):
             data = open(data).read().split('//\n')
         else:
             raise TypeError('Unable to handle data of type %r' % type(data))

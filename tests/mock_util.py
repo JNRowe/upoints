@@ -1,5 +1,4 @@
 #
-# coding=utf-8
 """mock - Mock objects for doctest code snippets"""
 # Copyright © 2007-2017  James Rowe <jnrowe@gmail.com>
 #
@@ -122,7 +121,7 @@ class pymetar(ModuleType):
         `pymetar <http://www.schwarzvogel.de/software-pymetar.shtml>`__
     """
 
-    class ReportFetcher(object):
+    class ReportFetcher:
         def __init__(self, StationCode=None):
             """Mock `ReportFetcher` initialisation for tests.
 
@@ -137,8 +136,8 @@ class pymetar(ModuleType):
             """Mock ``FetchReport`` function to pass tests."""
             pass
 
-    class ReportParser(object):
-        class ParseReport(object):
+    class ReportParser:
+        class ParseReport:
             def __init__(self, MetarReport=None):
                 """Mock ``ParseReport`` object to return test data.
 

@@ -1,5 +1,4 @@
 #
-# coding=utf-8
 """baken - Imports baken data files."""
 # Copyright © 2007-2017  James Rowe <jnrowe@gmail.com>
 #
@@ -168,7 +167,7 @@ class Bakens(point.KeyedPoints):
             data.readfp(baken_file)
         elif isinstance(baken_file, list):
             data.read(baken_file)
-        elif isinstance(baken_file, basestring):
+        elif isinstance(baken_file, str):
             data.readfp(open(baken_file))
         else:
             raise TypeError('Unable to handle data of type %r'
