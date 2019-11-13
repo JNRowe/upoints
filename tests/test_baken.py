@@ -32,8 +32,8 @@ class TestBaken:
              "460.0, 'IO93BF', 'A1A', None, 25, None)" % 53.229166666666686)
 
         with raises(LookupError,
-                    message=('Unable to instantiate baken object, no latitude '
-                             'or locator string')):
+                    match=('Unable to instantiate baken object, no latitude '
+                           'or locator string')):
             Baken(None, None)
 
     def test__set_locator(self):

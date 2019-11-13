@@ -36,13 +36,13 @@ class TestPoint:
         assert '%.3f' % test.longitude == '-1.053'
 
     def test___init___validity(self):
-        with raises(ValueError, message='Unknown angle type None'):
+        with raises(ValueError, match='Unknown angle type None'):
             Point(52.015, -0.221, angle=None)
-        with raises(ValueError, message='Invalid latitude value -92'):
+        with raises(ValueError, match='Invalid latitude value -92'):
             Point(-92, -0.221)
-        with raises(ValueError, message='Invalid longitude value 185'):
+        with raises(ValueError, match='Invalid longitude value 185'):
             Point(52.015, 185)
-        with raises(ValueError, message='Unknown units type None'):
+        with raises(ValueError, match='Unknown units type None'):
             Point(52.015, -0.221, units=None)
 
     def test___dict__(self):
@@ -116,7 +116,7 @@ class TestPoint:
         assert '%i kM' % home.distance(dest) == '169 kM'
         assert '%i kM' % home.distance(dest, method='sloc') == '169 kM'
 
-        with raises(ValueError, message="Unknown method type 'Invalid'"):
+        with raises(ValueError, match="Unknown method type 'Invalid'"):
             home.distance(dest, method='Invalid')
 
     @mark.parametrize('units, result', [

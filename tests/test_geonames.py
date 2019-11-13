@@ -63,9 +63,9 @@ class TestLocations:
 
     def test_import_locations_error(self):
         with raises(FileFormatError,
-                    message=("Incorrect data format, if you're using a file "
-                             'downloaded from geonames.org please report this '
-                             'to James Rowe <jnrowe@gmail.com>')):
+                    match=("Incorrect data format, if you're using a file "
+                           'downloaded from geonames.org please report this '
+                           'to James Rowe <jnrowe@gmail.com>')):
             Locations(open('tests/data/broken_geonames'))
 
     def test_import_timezones_file(self):
@@ -83,7 +83,7 @@ class TestLocations:
 
     def test_import_timezones_file_error(self):
         with raises(FileFormatError,
-                    message=("Incorrect data format, if you're using a file "
-                             'downloaded from geonames.org please report this '
-                             'to James Rowe <jnrowe@gmail.com>')):
+                    match=("Incorrect data format, if you're using a file "
+                           'downloaded from geonames.org please report this '
+                           'to James Rowe <jnrowe@gmail.com>')):
             Locations(None, open('tests/data/geonames_timezones_broken'))

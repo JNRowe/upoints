@@ -33,13 +33,13 @@ from upoints.edist import (LocationsError, NumberedPoint, NumberedPoints,
 
 
 class TestLocationsError:
-    with raises(LocationsError, message='Invalid location data.'):
+    with raises(LocationsError, match='Invalid location data.'):
         raise LocationsError()
     with raises(LocationsError,
-                message='More than one location is required for distance.'):
+                match='More than one location is required for distance.'):
         raise LocationsError('distance')
     with raises(LocationsError,
-                message="Location parsing failure in location 4 '52;None'."):
+                match="Location parsing failure in location 4 '52;None'."):
         raise LocationsError(data=(4, '52;None'))
 
 

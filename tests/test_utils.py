@@ -32,13 +32,13 @@ from upoints.utils import (FileFormatError, Timestamp, TzOffset,
 
 
 class TestFileFormatError:
-    with raises(FileFormatError, message='Unsupported data format.'):
+    with raises(FileFormatError, match='Unsupported data format.'):
         raise FileFormatError
     with raises(
         FileFormatError,
-        message=("Incorrect data format, if you're using a file downloaded "
-                 'from test site please report this to James Rowe '
-                 '<jnrowe@gmail.com>')):
+        match=("Incorrect data format, if you're using a file downloaded from "
+               'test site please report this to James Rowe '
+               '<jnrowe@gmail.com>')):
         raise FileFormatError('test site')
 
 
@@ -97,7 +97,7 @@ def test_to_dms_style():
 
 
 def test_to_dms_error():
-    with raises(ValueError, message='Unknown style type None'):
+    with raises(ValueError, match='Unknown style type None'):
         to_dms(-0.221, style=None)
 
 
@@ -193,7 +193,7 @@ def test_from_iso6709_location_page(string, result):
 
 
 def test_from_iso6709_error():
-    with raises(ValueError, message="Incorrect format for longitude '+1'"):
+    with raises(ValueError, match=r"Incorrect format for longitude '\+1'"):
         from_iso6709('+35.658632+1/')
 
 
@@ -241,7 +241,7 @@ def test_angle_to_distance():
     assert '%i' % angle_to_distance(360, 'imperial') == '24863'
     assert '%i' % angle_to_distance(1.0 / 60, 'nautical') == '1'
 
-    with raises(ValueError, message="Unknown units type 'baseless'"):
+    with raises(ValueError, match="Unknown units type 'baseless'"):
         '%i' % angle_to_distance(10, 'baseless')
 
 
@@ -395,7 +395,7 @@ def test_dump_xearth_markers():
         '51.910886 -0.186462 "Sish Lane" # 505392, alt 136m',
     ]
 
-    with raises(ValueError, message="Unknown name type 'falseKey'"):
+    with raises(ValueError, match="Unknown name type 'falseKey'"):
         dump_xearth_markers(markers, 'falseKey')
 
 
