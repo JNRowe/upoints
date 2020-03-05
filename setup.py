@@ -109,6 +109,5 @@ setup(
     obsoletes=['earth_distance'],
     install_requires=install_requires,
     tests_require=['pytest', 'pytest-cov'],
-    tests_require=['pytest', ],
     cmdclass={'test': PytestTest},
 )
