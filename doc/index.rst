@@ -34,6 +34,7 @@ Contents
    edist.1
    api/index
 
+   imagine
    glossary
    release
    todo
