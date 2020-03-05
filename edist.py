@@ -1,4 +1,4 @@
-#! /usr/bin/env python
+#! /usr/bin/env python3
 """edist - Simple command line coordinate processing."""
 # Copyright © 2007-2017  James Rowe <jnrowe@gmail.com>
 #
