@@ -13,7 +13,7 @@ install:
   - pip install -r extra/requirements-test.txt
   - pip install coveralls
 script:
-  - pytest tests
+  - pytest -v tests
 after_success:
   - coveralls
 branches:
