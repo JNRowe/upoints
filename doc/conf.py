@@ -75,6 +75,10 @@ copyright = f'2007-2020  {author}'
 version = '{major}.{minor}'.format_map(upoints._version.dict)
 release = upoints._version.dotted
 
+rst_prolog = """
+.. |ISO| replace:: :abbr:`ISO (International Organization for Standardization)`
+"""
+
 modindex_common_prefix = [
     'upoints.',
 ]

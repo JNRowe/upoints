@@ -433,7 +433,7 @@ class Timestamp(datetime.datetime):
     """Class for representing an OSM timestamp value."""
 
     def isoformat(self):
-        """Generate an ISO 8601 formatted time stamp.
+        """Generate an |ISO|-8601 formatted time stamp.
 
         Returns:
             str: `ISO 8601`_ formatted time stamp
@@ -449,7 +449,7 @@ class Timestamp(datetime.datetime):
 
     @staticmethod
     def parse_isoformat(timestamp):
-        """Parse an ISO 8601 formatted time stamp.
+        """Parse an |ISO|-8601 formatted time stamp.
 
         Args:
             timestamp (str): Timestamp to parse
@@ -479,14 +479,14 @@ iso6709_matcher = re.compile(r'^([-+][\d.]+)([-+][\d.]+)([+-][\d.]+)?/$')
 
 
 def from_iso6709(coordinates):
-    """Parse ISO 6709 coordinate strings.
+    """Parse |ISO|-6709 coordinate strings.
 
-    This function will parse ISO 6709-1983(E) "Standard representation of
+    This function will parse |ISO|-6709-1983(E) "Standard representation of
     latitude, longitude and altitude for geographic point locations" elements.
     Unfortunately, the standard is rather convoluted and this implementation is
     incomplete, but it does support most of the common formats in the wild.
 
-    The W3C has a simplified profile for ISO 6709 in `Latitude, Longitude and
+    The W3C has a simplified profile for |ISO|-6709 in `Latitude, Longitude and
     Altitude format for geospatial information`_.  It unfortunately hasn't
     received widespread support as yet, but hopefully it will grow just as the
     `simplified ISO 8601 profile`_ has.
@@ -495,14 +495,14 @@ def from_iso6709(coordinates):
         to_iso6709
 
     Args:
-        coordinates (str): ISO 6709 coordinates string
+        coordinates (str): |ISO|-6709 coordinates string
 
     Returns:
         tuple: A tuple consisting of latitude and longitude in degrees, along
             with the elevation in metres
 
     Raises:
-        ValueError: Input string is not ISO 6709 compliant
+        ValueError: Input string is not |ISO|-6709 compliant
         ValueError: Invalid value for latitude
         ValueError: Invalid value for longitude
 
@@ -542,9 +542,9 @@ def from_iso6709(coordinates):
 
 
 def to_iso6709(latitude, longitude, altitude=None, format='dd', precision=4):
-    """Produce ISO 6709 coordinate strings.
+    """Produce |ISO|-6709 coordinate strings.
 
-    This function will produce ISO 6709-1983(E) "Standard representation of
+    This function will produce |ISO|-6709-1983(E) "Standard representation of
     latitude, longitude and altitude for geographic point locations" elements.
 
     See also:
@@ -558,7 +558,7 @@ def to_iso6709(latitude, longitude, altitude=None, format='dd', precision=4):
         precision (int): Latitude/longitude precision
 
     Returns:
-        str: ISO 6709 coordinates string
+        str: |ISO|-6709 coordinates string
 
     Raises:
         ValueError: Unknown value for ``format``

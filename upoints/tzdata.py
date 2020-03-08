@@ -33,8 +33,8 @@ class Zone(point.Point):
         """Initialise a new ``Zone`` object.
 
         Args:
-            location (str): Primary location in ISO 6709 format
-            country (str): Location's ISO 3166 country code
+            location (str): Primary location in |ISO|-6709 format
+            country (str): Location's |ISO|-3166 country code
             zone (str): Location's zone name as used in zoneinfo database
             comments (list): Location's alternate names
         """
