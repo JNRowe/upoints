@@ -197,19 +197,15 @@ class TestNumberedPoints:
         locations = NumberedPoints(['52.015;-0.221', '52.168;0.040'])
         locations.sun_events('sunrise')
         lines = capsys.readouterr()[0].splitlines()
-        assert ellipsis_match('Sunrise at ... in location 1', lines[0]) \
-            == True
-        assert ellipsis_match('Sunrise at ... in location 2', lines[1]) \
-            == True
+        assert ellipsis_match('Sunrise at ... in location 1', lines[0])
+        assert ellipsis_match('Sunrise at ... in location 2', lines[1])
 
     def test_sunset(self, capsys):
         locations = NumberedPoints(['52.015;-0.221', '52.168;0.040'])
         locations.sun_events('sunset')
         lines = capsys.readouterr()[0].splitlines()
-        assert ellipsis_match('Sunset at ... in location 1', lines[0]) \
-            == True
-        assert ellipsis_match('Sunset at ... in location 2', lines[1]) \
-            == True
+        assert ellipsis_match('Sunset at ... in location 1', lines[0])
+        assert ellipsis_match('Sunset at ... in location 2', lines[1])
 
     def test_flight_plan(self, capsys):
         locations = NumberedPoints(['52.015;-0.221', '52.168;0.040',
