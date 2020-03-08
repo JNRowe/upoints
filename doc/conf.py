@@ -36,8 +36,8 @@ if not on_rtd:
 # General configuration {{{
 extensions = \
     [f'sphinx.ext.{ext}'
-     for ext in ['autodoc', 'coverage', 'doctest', 'intersphinx', 'napoleon',
-                 'todo', 'viewcode']] \
+     for ext in ['autodoc', 'coverage', 'doctest', 'extlinks', 'intersphinx',
+                 'napoleon', 'todo', 'viewcode']] \
     + [f'sphinxcontrib.{ext}' for ext in []] \
     + []
 
@@ -56,6 +56,7 @@ if not on_rtd:
         extensions.append('sphinxcontrib.spelling')
 
 rst_epilog = """
+.. |PyPI| replace:: :abbr:`PyPI (Python Package Index)`
 .. |modref| replace:: :mod:`upoints`
 """
 
@@ -116,6 +117,12 @@ autodoc_default_options = {
 
 # coverage extension settings {{{
 coverage_write_headline = False
+# }}}
+
+# extlinks extension settings {{{
+extlinks = {
+    'pypi': ('https://pypi.org/project/%s/', ''),
+}
 # }}}
 
 # intersphinx extension settings {{{
