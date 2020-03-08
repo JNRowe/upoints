@@ -16,6 +16,8 @@
 # You should have received a copy of the GNU General Public License along with
 # upoints.  If not, see <http://www.gnu.org/licenses/>.
 
+from operator import attrgetter
+
 from pytest import mark
 
 from upoints.gpx import (_GpxElem, _GpxMeta, Routepoint, Routepoints,
@@ -82,7 +84,7 @@ class TestWaypoints:
     def test_import_locations(self):
         with open('tests/data/gpx') as f:
             waypoints = Waypoints(f)
-        assert [str(x) for x in sorted(waypoints, key=lambda x: x.name)] == [
+        assert [str(x) for x in sorted(waypoints, key=attrgetter('name'))] == [
             """Home (52°00'54"N, 000°13'15"W on 2008-07-26T00:00:00+00:00) [My place]""",
             """MSR (52°10'01"N, 000°23'24"E on 2008-07-27T00:00:00+00:00) [Microsoft Research, Cambridge]""",
         ]
@@ -111,7 +113,7 @@ class TestTrackpoints:
     def test_import_locations(self):
         with open('tests/data/gpx_tracks') as f:
             trackpoints = Trackpoints(f)
-        assert [str(x) for x in sorted(trackpoints[0], key=lambda x: x.name)] == [
+        assert [str(x) for x in sorted(trackpoints[0], key=attrgetter('name'))] == [
             """Home (52°00'54"N, 000°13'15"W on 2008-07-26T00:00:00+00:00) [My place]""",
             """MSR (52°10'01"N, 000°23'24"E on 2008-07-27T00:00:00+00:00) [Microsoft Research, Cambridge]""",
         ]
@@ -140,7 +142,7 @@ class TestRoutepoints:
     def test_import_locations(self):
         with open('tests/data/gpx_routes') as f:
             routepoints = Routepoints(f)
-        assert [str(x) for x in sorted(routepoints[0], key=lambda x: x.name)] == [
+        assert [str(x) for x in sorted(routepoints[0], key=attrgetter('name'))] == [
             """Home (52°00'54"N, 000°13'15"W on 2008-07-26T00:00:00+00:00) [My place]""",
             """MSR (52°10'01"N, 000°23'24"E on 2008-07-27T00:00:00+00:00) [Microsoft Research, Cambridge]""",
         ]

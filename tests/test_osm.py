@@ -16,6 +16,8 @@
 # You should have received a copy of the GNU General Public License along with
 # upoints.  If not, see <http://www.gnu.org/licenses/>.
 
+from operator import attrgetter
+
 from pytest import mark
 
 from upoints import (point, utils)
@@ -170,7 +172,7 @@ class TestOsm:
     def test_import_locations(self):
         assert [str(x) for x in sorted([x for x in self.region
                                         if isinstance(x, Node)],
-                                       key=lambda x: x.ident)] == [
+                                       key=attrgetter('ident'))] == [
             """Node 0 (52°00'56"N, 000°13'18"W) [visible, user: jnrowe, """
             'timestamp: 2008-01-25T12:52:11+00:00]',
             """Node 1 (52°00'56"N, 000°13'18"W) [visible, timestamp: """

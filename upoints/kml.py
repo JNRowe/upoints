@@ -18,6 +18,8 @@
 
 import logging
 
+from operator import attrgetter
+
 from lxml import etree
 
 from . import (point, trigpoints, utils)
@@ -181,7 +183,7 @@ class Placemarks(point.KeyedPoints):
         """
         kml = create_elem('kml')
         kml.Document = create_elem('Document')
-        for place in sorted(self.values(), key=lambda x: x.name):
+        for place in sorted(self.values(), key=attrgetter('name')):
             kml.Document.append(place.tokml())
 
         return etree.ElementTree(kml)

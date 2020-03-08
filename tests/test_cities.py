@@ -16,6 +16,8 @@
 # You should have received a copy of the GNU General Public License along with
 # upoints.  If not, see <http://www.gnu.org/licenses/>.
 
+from operator import attrgetter
+
 from upoints.cities import (City, Cities)
 
 
@@ -57,7 +59,7 @@ class TestCities:
             cities = Cities(f)
         data = [('%i - %s (%s;%s)' % (city.identifier, city.name,
                                       city.latitude, city.longitude))
-                for city in sorted(cities, key=lambda x: x.identifier)]
+                for city in sorted(cities, key=attrgetter('identifier'))]
         assert data == [
             '126 - London (51.5;-0.083)',
             '127 - Luxembourg (49.617;6.117)',
