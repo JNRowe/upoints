@@ -71,7 +71,7 @@ N52.015°; W0.221°.
 
 Calculating the Great-circle distance between the two coordinates is
 relatively easy.  I've hacked together a really simple Python module
-called :mod:`upoints` that allows you to calculate the distance between
+called |modref| that allows you to calculate the distance between
 two points on Earth(or any other approximately spherical body with a few
 minor changes).  It offers the Law of Cosines and haversine methods for
 calculating the distance, because they're the two I happen to know.
@@ -117,9 +117,9 @@ Your proximity alert
 --------------------
 
 I've hacked support for relative proximities in to our Haskell tool, but
-:mod:`upoints` could be used as the basis to implement something similar
+|modref| could be used as the basis to implement something similar
 in Python.  Taking Seemant, who lives in Boston, Ma., as an example as
-it is his fault I'm playing with Python and geoip :mod:`upoints` can
+it is his fault I'm playing with Python and geoip |modref| can
 tell us::
 
     >>> Seemant = point.Point(42, -71)
@@ -170,7 +170,7 @@ owed beers the answer is to publish your schedule in valid hCalendar, and
 publish a hCard containing your home location so you get the correct range
 allowance.
 
-If you think of any good uses for :mod:`upoints`, drop me a mail.  Cool
+If you think of any good uses for |modref|, drop me a mail.  Cool
 new uses with attached patches are even better!
 
 Bonus

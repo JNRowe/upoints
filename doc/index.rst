@@ -8,13 +8,13 @@
    At this point ``upoints`` only exists to assist the users who have been using
    it for years, I *absolutely* do **not** recommend its use to new users.
 
-:mod:`upoints` is a collection of `GPL v3`_ licensed modules for working
+|modref| is a collection of `GPL v3`_ licensed modules for working
 with points on Earth, or other near spherical objects.  It allows you to
 calculate the distance and bearings between points, mangle
 xearth_/xplanet_ data files, work with online UK trigpoint databases,
 NOAA_'s weather station database and other such location databases.
 
-Previous versions of :mod:`upoints` were called ``earth_distance``, but
+Previous versions of |modref| were called ``earth_distance``, but
 the name was changed as it no longer reflected the majority of uses the
 packages was targeted at.
 

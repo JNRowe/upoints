@@ -2,7 +2,7 @@ Pythons on a plane
 ==================
 
 In what is probably the final spin-off from `geolocation and path
-cross`_ we'll be using the :mod:`upoints` modules to work with airport
+cross`_ we'll be using the |modref| modules to work with airport
 locations.  This can be useful if you'd like to calculate how far you've
 travelled in a certain period, or just as a large database for
 calculating rough distances between other places using the closest
@@ -124,7 +124,7 @@ There is a wealth of Sphinx_ generated HTML output in the tarball, including
 documentation and usage examples.  If you still have any questions after reading
 the documentation, drop me a mail_ and I'll do my best to answer your questions.
 Also, I'd love to hear from you if come up with any clever uses for for the
-modules in :mod:`upoints`.
+modules in |modref|.
 
 .. [1] I've personally taken to creating and using :mod:`cPickle` dumps
        of the database, where each WMO region is stored in a separate

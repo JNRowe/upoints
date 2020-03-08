@@ -3,11 +3,11 @@ xearth and path cross
 
 As a final comment in the `geolocation and path cross`_ entry I wrote:
 
-  If you think of any good uses for :mod:`upoints`, drop me a mail.
+  If you think of any good uses for |modref|, drop me a mail.
   Cool new uses with attached patches are even better!
 
 The first chunk of feedback I received was from a co-worker, Kelly
-Turner, who asked how difficult it would be to use :mod:`upoints` with
+Turner, who asked how difficult it would be to use |modref| with
 xearth_'s marker files.  The answer is not too difficult, not too
 difficult at all.
 
@@ -71,7 +71,7 @@ within 300 kilometres of me in the city marker file we've imported is
 London.
 
 I'll end this entry with similar text to that which created it:  If you
-think of any good uses for :mod:`upoints`, drop me a mail.  Cool new
+think of any good uses for |modref|, drop me a mail.  Cool new
 uses with attached patches are even better!
 
 .. [1] All thanks to Simon Woods according to the source code

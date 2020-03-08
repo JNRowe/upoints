@@ -16,7 +16,7 @@ In the general case tests can be run via ``pytest``::
 
     $ pytest tests
 
-When preparing a release it is important to check that :mod:`upoints` works with
+When preparing a release it is important to check that |modref| works with
 all currently supported Python versions, and that the documentation is correct.
 
 Prepare release
@@ -44,4 +44,4 @@ Create and upload the new release tarballs to PyPI::
 Fetch the uploaded tarballs, and check for errors.
 
 You should also perform test installations from PyPI, to check the experience
-:mod:`upoints` users will have.
+|modref| users will have.

@@ -55,6 +55,9 @@ if not on_rtd:
     else:
         extensions.append('sphinxcontrib.spelling')
 
+rst_epilog = """
+.. |modref| replace:: :mod:`upoints`
+"""
 
 default_role = 'any'
 

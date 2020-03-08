@@ -5,7 +5,7 @@ One interesting email I received after posting `geolocation and path
 cross`_ asked if the module could be used for quick visualisation when
 trigpointing.  Now that I've found out what trigpointing is I believe it
 can, and I've added a couple of extra features to make it easier for
-trigpointers to use the :mod:`upoints` module.
+trigpointers to use the |modref| module.
 
 Firstly, for those who don't know, trigpointing is the activity of tracking down
 trigpoints and recording them.  I guess you could make a parallel to
@@ -167,7 +167,7 @@ see how it all works, including some more examples.
    Survey's Explorer series maps.
 
 We're on a journey now, so if you can think of any cool uses for any of
-the classes and functions in the :mod:`upoints` tarball drop me a mail.
+the classes and functions in the |modref| tarball drop me a mail.
 
 .. _geolocation and path cross: geolocation_and_pathcross.html
 .. _Google: http://www.google.com/

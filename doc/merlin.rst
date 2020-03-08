@@ -8,7 +8,7 @@ MERLIN_, the Multi-Element Radio Linked Interferometer Network, radio
 telescope array that is spread throughout central England and Wales.
 The interesting aspect of MERLIN for our uses is high-quality, minimally
 diverse location identifiers are available publicly.  They make
-a reasonably useful test case for :mod:`upoints` objects across small
+a reasonably useful test case for |modref| objects across small
 geographic distances.
 
 According to the official MERLIN documentation the locations of
@@ -90,7 +90,7 @@ create a similar image with xplanet_ or xearth_::
 The map on the website contains a few more locations presumably to help
 the viewer with orientation, but the image below is useful as a good
 approximation.  And, of course, the locations could be supplemented
-either by hand, or by using one of the other :mod:`upoints` supported
+either by hand, or by using one of the other |modref| supported
 databases.
 
 .. image:: .static/merlin_xearth.png
@@ -127,7 +127,7 @@ Comparisons with other :class:`~upoints.point.Point`-type objects
 In our contrived example above we may wish to travel only if the weather
 will be warm enough that we're unlikely to freeze to death(that risk is
 only acceptable for a full eclipse), and we can use the other
-:mod:`upoints` tools to find closest weather station quite easily::
+|modref| tools to find closest weather station quite easily::
 
     >>> from upoints import weather_stations
     >>> ICAO_stations_database = urllib.urlopen("http://weather.noaa.gov/data/nsd_cccc.txt")
