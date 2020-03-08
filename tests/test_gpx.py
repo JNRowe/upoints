@@ -23,7 +23,7 @@ from upoints.gpx import (_GpxElem, _GpxMeta, Routepoint, Routepoints,
 from upoints import point
 from upoints import utils
 
-from tests.utils import xml_compare
+from tests.utils import xml_compare, xml_str_compare
 
 
 class Test_GpxElem:
@@ -66,7 +66,7 @@ class Test_GpxMeta:
     def test_togpx(self, bounds, result):
         meta = _GpxMeta(time=(2008, 6, 3, 16, 12, 43, 1, 155, 0))
         meta.bounds = bounds
-        assert etree.tostring(meta.togpx()) == result
+        xml_str_compare(etree.tostring(meta.togpx()), result)
 
 
 class TestWaypoint:
