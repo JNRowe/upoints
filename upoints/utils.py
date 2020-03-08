@@ -235,7 +235,7 @@ def element_creator(namespace=None):
     Returns:
         function: Namespace-aware element creator
     """
-    ELEMENT_MAKER = _objectify.ElementMaker(namespace=namespace,
+    element_maker = _objectify.ElementMaker(namespace=namespace,
                                             annotate=False)
 
     def create_elem(tag, attr=None, text=None):
@@ -252,9 +252,9 @@ def element_creator(namespace=None):
         if not attr:
             attr = {}
         if text:
-            element = getattr(ELEMENT_MAKER, tag)(text, **attr)
+            element = getattr(element_maker, tag)(text, **attr)
         else:
-            element = getattr(ELEMENT_MAKER, tag)(**attr)
+            element = getattr(element_maker, tag)(**attr)
         return element
 
     return create_elem
