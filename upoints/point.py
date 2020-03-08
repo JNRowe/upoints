@@ -144,7 +144,7 @@ class Point:
         while cls is not object:
             slots.extend(cls.__slots__)
             cls = cls.__base__
-        return dict((item, getattr(self, item)) for item in slots)
+        return {item: getattr(self, item) for item in slots}
 
     def __repr__(self):
         """Self-documenting string representation.

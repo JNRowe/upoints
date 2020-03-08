@@ -149,8 +149,8 @@ class Cells(point.KeyedPoints):
 
         for row in data:
             try:
-                cell = dict((n, p(row[n]))
-                            for n, p in zip(field_names, field_parsers))
+                cell = {n: p(row[n])
+                        for n, p in zip(field_names, field_parsers)}
             except ValueError:
                 if r"\N" in row.values():
                     # A few entries are incomplete, and when that occurs the

@@ -29,7 +29,7 @@ from types import ModuleType
 from tests import grab_net_sources
 
 
-SOURCES = dict((os.path.basename(s), s) for s in grab_net_sources.SOURCES)
+SOURCES = {os.path.basename(s): s for s in grab_net_sources.SOURCES}
 BASEDIR = os.path.dirname(__file__)
 
 
