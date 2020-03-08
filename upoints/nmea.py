@@ -570,5 +570,5 @@ class Locations(point.Points):
             else:
                 values = line[1:].split('*')[0]
             elements = values.split(',')
-            parser = getattr(parsers[elements[0]], 'parse_elements')
+            parser = parsers[elements[0]].parse_elements
             self.append(parser(elements[1:]))
