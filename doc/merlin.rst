@@ -132,7 +132,7 @@ only acceptable for a full eclipse), and we can use the other
     >>> from upoints import weather_stations
     >>> ICAO_stations_database = urllib.urlopen("http://weather.noaa.gov/data/nsd_cccc.txt")
     >>> ICAO_stations = weather_stations.Stations(ICAO_stations_database, "ICAO")
-    >>> calc_distance = lambda (name, location): MERLIN['Cambridge'].distance(location)
+    >>> calc_distance = lambda name, location: MERLIN['Cambridge'].distance(location)
     >>> station_id, station_data = sorted(ICAO_stations.items(), key=calc_distance)[0]
     >>> print(station_data)
     Cambridge (N52.200°; E000.183°)
