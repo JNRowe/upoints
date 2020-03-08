@@ -170,8 +170,8 @@ class TestOsm:
             self.region = Osm(f)
 
     def test_import_locations(self):
-        assert [str(x) for x in sorted([x for x in self.region
-                                        if isinstance(x, Node)],
+        assert [str(x) for x in sorted((x for x in self.region
+                                        if isinstance(x, Node)),
                                        key=attrgetter('ident'))] == [
             """Node 0 (52°00'56"N, 000°13'18"W) [visible, user: jnrowe, """
             'timestamp: 2008-01-25T12:52:11+00:00]',
