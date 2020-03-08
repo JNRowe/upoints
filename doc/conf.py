@@ -20,7 +20,7 @@ import os
 import sys
 
 from contextlib import suppress
-from subprocess import (CalledProcessError, run)
+from subprocess import (CalledProcessError, PIPE, run)
 
 root_dir = os.path.dirname(os.path.dirname(__file__))
 sys.path.insert(0, root_dir)
