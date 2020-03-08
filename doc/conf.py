@@ -20,72 +20,122 @@ from __future__ import print_function
 
 import os
 import sys
-
 from contextlib import suppress
-from subprocess import (CalledProcessError, run)
+from pathlib import Path
+from subprocess import CalledProcessError, PIPE, run
 
-root_dir = os.path.dirname(os.path.dirname(__file__))
-sys.path.insert(0, root_dir)
+root_dir = Path(__file__).parent.parents[2]
+sys.path.insert(0, str(root_dir))
 
+import upoints  # NOQA: E402
 
-import upoints  # NOQA
+on_rtd = os.getenv('READTHEDOCS')
+if not on_rtd:
+    import sphinx_rtd_theme
 
+# General configuration {{{
 extensions = \
-    ['sphinx.ext.%s' % ext for ext in ['autodoc', 'coverage', 'doctest',
-                                       'intersphinx', 'napoleon', 'todo',
-                                       'viewcode']] \
-    + ['sphinxcontrib.%s' % ext for ext in []]
+    [f'sphinx.ext.{ext}'
+     for ext in ['autodoc', 'coverage', 'doctest', 'intersphinx', 'napoleon',
+                 'todo', 'viewcode']] \
+    + [f'sphinxcontrib.{ext}' for ext in []] \
+    + []
 
-# Only activate spelling, if it is installed.  It is not required in the
-# general case and we don't have the granularity to describe this in a clean
-# way
-try:
-    from sphinxcontrib import spelling  # NOQA
-except ImportError:
-    pass
-else:
-    extensions.append('sphinxcontrib.spelling')
+if not on_rtd:
+    # Showing document build durations is only valuable when writing, so we’ll
+    # only enable it locally
+    extensions.append('sphinx.ext.duration')
+    # Only activate spelling if it is installed.  It is not required in the
+    # general case and we don’t have the granularity to describe this in a
+    # clean way
+    try:
+        from sphinxcontrib import spelling  # NOQA: F401
+    except ImportError:
+        pass
+    else:
+        extensions.append('sphinxcontrib.spelling')
 
-master_doc = 'index'
-source_suffix = '.rst'
 
-project = u'upoints'
+default_role = 'any'
+
+needs_sphinx = '2.4'
+
+nitpicky = True
+# }}}
+
+# Project information {{{
+project = 'upoints'
 author = 'James Rowe'
-copyright = upoints.__copyright__
+copyright = f'2007-2020  {author}'
 
-version = '.'.join(map(str, upoints._version.tuple[:2]))
+version = '{major}.{minor}'.format_map(upoints._version.dict)
 release = upoints._version.dotted
 
-pygments_style = 'sphinx'
-with suppress(CalledProcessError):
-    proc = run(['git', 'log', "--pretty=format:'%ad [%h]'", '--date=short',
-                '-n1'], stdout=PIPE)
-    html_last_updated_fmt = proc.stdout.decode()
-
-html_baseurl = 'https://hubugs.readthedocs.io/'
-
-man_pages = [
-    ('edist.1', 'edist', u'upoints Documentation', [u'James Rowe'], 1)
+modindex_common_prefix = [
+    'upoints.',
 ]
 
-# Autodoc extension settings
+trim_footnote_reference_space = True
+# }}}
+
+# Options for HTML output {{{
+# readthedocs.org handles this setup for their builds, but it is nice to see
+# approximately correct builds on the local system too
+if not on_rtd:
+    html_theme = 'sphinx_rtd_theme'
+    html_theme_path = [
+        sphinx_rtd_theme.get_html_theme_path(),
+    ]
+
+with suppress(CalledProcessError):
+    proc = run(
+        ['git', 'log', '--pretty=format:%ad [%h]', '--date=short', '-n1'],
+        stdout=PIPE)
+    html_last_updated_fmt = proc.stdout.decode()
+
+html_baseurl = 'https://upoints.readthedocs.io/'
+
+html_copy_source = False
+# }}}
+
+# Options for manual page output {{{
+man_pages = [('edist.1', 'edist', 'upoints Documentation', [
+    'James Rowe',
+], 1)]
+# }}}
+
+# autodoc extension settings {{{
 autoclass_content = 'both'
 autodoc_default_options = {
     'members': None,
 }
+# }}}
 
-# intersphinx extension settings
-intersphinx_mapping = {k: (v, os.getenv('SPHINX_%s_OBJECTS' % k.upper()))
-                       for k, v in {
-                           'python': 'http://docs.python.org/',
-}.items()}
+# coverage extension settings {{{
+coverage_write_headline = False
+# }}}
 
-# spelling extension settings
+# intersphinx extension settings {{{
+intersphinx_mapping = {
+    k: (v, os.getenv(f'SPHINX_{k.upper()}_OBJECTS'))
+    for k, v in {
+        'python': 'https://docs.python.org/3/',
+    }.items()
+}
+# }}}
+
+# napoleon extension settings {{{
+napoleon_numpy_docstring = False
+# }}}
+
+# spelling extension settings {{{
+spelling_ignore_acronyms = False
 spelling_lang = 'en_GB'
 spelling_word_list_filename = 'wordlist.txt'
+spelling_ignore_python_builtins = False
+spelling_ignore_importable_modules = False
+# }}}
 
-# napoleon extension settings
-napoleon_numpy_docstring = False
-
-# todo extension settings
+# todo extension settings {{{
 todo_include_todos = True
+# }}}
