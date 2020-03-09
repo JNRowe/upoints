@@ -39,7 +39,7 @@ extensions = \
      for ext in ['autodoc', 'coverage', 'doctest', 'extlinks', 'intersphinx',
                  'napoleon', 'todo', 'viewcode']] \
     + [f'sphinxcontrib.{ext}' for ext in []] \
-    + []
+    + ['sphinx_click.ext', ]
 
 if not on_rtd:
     # Showing document build durations is only valuable when writing, so we’ll
