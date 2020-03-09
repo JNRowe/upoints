@@ -8,8 +8,8 @@ want to convince me that your style is better.
 
 * `PEP 8`_, the style guide, should be followed where possible.
 * `PEP 257`_, the docstring style guide, should be followed at all times
-* While support for Python versions prior to v3.5 may be added in the future if
-  such a need were to arise, you are encouraged to use v3.5 features now.
+* While support for Python versions prior to v3.6 may be added in the future if
+  such a need were to arise, you are encouraged to use v3.6 features now.
 * All new classes and functions should be accompanied by new tests, and Sphinx_
   ``autodoc``-compatible descriptions.
 
