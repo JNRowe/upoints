@@ -71,7 +71,9 @@ Written by `James Rowe <mailto:jnrowe@gmail.com>`__
 RESOURCES
 ---------
 
-Home page: https://github.com/JNRowe/upoints
+Full documentation: https://upoints.readthedocs.io/
+
+Issue tracker: https://github.com/JNRowe/upoints/issues/
 
 COPYING
 -------
