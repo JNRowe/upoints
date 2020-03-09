@@ -38,7 +38,7 @@ simpler.  See `CONFIGURATION FILE`_.
 CONFIGURATION FILE
 ------------------
 
-The configuration file, by default ``~/.edist.conf`, is a simple ``INI`` format
+The configuration file, by default ``~/.edist.conf``, is a simple ``INI`` format
 file, with sections headers defining the name of the location and their data
 defining the actual position.  You can define locations by either their
 latitude and longitude, or with a Maidenhead locator string.  Any options that
