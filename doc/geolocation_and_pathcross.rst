@@ -212,3 +212,22 @@ of code, so why not?
 .. _Gentoo: http://www.gentoo.org/
 .. _Mercurial: http://www.selenic.com/mercurial
 .. _xearth: http://hewgill.com/xearth/original/
+
+.. spelling::
+
+    BTS
+    Dialup
+    Entanet
+    Javascript
+    Netspeed
+    Seemant
+    WGS
+    beerholder
+    entanet
+    geoip
+    hCalendar
+    hCard
+    haversine
+    kM
+    uk
+    zipcode

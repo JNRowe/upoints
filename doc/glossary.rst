@@ -9,3 +9,7 @@ Glossary
 
    Loran
       :abbr:`Loran (LOng RAnge Navigation)`
+
+.. spelling::
+
+    Loran

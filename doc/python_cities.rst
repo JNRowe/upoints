@@ -107,3 +107,9 @@ tarball to see what can be done.
 .. _Trigpointing and point.py: trigpointing_and_point_py.html
 .. _gentoo: http://www.gentoo.org/
 .. _Sphinx: http://sphinx.pocoo.org/
+
+.. spelling::
+
+    miscfiles
+    py
+    whitespace

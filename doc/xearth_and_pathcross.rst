@@ -80,3 +80,7 @@ uses with attached patches are even better!
 .. _geolocation and path cross: geolocation_and_pathcross.html
 .. _xearth: http://hewgill.com/xearth/original/
 .. _Mercurial: http://www.selenic.com/mercurial/
+
+.. spelling::
+
+    xearth

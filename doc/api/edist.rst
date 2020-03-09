@@ -11,3 +11,11 @@
 .. autofunction:: read_locations
 .. autofunction:: read_csv
 .. autofunction:: main
+
+.. spelling::
+
+    Config
+    Todo
+    config
+    dict
+    upoints

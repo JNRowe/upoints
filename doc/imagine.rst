@@ -30,3 +30,7 @@ If ``upoints2`` was on the horizon, it would:
 .. rubric:: Footnotes
 
 .. [#] Semi-dynamic ``__slots__`` abuse is the perfect awful example here
+
+.. spelling::
+
+    isn

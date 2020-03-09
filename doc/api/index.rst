@@ -25,3 +25,9 @@ Contents
    utils
    weather_stations
    xearth
+
+.. spelling::
+
+    subclassing
+    trigpoint
+    upoints

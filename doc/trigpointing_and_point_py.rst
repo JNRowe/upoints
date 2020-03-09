@@ -181,3 +181,17 @@ the classes and functions in the |modref| tarball drop me a mail.
 .. _Bygrave: http://www.trigpointinguk.com/trigs/trig-details.php?t=1830
 .. _TrigpointingUK: http://www.trigpointinguk.com/
 .. _SPhinx: http://sphinx.pocoo.org/
+
+.. spelling::
+
+    Trigpointing
+    kM
+    math
+    py
+    trigpoint
+    trigpointers
+    trigpointing
+    trigpoints
+    trilateration
+    xearth
+    xplanet

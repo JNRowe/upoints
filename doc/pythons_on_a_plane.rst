@@ -146,3 +146,8 @@ modules in |modref|.
 .. _xearth: http://hewgill.com/xearth/original/
 .. _path cross: http://www.w3.org/wiki/PathCross
 .. _Sphinx: http://sphinx.pocoo.org/
+
+.. spelling::
+
+    WMO
+    xplanet

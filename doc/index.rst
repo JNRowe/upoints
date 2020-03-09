@@ -50,3 +50,7 @@ Indices and tables
 .. _xearth: http://hewgill.com/xearth/original/
 .. _xplanet: http://xplanet.sourceforge.net/
 .. _NOAA: http://weather.noaa.gov/
+
+.. spelling::
+
+    trigpoint

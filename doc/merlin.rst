@@ -164,3 +164,8 @@ weather data for the station using the ever useful pymetar_ library.
 .. _NOAA: http://weather.noaa.gov/
 .. _Python: http://www.python.org/
 .. _pymetar: http://www.schwarzvogel.de/software-pymetar.shtml
+
+.. spelling::
+
+    Jodrell
+    kM
