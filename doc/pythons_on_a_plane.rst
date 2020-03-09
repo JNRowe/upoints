@@ -126,7 +126,7 @@ the documentation, drop me a mail_ and I'll do my best to answer your questions.
 Also, I'd love to hear from you if come up with any clever uses for for the
 modules in |modref|.
 
-.. [1] I've personally taken to creating and using :mod:`cPickle` dumps
+.. [1] I've personally taken to creating and using :mod:`pickle` dumps
        of the database, where each WMO region is stored in a separate
        file.  If you do this you end up with some interesting results
        including the 123 locations from the Antarctic, and the
