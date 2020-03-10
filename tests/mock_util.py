@@ -16,10 +16,7 @@
 # You should have received a copy of the GNU General Public License along with
 # upoints.  If not, see <http://www.gnu.org/licenses/>.
 
-try:
-    import __builtin__
-except ImportError:
-    import builtins as __builtin__
+import builtins
 import os
 import StringIO
 import urllib
@@ -44,7 +41,7 @@ def isfile(path):
     """
     filename = os.path.basename(path)
     try:
-        __builtin__.open(os.path.join(BASEDIR, 'data', filename))
+        builtins.open(os.path.join(BASEDIR, 'data', filename))
     except IOError:
         return False
     return True
@@ -63,7 +60,7 @@ def _get_test_file(filename):
         IOError: When the file can't be opened for reading
     """
     if isfile(filename):
-        return __builtin__.open(os.path.join(BASEDIR, 'data', filename))
+        return builtins.open(os.path.join(BASEDIR, 'data', filename))
     else:
         if filename in SOURCES:
             raise IOError('%r missing.  It can be downloaded from %r, or '

@@ -18,10 +18,7 @@
 
 from doctest import _ellipsis_match as ellipsis_match
 
-try:
-    from StringIO import StringIO
-except ImportError:
-    from io import StringIO  # NOQA
+from io import StringIO
 
 from click.testing import CliRunner
 from pytest import mark, raises

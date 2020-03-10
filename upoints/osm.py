@@ -19,10 +19,7 @@
 from contextlib import suppress
 from operator import attrgetter
 
-try:
-    from urllib.request import urlopen
-except ImportError:  # Python 2
-    from urllib import urlopen
+from urllib.request import urlopen
 
 from lxml import etree
 

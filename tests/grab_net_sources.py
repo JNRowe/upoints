@@ -20,10 +20,7 @@ import bz2
 import gzip
 import os
 import tempfile
-try:
-    from urllib.request import (urlopen, urlretrieve)
-except ImportError:
-    from urllib import (urlopen, urlretrieve)
+from urllib.request import (urlopen, urlretrieve)
 
 import click
 
