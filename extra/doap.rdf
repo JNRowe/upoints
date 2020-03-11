@@ -23,10 +23,10 @@
 
     <homepage rdf:resource="https://github.com/JNRowe/upoints" />
     <download-page rdf:resource="https://pypi.python.org/pypi/upoints/" />
-    <bug-database rdf:resource="http://github.com/JNRowe/upoints/issues" />
+    <bug-database rdf:resource="https://github.com/JNRowe/upoints/issues" />
     <repository>
         <GitRepository>
-            <location rdf:resource="git://github.com/JNRowe/upoints.git" />
+            <location rdf:resource="https://github.com/JNRowe/upoints.git" />
             <browse rdf:resource="https://github.com/JNRowe/upoints" />
         </GitRepository>
     </repository>
