@@ -22,7 +22,7 @@ Requirements
 ------------
 
 ``upoints``'s only strict requirements beyond the Python_ standard library are
-aaargh_ and lxml_, and as such should run with Python 3.6 or newer.  If
+click_ and lxml_, and as such should run with Python 3.6 or newer.  If
 ``upoints`` doesn't work with the version of Python you have installed, drop me
 a mail_ and I'll endeavour to fix it.
 
@@ -138,7 +138,7 @@ reproduce the problem, or even better a patch!
 .. _Pythons on a plane: doc/pythons_on_a_plane.html
 .. _NOAA: http://weather.noaa.gov/
 .. _mail: jnrowe@gmail.com
-.. _aaargh: https://crate.io/packages/aaargh/
+.. _click: https://crate.io/packages/click/
 .. _lxml: http://codespeak.net/lxml/
 .. _Sphinx: http://sphinx.pocoo.org/
 .. _pytest: https://pypi.python.org/packages/pytest/
