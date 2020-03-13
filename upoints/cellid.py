@@ -41,13 +41,13 @@ class Cell(point.Point):
 
         Args:
             ident (int): OpenCellID database identifier
-            latitude (float): Cell's latitude
-            longitude (float): Cell's longitude
-            mcc (int): Cell's country code
-            mnc (int): Cell's network code
-            lac (int): Cell's local area code
-            cellid (int): Cell's identifier
-            crange (int): Cell's range
+            latitude (float): Cell’s latitude
+            longitude (float): Cell’s longitude
+            mcc (int): Cell’s country code
+            mnc (int): Cell’s network code
+            lac (int): Cell’s local area code
+            cellid (int): Cell’s identifier
+            crange (int): Cell’s range
             samples (int): Number of samples for the cell
             created (datetime.datetime): Date the cell was first entered
             updated (datetime.datetime): Date of the last update

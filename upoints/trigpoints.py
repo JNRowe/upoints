@@ -42,9 +42,9 @@ class Trigpoint(point.Point):
         """Initialise a new ``Trigpoint`` object.
 
         Args:
-            latitude (float): Location's latitude
-            longitude (float): Location's longitude
-            altitude (float): Location's altitude
+            latitude (float): Location’s latitude
+            longitude (float): Location’s longitude
+            altitude (float): Location’s altitude
             name (str): Name for location
             identity (int): Database identifier, if known
         """

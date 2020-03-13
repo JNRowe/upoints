@@ -71,7 +71,7 @@ def main(force):
                 urlretrieve(url, filename)
     if cached > 1:
         click.secho(
-            "You can force download with the `-f' option to this script.",
+            'You can force download with the ‘-f’ option to this script.',
             fg='yellow'
         )
 

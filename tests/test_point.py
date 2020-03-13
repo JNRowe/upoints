@@ -84,8 +84,8 @@ class TestPoint:
         assert str(Point(52.015, -0.221)) == 'N52.015°; W000.221°'
 
     @mark.parametrize('style, result', [
-        ('dm', "52°00.90'N, 000°13.26'W"),
-        ('dms', """52°00'54"N, 000°13'15"W"""),
+        ('dm', "52°00.90′N, 000°13.26′W"),
+        ('dms', """52°00′54″N, 000°13′15″W"""),
         ('locator', 'IO92'),
     ])
     def test___format__(self, style, result):

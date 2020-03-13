@@ -12,7 +12,7 @@
 with points on Earth, or other near spherical objects.  It allows you to
 calculate the distance and bearings between points, mangle
 xearth_/xplanet_ data files, work with online UK trigpoint databases,
-NOAA_'s weather station database and other such location databases.
+NOAA_’s weather station database and other such location databases.
 
 Previous versions of :mod:`upoints` were called ``earth_distance``, but
 the name was changed as it no longer reflected the majority of uses the

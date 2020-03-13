@@ -8,21 +8,21 @@ As a final comment in the `geolocation and path cross`_ entry I wrote:
 
 The first chunk of feedback I received was from a co-worker, Kelly
 Turner, who asked how difficult it would be to use :mod:`upoints` with
-xearth_'s marker files.  The answer is not too difficult, not too
+xearth_’s marker files.  The answer is not too difficult, not too
 difficult at all.
 
 As a little background the reason for wanting access to the data in
 marker files is that our internal contact database allows us to export
-a file containing a subset of our contact's known current locations
+a file containing a subset of our contact’s known current locations
 [1]_.  The original reasoning behind the feature was to allow simple
-visualisation of a team's members, for example to quickly locate
-somebody who is close to a customer's site.
+visualisation of a team’s members, for example to quickly locate
+somebody who is close to a customer’s site.
 
 I've reworked the original ``edist.py`` script in to something a little
 more generic, and it also now includes a new module,
 :mod:`~upoints.xearth`, that can import locations from an xearth marker
 file.  Unfortunately, I can't use an example generated from our system
-because I don't have permission to publish the data but I'll give an
+because I don't have permission to publish the data but I’ll give an
 example of its usage with a public file::
 
     >>> from upoints import xearth
@@ -70,7 +70,7 @@ Imagining for a second the customer lives in my house, the only marker
 within 300 kilometres of me in the city marker file we've imported is
 London.
 
-I'll end this entry with similar text to that which created it:  If you
+I’ll end this entry with similar text to that which created it:  If you
 think of any good uses for :mod:`upoints`, drop me a mail.  Cool new
 uses with attached patches are even better!
 

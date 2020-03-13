@@ -61,13 +61,13 @@ class City(trigpoints.Trigpoint):
             region (str): Region place can be found
             country (str): Country name place can be found
             location (str): Body place can be found
-            population (int): Place's population
-            size (int): Place's area
-            latitude (float): Station's latitude
-            longitude (float): Station's longitude
-            altitude (int): Station's elevation
+            population (int): Place’s population
+            size (int): Place’s area
+            latitude (float): Station’s latitude
+            longitude (float): Station’s longitude
+            altitude (int): Station’s elevation
             date (time.struct_time): Date the entry was added
-            entered (str): Entry's author
+            entered (str): Entry’s author
         """
         super(City, self).__init__(latitude, longitude, altitude, name)
         self.identifier = identifier
@@ -193,7 +193,7 @@ class Cities(point.Points):
 
             # Entry for Utrecht has the incorrect value of 0.000 for elevation.
             if entries['altitude'] == '0.000':
-                logging.debug("Ignoring `0.000' value for elevation in %r "
+                logging.debug('Ignoring ‘0.000’ value for elevation in %r '
                               'entry' % record)
                 entries['altitude'] = ''
             for i in ('identifier', 'population', 'size', 'altitude'):

@@ -34,7 +34,7 @@ class TestLocationsError:
                 match='More than one location is required for distance.'):
         raise LocationsError('distance')
     with raises(LocationsError,
-                match="Location parsing failure in location 4 '52;None'."):
+                match='Location parsing failure in location 4 ‘52;None’.'):
         raise LocationsError(data=(4, '52;None'))
 
 
@@ -65,8 +65,8 @@ class TestNumberedPoints:
         locs.display(None)
         stdout = capsys.readouterr()[0]
         assert stdout == (
-            "Location Home is 52°00.90'N, 000°13.26'W\n"
-            "Location 2 is 52°10.08'N, 000°02.40'E\n"
+            'Location Home is 52°00.90′N, 000°13.26′W\n'
+            'Location 2 is 52°10.08′N, 000°02.40′E\n'
         )
 
     def test_display_locator(self, capsys):
@@ -170,8 +170,8 @@ class TestNumberedPoints:
         locations.destination(42, 240, False)
         stdout = capsys.readouterr()[0]
         assert stdout == (
-            "Destination from location 1 is 52°00.90'N, 000°13.26'W\n"
-            "Destination from location 2 is 52°10.08'N, 000°02.40'E\n"
+            'Destination from location 1 is 52°00.90′N, 000°13.26′W\n'
+            'Destination from location 2 is 52°10.08′N, 000°02.40′E\n'
         )
 
     def test_destination_locator(self, capsys):
@@ -248,4 +248,4 @@ def test_cli():
     result = runner.invoke(cli, ['--location', '52.015;-0.221', '--verbose',
                                  'display'])
     assert result.output == \
-        "Location 1 is 52°00.90'N, 000°13.26'W\n"
+        'Location 1 is 52°00.90′N, 000°13.26′W\n'

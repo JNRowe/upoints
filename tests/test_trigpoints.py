@@ -28,13 +28,13 @@ class TestTrigpoint:
 
     def test___str__(self):
         assert str(Trigpoint(52.010585, -0.173443, 97.0)) == \
-            """52°00'38"N, 000°10'24"W alt 97m"""
+            '52°00′38″N, 000°10′24″W alt 97m'
         assert str(Trigpoint(52.010585, -0.173443, 97.0, 'Bygrave')) == \
-            """Bygrave (52°00'38"N, 000°10'24"W alt 97m)"""
+            'Bygrave (52°00′38″N, 000°10′24″W alt 97m)'
 
     @mark.parametrize('style, result', [
-        ('dd', """N52.011°; W000.173° alt 97m"""),
-        ('dm', """52°00.64'N, 000°10.41'W alt 97m"""),
+        ('dd', 'N52.011°; W000.173° alt 97m'),
+        ('dm', '52°00.64′N, 000°10.41′W alt 97m'),
     ])
     def test___format__(self, style, result):
         assert format(Trigpoint(52.010585, -0.173443, 97.0), style) == result
@@ -46,18 +46,18 @@ class TestTrigpoints:
             markers = Trigpoints(f)
         data = ['%s - %s' % (k, v) for k, v in sorted(markers.items())]
         assert data == [
-            """500936 - Broom Farm (52°03'57"N, 000°16'53"W alt 37m)""",
-            """501097 - Bygrave (52°00'38"N, 000°10'24"W alt 97m)""",
-            """505392 - Sish Lane (51°54'39"N, 000°11'11"W alt 136m)""",
+            '500936 - Broom Farm (52°03′57″N, 000°16′53″W alt 37m)',
+            '501097 - Bygrave (52°00′38″N, 000°10′24″W alt 97m)',
+            '505392 - Sish Lane (51°54′39″N, 000°11′11″W alt 136m)',
         ]
         with open('tests/data/southern_trigpoints') as f:
             markers = Trigpoints(f)
         assert str(markers[1]) == \
-            """FakeLand (48°07'23"S, 000°07'23"W alt 12m)"""
+            'FakeLand (48°07′23″S, 000°07′23″W alt 12m)'
         with open('tests/data/broken_trigpoints') as f:
             markers = Trigpoints(f)
         data = ['%s - %s' % (k, v) for k, v in sorted(markers.items())]
         assert data == [
-            """500968 - Brown Hill Nm  See The Heights (53°38'23"N, 001°39'34"W)""",
-            """501414 - Cheriton Hill Nm  See Paddlesworth (51°06'03"N, 001°08'33"E)""",
+            '500968 - Brown Hill Nm  See The Heights (53°38′23″N, 001°39′34″W)',
+            '501414 - Cheriton Hill Nm  See Paddlesworth (51°06′03″N, 001°08′33″E)',
         ]

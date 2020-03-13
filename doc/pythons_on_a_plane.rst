@@ -2,14 +2,14 @@ Pythons on a plane
 ==================
 
 In what is probably the final spin-off from `geolocation and path
-cross`_ we'll be using the :mod:`upoints` modules to work with airport
+cross`_ we’ll be using the :mod:`upoints` modules to work with airport
 locations.  This can be useful if you'd like to calculate how far you've
 travelled in a certain period, or just as a large database for
 calculating rough distances between other places using the closest
 airports as locations because of their abundance.
 
 NOAA publishes an enormous amount of world weather information,
-and often it is keyed to airport location's weather stations.  Unlike
+and often it is keyed to airport location’s weather stations.  Unlike
 many of the commercial weather data companies NOAA publish their
 data in clean, well defined formats, and along with the weather data they also
 publish extensive location data for the weather stations they monitor.
@@ -122,7 +122,7 @@ your own labels for the markers.
 
 There is a wealth of Sphinx_ generated HTML output in the tarball, including
 documentation and usage examples.  If you still have any questions after reading
-the documentation, drop me a mail_ and I'll do my best to answer your questions.
+the documentation, drop me a mail_ and I’ll do my best to answer your questions.
 Also, I'd love to hear from you if come up with any clever uses for for the
 modules in :mod:`upoints`.
 

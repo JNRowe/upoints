@@ -64,7 +64,7 @@ def _get_test_file(filename):
     else:
         if filename in SOURCES:
             raise IOError('%r missing.  It can be downloaded from %r, or '
-                          "alternatively by running the `grab_net_sources' "
+                          'alternatively by running the ‘grab_net_sources’ '
                           'script.' % (filename, SOURCES[filename]))
         else:
             raise IOError('Can not open %r' % filename)

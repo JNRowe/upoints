@@ -39,11 +39,11 @@ class Test_GpxElem:
         assert repr(_GpxElem(*args)) == result
 
     @mark.parametrize('args, result', [
-        ((52, 0), """52°00'00"N, 000°00'00"E"""),
+        ((52, 0), """52°00′00″N, 000°00′00″E"""),
         ((52, 0, 'name', 'desc', 40),
-         """name (52°00'00"N, 000°00'00"E @ 40m) [desc]"""),
+         """name (52°00′00″N, 000°00′00″E @ 40m) [desc]"""),
         ((52, 0, 'name', 'desc', 40, utils.Timestamp(2008, 7, 25)),
-         """name (52°00'00"N, 000°00'00"E @ 40m on """
+         """name (52°00′00″N, 000°00′00″E @ 40m on """
          '2008-07-25T00:00:00+00:00) [desc]')
     ])
     def test___str__(self, args, result):
@@ -85,8 +85,8 @@ class TestWaypoints:
         with open('tests/data/gpx') as f:
             waypoints = Waypoints(f)
         assert [str(x) for x in sorted(waypoints, key=attrgetter('name'))] == [
-            """Home (52°00'54"N, 000°13'15"W on 2008-07-26T00:00:00+00:00) [My place]""",
-            """MSR (52°10'01"N, 000°23'24"E on 2008-07-27T00:00:00+00:00) [Microsoft Research, Cambridge]""",
+            'Home (52°00′54″N, 000°13′15″W on 2008-07-26T00:00:00+00:00) [My place]',
+            'MSR (52°10′01″N, 000°23′24″E on 2008-07-27T00:00:00+00:00) [Microsoft Research, Cambridge]',
         ]
 
     def test_export_gpx_file(self):
@@ -114,8 +114,8 @@ class TestTrackpoints:
         with open('tests/data/gpx_tracks') as f:
             trackpoints = Trackpoints(f)
         assert [str(x) for x in sorted(trackpoints[0], key=attrgetter('name'))] == [
-            """Home (52°00'54"N, 000°13'15"W on 2008-07-26T00:00:00+00:00) [My place]""",
-            """MSR (52°10'01"N, 000°23'24"E on 2008-07-27T00:00:00+00:00) [Microsoft Research, Cambridge]""",
+            'Home (52°00′54″N, 000°13′15″W on 2008-07-26T00:00:00+00:00) [My place]',
+            'MSR (52°10′01″N, 000°23′24″E on 2008-07-27T00:00:00+00:00) [Microsoft Research, Cambridge]',
         ]
 
     def test_export_gpx_file(self):
@@ -143,8 +143,8 @@ class TestRoutepoints:
         with open('tests/data/gpx_routes') as f:
             routepoints = Routepoints(f)
         assert [str(x) for x in sorted(routepoints[0], key=attrgetter('name'))] == [
-            """Home (52°00'54"N, 000°13'15"W on 2008-07-26T00:00:00+00:00) [My place]""",
-            """MSR (52°10'01"N, 000°23'24"E on 2008-07-27T00:00:00+00:00) [Microsoft Research, Cambridge]""",
+            'Home (52°00′54″N, 000°13′15″W on 2008-07-26T00:00:00+00:00) [My place]',
+            'MSR (52°10′01″N, 000°23′24″E on 2008-07-27T00:00:00+00:00) [Microsoft Research, Cambridge]',
         ]
 
     def test_export_gpx_file(self):

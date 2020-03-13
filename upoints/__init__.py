@@ -4,7 +4,7 @@
 ``upoints`` is a collection of `GPL v3`_ licensed modules for working with
 points on Earth, or other near spherical objects.  It allows you to calculate
 the distance and bearings between points, mangle xearth_/xplanet_ data files,
-work with online UK trigpoint databases, NOAA_'s weather station database and
+work with online UK trigpoint databases, NOAA_’s weather station database and
 other such location databases.
 
 .. _GPL v3: http://www.gnu.org/licenses/

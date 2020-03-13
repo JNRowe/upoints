@@ -59,11 +59,11 @@ class Location(trigpoints.Trigpoint):
             name (unicode): Name of geographical location
             asciiname (str): Name of geographical location in ASCII encoding
             alt_names (list of unicode): Alternate names for the location
-            latitude (float): Location's latitude
-            longitude (float): Location's longitude
-            feature_class (str): Location's type
-            feature_code (str): Location's code
-            country (str): Location's country
+            latitude (float): Location’s latitude
+            longitude (float): Location’s longitude
+            feature_class (str): Location’s type
+            feature_code (str): Location’s code
+            country (str): Location’s country
             alt_country (str): Alternate country codes for location
             admin1 (str): FIPS code (subject to change to ISO code), ISO code
                 for the US and CH
@@ -71,12 +71,12 @@ class Location(trigpoints.Trigpoint):
                 in the US
             admin3 (str): Code for third level administrative division
             admin4 (str): Code for fourth level administrative division
-            population (int): Location's population, if applicable
-            altitude (int): Location's elevation
+            population (int): Location’s population, if applicable
+            altitude (int): Location’s elevation
             gtopo30 (int): Average elevation of 900 square metre region, if
                 available
             tzname (str): The timezone identifier using POSIX timezone names
-            modified_date (datetime.date): Location's last modification date
+            modified_date (datetime.date): Location’s last modification date
                 in the geonames databases
             timezone (int): The non-DST timezone offset from UTC in minutes
         """

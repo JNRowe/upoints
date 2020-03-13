@@ -30,9 +30,9 @@ class TestZone:
 
     @mark.parametrize('args, result', [
         (('+513030-0000731', 'GB', 'Europe/London'),
-         """Europe/London (GB: 51°30'30"N, 000°07'30"W)"""),
+         """Europe/London (GB: 51°30′30″N, 000°07′30″W)"""),
         (('+0658-15813', 'FM', 'Pacific/Ponape', ['Ponape (Pohnpei)', ]),
-         """Pacific/Ponape (FM: 06°58'00"N, 158°13'00"W also Ponape (Pohnpei))"""),
+         """Pacific/Ponape (FM: 06°58′00″N, 158°13′00″W also Ponape (Pohnpei))"""),
     ])
     def test___str__(self, args, result):
         assert str(Zone(*args)) == result
@@ -46,9 +46,9 @@ class TestZones:
     def test_import_locations(self):
         data = [str(v) for v in sorted(self.zones, key=attrgetter('zone'))]
         assert data == [
-            """Africa/Luanda (AO: 08°48'00"S, 013°14'00"E)""",
-            """America/Curacao (AN: 12°11'00"N, 069°00'00"W)""",
-            """Antarctica/McMurdo (AQ: 77°50'00"S, 166°36'00"E also McMurdo Station, Ross Island)""",
+            """Africa/Luanda (AO: 08°48′00″S, 013°14′00″E)""",
+            """America/Curacao (AN: 12°11′00″N, 069°00′00″W)""",
+            """Antarctica/McMurdo (AQ: 77°50′00″S, 166°36′00″E also McMurdo Station, Ross Island)""",
         ]
 
     def test_dump_zone_file(self):

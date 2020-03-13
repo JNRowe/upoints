@@ -19,11 +19,11 @@ DESCRIPTION
 -----------
 
 **edist** operates on one, or more, locations specified in various formats.
-For example, a location string of "52.015;\-0.221" would be interpreted as
-52.015 degrees North by 0.221 degrees West, as would "52d0m54s N 000d13m15s W".
-Positive values can be specified with a "+" prefix, but it isn't required.
+For example, a location string of “52.015;\-0.221” would be interpreted as
+52.015 degrees North by 0.221 degrees West, as would “52d0m54s N 000d13m15s W”.
+Positive values can be specified with a “+” prefix, but it isn't required.
 
-It is possible to use Maidenhead locators, such as "IO92" or "IO92va", for
+It is possible to use Maidenhead locators, such as “IO92” or “IO92va”, for
 users who are accustomed to working with them.
 
 Users can maintain a local configuration file that lists locations with

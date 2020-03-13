@@ -4,7 +4,7 @@
 edist operates on one, or more, locations specified in the following format
 ``[+-]DD.DD;[+-]DDD.DD``.  For example, a location string of ``52.015;-0.221``
 would be interpreted as 52.015 degrees North by 0.221 degrees West.  Positive
-values can be specified with a ``+`` prefix, but it isn't required.
+values can be specified with a ``+`` prefix, but it isn’t required.
 
 For example::
 
@@ -76,7 +76,7 @@ class LocationsError(ValueError):
         if self.function:
             return 'More than one location is required for %s.' % self.function
         elif self.data:
-            return 'Location parsing failure in location %i %r.' % self.data
+            return 'Location parsing failure in location %i ‘%s’.' % self.data
         else:
             return 'Invalid location data.'
 
@@ -100,9 +100,9 @@ class NumberedPoint(point.Point):
         """Initialise a new ``NumberedPoint`` object.
 
         Args:
-            latitude (float): Location's latitude
-            longitude (float): Location's longitude
-            name (str): Location's name or command line position
+            latitude (float): Location’s latitude
+            longitude (float): Location’s longitude
+            name (str): Location’s name or command line position
             units (str): Unit type to be used for distances
         """
         super(NumberedPoint, self).__init__(latitude, longitude, units)
@@ -139,7 +139,7 @@ class NumberedPoints(point.Points):
             locations (list of str): Location identifiers
             format (str): Coordinate formatting system to use
             verbose (bool): Whether to generate verbose output
-            config_locations (dict): Locations imported from user's config
+            config_locations (dict): Locations imported from user’s config
                 file
             units (str): Unit type to be used for distances
         """
@@ -164,7 +164,7 @@ class NumberedPoints(point.Points):
 
         Args:
             locations (list of str): Location identifiers
-            config_locations (dict): Locations imported from user's config
+            config_locations (dict): Locations imported from user’s config
             file
         """
         for number, location in enumerate(locations):
@@ -309,7 +309,7 @@ class NumberedPoints(point.Points):
                     click.echo('%s at %s UTC in location %s'
                                % (mode_str, time, location.name))
                 else:
-                    click.echo("The sun doesn't %s at location %s on this date"
+                    click.echo('The sun doesn’t %s at location %s on this date'
                                % (mode_str[3:], location.name))
             else:
                 click.echo(time)
@@ -483,7 +483,7 @@ def sunset(globs):
 
 
 def read_locations(filename):
-    """Pull locations from a user's config file.
+    """Pull locations from a user’s config file.
 
     Args:
         filename (str): Config file to parse
@@ -512,9 +512,9 @@ def read_locations(filename):
 
 
 def read_csv(filename):
-    """Pull locations from a user's CSV file.
+    """Pull locations from a user’s CSV file.
 
-    Read gpsbabel_'s CSV output format
+    Read gpsbabel_’s CSV output format
 
     .. _gpsbabel: http://www.gpsbabel.org/
 

@@ -102,7 +102,7 @@ def parse_longitude(longitude, hemisphere):
     return longitude
 
 
-#: NMEA's mapping of code to reading type
+#: NMEA’s mapping of code to reading type
 MODE_INDICATOR = {
     'A': 'Autonomous',
     'D': 'Differential',
@@ -122,8 +122,8 @@ class LoranPosition(point.Point):
         """Initialise a new ``LoranPosition`` object.
 
         Args:
-            latitude (float): Fix's latitude
-            longitude (float): Fix's longitude
+            latitude (float): Fix’s latitude
+            longitude (float): Fix’s longitude
             time (datetime.time): Time the fix was taken
             status (bool): Whether the data is active
             mode (str): Type of reading
@@ -204,8 +204,8 @@ class Position(point.Point):
         Args:
             time (datetime.time): Time the fix was taken
             status (bool): Whether the data is active
-            latitude (float): Fix's latitude
-            longitude (float): Fix's longitude
+            latitude (float): Fix’s latitude
+            longitude (float): Fix’s longitude
             speed (float): Ground speed
             track (float): Track angle
             date (datetime.date): Date when position was taken
@@ -315,13 +315,13 @@ class Fix(point.Point):
 
         Args:
             time (datetime.time): Time the fix was taken
-            latitude (float): Fix's latitude
-            longitude (float): Fix's longitude
+            latitude (float): Fix’s latitude
+            longitude (float): Fix’s longitude
             quality (int): Mode under which the fix was taken
             satellites (int): Number of tracked satellites
             dilution (float): Horizontal dilution at reported position
             altitude (float): Altitude above MSL
-            geoid_delta (float): Height of geoid's MSL above WGS84 ellipsoid
+            geoid_delta (float): Height of geoid’s MSL above WGS84 ellipsoid
             dgps_delta (float): Number of seconds since last DGPS sync
             dgps_station (int): Identifier of the last synced DGPS station
             mode (str): Type of reading
@@ -369,7 +369,7 @@ class Fix(point.Point):
 
     @staticmethod
     def parse_elements(elements):
-        """Parse essential fix's data elements.
+        """Parse essential fix’s data elements.
 
         Args:
             elements (list): Data values for fix
@@ -427,8 +427,8 @@ class Waypoint(point.Point):
         """Initialise a new ``Waypoint`` object.
 
         Args:
-            latitude (float): Waypoint's latitude
-            longitude (float): Waypoint's longitude
+            latitude (float): Waypoint’s latitude
+            longitude (float): Waypoint’s longitude
             name (str): Comment for waypoint
         """
         super(Waypoint, self).__init__(latitude, longitude)
@@ -528,7 +528,7 @@ class Locations(point.Points):
             The standard is quite specific in that sentences *must* be less
             than 82 bytes, while it would be nice to add yet another validity
             check it isn't all that uncommon for devices to break this
-            requirement in their "extensions" to the standard.
+            requirement in their “extensions” to the standard.
 
         .. todo:: Add optional check for message length, on by default
 
@@ -558,7 +558,7 @@ class Locations(point.Points):
                             'correct values!')
         for line in data:
             # The standard tells us lines should end in \r\n even though some
-            # devices break this, but Python's standard file object solves this
+            # devices break this, but Python’s standard file object solves this
             # for us anyway.  However, be careful if you implement your own
             # opener.
             if not line[1:6] in parsers:

@@ -99,7 +99,7 @@ class FileFormatError(ValueError):
             str: Human readable error string
         """
         if self.site:
-            return ("Incorrect data format, if you're using a file downloaded "
+            return ('Incorrect data format, if you’re using a file downloaded '
                     'from %s please report this to %s' % (self.site,
                                                           __bug_report__))
         else:
@@ -205,7 +205,7 @@ def prepare_xml_read(data, objectify=False):
 
     Args:
         data (iter): Data to read
-        objectify (bool): Parse using lxml's objectify data binding
+        objectify (bool): Parse using lxml’s objectify data binding
 
     Returns:
         etree.ElementTree: Tree suitable for parsing
@@ -479,8 +479,8 @@ iso6709_matcher = re.compile(r'^([-+][\d.]+)([-+][\d.]+)([+-][\d.]+)?/$')
 def from_iso6709(coordinates):
     """Parse ISO 6709 coordinate strings.
 
-    This function will parse ISO 6709-1983(E) "Standard representation of
-    latitude, longitude and altitude for geographic point locations" elements.
+    This function will parse ISO 6709-1983(E) “Standard representation of
+    latitude, longitude and altitude for geographic point locations” elements.
     Unfortunately, the standard is rather convoluted and this implementation is
     incomplete, but it does support most of the common formats in the wild.
 
@@ -542,16 +542,16 @@ def from_iso6709(coordinates):
 def to_iso6709(latitude, longitude, altitude=None, format='dd', precision=4):
     """Produce ISO 6709 coordinate strings.
 
-    This function will produce ISO 6709-1983(E) "Standard representation of
-    latitude, longitude and altitude for geographic point locations" elements.
+    This function will produce ISO 6709-1983(E) “Standard representation of
+    latitude, longitude and altitude for geographic point locations” elements.
 
     See also:
        from_iso6709
 
     Args:
-        latitude (float): Location's latitude
-        longitude (float): Location's longitude
-        altitude (float): Location's altitude
+        latitude (float): Location’s latitude
+        longitude (float): Location’s longitude
+        altitude (float): Location’s altitude
         format (str): Format type for string
         precision (int): Latitude/longitude precision
 
@@ -736,8 +736,8 @@ def to_grid_locator(latitude, longitude, precision='square'):
     """Calculate Maidenhead locator from latitude and longitude.
 
     Args:
-        latitude (float): Position's latitude
-        longitude (float): Position's longitude
+        latitude (float): Position’s latitude
+        longitude (float): Position’s longitude
         precision (str): Precision with which generate locator string
 
     Returns:
@@ -843,13 +843,13 @@ def parse_location(location):
                 longitude = float(chunks[1])
             return latitude, longitude
         elif len(chunks) == 4:
-            if chunks[0].endswith(('s', '"')):
+            if chunks[0].endswith(('s', '"', '″')):
                 latitude = split_dms(chunks[0], chunks[1])
             else:
                 latitude = float(chunks[0])
                 if chunks[1] == 'S':
                     latitude = -1 * latitude
-            if chunks[2].endswith(('s', '"')):
+            if chunks[2].endswith(('s', '"', '″')):
                 longitude = split_dms(chunks[2], chunks[3])
             else:
                 longitude = float(chunks[2])
@@ -867,7 +867,7 @@ ZENITH = {
 
     # Sunrise/sunset is defined as the moment the upper limb becomes visible,
     # taking in to account atmospheric refraction.  That is 34' for atmospheric
-    # refraction and 16' for angle between the Sun's centre and it's upper
+    # refraction and 16' for angle between the Sun’s centre and it’s upper
     # limb, resulting in a combined 50' below the horizon.
     #
     # We're totally ignoring how temperature and pressure change the amount of
@@ -898,8 +898,8 @@ def sun_rise_set(latitude, longitude, date, mode='rise', timezone=0,
         Washington, DC 20392
 
     Args:
-        latitude (float): Location's latitude
-        longitude (float): Location's longitude
+        latitude (float): Location’s latitude
+        longitude (float): Location’s longitude
         date (datetime.date): Calculate rise or set for given date
         mode (str): Which time to calculate
         timezone (int): Offset from UTC in minutes
@@ -931,15 +931,15 @@ def sun_rise_set(latitude, longitude, date, mode='rise', timezone=0,
     else:
         raise ValueError('Unknown mode value %r' % mode)
 
-    # Calculate the Sun's mean anomaly
+    # Calculate the Sun’s mean anomaly
     m = (0.9856 * t) - 3.289
 
-    # Calculate the Sun's true longitude
+    # Calculate the Sun’s true longitude
     l = m + 1.916 * math.sin(math.radians(m)) + 0.020 \
         * math.sin(2 * math.radians(m)) + 282.634
     l = abs(l) % 360
 
-    # Calculate the Sun's right ascension
+    # Calculate the Sun’s right ascension
     ra = math.degrees(math.atan(0.91764 * math.tan(math.radians(l))))
 
     # Right ascension value needs to be in the same quadrant as L
@@ -950,11 +950,11 @@ def sun_rise_set(latitude, longitude, date, mode='rise', timezone=0,
     # Right ascension value needs to be converted into hours
     ra = ra / 15
 
-    # Calculate the Sun's declination
+    # Calculate the Sun’s declination
     sin_dec = 0.39782 * math.sin(math.radians(l))
     cos_dec = math.cos(math.asin(sin_dec))
 
-    # Calculate the Sun's local hour angle
+    # Calculate the Sun’s local hour angle
     cos_h = (math.radians(zenith) -
              (sin_dec * math.sin(math.radians(latitude)))) \
         / (cos_dec * math.cos(math.radians(latitude)))
@@ -999,18 +999,18 @@ def sun_rise_set(latitude, longitude, date, mode='rise', timezone=0,
 def sun_events(latitude, longitude, date, timezone=0, zenith=None):
     """Convenience function for calculating sunrise and sunset.
 
-    Civil twilight starts/ends when the Sun's centre is 6 degrees below
+    Civil twilight starts/ends when the Sun’s centre is 6 degrees below
     the horizon.
 
-    Nautical twilight starts/ends when the Sun's centre is 12 degrees
+    Nautical twilight starts/ends when the Sun’s centre is 12 degrees
     below the horizon.
 
-    Astronomical twilight starts/ends when the Sun's centre is 18 degrees below
+    Astronomical twilight starts/ends when the Sun’s centre is 18 degrees below
     the horizon.
 
     Args:
-        latitude (float): Location's latitude
-        longitude (float): Location's longitude
+        latitude (float): Location’s latitude
+        longitude (float): Location’s longitude
         date (datetime.date): Calculate rise or set for given date
         timezone (int): Offset from UTC in minutes
         zenith (str): Calculate rise/set events, or twilight times

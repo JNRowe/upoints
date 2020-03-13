@@ -41,17 +41,17 @@ class Baken(point.Point):
         """Initialise a new ``Baken`` object.
 
         Args:
-            latitude (float): Location's latitude
-            longitude (float): Location's longitude
-            antenna (str): Location's antenna type
-            direction (tuple of int): Antenna's direction
-            frequency (float): Transmitter's frequency
-            height (float): Antenna's height
-            locator (str): Location's Maidenhead locator string
-            mode (str): Transmitter's mode
-            operator (tuple of str): Transmitter's operator
-            power (float): Transmitter's power
-            qth (str): Location's qth
+            latitude (float): Location’s latitude
+            longitude (float): Location’s longitude
+            antenna (str): Location’s antenna type
+            direction (tuple of int): Antenna’s direction
+            frequency (float): Transmitter’s frequency
+            height (float): Antenna’s height
+            locator (str): Location’s Maidenhead locator string
+            mode (str): Transmitter’s mode
+            operator (tuple of str): Transmitter’s operator
+            power (float): Transmitter’s power
+            qth (str): Location’s qth
 
         Raises:
             LookupError: No position data to use

@@ -36,7 +36,7 @@ class TestFileFormatError:
         raise FileFormatError
     with raises(
         FileFormatError,
-        match=("Incorrect data format, if you're using a file downloaded from "
+        match=('Incorrect data format, if you’re using a file downloaded from '
                'test site please report this to James Rowe '
                '<jnrowe@gmail.com>')):
         raise FileFormatError('test site')
@@ -278,6 +278,7 @@ def test_to_grid_locator(data, result):
     ('52d00m54s N 0d13m15s W', '52.015;-0.221'),
     ('52d0m54s N 000d13m15s W', '52.015;-0.221'),
     ('''52d0'54" N 000d13'15" W''', '52.015;-0.221'),
+    ('52d0′54″ N 000d13′15″ W', '52.015;-0.221'),
 ])
 def test_parse_location(location, result):
     assert '%.3f;%.3f' % parse_location(location) == result

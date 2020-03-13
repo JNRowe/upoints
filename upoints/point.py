@@ -25,7 +25,7 @@ def _manage_location(attr):
     """Build managed property interface.
 
     Args:
-        attr (str): Property's name
+        attr (str): Property’s name
 
     Returns:
         property: Managed property interface
@@ -34,19 +34,15 @@ def _manage_location(attr):
                     lambda self, value: self._set_location(attr, value))
 
 
-def _dms_formatter(latitude, longitude, mode, unistr=False):
+def _dms_formatter(latitude, longitude, mode):
     """Generate a human readable DM/DMS location string.
 
     Args:
-        latitude (float): Location's latitude
-        longitude (float): Location's longitude
+        latitude (float): Location’s latitude
+        longitude (float): Location’s longitude
         mode (str): Coordinate formatting system to use
-        unistr (bool): Whether to use extended character set
     """
-    if unistr:
-        chars = ('°', '′', '″')
-    else:
-        chars = ('°', "'", '"')
+    chars = ('°', '′', '″')
 
     latitude_dms = tuple(map(abs, utils.to_dms(latitude, mode)))
     longitude_dms = tuple(map(abs, utils.to_dms(longitude, mode)))
@@ -78,8 +74,8 @@ class Point:
         """Initialise a new ``Point`` object.
 
         Args:
-            latitude (float, tuple or list): Location's latitude
-            longitude (float, tuple or list): Location's longitude
+            latitude (float, tuple or list): Location’s latitude
+            longitude (float, tuple or list): Location’s longitude
             angle (str): Type for specified angles
             units (str): Units type to be used for distances
             timezone (int): Offset from UTC in minutes
@@ -257,7 +253,7 @@ class Point:
     def distance(self, other, method='haversine'):
         """Calculate the distance from self to other.
 
-        As a smoke test this check uses the example from Wikipedia's
+        As a smoke test this check uses the example from Wikipedia’s
         `Great-circle distance entry`_ of Nashville International Airport to
         Los Angeles International Airport, and is correct to within
         2 kilometres of the calculation there.
@@ -503,8 +499,8 @@ class TimedPoint(Point):
         """Initialise a new ``TimedPoint`` object.
 
         Args:
-            latitude (float, tuple or list): Location's latitude
-            longitude (float, tuple or list): Location's longitude
+            latitude (float, tuple or list): Location’s latitude
+            longitude (float, tuple or list): Location’s longitude
             angle (str): Type for specified angles
             units (str): Units type to be used for distances
             timezone (int): Offset from UTC in minutes
@@ -740,7 +736,7 @@ class KeyedPoints(dict):
                 self.import_locations(points)
             else:
                 if not all(x for x in points.values() if isinstance(x, Point)):
-                    raise TypeError("All `points` element's values must be an "
+                    raise TypeError('All `points` element’s values must be an '
                                     'instance of the `Point` class')
                 self.update(points)
 

@@ -4,7 +4,7 @@ Release HOWTO
 .. highlight:: sh
 
 ..
-  Much of this stuff is automated locally, but I'm describing the process for
+  Much of this stuff is automated locally, but I’m describing the process for
   other people who will not have access to the same release tools I use.  The
   first thing I recommend that you do is find/write a tool that allows you to
   automate all of this, or you're going to miss important steps at some point.

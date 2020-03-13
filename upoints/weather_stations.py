@@ -36,16 +36,16 @@ class Station(trigpoints.Trigpoint):
 
         Args:
             alt_id (str): Alternate location identifier
-            name (str): Station's name
+            name (str): Station’s name
             state (str): State name, if station is in the US
             country (str): Country name
             wmo (int): WMO region code
-            latitude (float): Station's latitude
-            longitude (float): Station's longitude
-            ua_latitude (float): Station's upper air latitude
-            ua_longitude (float): Station's upper air longitude
-            altitude (int): Station's elevation
-            ua_altitude (int): Station's upper air elevation
+            latitude (float): Station’s latitude
+            longitude (float): Station’s longitude
+            ua_latitude (float): Station’s upper air latitude
+            ua_longitude (float): Station’s upper air longitude
+            altitude (int): Station’s elevation
+            ua_altitude (int): Station’s upper air elevation
             rbsn (bool): True if station belongs to RSBN
         """
         super(Station, self).__init__(latitude, longitude, altitude, name)
@@ -123,7 +123,7 @@ class Stations(point.KeyedPoints):
             AYPY;94;035;Moresby;;Papua New Guinea;5;09-26S;147-13E;09-26S;147-13E;38;49;P
 
         Files containing the data in this format can be downloaded from the
-        :abbr:`NOAA (National Oceanographic and Atmospheric Administration)`'s
+        :abbr:`NOAA (National Oceanographic and Atmospheric Administration)`’s
         site in their `station location page`_.
 
         WMO indexed files downloaded from the :abbr:`NOAA (National
@@ -208,8 +208,8 @@ class Stations(point.KeyedPoints):
                 if not i:
                     point_data.append(None)
                     continue
-                # Some entries in nsd_cccc.txt are of the format "DD-MM-
-                # N", so we just take the spaces to mean 0 seconds.
+                # Some entries in nsd_cccc.txt are of the format “DD-MM-
+                # N”, so we just take the spaces to mean 0 seconds.
                 if ' ' in i:
                     logging.debug('Fixing unpadded location data in %r entry'
                                   % line)

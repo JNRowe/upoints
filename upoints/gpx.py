@@ -55,11 +55,11 @@ class _GpxElem(point.TimedPoint):
         """Initialise a new ``_GpxElem`` object.
 
         Args:
-            latitude (float): Element's latitude
-            longitude (float): Element's longitude
+            latitude (float): Element’s latitude
+            longitude (float): Element’s longitude
             name (str): Name for Element
-            description (str): Element's description
-            elevation (float): Element's elevation
+            description (str): Element’s description
+            elevation (float): Element’s elevation
             time (utils.Timestamp): Time the data was generated
         """
         super(_GpxElem, self).__init__(latitude, longitude, time=time)

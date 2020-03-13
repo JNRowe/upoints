@@ -11,7 +11,7 @@
 ``upoints`` is a collection of `GPL v3`_ licensed modules for working with
 points on Earth, or other near spherical objects.  It allows you to calculate
 the distance and bearings between points, mangle xearth_/xplanet_ data files,
-work with online UK trigpoint databases, NOAA_'s weather station database and
+work with online UK trigpoint databases, NOAA_’s weather station database and
 other such location databases.
 
 Previous versions of ``upoints`` were called ``earth_distance``, but the name
@@ -21,15 +21,15 @@ targeted at.
 Requirements
 ------------
 
-``upoints``'s only strict requirements beyond the Python_ standard library are
+``upoints``’s only strict requirements beyond the Python_ standard library are
 click_ and lxml_, and as such should run with Python 3.6 or newer.  If
 ``upoints`` doesn't work with the version of Python you have installed, drop me
-a mail_ and I'll endeavour to fix it.
+a mail_ and I’ll endeavour to fix it.
 
 The module has been tested on many UNIX-like systems, including Linux and OS X,
 but it should work fine on other systems too.
 
-To run the tests you'll need pytest_.  Once you have pytest_ installed you can run
+To run the tests you’ll need pytest_.  Once you have pytest_ installed you can run
 the tests with the following commands:
 
 .. code:: console
@@ -67,7 +67,7 @@ I'd like to thank the following people who have contributed to ``upoints``.
 Patches
 '''''''
 
-* Cédric Dufour - ``edist.py``'s CSV import, and flight plan output
+* Cédric Dufour - ``edist.py``’s CSV import, and flight plan output
 * Thomas Traber - GPX support enhancements, Points filtering, and some cool
   usage scenarios
 
@@ -81,7 +81,7 @@ Ideas
 * Simon Woods
 
 If I've forgotten to include your name I wholeheartedly apologise.  Just drop me
-a mail_ and I'll update the list!
+a mail_ and I’ll update the list!
 
 API Stability
 -------------
@@ -106,7 +106,7 @@ be wrong.
 
 The ``upoints`` modules do not take flattening in to account, as in calculations
 based in most populated areas of the earth the errors introduced by ignoring the
-earth's flattening are quite small.  Future versions may change if the
+earth’s flattening are quite small.  Future versions may change if the
 limitation becomes an issue in real use.
 
 Although not really a limitation one should also be careful to use data sources
@@ -116,7 +116,7 @@ unusual to find data sources from the USA that specify longitudes west of
 Greenwich as positive for example.
 
 .. [#] A future release may include more standard output definitions, but there
-       is no intention to add "magic" data mangling.
+       is no intention to add “magic” data mangling.
 
 Bugs
 ----

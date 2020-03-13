@@ -34,12 +34,12 @@ class TestPlacemark:
         assert Placemark(*args) == result
 
     @mark.parametrize('args, result', [
-        ((52, 0, 4), """52°00'00"N, 000°00'00"E alt 4m"""),
-        ((52, 0, None), """52°00'00"N, 000°00'00"E"""),
+        ((52, 0, 4), '52°00′00″N, 000°00′00″E alt 4m'),
+        ((52, 0, None), '52°00′00″N, 000°00′00″E'),
         ((52, 0, None, 'name', 'desc'),
-         """name (52°00'00"N, 000°00'00"E) [desc]"""),
+         'name (52°00′00″N, 000°00′00″E) [desc]'),
         ((52, 0, 42, 'name', 'desc'),
-         """name (52°00'00"N, 000°00'00"E alt 42m) [desc]"""),
+         'name (52°00′00″N, 000°00′00″E alt 42m) [desc]'),
     ])
     def test___str__(self, args, result):
         assert str(Placemark(*args)) == result
@@ -68,8 +68,8 @@ class TestPlacemark:
 
 class TestPlacemarks:
     @mark.parametrize('name, result', [
-        ('Cambridge', """Cambridge (52°10'01"N, 000°23'24"E)"""),
-        ('Home', """Home (52°00'54"N, 000°13'15"W alt 60m)"""),
+        ('Cambridge', 'Cambridge (52°10′01″N, 000°23′24″E)'),
+        ('Home', 'Home (52°00′54″N, 000°13′15″W alt 60m)'),
     ])
     def test_import_locations(self, name, result):
         with open('tests/data/kml') as f:

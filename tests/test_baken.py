@@ -46,10 +46,10 @@ class TestBaken:
     def test___str__(self):
         assert str(Baken(14.460, 20.680, None, None, None, 0.000, None, None,
                          None, None, None)) == \
-            """14°27'36"N, 020°40'48"E"""
+            '14°27′36″N, 020°40′48″E'
         assert str(Baken(None, None, '2 x Turnstile', None, 50.000, 460.000,
                          'IO93BF', 'A1A', None, 25, None)) == \
-            """IO93BF (53°13'45"N, 001°52'30"W)"""
+            'IO93BF (53°13′45″N, 001°52′30″W)'
 
 
 class TestBakens:
@@ -59,9 +59,9 @@ class TestBakens:
         data = ['%s - %s' % (k, v) for k, v in sorted(locations.items())]
 
         assert data == [
-            """Abeche, Chad - 14°27'36"N, 020°40'48"E""",
-            """GB3BUX - IO93BF (53°13'45"N, 001°52'30"W)""",
-            """IW1RCT - JN44FH (44°18'45"N, 008°27'29"E)""",
+            'Abeche, Chad - 14°27′36″N, 020°40′48″E',
+            'GB3BUX - IO93BF (53°13′45″N, 001°52′30″W)',
+            'IW1RCT - JN44FH (44°18′45″N, 008°27′29″E)',
         ]
 
     def test_import_locations2(self):

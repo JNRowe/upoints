@@ -54,7 +54,7 @@ As a simple smoke test the MERLIN website contains a `location page`_
 which states the longest baseline in the array is Cambridge to Knocking
 at 217 kM, and also that the shortest baseline is between the Jodrell
 Bank site and Pickmere at 11.2 kM.  The :class:`~upoints.point.Point`
-object's :meth:`~upoints.point.Point.distance` method can calculate
+object’s :meth:`~upoints.point.Point.distance` method can calculate
 these distances for us quite simply::
 
     >>> '%.3f kM' % MERLIN['Cambridge'].distance(MERLIN['Knocking'])

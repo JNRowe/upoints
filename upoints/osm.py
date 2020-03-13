@@ -121,8 +121,8 @@ class Node(point.Point):
 
         Args:
             ident (int): Unique identifier for the node
-            latitude (float): Nodes's latitude
-            longitude (float): Node's longitude
+            latitude (float): Nodes’s latitude
+            longitude (float): Node’s longitude
             visible (bool): Whether the node is visible
             user (str): User who logged the node
             timestamp (str): The date and time a node was logged
@@ -383,7 +383,7 @@ class Osm(point.Points):
 
         # This would be a lot simpler if OSM exports defined a namespace
         if not data.tag == 'osm':
-            raise ValueError("Root element %r is not `osm'" % data.tag)
+            raise ValueError('Root element %r is not ‘osm’' % data.tag)
         self.version = data.get('version')
         if not self.version:
             raise ValueError('No specified OSM version')

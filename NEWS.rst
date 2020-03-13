@@ -32,15 +32,15 @@ User-visible changes
 -------------------
 
 * This is likely to be the *final* non-bugfix release before v1.0.0 is cut, if
-  you don't like how something works now is the time to speak up!
+  you don’t like how something works now is the time to speak up!
 * This package has been renamed ``upoints`` from ``earth_distance`` to better
-  reflect its usage, and as a bonus it is more compliant with PEP-8_'s naming
+  reflect its usage, and as a bonus it is more compliant with PEP-8_’s naming
   guidelines
 * Added support for a generic ``Point`` object container type
 * Support for reading OpenCellID_ exports
-* Can now use lxml_ for XML processing on systems where ``cElementTree`` isn't
+* Can now use lxml_ for XML processing on systems where ``cElementTree`` isn’t
   available
-* Python "egg" packages can now be built if setuptools_ is installed
+* Python “egg” packages can now be built if setuptools_ is installed
 
 .. _OpenCellID: http://opencellid.org/
 .. _lxml: http://codespeak.net/lxml/

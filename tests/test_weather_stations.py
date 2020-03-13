@@ -43,8 +43,8 @@ class TestStation:
 
     @mark.parametrize('style, result', [
         ('dms',
-         """London / Heathrow Airport (EGLL - 51°28'59"N, 000°27'00"W)"""),
-        ('dm', "London / Heathrow Airport (EGLL - 51°29.00'N, 000°27.00'W)"),
+         'London / Heathrow Airport (EGLL - 51°28′59″N, 000°27′00″W)'),
+        ('dm', 'London / Heathrow Airport (EGLL - 51°29.00′N, 000°27.00′W)'),
     ])
     def test___format__(self, style, result):
         assert format(self.x, style) == result

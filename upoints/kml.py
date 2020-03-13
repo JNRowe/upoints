@@ -43,11 +43,11 @@ class Placemark(trigpoints.Trigpoint):
         """Initialise a new ``Placemark`` object.
 
         Args:
-            latitude (float): Placemarks's latitude
-            longitude (float): Placemark's longitude
-            altitude (float): Placemark's altitude
+            latitude (float): Placemarks’s latitude
+            longitude (float): Placemark’s longitude
+            altitude (float): Placemark’s altitude
             name (str): Name for placemark
-            description (str): Placemark's description
+            description (str): Placemark’s description
         """
         super(Placemark, self).__init__(latitude, longitude, altitude, name)
 
