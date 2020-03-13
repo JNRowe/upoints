@@ -1,11 +1,11 @@
 Trigpointing and point.py
 =========================
 
-One interesting email I received after posting `geolocation and path
-cross`_ asked if the module could be used for quick visualisation when
-trigpointing.  Now that I've found out what trigpointing is I believe it
-can, and I've added a couple of extra features to make it easier for
-trigpointers to use the |modref| module.
+One interesting email I received after posting `geolocation and path cross`_
+asked if the module could be used for quick visualisation when trigpointing.
+Now that I've found out what trigpointing is I believe it can, and I've added
+a couple of extra features to make it easier for trigpointers to use the
+|modref| module.
 
 Firstly, for those who don't know, trigpointing is the activity of tracking down
 trigpoints and recording them.  I guess you could make a parallel to
@@ -19,17 +19,16 @@ triangulation, although I suspect some mean trilateration, to travel between
 trigpoints as a navigational challenge.
 
 .. Note::
-   Robert tells me that TrigpointingUK_ is a popular website among
-   trigpointers in the UK.  It contains information about many of the
-   trigpoints you can find, such as the one closest to me at Bygrave_
+   Robert tells me that TrigpointingUK_ is a popular website among trigpointers
+   in the UK.  It contains information about many of the trigpoints you can
+   find, such as the one closest to me at Bygrave_
 
-Anybody who knows me well will attest that that I'm quite the navigation
-geek, mostly just as a curiosity being that what we're really talking
-about is just applications of specific branches of math.  As such,
-I actually find the concept of trigpointing by hand quite intriguing.
-That being said technology is here to assist us, and with that let me
-introduce :mod:`~upoints.trigpoints` a simple extension over the
-original ``edist.py`` script.
+Anybody who knows me well will attest that that I'm quite the navigation geek,
+mostly just as a curiosity being that what we're really talking about is just
+applications of specific branches of math.  As such, I actually find the concept
+of trigpointing by hand quite intriguing.  That being said technology is here to
+assist us, and with that let me introduce :mod:`~upoints.trigpoints` a simple
+extension over the original ``edist.py`` script.
 
 ::
 
@@ -39,13 +38,11 @@ original ``edist.py`` script.
     >>> print(len(Trigpoints))
     6557
 
-Thanks to `the online database`_ we now have the locations of all the
-Ordnance Survey trigpoints in an easy to use format -- a Python_
-dictionary.
+Thanks to `the online database`_ we now have the locations of all the Ordnance
+Survey trigpoints in an easy to use format -- a Python_ dictionary.
 
-If I'd like to see trigpoints close to me, say within 20kM, and less
-than 60m above sea level I could tap the following in to my IPython_
-session::
+If I'd like to see trigpoints close to me, say within 20kM, and less than 60m
+above sea level I could tap the following in to my IPython_ session::
 
     >>> Home = trigpoints.point.Point(52.015, -0.221)
     >>> for identifier, trigpoint in sorted(Trigpoints.items()):
@@ -56,9 +53,9 @@ session::
     503750 - Limlow Hill (52°03'31"N, 000°04'20"W alt 59m)
     505681 - Sutton (52°06'24"N, 000°11'57"W alt 55m)
 
-Or we can display all the trigpoints within a given region. For example,
-to show trigpoints within the region from 51°52'15"N, 000°28'29"W to
-52°09'07"N, 000°01'52"W.
+Or we can display all the trigpoints within a given region. For example, to show
+trigpoints within the region from 51°52'15"N, 000°28'29"W to 52°09'07"N,
+000°01'52"W.
 
 ::
 
@@ -89,8 +86,8 @@ to show trigpoints within the region from 51°52'15"N, 000°28'29"W to
     506165 - Warden Tunnel (52°05'15"N, 000°22'30"W alt 84m)
 
 
-Or we could generate a file to use with xearth that contains all the
-trigpoints above 1000m above sea level::
+Or we could generate a file to use with xearth that contains all the trigpoints
+above 1000m above sea level::
 
     >>> from upoints.utils import dump_xearth_markers
     >>> high_markers = {}
@@ -105,33 +102,30 @@ trigpoints above 1000m above sea level::
    :width: 192
    :height: 192
 
-Now we can use xearth_, or xplanet_, to visualise the trigpoints that
-are higher than 1000m.  If you start xearth with the command
-:command:`xearth -pos "fixed 57 -4" -mag 25 -noroot -markerfile
-high_markers.txt` you will see an image similar to the one on the right.
+Now we can use xearth_, or xplanet_, to visualise the trigpoints that are higher
+than 1000m.  If you start xearth with the command :command:`xearth -pos "fixed
+57 -4" -mag 25 -noroot -markerfile high_markers.txt` you will see an image
+similar to the one on the right.
 
-You could, of course, use :func:`~upoints.utils.dump_xearth_markers` to
-dump the entire trigpoint database, but with over 6000 locations the
-result is just going to be a sea of blurred text when rendered.
+You could, of course, use :func:`~upoints.utils.dump_xearth_markers` to dump the
+entire trigpoint database, but with over 6000 locations the result is just going
+to be a sea of blurred text when rendered.
 
-And it is possible to fold the generation of the ``high_markers``
-dictionary in to a single operation using lambda expressions and
-:func:`filter` such as::
+And it is possible to fold the generation of the ``high_markers`` dictionary in
+to a single operation using lambda expressions and :func:`filter` such as::
 
     >>> high_markers = dict(filter(lambda x: x[1].altitude > 1000,
     ...                            Trigpoints.items()))
 
-However, you opinion on whether this is cleaner or not depends a lot on
-your background.  If only you could run :func:`filter` on a dictionary
-directly, this would definitely be the better solution.  I'm going to
-continue using the unrolled version on this page because it seems more
-people are comfortable with them in spite of me favouring the
-:func:`filter` and :func:`lambda` version, but it is just a matter of
-taste and yours may vary.
+However, you opinion on whether this is cleaner or not depends a lot on your
+background.  If only you could run :func:`filter` on a dictionary directly, this
+would definitely be the better solution.  I'm going to continue using the
+unrolled version on this page because it seems more people are comfortable with
+them in spite of me favouring the :func:`filter` and :func:`lambda` version, but
+it is just a matter of taste and yours may vary.
 
-Using :mod:`~upoints.trigpoints` you could generate marker file for
-locations with an altitude of between 900m and 910m using their location
-names as labels.
+Using :mod:`~upoints.trigpoints` you could generate marker file for locations
+with an altitude of between 900m and 910m using their location names as labels.
 
 ::
 
@@ -157,17 +151,16 @@ reading the HTML files generated by Sphinx_ that are included in the tarball to
 see how it all works, including some more examples.
 
 .. Note::
-   And on a slight tangent, in my mind one of the best reasons for using
-   Python is now evident, Nokia_ provide Python builds for some of their
-   "smartphone" handsets.  This means it is possible to use
-   :mod:`~upoints.trigpoints` on the move using only the mobile phone
-   in your pocket, and it makes for a fun diversion from Snake 3D.  Even
-   as a simple database it can be surprisingly useful, especially given
-   the difficulty of finding the minuscule trigpoint symbol on Ordnance
-   Survey's Explorer series maps.
+   And on a slight tangent, in my mind one of the best reasons for using Python
+   is now evident, Nokia_ provide Python builds for some of their "smartphone"
+   handsets.  This means it is possible to use :mod:`~upoints.trigpoints` on the
+   move using only the mobile phone in your pocket, and it makes for a fun
+   diversion from Snake 3D.  Even as a simple database it can be surprisingly
+   useful, especially given the difficulty of finding the minuscule trigpoint
+   symbol on Ordnance Survey's Explorer series maps.
 
-We're on a journey now, so if you can think of any cool uses for any of
-the classes and functions in the |modref| tarball drop me a mail.
+We're on a journey now, so if you can think of any cool uses for any of the
+classes and functions in the |modref| tarball drop me a mail.
 
 .. _geolocation and path cross: geolocation_and_pathcross.html
 .. _Google: http://www.google.com/

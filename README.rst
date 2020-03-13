@@ -29,8 +29,8 @@ a mail_ and I'll endeavour to fix it.
 The module has been tested on many UNIX-like systems, including Linux and OS X,
 but it should work fine on other systems too.
 
-To run the tests you'll need pytest_.  Once you have pytest_ installed you can run
-the tests with the following commands:
+To run the tests you'll need pytest_.  Once you have pytest_ installed you can
+run the tests with the following commands:
 
 .. code:: console
 

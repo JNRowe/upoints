@@ -18,18 +18,18 @@ SYNOPSIS
 DESCRIPTION
 -----------
 
-**edist** operates on one, or more, locations specified in various formats.
-For example, a location string of "52.015;\-0.221" would be interpreted as
+**edist** operates on one, or more, locations specified in various formats.  For
+example, a location string of "52.015;\-0.221" would be interpreted as
 52.015 degrees North by 0.221 degrees West, as would "52d0m54s N 000d13m15s W".
 Positive values can be specified with a "+" prefix, but it isn't required.
 
-It is possible to use Maidenhead locators, such as "IO92" or "IO92va", for
-users who are accustomed to working with them.
+It is possible to use Maidenhead locators, such as "IO92" or "IO92va", for users
+who are accustomed to working with them.
 
-Users can maintain a local configuration file that lists locations with
-assigned names, and then use the names on the command line.  This makes command
-lines much easier to read, and also makes reusing locations at a later date
-simpler.  See `CONFIGURATION FILE`_.
+Users can maintain a local configuration file that lists locations with assigned
+names, and then use the names on the command line.  This makes command lines
+much easier to read, and also makes reusing locations at a later date simpler.
+See `CONFIGURATION FILE`_.
 
 .. click:: upoints.edist:cli
    :prog: edist
@@ -40,9 +40,9 @@ CONFIGURATION FILE
 
 The configuration file, by default ``~/.edist.conf``, is a simple ``INI`` format
 file, with sections headers defining the name of the location and their data
-defining the actual position.  You can define locations by either their
-latitude and longitude, or with a Maidenhead locator string.  Any options that
-aren't handled will simply ignored.  For example::
+defining the actual position.  You can define locations by either their latitude
+and longitude, or with a Maidenhead locator string.  Any options that aren't
+handled will simply ignored.  For example::
 
     [Home]
     latitude = 52.015
