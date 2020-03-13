@@ -22,11 +22,11 @@ User-visible changes
 * Added support for metadata in GPX files
 * Added support for route data in GPX files
 
-.. _pip: https://crate.io/packages/pip/
+.. _pip: https://pypi.org/project/pip/
 .. _pep-3101: http://www.python.org/dev/peps/pep-3101/
-.. _aaargh: https://crate.io/packages/aaargh/
-.. _expecter: https://crate.io/packages/expecter/
-.. _nose2: https://crate.io/packages/nose2/
+.. _aaargh: https://pypi.org/project/aaargh/
+.. _expecter: https://pypi.org/project/expecter/
+.. _nose2: https://pypi.org/project/nose2/
 
 0.11.0 - 2008-05-20
 -------------------

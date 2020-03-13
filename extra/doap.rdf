@@ -22,7 +22,7 @@
     </description>
 
     <homepage rdf:resource="https://github.com/JNRowe/upoints" />
-    <download-page rdf:resource="https://pypi.python.org/pypi/upoints/" />
+    <download-page rdf:resource="https://pypi.org/project/upoints/" />
     <bug-database rdf:resource="http://github.com/JNRowe/upoints/issues" />
     <repository>
         <GitRepository>
