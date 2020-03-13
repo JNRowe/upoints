@@ -55,7 +55,7 @@ And the imported database can be used in a variety of ways::
     Cities larger with more than 8 million people
     >>> for city in Cities:
     ...     if city.population > 8000000:
-    ...         print('  %s - %s' % (city.name, city.population))
+    ...         print(f'  {city.name} - {city.population}')
        Bombay - 8243405
        Jakarta - 9200000
        Moskwa - 8769000
@@ -66,7 +66,7 @@ And the imported database can be used in a variety of ways::
     Mountains
     >>> for city in Cities:
     ...     if city.ptype == 'Mountain':
-    ...         print('  %s' % city.name)
+    ...         print(f'  {city.name}')
        Aconcagua
        Popocatepetl
 

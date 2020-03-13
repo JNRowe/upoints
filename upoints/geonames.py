@@ -140,7 +140,7 @@ class Location(trigpoints.Trigpoint):
             return '%s (%s - %s)' % (self.name, ', '.join(self.alt_names),
                                      text)
         else:
-            return '%s (%s)' % (self.name, text)
+            return f'{self.name} ({text})'
 
 
 class Locations(point.Points):

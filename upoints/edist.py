@@ -74,7 +74,7 @@ class LocationsError(ValueError):
             str: Human readable error string
         """
         if self.function:
-            return 'More than one location is required for %s.' % self.function
+            return f'More than one location is required for {self.function}.'
         elif self.data:
             return 'Location parsing failure in location %i ‘%s’.' % self.data
         else:
@@ -196,7 +196,7 @@ class NumberedPoints(point.Points):
             else:
                 output = format(location, self.format)
             if self.verbose:
-                click.echo('Location %s is %s' % (location.name, output))
+                click.echo(f'Location {location.name} is {output}')
             else:
                 click.echo(output)
 
@@ -235,7 +235,7 @@ class NumberedPoints(point.Points):
         if string:
             bearings = map(utils.angle_to_name, bearings)
         else:
-            bearings = ['%i°' % bearing for bearing in bearings]
+            bearings = [f'{bearing:.0f}°' for bearing in bearings]
         if mode == 'bearing':
             verbose_fmt = 'Location %s to %s is %s'
         else:
@@ -290,8 +290,8 @@ class NumberedPoints(point.Points):
             else:
                 output = format(location, self.format)
             if self.verbose:
-                click.echo('Destination from location %s is %s'
-                           % (location.name, output))
+                click.echo(
+                    f'Destination from location {location.name} is {output}')
             else:
                 click.echo(output)
 
@@ -306,8 +306,8 @@ class NumberedPoints(point.Points):
         for location, time in zip(self, times):
             if self.verbose:
                 if time:
-                    click.echo('%s at %s UTC in location %s'
-                               % (mode_str, time, location.name))
+                    click.echo(
+                        f'{mode_str} at {time} UTC in location {location.name}')
                 else:
                     click.echo('The sun doesn’t %s at location %s on this date'
                                % (mode_str[3:], location.name))
@@ -326,8 +326,8 @@ class NumberedPoints(point.Points):
         if len(self) == 1:
             raise LocationsError('flight_plan')
         if self.verbose:
-            click.echo('WAYPOINT,BEARING[°],DISTANCE[%s],ELAPSED_TIME[%s],'
-                       'LATITUDE[d.dd],LONGITUDE[d.dd]' % (self.units, time))
+            click.echo(f'WAYPOINT,BEARING[°],DISTANCE[{self.units}],'
+                       f'ELAPSED_TIME[{time}],LATITUDE[d.dd],LONGITUDE[d.dd]')
         legs = [(0, 0), ] + list(self.inverse())
         for leg, loc in zip(legs, self):
             if leg == (0, 0):
@@ -529,7 +529,7 @@ def read_csv(filename):
     locations = {}
     args = []
     for index, row in enumerate(data, 1):
-        name = '%02i:%s' % (index, row['name'])
+        name = f'{index:02d}:{row["name"]}'
         locations[name] = (row['latitude'], row['longitude'])
         args.append(name)
     return locations, args

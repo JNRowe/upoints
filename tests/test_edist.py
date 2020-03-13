@@ -96,7 +96,7 @@ class TestNumberedPoints:
         locations = NumberedPoints(['52.015;-0.221', '52.168;0.040'],
                                    units=units)
         locations.distance()
-        assert capsys.readouterr()[0] == 'Location 1 to 2 is %s\n' % result
+        assert capsys.readouterr()[0] == f'Location 1 to 2 is {result}\n'
 
     def test_distance_multi(self, capsys):
         locations = NumberedPoints(['52.015;-0.221', '52.168;0.040',

@@ -63,11 +63,11 @@ def _get_test_file(filename):
         return builtins.open(os.path.join(BASEDIR, 'data', filename))
     else:
         if filename in SOURCES:
-            raise IOError('%r missing.  It can be downloaded from %r, or '
-                          'alternatively by running the ‘grab_net_sources’ '
-                          'script.' % (filename, SOURCES[filename]))
+            raise IOError(f'{filename!r} missing.  It can be downloaded from '
+                          f'{SOURCES[filename]!r} or alternatively by running '
+                          'the ‘grab_net_sources’ script.')
         else:
-            raise IOError('Can not open %r' % filename)
+            raise IOError(f'Can not open {filename!r}')
 
 
 def open(filename, mode='rb'):

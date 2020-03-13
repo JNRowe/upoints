@@ -116,15 +116,15 @@ class TestPosition:
         assert repr(Position.parse_elements(['142058', 'A', '5308.6414', 'N',
                                              '00300.9257', 'W', '109394.7',
                                              '202.9', '191107', '5', 'E', 'A'])) == \
-            ('Position(datetime.time(14, 20, 58), True, %s, %s, 109394.7, '
-             "202.9, datetime.date(2007, 11, 19), 5.0, 'A')"
-             % (53.14402333333334, -3.0154283333333334))
+            ('Position(datetime.time(14, 20, 58), True, 53.14402333333334, '
+             '-3.0154283333333334, 109394.7, 202.9, '
+             "datetime.date(2007, 11, 19), 5.0, 'A')")
         assert repr(Position.parse_elements(['142100', 'A', '5200.9000', 'N',
                                              '00316.6600', 'W', '123142.7',
                                              '188.1', '191107', '5', 'E', 'A'])) == \
-            ('Position(datetime.time(14, 21), True, 52.015, %s, 123142.7, '
-             "188.1, datetime.date(2007, 11, 19), 5.0, 'A')"
-             % (-3.2776666666666667))
+            ('Position(datetime.time(14, 21), True, 52.015, '
+             '-3.2776666666666667, 123142.7, '
+             "188.1, datetime.date(2007, 11, 19), 5.0, 'A')")
 
 
 class TestFix:
@@ -156,12 +156,12 @@ class TestFix:
     @mark.parametrize('elements, result', [
         (['142058', '5308.6414', 'N', '00300.9257', 'W', '1', '04', '5.6',
           '1374.6', 'M', '34.5', 'M', '', ''],
-         'Fix(datetime.time(14, 20, 58), %s, %s, 1, 4, 5.6, 1374.6, 34.5, '
-         'None, None, None)' % (53.14402333333334, -3.0154283333333334)),
+         'Fix(datetime.time(14, 20, 58), 53.14402333333334, '
+         '-3.0154283333333334, 1, 4, 5.6, 1374.6, 34.5, None, None, None)'),
         (['142100', '5200.9000', 'N', '00316.6600', 'W', '1', '04', '5.6',
           '1000.0', 'M', '34.5', 'M', '', ''],
-         'Fix(datetime.time(14, 21), %s, %s, 1, 4, 5.6, 1000.0, 34.5, None, '
-         'None, None)' % (52.015, -3.2776666666666667)),
+         'Fix(datetime.time(14, 21), 52.015, -3.2776666666666667, 1, 4, 5.6, '
+         '1000.0, 34.5, None, None, None)'),
     ])
     def test_parse_elements(self, elements, result):
         assert repr(Fix.parse_elements(elements)) == result

@@ -45,7 +45,7 @@ with open('upoints/_version.py') as ver_file:
 
 def parse_requires(file):
     deps = []
-    with open('extra/%s' % file) as req_file:
+    with open(f'extra/{file}') as req_file:
         entries = map(str.strip, req_file.readlines())
     for dep in entries:
         if dep.startswith('-r '):

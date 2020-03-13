@@ -50,7 +50,7 @@ class Xearth(point.Point):
         text = super(Xearth, self).__str__()
 
         if self.comment:
-            return '%s (%s)' % (self.comment, text)
+            return f'{self.comment} ({text})'
         else:
             return text
 

@@ -100,8 +100,7 @@ class FileFormatError(ValueError):
         """
         if self.site:
             return ('Incorrect data format, if you’re using a file downloaded '
-                    'from %s please report this to %s' % (self.site,
-                                                          __bug_report__))
+                    f'from {self.site} please report this to {__bug_report__}')
         else:
             return 'Unsupported data format.'
 
@@ -142,7 +141,7 @@ def repr_assist(obj, remap=None):
             try:
                 value = getattr(obj, arg)
             except AttributeError:
-                value = getattr(obj, '_%s' % arg)
+                value = getattr(obj, f'_{arg}')
         if isinstance(value, (type(None), list, str, datetime.date,
                               datetime.time)):
             data.append(repr(value))
@@ -287,7 +286,7 @@ def to_dms(angle, style='dms'):
         return tuple(sign * abs(i) for i in (int(degrees),
                                              (minutes + seconds / 60)))
     else:
-        raise ValueError('Unknown style type %r' % style)
+        raise ValueError(f'Unknown style type {style!r}')
 
 
 def to_dd(degrees, minutes, seconds=0):
@@ -359,8 +358,7 @@ def angle_to_name(angle, segments=8, abbr=False):
     elif segments == 16:
         string = COMPASS_NAMES[int((angle + 11.25) / 22.5) % 16]
     else:
-        raise ValueError('Segments parameter must be 4, 8 or 16 not %r'
-                         % segments)
+        raise ValueError(f'Segments parameter must be 4, 8 or 16 not {segments!r}')
     if abbr:
         return ''.join(i[0].capitalize() for i in string.split('-'))
     else:
@@ -416,7 +414,7 @@ class TzOffset(datetime.tzinfo):
         if offset.days == -1:
             hours = -24 + hours
 
-        return '%+03i:%02i' % (hours, minutes)
+        return f'{hours:+03.0f}:{minutes:02.0f}'
 
     def utcoffset(self, dt=None):
         """Return the offset in minutes from UTC.
@@ -521,7 +519,7 @@ def from_iso6709(coordinates):
         latitude = float(latitude[:3]) + (sign * (float(latitude[3:5]) / 60)) \
             + (sign * (float(latitude[5:]) / 3600))
     else:
-        raise ValueError('Incorrect format for latitude %r' % latitude)
+        raise ValueError(f'Incorrect format for latitude {latitude!r}')
     sign = 1 if longitude[0] == '+' else -1
     longitude_head = len(longitude.split('.')[0])
     if longitude_head == 4:  # ±DDD(.D{1,4})?
@@ -533,7 +531,7 @@ def from_iso6709(coordinates):
             + (sign * (float(longitude[4:6]) / 60)) \
             + (sign * (float(longitude[6:]) / 3600))
     else:
-        raise ValueError('Incorrect format for longitude %r' % longitude)
+        raise ValueError(f'Incorrect format for longitude {longitude!r}')
     if altitude:
         altitude = float(altitude)
     return latitude, longitude, altitude
@@ -578,9 +576,9 @@ def to_iso6709(latitude, longitude, altitude=None, format='dd', precision=4):
         elif format == 'dms':
             latitude_dms = to_dms(latitude)
             longitude_dms = to_dms(longitude)
-        latitude_sign = '-' if any(i < 0 for i in latitude_dms) else '+'
+        latitude_sign = '-' if latitude < 0 else '+'
+        longitude_sign = '-' if longitude < 0 else '+'
         latitude_dms = tuple(abs(i) for i in latitude_dms)
-        longitude_sign = '-' if any(i < 0 for i in longitude_dms) else '+'
         longitude_dms = tuple(abs(i) for i in longitude_dms)
         if format == 'dm':
             text.append('%s%02i%02i' % ((latitude_sign, ) + latitude_dms))
@@ -590,7 +588,7 @@ def to_iso6709(latitude, longitude, altitude=None, format='dd', precision=4):
             text.append('%s%03i%02i%02i'
                         % ((longitude_sign, ) + longitude_dms))
     else:
-        raise ValueError('Unknown format type %r' % format)
+        raise ValueError(f'Unknown format type {format!r}')
     if altitude and int(altitude) == altitude:
         text.append('%+i' % altitude)
     elif altitude:
@@ -621,7 +619,7 @@ def angle_to_distance(angle, units='metric'):
     elif units in ('nm', 'nautical'):
         return distance / NAUTICAL_MILE
     else:
-        raise ValueError('Unknown units type %r' % units)
+        raise ValueError(f'Unknown units type {units!r}')
 
 
 def distance_to_angle(distance, units='metric'):
@@ -644,7 +642,7 @@ def distance_to_angle(distance, units='metric'):
     elif units in ('nm', 'nautical'):
         distance *= NAUTICAL_MILE
     else:
-        raise ValueError('Unknown units type %r' % units)
+        raise ValueError(f'Unknown units type {units!r}')
 
     return math.degrees(distance / BODY_RADIUS)
 
@@ -663,8 +661,7 @@ def from_grid_locator(locator):
         ValueError: Invalid values in locator string
     """
     if not len(locator) in (4, 6, 8):
-        raise ValueError('Locator must be 4, 6 or 8 characters long %r'
-                         % locator)
+        raise ValueError('Locator must be 4, 6 or 8 characters long {locator!r}')
 
     # Convert the locator string to a list, because we need it to be mutable to
     # munge the values
@@ -695,19 +692,19 @@ def from_grid_locator(locator):
        or not 0 <= locator[1] <= 17 \
        or not 0 <= locator[2] <= 9 \
        or not 0 <= locator[3] <= 9:
-        raise ValueError('Invalid values in locator %r' % locator)
+        raise ValueError(f'Invalid values in locator {locator!r}')
 
     # Check subsquare values are within 'a'(0) to 'x'(23)
     if len(locator) >= 6:
         if not 0 <= locator[4] <= 23 \
            or not 0 <= locator[5] <= 23:
-            raise ValueError('Invalid values in locator %r' % locator)
+            raise ValueError(f'Invalid values in locator {locator!r}')
 
     # Extended square values must be within 0 to 9
     if len(locator) == 8:
         if not 0 <= locator[6] <= 9 \
            or not 0 <= locator[7] <= 9:
-            raise ValueError('Invalid values in locator %r' % locator)
+            raise ValueError(f'Invalid values in locator {locator!r}')
 
     longitude = LONGITUDE_FIELD * locator[0] \
         + LONGITUDE_SQUARE * locator[2]
@@ -748,12 +745,12 @@ def to_grid_locator(latitude, longitude, precision='square'):
         ValueError: Invalid latitude or longitude value
     """
     if precision not in ('square', 'subsquare', 'extsquare'):
-        raise ValueError('Unsupported precision value %r' % precision)
+        raise ValueError(f'Unsupported precision value {precision!r}')
 
     if not -90 <= latitude <= 90:
-        raise ValueError('Invalid latitude value %r' % latitude)
+        raise ValueError('Invalid latitude value {latitude!r}')
     if not -180 <= longitude <= 180:
-        raise ValueError('Invalid longitude value %r' % longitude)
+        raise ValueError('Invalid longitude value {longitude!r}')
 
     latitude += 90.0
     longitude += 180.0
@@ -929,7 +926,7 @@ def sun_rise_set(latitude, longitude, date, mode='rise', timezone=0,
     elif mode == 'set':
         t = n + ((18 - lng_hour) / 24)
     else:
-        raise ValueError('Unknown mode value %r' % mode)
+        raise ValueError(f'Unknown mode value {mode!r}')
 
     # Calculate the Sun’s mean anomaly
     m = (0.9856 * t) - 3.289
@@ -1088,17 +1085,17 @@ def dump_xearth_markers(markers, name='identifier'):
         line = ['%f %f ' % (point.latitude, point.longitude), ]
         if hasattr(point, 'name') and point.name:
             if name == 'identifier':
-                line.append('"%s" # %s' % (identifier, point.name))
+                line.append(f'"{identifier}" # {point.name}')
             elif name == 'name':
-                line.append('"%s" # %s' % (point.name, identifier))
+                line.append(f'"{point.name}" # {identifier}')
             elif name == 'comment':
-                line.append('"%s" # %s' % (identifier, point.comment))
+                line.append(f'"{identifier}" # {point.comment}')
             else:
-                raise ValueError('Unknown name type %r' % name)
+                raise ValueError(f'Unknown name type {name!r}')
             if hasattr(point, 'altitude') and point.altitude:
                 line.append(', alt %im' % point.altitude)
         else:
-            line.append('"%s"' % identifier)
+            line.append(f'"{identifier}"')
         output.append(''.join(line))
     # Return the list sorted on the marker name
     return sorted(output, key=lambda x: x.split()[2])

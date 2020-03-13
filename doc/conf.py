@@ -29,10 +29,10 @@ sys.path.insert(0, root_dir)
 import upoints  # NOQA
 
 extensions = \
-    ['sphinx.ext.%s' % ext for ext in ['autodoc', 'coverage', 'doctest',
-                                       'intersphinx', 'napoleon', 'todo',
-                                       'viewcode']] \
-    + ['sphinxcontrib.%s' % ext for ext in []]
+    [f'sphinx.ext.{ext}' for ext in ['autodoc', 'coverage', 'doctest',
+                                     'intersphinx', 'napoleon', 'todo',
+                                     'viewcode']] \
+    + [f'sphinxcontrib.{ext}' for ext in []]
 
 # Only activate spelling, if it is installed.  It is not required in the
 # general case and we don't have the granularity to describe this in a clean
@@ -73,7 +73,7 @@ autodoc_default_options = {
 }
 
 # intersphinx extension settings
-intersphinx_mapping = {k: (v, os.getenv('SPHINX_%s_OBJECTS' % k.upper()))
+intersphinx_mapping = {k: (v, os.getenv(f'SPHINX_{k.upper()}_OBJECTS'))
                        for k, v in {
                            'python': 'http://docs.python.org/',
 }.items()}

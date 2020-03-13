@@ -28,8 +28,8 @@ class TestBaken:
             'Baken(14.46, 20.68, None, None, None, 0.0, None, None, None, None, None)'
         assert repr(Baken(None, None, '2 x Turnstile', None, 50.000, 460.000,
                           'IO93BF', 'A1A', None, 25, None)) == \
-            ("Baken(%s, -1.875, '2 x Turnstile', None, 50.0, "
-             "460.0, 'IO93BF', 'A1A', None, 25, None)" % 53.229166666666686)
+            ("Baken(53.229166666666686, -1.875, '2 x Turnstile', None, 50.0, "
+             "460.0, 'IO93BF', 'A1A', None, 25, None)")
 
         with raises(LookupError,
                     match=('Unable to instantiate baken object, no latitude '

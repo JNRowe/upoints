@@ -50,7 +50,7 @@ session::
     >>> Home = trigpoints.point.Point(52.015, -0.221)
     >>> for identifier, trigpoint in sorted(Trigpoints.items()):
     ...     if Home.__eq__(trigpoint, 20) and trigpoint.altitude < 60:
-    ...         print('%s - %s' % (identifier, trigpoint))
+    ...         print(f'{identifier} - {trigpoint}')
     500936 - Broom Farm (52°03′57″N, 000°16′53″W alt 37m)
     501822 - Crane Hill (52°11′10″N, 000°14′51″W alt 58m)
     503750 - Limlow Hill (52°03′31″N, 000°04′20″W alt 59m)
@@ -69,7 +69,7 @@ to show trigpoints within the region from 51°52′15″N, 000°28′29″W to
     >>> for identifier, trigpoint in sorted(Trigpoints.items()):
     ...     if latitude_min < trigpoint.latitude < latitude_max \
     ...       and longitude_min < trigpoint.longitude < longitude_max:
-    ...         print('%s - %s' % (identifier, trigpoint))
+    ...         print(f'{identifier} - {trigpoint}')
     500928 - Bromley Common (51°52′17″N, 000°06′14″W alt 118m)
     500936 - Broom Farm (52°03′57″N, 000°16′53″W alt 37m)
     501097 - Bygrave (52°00′38″N, 000°10′24″W alt 97m)

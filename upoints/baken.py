@@ -100,7 +100,7 @@ class Baken(point.Point):
         """
         text = super(Baken, self).__format__('dms')
         if self._locator:
-            text = '%s (%s)' % (self._locator, text)
+            text = f'{self._locator} ({text})'
         return text
 
 

@@ -30,7 +30,7 @@ def _manage_location(attr):
     Returns:
         property: Managed property interface
     """
-    return property(lambda self: getattr(self, '_%s' % attr),
+    return property(lambda self: getattr(self, f'_{attr}'),
                     lambda self, value: self._set_location(attr, value))
 
 
@@ -89,7 +89,7 @@ class Point:
         if angle in ('degrees', 'radians'):
             self._angle = angle
         else:
-            raise ValueError('Unknown angle type %r' % angle)
+            raise ValueError(f'Unknown angle type {angle!r}')
         self._set_location('latitude', latitude)
         self._set_location('longitude', longitude)
 
@@ -102,7 +102,7 @@ class Point:
         elif units == 'nm':
             self.units = 'nautical'
         else:
-            raise ValueError('Unknown units type %r' % units)
+            raise ValueError(f'Unknown units type {units!r}')
         self.timezone = timezone
 
     def _set_location(self, ltype, value):
@@ -116,11 +116,11 @@ class Point:
             setattr(self, '_rad_%s' % ltype, float(value))
             setattr(self, '_%s' % ltype, math.degrees(float(value)))
         else:
-            raise ValueError('Unknown angle type %r' % self._angle)
+            raise ValueError(f'Unknown angle type {self._angle!r}')
         if ltype == 'latitude' and not -90 <= self._latitude <= 90:
-            raise ValueError('Invalid latitude value %r' % value)
+            raise ValueError(f'Invalid latitude value {value!r}')
         elif ltype == 'longitude' and not -180 <= self._longitude <= 180:
-            raise ValueError('Invalid longitude value %r' % value)
+            raise ValueError(f'Invalid longitude value {value!r}')
     latitude = _manage_location('latitude')
     longitude = _manage_location('longitude')
     rad_latitude = _manage_location('rad_latitude')
@@ -191,7 +191,7 @@ class Point:
         elif format_spec == 'locator':
             text.append(self.to_grid_locator())
         else:
-            raise ValueError('Unknown format_spec %r' % format_spec)
+            raise ValueError(f'Unknown format_spec {format_spec!r}')
 
         return ''.join(text)
 
@@ -289,7 +289,7 @@ class Point:
                                  math.cos(longitude_difference)) * \
                 utils.BODY_RADIUS
         else:
-            raise ValueError('Unknown method type %r' % method)
+            raise ValueError(f'Unknown method type {method!r}')
 
         if self.units == 'imperial':
             return distance / utils.STATUTE_MILE
@@ -335,7 +335,7 @@ class Point:
         elif format == 'string':
             return utils.angle_to_name(bearing)
         else:
-            raise ValueError('Unknown format type %r' % format)
+            raise ValueError(f'Unknown format type {format!r}')
 
     def midpoint(self, other):
         """Calculate the midpoint from self to other.
@@ -383,7 +383,7 @@ class Point:
         elif format == 'string':
             return utils.angle_to_name(final_bearing)
         else:
-            raise ValueError('Unknown format type %r' % format)
+            raise ValueError(f'Unknown format type {format!r}')
 
     def destination(self, bearing, distance):
         """Calculate the destination from self given bearing and distance.

@@ -80,7 +80,7 @@ def parse_latitude(latitude, hemisphere):
     if hemisphere == 'S':
         latitude = -latitude
     elif not hemisphere == 'N':
-        raise ValueError('Incorrect North/South value %r' % hemisphere)
+        raise ValueError(f'Incorrect North/South value {hemisphere!r}')
     return latitude
 
 
@@ -98,7 +98,7 @@ def parse_longitude(longitude, hemisphere):
     if hemisphere == 'W':
         longitude = -longitude
     elif not hemisphere == 'E':
-        raise ValueError('Incorrect North/South value %r' % hemisphere)
+        raise ValueError(f'Incorrect North/South value {hemisphere!r}')
     return longitude
 
 
@@ -143,8 +143,8 @@ class LoranPosition(point.Point):
             str: Human readable string representation of ``Position`` object
         """
         if not len(talker) == 2:
-            raise ValueError('Talker ID must be two characters %r' % talker)
-        data = ['%sGLL' % talker]
+            raise ValueError(f'Talker ID must be two characters {talker!r}')
+        data = [f'{talker}GLL']
         data.extend(nmea_latitude(self.latitude))
         data.extend(nmea_longitude(self.longitude))
         data.append('%s.%02i' % (self.time.strftime('%H%M%S'),
@@ -280,8 +280,7 @@ class Position(point.Point):
         if elements[10] == 'W':
             variation = -variation
         elif variation and not elements[10] == 'E':
-            raise ValueError('Incorrect variation value %r'
-                             % elements[10])
+            raise ValueError(f'Incorrect variation value {elements[10]!r}')
         mode = elements[11] if len(elements) == 12 else None
         return Position(time, active, latitude, longitude, speed, track, date,
                         variation, mode)
@@ -387,17 +386,16 @@ class Fix(point.Point):
         longitude = parse_longitude(elements[3], elements[4])
         quality = int(elements[5])
         if not 0 <= quality <= 9:
-            raise ValueError('Invalid quality value %r' % quality)
+            raise ValueError(f'Invalid quality value {quality!r}')
         satellites = int(elements[6])
         if not 0 <= satellites <= 12:
-            raise ValueError('Invalid number of satellites %r'
-                             % satellites)
+            raise ValueError(f'Invalid number of satellites {satellites!r}')
         dilution = float(elements[7])
         altitude = float(elements[8])
         if elements[9] == 'F':
             altitude = altitude * 3.2808399
         elif not elements[9] == 'M':
-            raise ValueError('Unknown altitude unit %r' % elements[9])
+            raise ValueError(f'Unknown altitude unit {elements[9]!r}')
         if elements[10] in ('-', ''):
             geoid_delta = False
             logging.warning('Altitude data could be incorrect, as the geoid '
@@ -407,7 +405,7 @@ class Fix(point.Point):
         if elements[11] == 'F':
             geoid_delta = geoid_delta * 3.2808399
         elif geoid_delta and not elements[11] == 'M':
-            raise ValueError('Unknown geoid delta unit %r' % elements[11])
+            raise ValueError(f'Unknown geoid delta unit {elements[11]!r}')
         dgps_delta = float(elements[12]) if elements[12] else None
         dgps_station = int(elements[13]) if elements[13] else None
         mode = elements[14] if len(elements) == 15 else None

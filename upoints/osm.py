@@ -66,7 +66,7 @@ def _get_flags(osm_obj):
     if osm_obj.visible:
         flags.append('visible')
     if osm_obj.user:
-        flags.append('user: %s' % osm_obj.user)
+        flags.append(f'user: {osm_obj.user}')
     if osm_obj.timestamp:
         flags.append('timestamp: %s' % osm_obj.timestamp.isoformat())
     if osm_obj.tags:
@@ -383,12 +383,12 @@ class Osm(point.Points):
 
         # This would be a lot simpler if OSM exports defined a namespace
         if not data.tag == 'osm':
-            raise ValueError('Root element %r is not ‘osm’' % data.tag)
+            raise ValueError(f'Root element {data.tag!r} is not ‘osm’')
         self.version = data.get('version')
         if not self.version:
             raise ValueError('No specified OSM version')
         elif not self.version == '0.5':
-            raise ValueError('Unsupported OSM version %r' % data)
+            raise ValueError(f'Unsupported OSM version {data!r}')
 
         self.generator = data.get('generator')
 

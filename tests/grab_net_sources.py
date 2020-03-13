@@ -50,10 +50,10 @@ def main(force):
     for filename, url in SOURCES.items():
         filename = os.path.join(os.path.dirname(__file__), 'data', filename)
         if not force and os.path.exists(filename):
-            print('%r already downloaded.' % filename)
+            print(f'{filename!r} already downloaded.')
             cached += 1
         else:
-            print('Fetching %r...' % url)
+            print(f'Fetching {url!r}...')
             if url.endswith('.gz'):
                 temp = tempfile.mkstemp()[1]
                 try:

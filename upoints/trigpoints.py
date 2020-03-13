@@ -78,7 +78,7 @@ class Trigpoint(point.Point):
         """
         location = [super(Trigpoint, self).__format__(format_spec), ]
         if self.altitude:
-            location.append('alt %im' % self.altitude)
+            location.append(f'alt {self.altitude:.0f}m')
 
         if self.name:
             return '%s (%s)' % (self.name, ' '.join(location))

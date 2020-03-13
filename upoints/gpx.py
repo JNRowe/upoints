@@ -36,7 +36,7 @@ GPX_ELEM_ATTRIB = {
     'creator': ua_string,
     'version': '1.1',
     '{http://www.w3.org/2001/XMLSchema-instance}schemaLocation':
-        '%s http://www.topografix.com/GPX/1/1/gpx.xsd' % GPX_NS,
+        f'{GPX_NS} http://www.topografix.com/GPX/1/1/gpx.xsd',
 }
 
 
@@ -80,11 +80,11 @@ class _GpxElem(point.TimedPoint):
         if self.time:
             location += ' on %s' % self.time.isoformat()
         if self.name:
-            text = ['%s (%s)' % (self.name, location), ]
+            text = [f'{self.name} ({location})', ]
         else:
             text = [location, ]
         if self.description:
-            text.append('[%s]' % self.description)
+            text.append(f'[{self.description}]')
         return ' '.join(text)
 
     def togpx(self):

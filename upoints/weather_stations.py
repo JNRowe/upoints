@@ -84,9 +84,9 @@ class Station(trigpoints.Trigpoint):
         text = super(Station.__base__, self).__format__(format_spec)
 
         if self.alt_id:
-            return '%s (%s - %s)' % (self.name, self.alt_id, text)
+            return f'{self.name} ({self.alt_id} - {text})'
         else:
-            return '%s (%s)' % (self.name, text)
+            return f'{self.name} ({text})'
 
 
 class Stations(point.KeyedPoints):
@@ -196,7 +196,7 @@ class Stations(point.KeyedPoints):
                 identifier = chunk[0]
                 alt_id = ''.join(chunk[1:3])
             else:
-                raise ValueError('Unknown format %r' % index)
+                raise ValueError(f'Unknown format {index!r}')
             if alt_id in ('----', '-----'):
                 alt_id = None
             name = chunk[3]

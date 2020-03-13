@@ -63,7 +63,7 @@ class Placemark(trigpoints.Trigpoint):
         """
         location = super(Placemark, self).__format__('dms')
         if self.description:
-            return '%s [%s]' % (location, self.description)
+            return f'{location} [{self.description}]'
         else:
             return location
 
@@ -166,8 +166,7 @@ class Placemarks(point.KeyedPoints):
             elif len(coords) == 3:
                 longitude, latitude, altitude = coords
             else:
-                raise ValueError('Unable to handle coordinates value %r'
-                                 % coords)
+                raise ValueError(f'Unable to handle coordinates value {coords!r}')
             try:
                 description = place.description
             except AttributeError:
