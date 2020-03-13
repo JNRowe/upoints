@@ -36,16 +36,16 @@ class Station(trigpoints.Trigpoint):
 
         Args:
             alt_id (str): Alternate location identifier
-            name (str): Station's name
+            name (str): Station’s name
             state (str): State name, if station is in the US
             country (str): Country name
             wmo (int): WMO region code
-            latitude (float): Station's latitude
-            longitude (float): Station's longitude
-            ua_latitude (float): Station's upper air latitude
-            ua_longitude (float): Station's upper air longitude
-            altitude (int): Station's elevation
-            ua_altitude (int): Station's upper air elevation
+            latitude (float): Station’s latitude
+            longitude (float): Station’s longitude
+            ua_latitude (float): Station’s upper air latitude
+            ua_longitude (float): Station’s upper air longitude
+            altitude (int): Station’s elevation
+            ua_altitude (int): Station’s upper air elevation
             rbsn (bool): True if station belongs to RSBN
         """
         super(Station, self).__init__(latitude, longitude, altitude, name)
@@ -84,9 +84,9 @@ class Station(trigpoints.Trigpoint):
         text = super(Station.__base__, self).__format__(format_spec)
 
         if self.alt_id:
-            return '%s (%s - %s)' % (self.name, self.alt_id, text)
+            return f'{self.name} ({self.alt_id} - {text})'
         else:
-            return '%s (%s)' % (self.name, text)
+            return f'{self.name} ({text})'
 
 
 class Stations(point.KeyedPoints):
@@ -123,7 +123,7 @@ class Stations(point.KeyedPoints):
             AYPY;94;035;Moresby;;Papua New Guinea;5;09-26S;147-13E;09-26S;147-13E;38;49;P
 
         Files containing the data in this format can be downloaded from the
-        :abbr:`NOAA (National Oceanographic and Atmospheric Administration)`'s
+        :abbr:`NOAA (National Oceanographic and Atmospheric Administration)`’s
         site in their `station location page`_.
 
         WMO indexed files downloaded from the :abbr:`NOAA (National
@@ -142,13 +142,13 @@ class Stations(point.KeyedPoints):
         And ``dict`` objects such as the following will be created when ICAO
         indexed data files are processed::
 
-            {'AYMD': Station("94", "014", "Madang", None, "Papua New Guinea",
+            {'AYMD': Station('94', '014', 'Madang', None, 'Papua New Guinea',
                              5, -5.216666, 145.783333, -5.216666,
                              145.78333333333333, 3, 5, True,
-             'AYMO': Station(None, None, "Manus Island/Momote", None,
-                             "Papua New Guinea", 5, -2.061944, 147.424166,
+             'AYMO': Station(None, None, 'Manus Island/Momote', None,
+                             'Papua New Guinea', 5, -2.061944, 147.424166,
                              None, None, 4, False,
-             'AYPY': Station("94", "035", "Moresby", None, "Papua New Guinea",
+             'AYPY': Station('94', '035', 'Moresby', None, 'Papua New Guinea',
                              5, -9.433333, 147.216667, -9.433333, 147.216667,
                              38, 49, True}
 
@@ -177,7 +177,7 @@ class Stations(point.KeyedPoints):
                     # and 14 are None.  Of the entries I've hand checked this
                     # assumption would be correct.
                     logging.debug('Extending ICAO %r entry, because it is '
-                                  'too short to process' % line)
+                                  'too short to process', line)
                     chunk.extend(['', ''])
                 elif index == 'WMO' and len(chunk) == 13:
                     # A few of the WMO indexed entries are missing their RBSN
@@ -185,7 +185,7 @@ class Stations(point.KeyedPoints):
                     # shows that they are correct if we just assume RBSN is
                     # false.
                     logging.debug('Extending WMO %r entry, because it is '
-                                  'too short to process' % line)
+                                  'too short to process', line)
                     chunk.append('')
                 else:
                     raise utils.FileFormatError('NOAA')
@@ -196,7 +196,7 @@ class Stations(point.KeyedPoints):
                 identifier = chunk[0]
                 alt_id = ''.join(chunk[1:3])
             else:
-                raise ValueError('Unknown format %r' % index)
+                raise ValueError(f'Unknown format {index!r}')
             if alt_id in ('----', '-----'):
                 alt_id = None
             name = chunk[3]
@@ -208,11 +208,11 @@ class Stations(point.KeyedPoints):
                 if not i:
                     point_data.append(None)
                     continue
-                # Some entries in nsd_cccc.txt are of the format "DD-MM-
-                # N", so we just take the spaces to mean 0 seconds.
+                # Some entries in nsd_cccc.txt are of the format “DD-MM-
+                # N”, so we just take the spaces to mean 0 seconds.
                 if ' ' in i:
-                    logging.debug('Fixing unpadded location data in %r entry'
-                                  % line)
+                    logging.debug('Fixing unpadded location data in %r entry',
+                                  line)
                     i = i.replace(' ', '0')
                 values = map(int, i[:-1].split('-'))
                 if i[-1] in ('S', 'W'):

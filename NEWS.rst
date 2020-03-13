@@ -23,7 +23,7 @@ User-visible changes
 * Added support for route data in GPX files
 
 .. _pip: https://pypi.org/project/pip/
-.. _pep-3101: http://www.python.org/dev/peps/pep-3101/
+.. _pep-3101: https://www.python.org/dev/peps/pep-3101/
 .. _aaargh: https://pypi.org/project/aaargh/
 .. _expecter: https://pypi.org/project/expecter/
 .. _nose2: https://pypi.org/project/nose2/
@@ -32,20 +32,20 @@ User-visible changes
 -------------------
 
 * This is likely to be the *final* non-bugfix release before v1.0.0 is cut, if
-  you don't like how something works now is the time to speak up!
+  you don’t like how something works now is the time to speak up!
 * This package has been renamed ``upoints`` from ``earth_distance`` to better
-  reflect its usage, and as a bonus it is more compliant with PEP-8_'s naming
+  reflect its usage, and as a bonus it is more compliant with PEP-8_’s naming
   guidelines
 * Added support for a generic ``Point`` object container type
 * Support for reading OpenCellID_ exports
-* Can now use lxml_ for XML processing on systems where ``cElementTree`` isn't
+* Can now use lxml_ for XML processing on systems where ``cElementTree`` isn’t
   available
-* Python "egg" packages can now be built if setuptools_ is installed
+* Python “egg” packages can now be built if setuptools_ is installed
 
 .. _OpenCellID: http://opencellid.org/
 .. _lxml: http://codespeak.net/lxml/
 .. _setuptools: http://peak.telecommunity.com/DevCenter/setuptools
-.. _PEP-8: http://www.python.org/dev/peps/pep-0008/
+.. _PEP-8: https://www.python.org/dev/peps/pep-0008/
 
 0.10.0 - 2008-03-27
 -------------------

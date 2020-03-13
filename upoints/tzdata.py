@@ -34,9 +34,9 @@ class Zone(point.Point):
 
         Args:
             location (str): Primary location in |ISO|-6709 format
-            country (str): Location's |ISO|-3166 country code
-            zone (str): Location's zone name as used in zoneinfo database
-            comments (list): Location's alternate names
+            country (str): Location’s |ISO|-3166 country code
+            zone (str): Location’s zone name as used in zoneinfo database
+            comments (list): Location’s alternate names
         """
         latitude, longitude = utils.from_iso6709(location + '/')[:2]
         super(Zone, self).__init__(latitude, longitude)
@@ -104,10 +104,10 @@ class Zones(point.Points):
         When processed by ``import_locations()`` a ``list`` object of the
         following style will be returned::
 
-            [Zone(None, None, "AN", "America/Curacao", None),
-             Zone(None, None, "AO", "Africa/Luanda", None),
-             Zone(None, None, "AO", "Antartica/McMurdo",
-                  ["McMurdo Station", "Ross Island"])]
+            [Zone(None, None, 'AN', 'America/Curacao', None),
+             Zone(None, None, 'AO', 'Africa/Luanda', None),
+             Zone(None, None, 'AO', 'Antartica/McMurdo',
+                  ['McMurdo Station', 'Ross Island'])]
 
         Args:
             zone_file (iter): ``zone.tab`` data to read
@@ -123,7 +123,7 @@ class Zones(point.Points):
         self._zone_file = zone_file
         field_names = ('country', 'location', 'zone', 'comments')
 
-        data = utils.prepare_csv_read(zone_file, field_names, delimiter=r"	")
+        data = utils.prepare_csv_read(zone_file, field_names, delimiter=r'	')
 
         for row in (x for x in data if not x['country'].startswith('#')):
             if row['comments']:

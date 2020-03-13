@@ -19,10 +19,7 @@
 from contextlib import suppress
 from operator import attrgetter
 
-try:
-    from urllib.request import urlopen
-except ImportError:  # Python 2
-    from urllib import urlopen
+from urllib.request import urlopen
 
 from lxml import etree
 
@@ -69,7 +66,7 @@ def _get_flags(osm_obj):
     if osm_obj.visible:
         flags.append('visible')
     if osm_obj.user:
-        flags.append('user: %s' % osm_obj.user)
+        flags.append(f'user: {osm_obj.user}')
     if osm_obj.timestamp:
         flags.append('timestamp: %s' % osm_obj.timestamp.isoformat())
     if osm_obj.tags:
@@ -124,8 +121,8 @@ class Node(point.Point):
 
         Args:
             ident (int): Unique identifier for the node
-            latitude (float): Nodes's latitude
-            longitude (float): Node's longitude
+            latitude (float): Nodes’s latitude
+            longitude (float): Node’s longitude
             visible (bool): Whether the node is visible
             user (str): User who logged the node
             timestamp (str): The date and time a node was logged
@@ -359,18 +356,18 @@ class Osm(point.Points):
         ``import_locations()`` will return the following `Osm` object::
 
             Osm([
-                Node(0, 52.015749, -0.221765, True, "jnrowe",
+                Node(0, 52.015749, -0.221765, True, 'jnrowe',
                      utils.Timestamp(2008, 1, 25, 12, 52, 11), None),
                 Node(1, 52.015761, -0.221767, True,
                      utils.Timestamp(2008, 1, 25, 12, 53), None,
-                     {"created_by": "hand", "highway": "crossing"}),
-                Node(2, 52.015754, -0.221766, True, "jnrowe",
+                     {'created_by': 'hand', 'highway': 'crossing'}),
+                Node(2, 52.015754, -0.221766, True, 'jnrowe',
                      utils.Timestamp(2008, 1, 25, 12, 52, 30),
-                     {"amenity": "pub"}),
+                     {'amenity': 'pub'}),
                 Way(0, [0, 1, 2], True, None,
                     utils.Timestamp(2008, 1, 25, 13, 00),
-                    {"ref": "My Way", "highway": "primary"})],
-                generator="upoints/0.9.0")
+                    {'ref': 'My Way', 'highway': 'primary'})],
+                generator='upoints/0.9.0')
 
         Args:
             osm_file (iter): OpenStreetMap data to read
@@ -386,12 +383,12 @@ class Osm(point.Points):
 
         # This would be a lot simpler if OSM exports defined a namespace
         if not data.tag == 'osm':
-            raise ValueError("Root element %r is not `osm'" % data.tag)
+            raise ValueError(f'Root element {data.tag!r} is not ‘osm’')
         self.version = data.get('version')
         if not self.version:
             raise ValueError('No specified OSM version')
         elif not self.version == '0.5':
-            raise ValueError('Unsupported OSM version %r' % data)
+            raise ValueError(f'Unsupported OSM version {data!r}')
 
         self.generator = data.get('generator')
 

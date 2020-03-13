@@ -19,7 +19,7 @@
 import datetime
 import math
 
-from pytest import mark, raises
+from pytest import approx, mark, raises
 
 from upoints import utils
 from upoints.point import (KeyedPoints, Point, Points, TimedPoint, TimedPoints)
@@ -32,8 +32,8 @@ class TestPoint:
         assert test.longitude == 90
 
         test = Point((50, 20, 10), (-1, -3, -12))
-        assert '%.3f' % test.latitude == '50.336'
-        assert '%.3f' % test.longitude == '-1.053'
+        assert test.latitude == approx(50.336, rel=0.001)
+        assert test.longitude == approx(-1.053, rel=0.001)
 
     def test___init___validity(self):
         with raises(ValueError, match='Unknown angle type None'):
@@ -84,8 +84,8 @@ class TestPoint:
         assert str(Point(52.015, -0.221)) == 'N52.015°; W000.221°'
 
     @mark.parametrize('style, result', [
-        ('dm', "52°00.90'N, 000°13.26'W"),
-        ('dms', """52°00'54"N, 000°13'15"W"""),
+        ('dm', "52°00.90′N, 000°13.26′W"),
+        ('dms', """52°00′54″N, 000°13′15″W"""),
         ('locator', 'IO92'),
     ])
     def test___format__(self, style, result):
@@ -113,8 +113,8 @@ class TestPoint:
     def test_distance(self):
         home = Point(52.015, -0.221)
         dest = Point(52.6333, -2.5)
-        assert '%i kM' % home.distance(dest) == '169 kM'
-        assert '%i kM' % home.distance(dest, method='sloc') == '169 kM'
+        assert home.distance(dest) == approx(169, rel=0.5)
+        assert home.distance(dest, method='sloc') == approx(169, rel=0.5)
 
         with raises(ValueError, match="Unknown method type 'Invalid'"):
             home.distance(dest, method='Invalid')
@@ -239,15 +239,15 @@ class TestPoints:
              "False, 'metric')")
 
     def test_distance(self):
-        assert '%.3f' % sum(self.locs.distance()) == '111.632'
+        assert sum(self.locs.distance()) == approx(111.632, rel=0.001)
 
     def test_bearing(self):
-        assert ['%.3f' % x for x in self.locs.bearing()] == \
-            ['46.242', '28.416']
+        assert list(self.locs.bearing()) == [approx(46.242, rel=0.001),
+                                             approx(28.416, rel=0.001)]
 
     def test_final_bearing(self):
-        assert ['%.3f' % x for x in self.locs.final_bearing()] == \
-            ['46.448', '28.906']
+        assert list(self.locs.final_bearing()) == \
+            [approx(46.448, rel=0.001), approx(28.906, rel=0.001)]
 
     def test_inverse(self):
         assert list(self.locs.inverse()) == \
@@ -308,8 +308,8 @@ class TestTimedPoints:
             TimedPoint(52.855, 0.657,
                        time=datetime.datetime(2008, 7, 28, 19, 17)),
         ])
-        assert ['%.3f' % s for s in locations.speed()] == \
-            ['12.315', '133.849']
+        assert list(locations.speed()) == \
+            [approx(12.315, rel=0.001), approx(133.849, rel=0.001)]
 
 
 class TestKeyedPoints:
@@ -330,15 +330,16 @@ class TestKeyedPoints:
                         False, 'metric')
 
     def test_distance(self):
-        assert '%.3f' % sum(self.locs.distance(('home', 'Carol', 'Kenny'))) == '111.632'
+        assert sum(self.locs.distance(('home', 'Carol', 'Kenny'))) == \
+            approx(111.632, rel=0.001)
 
     def test_bearing(self):
-        assert ['%.3f' % x for x in self.locs.bearing(('home', 'Carol', 'Kenny'))] == \
-            ['46.242', '28.416']
+        assert list(self.locs.bearing(('home', 'Carol', 'Kenny'))) == \
+            [approx(46.242, rel=0.001), approx(28.416, rel=0.001)]
 
     def test_final_bearing(self):
-        assert ['%.3f' % x for x in self.locs.final_bearing(('home', 'Carol', 'Kenny'))] == \
-            ['46.448', '28.906']
+        assert list(self.locs.final_bearing(('home', 'Carol', 'Kenny'))) == \
+            [approx(46.448, rel=0.001), approx(28.906, rel=0.001)]
 
     def test_inverse(self):
         assert list(self.locs.inverse(('home', 'Carol', 'Kenny'))) == \

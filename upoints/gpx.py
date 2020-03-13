@@ -36,7 +36,7 @@ GPX_ELEM_ATTRIB = {
     'creator': ua_string,
     'version': '1.1',
     '{http://www.w3.org/2001/XMLSchema-instance}schemaLocation':
-        '%s http://www.topografix.com/GPX/1/1/gpx.xsd' % GPX_NS,
+        f'{GPX_NS} http://www.topografix.com/GPX/1/1/gpx.xsd',
 }
 
 
@@ -55,11 +55,11 @@ class _GpxElem(point.TimedPoint):
         """Initialise a new ``_GpxElem`` object.
 
         Args:
-            latitude (float): Element's latitude
-            longitude (float): Element's longitude
+            latitude (float): Element’s latitude
+            longitude (float): Element’s longitude
             name (str): Name for Element
-            description (str): Element's description
-            elevation (float): Element's elevation
+            description (str): Element’s description
+            elevation (float): Element’s elevation
             time (utils.Timestamp): Time the data was generated
         """
         super(_GpxElem, self).__init__(latitude, longitude, time=time)
@@ -80,11 +80,11 @@ class _GpxElem(point.TimedPoint):
         if self.time:
             location += ' on %s' % self.time.isoformat()
         if self.name:
-            text = ['%s (%s)' % (self.name, location), ]
+            text = [f'{self.name} ({location})', ]
         else:
             text = [location, ]
         if self.description:
-            text.append('[%s]' % self.description)
+            text.append(f'[{self.description}]')
         return ' '.join(text)
 
     def togpx(self):
@@ -392,7 +392,7 @@ class _GpxMeta:
                     'maxlon': str(max(longitudes)),
                 }
             else:
-                bounds = dict((k, str(v)) for k, v in self.bounds.items())
+                bounds = {k: str(v) for k, v in self.bounds.items()}
             metadata.append(create_elem('bounds', bounds))
         if self.extensions:
             element = create_elem('extensions')
@@ -504,8 +504,8 @@ class Waypoints(point.TimedPoints):
         when importing data.  The above file processed by
         ``import_locations()`` will return the following ``list`` object::
 
-            [Waypoint(52.015, -0.221, "Home", "My place"),
-             Waypoint(52.167, 0.390, "MSR", "Microsoft Research, Cambridge")]
+            [Waypoint(52.015, -0.221, 'Home', 'My place'),
+             Waypoint(52.167, 0.390, 'MSR', 'Microsoft Research, Cambridge')]
 
         Args:
             gpx_file (iter): GPX data to read
@@ -611,8 +611,8 @@ class Trackpoints(_SegWrap):
         when importing data.  The above file processed by
         ``import_locations()`` will return the following ``list`` object::
 
-            [[Trackpoint(52.015, -0.221, "Home", "My place"),
-              Trackpoint(52.167, 0.390, "MSR", "Microsoft Research, Cambridge")], ]
+            [[Trackpoint(52.015, -0.221, 'Home', 'My place'),
+              Trackpoint(52.167, 0.390, 'MSR', 'Microsoft Research, Cambridge')], ]
 
         Args:
             gpx_file (iter): GPX data to read
@@ -725,8 +725,8 @@ class Routepoints(_SegWrap):
         when importing data.  The above file processed by
         ``import_locations()`` will return the following ``list`` object::
 
-            [[Routepoint(52.015, -0.221, "Home", "My place"),
-              Routepoint(52.167, 0.390, "MSR", "Microsoft Research, Cambridge")], ]
+            [[Routepoint(52.015, -0.221, 'Home', 'My place'),
+              Routepoint(52.167, 0.390, 'MSR', 'Microsoft Research, Cambridge')], ]
 
         Args:
             gpx_file (iter): GPX data to read

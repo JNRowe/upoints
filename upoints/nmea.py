@@ -29,7 +29,7 @@ def calc_checksum(sentence):
     """Calculate a NMEA 0183 checksum for the given sentence.
 
     NMEA checksums are a simple XOR of all the characters in the sentence
-    between the leading "$" symbol, and the "*" checksum separator.
+    between the leading ``$`` symbol, and the ``*`` checksum separator.
 
     Args:
         sentence (str): NMEA 0183 formatted sentence
@@ -80,7 +80,7 @@ def parse_latitude(latitude, hemisphere):
     if hemisphere == 'S':
         latitude = -latitude
     elif not hemisphere == 'N':
-        raise ValueError('Incorrect North/South value %r' % hemisphere)
+        raise ValueError(f'Incorrect North/South value {hemisphere!r}')
     return latitude
 
 
@@ -98,11 +98,11 @@ def parse_longitude(longitude, hemisphere):
     if hemisphere == 'W':
         longitude = -longitude
     elif not hemisphere == 'E':
-        raise ValueError('Incorrect North/South value %r' % hemisphere)
+        raise ValueError(f'Incorrect North/South value {hemisphere!r}')
     return longitude
 
 
-#: NMEA's mapping of code to reading type
+#: NMEA’s mapping of code to reading type
 MODE_INDICATOR = {
     'A': 'Autonomous',
     'D': 'Differential',
@@ -122,8 +122,8 @@ class LoranPosition(point.Point):
         """Initialise a new ``LoranPosition`` object.
 
         Args:
-            latitude (float): Fix's latitude
-            longitude (float): Fix's longitude
+            latitude (float): Fix’s latitude
+            longitude (float): Fix’s longitude
             time (datetime.time): Time the fix was taken
             status (bool): Whether the data is active
             mode (str): Type of reading
@@ -143,8 +143,8 @@ class LoranPosition(point.Point):
             str: Human readable string representation of ``Position`` object
         """
         if not len(talker) == 2:
-            raise ValueError('Talker ID must be two characters %r' % talker)
-        data = ['%sGLL' % talker]
+            raise ValueError(f'Talker ID must be two characters {talker!r}')
+        data = [f'{talker}GLL']
         data.extend(nmea_latitude(self.latitude))
         data.extend(nmea_longitude(self.longitude))
         data.append('%s.%02i' % (self.time.strftime('%H%M%S'),
@@ -204,8 +204,8 @@ class Position(point.Point):
         Args:
             time (datetime.time): Time the fix was taken
             status (bool): Whether the data is active
-            latitude (float): Fix's latitude
-            longitude (float): Fix's longitude
+            latitude (float): Fix’s latitude
+            longitude (float): Fix’s longitude
             speed (float): Ground speed
             track (float): Track angle
             date (datetime.date): Date when position was taken
@@ -280,8 +280,7 @@ class Position(point.Point):
         if elements[10] == 'W':
             variation = -variation
         elif variation and not elements[10] == 'E':
-            raise ValueError('Incorrect variation value %r'
-                             % elements[10])
+            raise ValueError(f'Incorrect variation value {elements[10]!r}')
         mode = elements[11] if len(elements) == 12 else None
         return Position(time, active, latitude, longitude, speed, track, date,
                         variation, mode)
@@ -315,13 +314,13 @@ class Fix(point.Point):
 
         Args:
             time (datetime.time): Time the fix was taken
-            latitude (float): Fix's latitude
-            longitude (float): Fix's longitude
+            latitude (float): Fix’s latitude
+            longitude (float): Fix’s longitude
             quality (int): Mode under which the fix was taken
             satellites (int): Number of tracked satellites
             dilution (float): Horizontal dilution at reported position
             altitude (float): Altitude above MSL
-            geoid_delta (float): Height of geoid's MSL above WGS84 ellipsoid
+            geoid_delta (float): Height of geoid’s MSL above WGS84 ellipsoid
             dgps_delta (float): Number of seconds since last DGPS sync
             dgps_station (int): Identifier of the last synced DGPS station
             mode (str): Type of reading
@@ -369,7 +368,7 @@ class Fix(point.Point):
 
     @staticmethod
     def parse_elements(elements):
-        """Parse essential fix's data elements.
+        """Parse essential fix’s data elements.
 
         Args:
             elements (list): Data values for fix
@@ -387,17 +386,16 @@ class Fix(point.Point):
         longitude = parse_longitude(elements[3], elements[4])
         quality = int(elements[5])
         if not 0 <= quality <= 9:
-            raise ValueError('Invalid quality value %r' % quality)
+            raise ValueError(f'Invalid quality value {quality!r}')
         satellites = int(elements[6])
         if not 0 <= satellites <= 12:
-            raise ValueError('Invalid number of satellites %r'
-                             % satellites)
+            raise ValueError(f'Invalid number of satellites {satellites!r}')
         dilution = float(elements[7])
         altitude = float(elements[8])
         if elements[9] == 'F':
             altitude = altitude * 3.2808399
         elif not elements[9] == 'M':
-            raise ValueError('Unknown altitude unit %r' % elements[9])
+            raise ValueError(f'Unknown altitude unit {elements[9]!r}')
         if elements[10] in ('-', ''):
             geoid_delta = False
             logging.warning('Altitude data could be incorrect, as the geoid '
@@ -407,7 +405,7 @@ class Fix(point.Point):
         if elements[11] == 'F':
             geoid_delta = geoid_delta * 3.2808399
         elif geoid_delta and not elements[11] == 'M':
-            raise ValueError('Unknown geoid delta unit %r' % elements[11])
+            raise ValueError(f'Unknown geoid delta unit {elements[11]!r}')
         dgps_delta = float(elements[12]) if elements[12] else None
         dgps_station = int(elements[13]) if elements[13] else None
         mode = elements[14] if len(elements) == 15 else None
@@ -427,8 +425,8 @@ class Waypoint(point.Point):
         """Initialise a new ``Waypoint`` object.
 
         Args:
-            latitude (float): Waypoint's latitude
-            longitude (float): Waypoint's longitude
+            latitude (float): Waypoint’s latitude
+            longitude (float): Waypoint’s longitude
             name (str): Comment for waypoint
         """
         super(Waypoint, self).__init__(latitude, longitude)
@@ -528,7 +526,7 @@ class Locations(point.Points):
             The standard is quite specific in that sentences *must* be less
             than 82 bytes, while it would be nice to add yet another validity
             check it isn't all that uncommon for devices to break this
-            requirement in their "extensions" to the standard.
+            requirement in their “extensions” to the standard.
 
         .. todo:: Add optional check for message length, on by default
 
@@ -558,7 +556,7 @@ class Locations(point.Points):
                             'correct values!')
         for line in data:
             # The standard tells us lines should end in \r\n even though some
-            # devices break this, but Python's standard file object solves this
+            # devices break this, but Python’s standard file object solves this
             # for us anyway.  However, be careful if you implement your own
             # opener.
             if not line[1:6] in parsers:
@@ -570,5 +568,5 @@ class Locations(point.Points):
             else:
                 values = line[1:].split('*')[0]
             elements = values.split(',')
-            parser = getattr(parsers[elements[0]], 'parse_elements')
+            parser = parsers[elements[0]].parse_elements
             self.append(parser(elements[1:]))

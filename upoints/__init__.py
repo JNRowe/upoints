@@ -4,7 +4,7 @@
 ``upoints`` is a collection of `GPL v3`_ licensed modules for working with
 points on Earth, or other near spherical objects.  It allows you to calculate
 the distance and bearings between points, mangle xearth_/xplanet_ data files,
-work with online UK trigpoint databases, NOAA_'s weather station database and
+work with online UK trigpoint databases, NOAA_’s weather station database and
 other such location databases.
 
 .. _GPL v3: http://www.gnu.org/licenses/
@@ -54,11 +54,7 @@ from . import _version
 
 __version__ = _version.dotted
 __date__ = _version.date
-__author__ = 'James Rowe <jnrowe@gmail.com>'
 __copyright__ = 'Copyright (C) 2007-2017  James Rowe <jnrowe@gmail.com>'
-__license__ = 'GNU General Public License Version 3'
-__credits__ = 'Cédric Dufour, Thomas Traber, Kelly Turner, Simon Woods'
-__history__ = 'See git repository'
 
 from . import (baken, cellid, cities, geonames, gpx, kml, nmea, osm, point,
                trigpoints, tzdata, utils, weather_stations, xearth)

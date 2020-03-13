@@ -41,13 +41,13 @@ class Cell(point.Point):
 
         Args:
             ident (int): OpenCellID database identifier
-            latitude (float): Cell's latitude
-            longitude (float): Cell's longitude
-            mcc (int): Cell's country code
-            mnc (int): Cell's network code
-            lac (int): Cell's local area code
-            cellid (int): Cell's identifier
-            crange (int): Cell's range
+            latitude (float): Cell’s latitude
+            longitude (float): Cell’s longitude
+            mcc (int): Cell’s country code
+            mnc (int): Cell’s network code
+            lac (int): Cell’s local area code
+            cellid (int): Cell’s identifier
+            crange (int): Cell’s range
             samples (int): Number of samples for the cell
             created (datetime.datetime): Date the cell was first entered
             updated (datetime.datetime): Date of the last update
@@ -149,14 +149,14 @@ class Cells(point.KeyedPoints):
 
         for row in data:
             try:
-                cell = dict((n, p(row[n]))
-                            for n, p in zip(field_names, field_parsers))
+                cell = {n: p(row[n])
+                        for n, p in zip(field_names, field_parsers)}
             except ValueError:
-                if r"\N" in row.values():
+                if r'\N' in row.values():
                     # A few entries are incomplete, and when that occurs the
-                    # export includes the string "\N" to denote missing
+                    # export includes the string '\N' to denote missing
                     # data.  We just ignore them for now
-                    logging.debug('Skipping incomplete entry %r' % row)
+                    logging.debug('Skipping incomplete entry %r', row)
                     break
                 else:
                     raise utils.FileFormatError('opencellid.org')

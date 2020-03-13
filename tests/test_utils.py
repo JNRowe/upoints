@@ -18,7 +18,7 @@
 
 import datetime
 
-from pytest import mark, raises
+from pytest import approx, mark, raises
 
 from upoints.point import Point
 from upoints.trigpoints import Trigpoint
@@ -36,7 +36,7 @@ class TestFileFormatError:
         raise FileFormatError
     with raises(
         FileFormatError,
-        match=("Incorrect data format, if you're using a file downloaded from "
+        match=('Incorrect data format, if you’re using a file downloaded from '
                'test site please report this to James Rowe '
                '<jnrowe@gmail.com>')):
         raise FileFormatError('test site')
@@ -102,12 +102,12 @@ def test_to_dms_error():
 
 
 @mark.parametrize('angle, result', [
-    ((52, 0, 54), '52.015'),
-    ((0, -13, -15), '-0.221'),
-    ((0, -13.25), '-0.221'),
+    ((52, 0, 54), 52.015),
+    ((0, -13, -15), -0.221),
+    ((0, -13.25), -0.221),
 ])
 def test_to_dd(angle, result):
-    assert '%.3f' % to_dd(*angle) == result
+    assert to_dd(*angle) == approx(result, rel=0.001)
 
 
 @mark.parametrize('args, result', [
@@ -141,7 +141,7 @@ class TestTzOffset:
         '-08:00',
     ])
     def test___repr__(self, string):
-        assert repr(TzOffset(string)) == "TzOffset('%s')" % string
+        assert repr(TzOffset(string)) == f"TzOffset('{string}')"
 
     def test___repr___normalise(self):
         assert repr(TzOffset('-00:00')) == "TzOffset('+00:00')"
@@ -237,18 +237,18 @@ def test_to_iso6709_location_page(args, kwargs, result):
 
 
 def test_angle_to_distance():
-    assert '%.3f' % angle_to_distance(1) == '111.125'
-    assert '%i' % angle_to_distance(360, 'imperial') == '24863'
-    assert '%i' % angle_to_distance(1.0 / 60, 'nautical') == '1'
+    assert angle_to_distance(1) == approx(111.125, rel=0.001)
+    assert angle_to_distance(360, 'imperial') == approx(24863, rel=0.001)
+    assert angle_to_distance(1.0 / 60, 'nautical') == approx(1, rel=0.001)
 
     with raises(ValueError, match="Unknown units type 'baseless'"):
-        '%i' % angle_to_distance(10, 'baseless')
+        angle_to_distance(10, 'baseless')
 
 
 def test_distance_to_angle():
-    assert '%.3f' % round(distance_to_angle(111.212)) == '1.000'
-    assert '%i' % round(distance_to_angle(24882, 'imperial')) == '360'
-    assert '%i' % round(distance_to_angle(60, 'nautical')) == '1'
+    assert round(distance_to_angle(111.212)) == 1
+    assert round(distance_to_angle(24882, 'imperial')) == 360
+    assert round(distance_to_angle(60, 'nautical')) == 1
 
 
 @mark.parametrize('locator, result', [
@@ -278,6 +278,7 @@ def test_to_grid_locator(data, result):
     ('52d00m54s N 0d13m15s W', '52.015;-0.221'),
     ('52d0m54s N 000d13m15s W', '52.015;-0.221'),
     ('''52d0'54" N 000d13'15" W''', '52.015;-0.221'),
+    ('52d0′54″ N 000d13′15″ W', '52.015;-0.221'),
 ])
 def test_parse_location(location, result):
     assert '%.3f;%.3f' % parse_location(location) == result

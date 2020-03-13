@@ -1,14 +1,14 @@
 Pythons on a plane
 ==================
 
-In what is probably the final spin-off from `geolocation and path cross`_ we'll
-be using the |modref| modules to work with airport locations.  This can be
+In what is probably the final spin-off from `geolocation and path cross`_ we’ll
+be using the :mod:`upoints` modules to work with airport locations.  This can be
 useful if you'd like to calculate how far you've travelled in a certain period,
 or just as a large database for calculating rough distances between other places
 using the closest airports as locations because of their abundance.
 
 NOAA publishes an enormous amount of world weather information, and often it is
-keyed to airport location's weather stations.  Unlike many of the commercial
+keyed to airport location’s weather stations.  Unlike many of the commercial
 weather data companies NOAA publish their data in clean, well defined formats,
 and along with the weather data they also publish extensive location data for
 the weather stations they monitor.  And many thanks to them, because we can use
@@ -17,15 +17,15 @@ their databases to populate our local geolocation databases.
 ::
 
     >>> from upoints import (point, weather_stations)
-    >>> WMO_stations_database = urllib.urlopen("http://weather.noaa.gov/data/nsd_bbsss.txt")
+    >>> WMO_stations_database = urllib.urlopen('http://weather.noaa.gov/data/nsd_bbsss.txt')
     >>> WMO_stations = weather_stations.Stations(WMO_stations_database)
 
 The above snippet will import the WMO identifier keyed database available from
 the `meteorological station location information page`_.  They also provide
 a database keyed with ICAO identifiers, which can also be imported::
 
-    >>> ICAO_stations_database = urllib.urlopen("http://weather.noaa.gov/data/nsd_cccc.txt")
-    >>> ICAO_stations = weather_stations.Stations(ICAO_stations_database, "ICAO")
+    >>> ICAO_stations_database = urllib.urlopen('http://weather.noaa.gov/data/nsd_cccc.txt')
+    >>> ICAO_stations = weather_stations.Stations(ICAO_stations_database, 'ICAO')
 
 The WMO indexed database contains 11548 entries and the ICAO keyed database
 contains 6611 entries as of 2007-05-30.  Unfortunately, the WMO database isn't
@@ -37,7 +37,7 @@ need to operate on all the entries at once.  Maybe you only want to work with
 entries in the UK::
 
     >>> UK_locations = dict(x for x in ICAO_stations.items()
-    ...                     if x[1].country == "United Kingdom")
+    ...                     if x[1].country == 'United Kingdom')
 
 Let us imagine for a minute that next month you're flying from London Luton to
 our office in Toulouse, then dropping by Birmingham for GUADEC, and returning to
@@ -64,18 +64,18 @@ snippet above [1]_.
     >>> Trip = point.Points([Europe[i] for i in ('EGGW', 'LFBO', 'EGBB', 'EGSS')])
     >>> legs = list(Trip.inverse())
 
-    >>> print("%i legs" % (len(Trip) - 1))
+    >>> print('%i legs' % (len(Trip) - 1))
     3 legs
     >>> for i in range(len(Trip) - 1):
-    ...     print("  * %s to %s" % (Trip[i].name, Trip[i+1].name))
-    ...     print("    - %i kilometres on a bearing of %i degrees" % (legs[i][1], legs[i][0]))
+    ...     print('  * %s to %s' % (Trip[i].name, Trip[i+1].name))
+    ...     print('    - %i kilometres on a bearing of %i degrees' % (legs[i][1], legs[i][0]))
       * Luton Airport  to Toulouse / Blagnac
         - 923 kilometres on a bearing of 171 degrees
       * Toulouse / Blagnac to Birmingham / Airport
         - 1006 kilometres on a bearing of 347 degrees
       * Birmingham / Airport to Stansted Airport
         - 148 kilometres on a bearing of 114 degrees
-    >>> print("For a total of %i kilometres" % sum(i[1] for i in legs))
+    >>> print('For a total of %i kilometres' % sum(i[1] for i in legs))
     For a total of 2078 kilometres
 
 The :class:`~upoints.weather_stations.Station` class inherits from
@@ -84,12 +84,12 @@ functions and methods defined for it with
 :class:`~upoints.weather_station.Station` objects.  You could, for
 example, create a nice graphical view of your trip with xplanet_::
 
-    >>> Trip = dict(zip(("2007-06-29", "2007-06-30", "2007-07-12",
-    ...                  "2007-07-14"),
+    >>> Trip = dict(zip(('2007-06-29', '2007-06-30', '2007-07-12',
+    ...                  '2007-07-14'),
     ...                 Trip))
     >>> from upoints import utils
-    >>> with open("trip.txt", "w") as f:
-    ...     f.write("\n".join(utils.dump_xearth_markers(Trip, "name")))
+    >>> with open('trip.txt', 'w') as f:
+    ...     f.write('\n'.join(utils.dump_xearth_markers(Trip, 'name')))
 
 .. figure:: .static/xearth_trip.png
    :alt: Xplanet showing the locations for a small European trip
@@ -115,7 +115,7 @@ generate your own labels for the markers.
 
 There is a wealth of Sphinx_ generated HTML output in the tarball, including
 documentation and usage examples.  If you still have any questions after reading
-the documentation, drop me a mail_ and I'll do my best to answer your questions.
+the documentation, drop me a mail_ and I’ll do my best to answer your questions.
 Also, I'd love to hear from you if come up with any clever uses for for the
 modules in |modref|.
 

@@ -31,8 +31,8 @@ class Xearth(point.Point):
         """Initialise a new ``Xearth`` object.
 
         Args:
-            latitude (float): Location's latitude
-            longitude (float): Location's longitude
+            latitude (float): Location’s latitude
+            longitude (float): Location’s longitude
             comment (str): Comment for location
         """
         super(Xearth, self).__init__(latitude, longitude)
@@ -50,7 +50,7 @@ class Xearth(point.Point):
         text = super(Xearth, self).__str__()
 
         if self.comment:
-            return '%s (%s)' % (self.comment, text)
+            return f'{self.comment} ({text})'
         else:
             return text
 
@@ -87,7 +87,7 @@ class Xearths(point.KeyedPoints):
 
             # Comment
 
-            52.015     -0.221 "Home"          # James Rowe's home
+            52.015     -0.221 "Home"          # James Rowe’s home
             52.6333    -2.5   "Telford"
 
         Any empty line or line starting with a '#' is ignored.  All data lines
@@ -95,7 +95,7 @@ class Xearths(point.KeyedPoints):
         above file processed by ``import_locations()`` will return the
         following ``dict`` object::
 
-            {'Home': point.Point(52.015, -0.221, "James Rowe's home"),
+            {'Home': point.Point(52.015, -0.221, 'James Rowe’s home'),
              'Telford': point.Point(52.6333, -2.5, None)}
 
         Note:

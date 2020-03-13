@@ -23,7 +23,7 @@ trigpoints as a navigational challenge.
    in the UK.  It contains information about many of the trigpoints you can
    find, such as the one closest to me at Bygrave_
 
-Anybody who knows me well will attest that that I'm quite the navigation geek,
+Anybody who knows me well will attest that that I’m quite the navigation geek,
 mostly just as a curiosity being that what we're really talking about is just
 applications of specific branches of math.  As such, I actually find the concept
 of trigpointing by hand quite intriguing.  That being said technology is here to
@@ -33,7 +33,7 @@ extension over the original ``edist.py`` script.
 ::
 
     >>> from upoints import trigpoints
-    >>> database_location = urllib.urlopen("http://www.haroldstreet.org.uk/waypoints/alltrigs-wgs84.txt")
+    >>> database_location = urllib.urlopen('http://www.haroldstreet.org.uk/waypoints/alltrigs-wgs84.txt')
     >>> Trigpoints = trigpoints.Trigpoints(database_location)
     >>> print(len(Trigpoints))
     6557
@@ -47,15 +47,15 @@ above sea level I could tap the following in to my IPython_ session::
     >>> Home = trigpoints.point.Point(52.015, -0.221)
     >>> for identifier, trigpoint in sorted(Trigpoints.items()):
     ...     if Home.__eq__(trigpoint, 20) and trigpoint.altitude < 60:
-    ...         print("%s - %s" % (identifier, trigpoint))
-    500936 - Broom Farm (52°03'57"N, 000°16'53"W alt 37m)
-    501822 - Crane Hill (52°11'10"N, 000°14'51"W alt 58m)
-    503750 - Limlow Hill (52°03'31"N, 000°04'20"W alt 59m)
-    505681 - Sutton (52°06'24"N, 000°11'57"W alt 55m)
+    ...         print(f'{identifier} - {trigpoint}')
+    500936 - Broom Farm (52°03′57″N, 000°16′53″W alt 37m)
+    501822 - Crane Hill (52°11′10″N, 000°14′51″W alt 58m)
+    503750 - Limlow Hill (52°03′31″N, 000°04′20″W alt 59m)
+    505681 - Sutton (52°06′24″N, 000°11′57″W alt 55m)
 
-Or we can display all the trigpoints within a given region. For example, to show
-trigpoints within the region from 51°52'15"N, 000°28'29"W to 52°09'07"N,
-000°01'52"W.
+Or we can display all the trigpoints within a given region. For example,
+to show trigpoints within the region from 51°52′15″N, 000°28′29″W to
+52°09′07″N, 000°01′52″W.
 
 ::
 
@@ -66,24 +66,24 @@ trigpoints within the region from 51°52'15"N, 000°28'29"W to 52°09'07"N,
     >>> for identifier, trigpoint in sorted(Trigpoints.items()):
     ...     if latitude_min < trigpoint.latitude < latitude_max \
     ...       and longitude_min < trigpoint.longitude < longitude_max:
-    ...         print("%s - %s" % (identifier, trigpoint))
-    500928 - Bromley Common (51°52'17"N, 000°06'14"W alt 118m)
-    500936 - Broom Farm (52°03'57"N, 000°16'53"W alt 37m)
-    501097 - Bygrave (52°00'38"N, 000°10'24"W alt 97m)
-    501417 - Cherrys Green (51°55'13"N, 000°01'52"W alt 126m)
-    501428 - Chicksands North Radio Mast (52°02'46"N, 000°22'17"W alt 62m)
-    501928 - Croydon Hill (52°07'37"N, 000°05'26"W alt 78m)
-    502034 - Deacon Hill (51°57'19"N, 000°21'46"W alt 173m)
-    502908 - Hammer Hill Farm (52°04'32"N, 000°24'05"W alt 89m)
-    503138 - Higham Gobion (51°58'48"N, 000°23'55"W alt 75m)
-    503750 - Limlow Hill (52°03'31"N, 000°04'20"W alt 59m)
-    503774 - Little Easthall Farm (51°53'23"N, 000°15'23"W alt 140m)
-    504024 - Marsh Farm Mh (51°55'24"N, 000°27'39"W alt 152m)
-    505392 - Sish Lane (51°54'39"N, 000°11'11"W alt 136m)
-    505681 - Sutton (52°06'24"N, 000°11'57"W alt 55m)
-    505852 - Therfield (52°01'03"N, 000°03'38"W alt 168m)
-    506163 - Warden Hill (51°55'20"N, 000°24'53"W alt 195m)
-    506165 - Warden Tunnel (52°05'15"N, 000°22'30"W alt 84m)
+    ...         print(f'{identifier} - {trigpoint}')
+    500928 - Bromley Common (51°52′17″N, 000°06′14″W alt 118m)
+    500936 - Broom Farm (52°03′57″N, 000°16′53″W alt 37m)
+    501097 - Bygrave (52°00′38″N, 000°10′24″W alt 97m)
+    501417 - Cherrys Green (51°55′13″N, 000°01′52″W alt 126m)
+    501428 - Chicksands North Radio Mast (52°02′46″N, 000°22′17″W alt 62m)
+    501928 - Croydon Hill (52°07′37″N, 000°05′26″W alt 78m)
+    502034 - Deacon Hill (51°57′19″N, 000°21′46″W alt 173m)
+    502908 - Hammer Hill Farm (52°04′32″N, 000°24′05″W alt 89m)
+    503138 - Higham Gobion (51°58′48″N, 000°23′55″W alt 75m)
+    503750 - Limlow Hill (52°03′31″N, 000°04′20″W alt 59m)
+    503774 - Little Easthall Farm (51°53′23″N, 000°15′23″W alt 140m)
+    504024 - Marsh Farm Mh (51°55′24″N, 000°27′39″W alt 152m)
+    505392 - Sish Lane (51°54′39″N, 000°11′11″W alt 136m)
+    505681 - Sutton (52°06′24″N, 000°11′57″W alt 55m)
+    505852 - Therfield (52°01′03″N, 000°03′38″W alt 168m)
+    506163 - Warden Hill (51°55′20″N, 000°24′53″W alt 195m)
+    506165 - Warden Tunnel (52°05′15″N, 000°22′30″W alt 84m)
 
 
 Or we could generate a file to use with xearth that contains all the trigpoints
@@ -94,8 +94,8 @@ above 1000m above sea level::
     >>> for identifier, trigpoint in Trigpoints.items():
     ...     if trigpoint.altitude > 1000:
     ...         high_markers[identifier] = trigpoint
-    >>> with open("high_markers.txt", "w") as f:
-    ...     f.write("\n".join(dump_xearth_markers(high_markers)))
+    >>> with open('high_markers.txt', 'w') as f:
+    ...     f.write('\n'.join(dump_xearth_markers(high_markers)))
 
 .. figure:: .static/Scotland_trigpoints.png
    :alt: xearth showing trigpoints higher than 1000m in Scotland
@@ -119,7 +119,7 @@ to a single operation using lambda expressions and :func:`filter` such as::
 
 However, you opinion on whether this is cleaner or not depends a lot on your
 background.  If only you could run :func:`filter` on a dictionary directly, this
-would definitely be the better solution.  I'm going to continue using the
+would definitely be the better solution.  I’m going to continue using the
 unrolled version on this page because it seems more people are comfortable with
 them in spite of me favouring the :func:`filter` and :func:`lambda` version, but
 it is just a matter of taste and yours may vary.
@@ -133,8 +133,8 @@ with an altitude of between 900m and 910m using their location names as labels.
     >>> for identifier, trigpoint in Trigpoints.items():
     ...     if 900 < trigpoint.altitude < 910:
     ...         display_markers[identifier] = trigpoint
-    >>> with open("display_markers.txt", "w") as f:
-    ...     f.write("\n".join(dump_xearth_markers(display_markers, "name")))
+    >>> with open('display_markers.txt', 'w') as f:
+    ...     f.write('\n'.join(dump_xearth_markers(display_markers, 'name')))
 
 The result of how that query could be shown with xplanet can be found to the
 right.
@@ -152,15 +152,15 @@ see how it all works, including some more examples.
 
 .. Note::
    And on a slight tangent, in my mind one of the best reasons for using Python
-   is now evident, Nokia_ provide Python builds for some of their "smartphone"
+   is now evident, Nokia_ provide Python builds for some of their “smartphone”
    handsets.  This means it is possible to use :mod:`~upoints.trigpoints` on the
    move using only the mobile phone in your pocket, and it makes for a fun
    diversion from Snake 3D.  Even as a simple database it can be surprisingly
    useful, especially given the difficulty of finding the minuscule trigpoint
-   symbol on Ordnance Survey's Explorer series maps.
+   symbol on Ordnance Survey’s Explorer series maps.
 
 We're on a journey now, so if you can think of any cool uses for any of the
-classes and functions in the |modref| tarball drop me a mail.
+classes and functions in the :mod:`upoints` tarball drop me a mail.
 
 .. _geolocation and path cross: geolocation_and_pathcross.html
 .. _Google: http://www.google.com/
@@ -168,7 +168,7 @@ classes and functions in the |modref| tarball drop me a mail.
 .. _xearth: http://hewgill.com/xearth/original/
 .. _xplanet: http://xplanet.sourceforge.net/
 .. _Mercurial: http://www.selenic.com/mercurial/
-.. _Python: http://www.python.org/
+.. _Python: https://www.python.org/
 .. _Nokia: http://www.nokia.com/
 .. _IPython: http://ipython.scipy.org/
 .. _Bygrave: http://www.trigpointinguk.com/trigs/trig-details.php?t=1830

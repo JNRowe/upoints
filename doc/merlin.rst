@@ -52,15 +52,15 @@ simply::
 As a simple smoke test the MERLIN website contains a `location page`_ which
 states the longest baseline in the array is Cambridge to Knocking at 217 kM, and
 also that the shortest baseline is between the Jodrell Bank site and Pickmere at
-11.2 kM.  The :class:`~upoints.point.Point` object's
+11.2 kM.  The :class:`~upoints.point.Point` object’s
 :meth:`~upoints.point.Point.distance` method can calculate these distances for
 us quite simply::
 
-    >>> "%.3f kM" % MERLIN['Cambridge'].distance(MERLIN['Knocking'])
+    >>> '%.3f kM' % MERLIN['Cambridge'].distance(MERLIN['Knocking'])
     '217.312 kM'
-    >>> "%.3f kM" % MERLIN['Lovell Telescope'].distance(MERLIN['Pickmere'])
+    >>> '%.3f kM' % MERLIN['Lovell Telescope'].distance(MERLIN['Pickmere'])
     '10.322 kM'
-    >>> "%.3f kM" % MERLIN['Mark II'].distance(MERLIN['Pickmere'])
+    >>> '%.3f kM' % MERLIN['Mark II'].distance(MERLIN['Pickmere'])
     '10.469 kM'
 
 .. Note::
@@ -76,7 +76,7 @@ The MERLIN website also contains a `layman description page`_ that has a nice
 map showing the locations of the array elements, we can create a similar image
 with xplanet_ or xearth_::
 
-    >>> print("\n".join(utils.dump_xearth_markers(MERLIN)))
+    >>> print('\n'.join(utils.dump_xearth_markers(MERLIN)))
     52.168467 0.039792 "Cambridge"
     53.144000 -2.545992 "Darnhall"
     52.091003 -2.136006 "Defford"
@@ -106,7 +106,7 @@ visible at the given time and this can be calculated very easily::
     >>> for name, rise in MERLIN.sunrise(datetime.date(2007, 9, 20)):
     ...     if rise > datetime.time(5, 45): continue
     ...     print(name)
-    ...     print("     - sunrise @ %s UTC" % rise.strftime("%H:%M"))
+    ...     print('     - sunrise @ %s UTC' % rise.strftime('%H:%M'))
     Cambridge
          - sunrise @ 05:41 UTC
 
@@ -114,7 +114,7 @@ This simple code snippet shows us that we should set up our equipment at the
 Cambridge site, which lucky for me is only a short trip up the road::
 
     >>> Home = Point(52.015, -0.221)
-    >>> print("%i kM" % Home.distance(MERLIN['Cambridge']))
+    >>> print('%i kM' % Home.distance(MERLIN['Cambridge']))
     24 kM
 
 Comparisons with other :class:`~upoints.point.Point`-type objects
@@ -126,9 +126,9 @@ for a full eclipse), and we can use the other |modref| tools to find closest
 weather station quite easily::
 
     >>> from upoints import weather_stations
-    >>> ICAO_stations_database = urllib.urlopen("http://weather.noaa.gov/data/nsd_cccc.txt")
-    >>> ICAO_stations = weather_stations.Stations(ICAO_stations_database, "ICAO")
-    >>> calc_distance = lambda (name, location): MERLIN['Cambridge'].distance(location)
+    >>> ICAO_stations_database = urllib.urlopen('http://weather.noaa.gov/data/nsd_cccc.txt')
+    >>> ICAO_stations = weather_stations.Stations(ICAO_stations_database, 'ICAO')
+    >>> calc_distance = lambda name, location: MERLIN['Cambridge'].distance(location)
     >>> station_id, station_data = sorted(ICAO_stations.items(), key=calc_distance)[0]
     >>> print(station_data)
     Cambridge (N52.200°; E000.183°)
@@ -147,7 +147,7 @@ data for the station using the ever useful pymetar_ library.
 
     >>> report = pymetar.ReportFetcher(station_id).FetchReport()
     >>> report_decoded = pymetar.ReportParser().ParseReport(report)
-    >>> print("%i°C @ %s" % (report_decoded.getTemperatureCelsius(),
+    >>> print('%i°C @ %s' % (report_decoded.getTemperatureCelsius(),
     ...                      report_decoded.getISOTime()))
     10°C @ 2007-11-28 19:20:00Z
 
@@ -157,7 +157,7 @@ data for the station using the ever useful pymetar_ library.
 .. _xplanet: http://xplanet.sourceforge.net/
 .. _xearth: http://hewgill.com/xearth/original/
 .. _NOAA: http://weather.noaa.gov/
-.. _Python: http://www.python.org/
+.. _Python: https://www.python.org/
 .. _pymetar: http://www.schwarzvogel.de/software-pymetar.shtml
 
 .. spelling::

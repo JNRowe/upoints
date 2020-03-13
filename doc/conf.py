@@ -16,8 +16,6 @@
 # You should have received a copy of the GNU General Public License along with
 # upoints.  If not, see <http://www.gnu.org/licenses/>.
 
-from __future__ import print_function
-
 import os
 import sys
 from contextlib import suppress
@@ -69,6 +67,7 @@ nitpicky = True
 
 # Project information {{{
 project = 'upoints'
+
 author = 'James Rowe'
 copyright = f'2007-2020  {author}'
 
@@ -96,9 +95,8 @@ if not on_rtd:
     ]
 
 with suppress(CalledProcessError):
-    proc = run(
-        ['git', 'log', '--pretty=format:%ad [%h]', '--date=short', '-n1'],
-        stdout=PIPE)
+    proc = run(['git', 'log', '--pretty=format:%ad [%h]', '--date=short',
+                '-n1'], stdout=PIPE)
     html_last_updated_fmt = proc.stdout.decode()
 
 html_baseurl = 'https://upoints.readthedocs.io/'
@@ -122,6 +120,12 @@ autodoc_default_options = {
 # coverage extension settings {{{
 coverage_write_headline = False
 # }}}
+
+# intersphinx extension settings
+intersphinx_mapping = {k: (v, os.getenv(f'SPHINX_{k.upper()}_OBJECTS'))
+                       for k, v in {
+                           'python': 'http://docs.python.org/',
+}.items()}
 
 # extlinks extension settings {{{
 extlinks = {

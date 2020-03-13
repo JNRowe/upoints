@@ -14,7 +14,7 @@
         points on Earth, or other near spherical objects.  It allows you to
         calculate the distance and bearings between points, mangle
         xearth/xplanet data files, work with online UK trigpoint databases,
-        NOAA's weather station database and other such location databases.
+        NOAA’s weather station database and other such location databases.
 
         Previous versions of upoints were called earth_distance, but the name
         was changed as it no longer reflected the majority of uses the packages
@@ -23,10 +23,10 @@
 
     <homepage rdf:resource="https://github.com/JNRowe/upoints" />
     <download-page rdf:resource="https://pypi.org/project/upoints/" />
-    <bug-database rdf:resource="http://github.com/JNRowe/upoints/issues" />
+    <bug-database rdf:resource="https://github.com/JNRowe/upoints/issues" />
     <repository>
         <GitRepository>
-            <location rdf:resource="git://github.com/JNRowe/upoints.git" />
+            <location rdf:resource="https://github.com/JNRowe/upoints.git" />
             <browse rdf:resource="https://github.com/JNRowe/upoints" />
         </GitRepository>
     </repository>

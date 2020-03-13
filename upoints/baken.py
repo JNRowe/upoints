@@ -19,10 +19,7 @@
 import logging
 import re
 
-try:
-    from configparser import ConfigParser
-except ImportError:
-    from ConfigParser import ConfigParser
+from configparser import ConfigParser
 
 from . import (point, utils)
 
@@ -44,17 +41,17 @@ class Baken(point.Point):
         """Initialise a new ``Baken`` object.
 
         Args:
-            latitude (float): Location's latitude
-            longitude (float): Location's longitude
-            antenna (str): Location's antenna type
-            direction (tuple of int): Antenna's direction
-            frequency (float): Transmitter's frequency
-            height (float): Antenna's height
-            locator (str): Location's Maidenhead locator string
-            mode (str): Transmitter's mode
-            operator (tuple of str): Transmitter's operator
-            power (float): Transmitter's power
-            qth (str): Location's qth
+            latitude (float): Location’s latitude
+            longitude (float): Location’s longitude
+            antenna (str): Location’s antenna type
+            direction (tuple of int): Antenna’s direction
+            frequency (float): Transmitter’s frequency
+            height (float): Antenna’s height
+            locator (str): Location’s Maidenhead locator string
+            mode (str): Transmitter’s mode
+            operator (tuple of str): Transmitter’s operator
+            power (float): Transmitter’s power
+            qth (str): Location’s qth
 
         Raises:
             LookupError: No position data to use
@@ -103,7 +100,7 @@ class Baken(point.Point):
         """
         text = super(Baken, self).__format__('dms')
         if self._locator:
-            text = '%s (%s)' % (self._locator, text)
+            text = f'{self._locator} ({text})'
         return text
 
 
@@ -148,10 +145,10 @@ class Bakens(point.KeyedPoints):
         robust against encodings and such.  The above file processed by
         ``import_locations()`` will return the following ``dict`` object::
 
-            {"Abeche, Chad": Baken(14.460, 20.680, None, None, None, 0.000,
+            {'Abeche, Chad': Baken(14.460, 20.680, None, None, None, 0.000,
                                    None, None, None, None, None),
-             "GB3BUX": : Baken(None, None, "2 x Turnstile", None, 50.000,
-                               460.000, "IO93BF", "A1A", None, 25, None)}
+             'GB3BUX': : Baken(None, None, '2 x Turnstile', None, 50.000,
+                               460.000, 'IO93BF', 'A1A', None, 25, None)}
 
         Args::
             baken_file (iter): Baken data to read
@@ -173,7 +170,7 @@ class Bakens(point.KeyedPoints):
         else:
             raise TypeError('Unable to handle data of type %r'
                             % type(baken_file))
-        valid_locator = re.compile(r"[A-Z]{2}\d{2}[A-Z]{2}")
+        valid_locator = re.compile(r'[A-Z]{2}\d{2}[A-Z]{2}')
         for name in data.sections():
             elements = {}
             for item in ('latitude', 'longitude', 'antenna', 'direction',
@@ -191,7 +188,7 @@ class Bakens(point.KeyedPoints):
                             elements[item] = data.getfloat(name, item)
                         except ValueError:
                             logging.debug('Multiple frequency workaround for '
-                                          '%r entry' % name)
+                                          '%r entry', name)
                             elements[item] = \
                                 map(float, data.get(name, item).split(','))
                 else:
@@ -199,7 +196,7 @@ class Bakens(point.KeyedPoints):
             if elements['latitude'] is None \
                and not valid_locator.match(elements['locator']):
                 logging.info('Skipping %r entry, as it contains no location '
-                             'data' % name)
+                             'data', name)
                 continue
 
             self[name] = Baken(**elements)

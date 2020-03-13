@@ -16,10 +16,7 @@
 # You should have received a copy of the GNU General Public License along with
 # upoints.  If not, see <http://www.gnu.org/licenses/>.
 
-try:
-    import __builtin__
-except ImportError:
-    import builtins as __builtin__
+import builtins
 import os
 import StringIO
 import urllib
@@ -29,7 +26,7 @@ from types import ModuleType
 from tests import grab_net_sources
 
 
-SOURCES = dict((os.path.basename(s), s) for s in grab_net_sources.SOURCES)
+SOURCES = {os.path.basename(s): s for s in grab_net_sources.SOURCES}
 BASEDIR = os.path.dirname(__file__)
 
 
@@ -44,7 +41,7 @@ def isfile(path):
     """
     filename = os.path.basename(path)
     try:
-        __builtin__.open(os.path.join(BASEDIR, 'data', filename))
+        builtins.open(os.path.join(BASEDIR, 'data', filename))
     except IOError:
         return False
     return True
@@ -63,14 +60,14 @@ def _get_test_file(filename):
         IOError: When the file can't be opened for reading
     """
     if isfile(filename):
-        return __builtin__.open(os.path.join(BASEDIR, 'data', filename))
+        return builtins.open(os.path.join(BASEDIR, 'data', filename))
     else:
         if filename in SOURCES:
-            raise IOError('%r missing.  It can be downloaded from %r, or '
-                          "alternatively by running the `grab_net_sources' "
-                          'script.' % (filename, SOURCES[filename]))
+            raise IOError(f'{filename!r} missing.  It can be downloaded from '
+                          f'{SOURCES[filename]!r} or alternatively by running '
+                          'the ‘grab_net_sources’ script.')
         else:
-            raise IOError('Can not open %r' % filename)
+            raise IOError(f'Can not open {filename!r}')
 
 
 def open(filename, mode='rb'):

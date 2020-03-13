@@ -16,6 +16,8 @@
 # You should have received a copy of the GNU General Public License along with
 # upoints.  If not, see <http://www.gnu.org/licenses/>.
 
+from operator import attrgetter
+
 from pytest import mark
 
 from upoints import (point, utils)
@@ -46,18 +48,18 @@ class TestNode:
         ('bare', 'Node(0, 52.0, 0.0, False, None, None, None)'),
         ('named',
          "Node(0, 52.0, 0.0, True, 'jnrowe', "
-         "Timestamp(2008, 1, 25, 0, 0), None)"),
+         'Timestamp(2008, 1, 25, 0, 0), None)'),
         ('tagged', "Node(0, 52.0, 0.0, False, None, None, {'key': 'value'})"),
     ])
     def test___repr__(self, node, result):
         assert repr(getattr(self, node)) == result
 
     @mark.parametrize('node, result', [
-        ('bare', """Node 0 (52°00'00"N, 000°00'00"E)"""),
+        ('bare', """Node 0 (52°00′00″N, 000°00′00″E)"""),
         ('named',
-         """Node 0 (52°00'00"N, 000°00'00"E) [visible, user: jnrowe, """
+         """Node 0 (52°00′00″N, 000°00′00″E) [visible, user: jnrowe, """
          'timestamp: 2008-01-25T00:00:00+00:00]'),
-        ('tagged', """Node 0 (52°00'00"N, 000°00'00"E) [key: value]"""),
+        ('tagged', """Node 0 (52°00′00″N, 000°00′00″E) [key: value]"""),
     ])
     def test___str__(self, node, result):
         assert str(getattr(self, node)) == result
@@ -105,7 +107,7 @@ class TestWay:
         ('bare', 'Way(0, [0, 1, 2], False, None, None, None)'),
         ('named',
          "Way(0, [0, 1, 2], True, 'jnrowe', Timestamp(2008, 1, 25, 0, 0), "
-         "None)"),
+         'None)'),
         ('tagged', "Way(0, [0, 1, 2], False, None, None, {'key': 'value'})"),
     ])
     def test___repr__(self, node, result):
@@ -134,11 +136,11 @@ class TestWay:
         ]
         assert self.tagged.__str__(nodes).splitlines() == [
             'Way 0 [key: value]',
-            """    Node 0 (52°00'56"N, 000°13'18"W) [visible, user: """
+            """    Node 0 (52°00′56″N, 000°13′18″W) [visible, user: """
             'jnrowe, timestamp: 2008-01-25T12:52:11+00:00]',
-            """    Node 1 (52°00'56"N, 000°13'18"W) [visible, timestamp: """
+            """    Node 1 (52°00′56″N, 000°13′18″W) [visible, timestamp: """
             '2008-01-25T12:53:14+00:00, created_by: hand, highway: crossing]',
-            """    Node 2 (52°00'56"N, 000°13'18"W) [visible, user: """
+            """    Node 2 (52°00′56″N, 000°13′18″W) [visible, user: """
             'jnrowe, timestamp: 2008-01-25T12:52:30+00:00, amenity: pub]',
         ]
 
@@ -168,14 +170,14 @@ class TestOsm:
             self.region = Osm(f)
 
     def test_import_locations(self):
-        assert [str(x) for x in sorted([x for x in self.region
-                                        if isinstance(x, Node)],
-                                       key=lambda x: x.ident)] == [
-            """Node 0 (52°00'56"N, 000°13'18"W) [visible, user: jnrowe, """
+        assert [str(x) for x in sorted((x for x in self.region
+                                        if isinstance(x, Node)),
+                                       key=attrgetter('ident'))] == [
+            """Node 0 (52°00′56″N, 000°13′18″W) [visible, user: jnrowe, """
             'timestamp: 2008-01-25T12:52:11+00:00]',
-            """Node 1 (52°00'56"N, 000°13'18"W) [visible, timestamp: """
+            """Node 1 (52°00′56″N, 000°13′18″W) [visible, timestamp: """
             '2008-01-25T12:53:00+00:00, created_by: hand, highway: crossing]',
-            """Node 2 (52°00'56"N, 000°13'18"W) [visible, user: jnrowe, """
+            """Node 2 (52°00′56″N, 000°13′18″W) [visible, user: jnrowe, """
             'timestamp: 2008-01-25T12:52:30+00:00, amenity: pub]',
         ]
 

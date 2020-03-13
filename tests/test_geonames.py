@@ -46,8 +46,8 @@ class TestLocation:
         assert str(self.x) == result
 
     @mark.parametrize('style, result', [
-        ('dms', """Stotfold (52°00'00"N, 000°13'00"W)"""),
-        ('dm', "Stotfold (52°00.00'N, 000°13.00'W)"),
+        ('dms', 'Stotfold (52°00′00″N, 000°13′00″W)'),
+        ('dm', 'Stotfold (52°00.00′N, 000°13.00′W)'),
     ])
     def test___format__(self, style, result):
         assert format(self.x, style) == result
@@ -65,7 +65,7 @@ class TestLocations:
 
     def test_import_locations_error(self):
         with raises(FileFormatError,
-                    match=("Incorrect data format, if you're using a file "
+                    match=('Incorrect data format, if you’re using a file '
                            'downloaded from geonames.org please report this '
                            'to James Rowe <jnrowe@gmail.com>')):
             with open('tests/data/broken_geonames') as f:
@@ -87,7 +87,7 @@ class TestLocations:
 
     def test_import_timezones_file_error(self):
         with raises(FileFormatError,
-                    match=("Incorrect data format, if you're using a file "
+                    match=('Incorrect data format, if you’re using a file '
                            'downloaded from geonames.org please report this '
                            'to James Rowe <jnrowe@gmail.com>')):
             with open('tests/data/geonames_timezones_broken') as f:

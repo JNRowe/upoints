@@ -61,13 +61,13 @@ class City(trigpoints.Trigpoint):
             region (str): Region place can be found
             country (str): Country name place can be found
             location (str): Body place can be found
-            population (int): Place's population
-            size (int): Place's area
-            latitude (float): Station's latitude
-            longitude (float): Station's longitude
-            altitude (int): Station's elevation
+            population (int): Place’s population
+            size (int): Place’s area
+            latitude (float): Station’s latitude
+            longitude (float): Station’s longitude
+            altitude (int): Station’s elevation
             date (time.struct_time): Date the entry was added
-            entered (str): Entry's author
+            entered (str): Entry’s author
         """
         super(City, self).__init__(latitude, longitude, altitude, name)
         self.identifier = identifier
@@ -150,12 +150,12 @@ class Cities(point.Points):
         When processed by ``import_locations()`` will return ``list`` object in
         the following style::
 
-            [City(1, "City", 210700, None, "Aberdeen", "UK", "Scotland",
-                  "Earth", -2.083, 57.15, None, (1996, 12, 6, 0, 0, 0, 4,
-                  341, -1), "Rob.Hooft@EMBL-Heidelberg.DE"),
-             City(2, "City", 1950000, None, "Abidjan", "Ivory Coast", "",
-                  "Earth", -3.867, 5.333, None, (1996, 12, 6, 0, 0, 0, 4,
-                  341, -1), "Rob.Hooft@EMBL-Heidelberg.DE")])
+            [City(1, 'City', 210700, None, 'Aberdeen', 'UK', 'Scotland',
+                  'Earth', -2.083, 57.15, None, (1996, 12, 6, 0, 0, 0, 4,
+                  341, -1), 'Rob.Hooft@EMBL-Heidelberg.DE'),
+             City(2, 'City', 1950000, None, 'Abidjan', 'Ivory Coast', "",
+                  'Earth', -3.867, 5.333, None, (1996, 12, 6, 0, 0, 0, 4,
+                  341, -1), 'Rob.Hooft@EMBL-Heidelberg.DE')])
 
         Args:
             data (iter): :abbr:`NOAA (National Oceanographic and Atmospheric Administration)`
@@ -193,8 +193,8 @@ class Cities(point.Points):
 
             # Entry for Utrecht has the incorrect value of 0.000 for elevation.
             if entries['altitude'] == '0.000':
-                logging.debug("Ignoring `0.000' value for elevation in %r "
-                              'entry' % record)
+                logging.debug('Ignoring ‘0.000’ value for elevation in %r '
+                              'entry', record)
                 entries['altitude'] = ''
             for i in ('identifier', 'population', 'size', 'altitude'):
                 entries[i] = int(entries[i]) if entries[i] else None

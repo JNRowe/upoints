@@ -18,6 +18,8 @@
 
 import logging
 
+from operator import attrgetter
+
 from lxml import etree
 
 from . import (point, trigpoints, utils)
@@ -41,11 +43,11 @@ class Placemark(trigpoints.Trigpoint):
         """Initialise a new ``Placemark`` object.
 
         Args:
-            latitude (float): Placemarks's latitude
-            longitude (float): Placemark's longitude
-            altitude (float): Placemark's altitude
+            latitude (float): Placemarks’s latitude
+            longitude (float): Placemark’s longitude
+            altitude (float): Placemark’s altitude
             name (str): Name for placemark
-            description (str): Placemark's description
+            description (str): Placemark’s description
         """
         super(Placemark, self).__init__(latitude, longitude, altitude, name)
 
@@ -61,7 +63,7 @@ class Placemark(trigpoints.Trigpoint):
         """
         location = super(Placemark, self).__format__('dms')
         if self.description:
-            return '%s [%s]' % (location, self.description)
+            return f'{location} [{self.description}]'
         else:
             return location
 
@@ -136,8 +138,8 @@ class Placemarks(point.KeyedPoints):
         when importing data.  The above file processed by
         ``import_locations()`` will return the following ``dict`` object::
 
-            {"Home": Placemark(52.015, -0.221, 60),
-             "Cambridge": Placemark(52.167, 0.390, None)}
+            {'Home': Placemark(52.015, -0.221, 60),
+             'Cambridge': Placemark(52.167, 0.390, None)}
 
         Args:
             kml_file (iter): KML data to read
@@ -155,7 +157,7 @@ class Placemarks(point.KeyedPoints):
             name = place.name.text
             coords = place.Point.coordinates.text
             if coords is None:
-                logging.info('No coordinates found for %r entry' % name)
+                logging.info('No coordinates found for %r entry', name)
                 continue
             coords = coords.split(',')
             if len(coords) == 2:
@@ -164,8 +166,7 @@ class Placemarks(point.KeyedPoints):
             elif len(coords) == 3:
                 longitude, latitude, altitude = coords
             else:
-                raise ValueError('Unable to handle coordinates value %r'
-                                 % coords)
+                raise ValueError(f'Unable to handle coordinates value {coords!r}')
             try:
                 description = place.description
             except AttributeError:
@@ -181,7 +182,7 @@ class Placemarks(point.KeyedPoints):
         """
         kml = create_elem('kml')
         kml.Document = create_elem('Document')
-        for place in sorted(self.values(), key=lambda x: x.name):
+        for place in sorted(self.values(), key=attrgetter('name')):
             kml.Document.append(place.tokml())
 
         return etree.ElementTree(kml)

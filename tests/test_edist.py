@@ -16,14 +16,9 @@
 # You should have received a copy of the GNU General Public License along with
 # upoints.  If not, see <http://www.gnu.org/licenses/>.
 
-import sys
-
 from doctest import _ellipsis_match as ellipsis_match
 
-try:
-    from StringIO import StringIO
-except ImportError:
-    from io import StringIO  # NOQA
+from io import StringIO
 
 from click.testing import CliRunner
 from pytest import mark, raises
@@ -39,7 +34,7 @@ class TestLocationsError:
                 match='More than one location is required for distance.'):
         raise LocationsError('distance')
     with raises(LocationsError,
-                match="Location parsing failure in location 4 '52;None'."):
+                match='Location parsing failure in location 4 ‘52;None’.'):
         raise LocationsError(data=(4, '52;None'))
 
 
@@ -70,8 +65,8 @@ class TestNumberedPoints:
         locs.display(None)
         stdout = capsys.readouterr()[0]
         assert stdout == (
-            "Location Home is 52°00.90'N, 000°13.26'W\n"
-            "Location 2 is 52°10.08'N, 000°02.40'E\n"
+            'Location Home is 52°00.90′N, 000°13.26′W\n'
+            'Location 2 is 52°10.08′N, 000°02.40′E\n'
         )
 
     def test_display_locator(self, capsys):
@@ -101,7 +96,7 @@ class TestNumberedPoints:
         locations = NumberedPoints(['52.015;-0.221', '52.168;0.040'],
                                    units=units)
         locations.distance()
-        assert capsys.readouterr()[0] == 'Location 1 to 2 is %s\n' % result
+        assert capsys.readouterr()[0] == f'Location 1 to 2 is {result}\n'
 
     def test_distance_multi(self, capsys):
         locations = NumberedPoints(['52.015;-0.221', '52.168;0.040',
@@ -175,8 +170,8 @@ class TestNumberedPoints:
         locations.destination(42, 240, False)
         stdout = capsys.readouterr()[0]
         assert stdout == (
-            "Destination from location 1 is 52°00.90'N, 000°13.26'W\n"
-            "Destination from location 2 is 52°10.08'N, 000°02.40'E\n"
+            'Destination from location 1 is 52°00.90′N, 000°13.26′W\n'
+            'Destination from location 2 is 52°10.08′N, 000°02.40′E\n'
         )
 
     def test_destination_locator(self, capsys):
@@ -199,19 +194,15 @@ class TestNumberedPoints:
         locations = NumberedPoints(['52.015;-0.221', '52.168;0.040'])
         locations.sun_events('sunrise')
         lines = capsys.readouterr()[0].splitlines()
-        assert ellipsis_match('Sunrise at ... in location 1', lines[0]) \
-            == True
-        assert ellipsis_match('Sunrise at ... in location 2', lines[1]) \
-            == True
+        assert ellipsis_match('Sunrise at ... in location 1', lines[0])
+        assert ellipsis_match('Sunrise at ... in location 2', lines[1])
 
     def test_sunset(self, capsys):
         locations = NumberedPoints(['52.015;-0.221', '52.168;0.040'])
         locations.sun_events('sunset')
         lines = capsys.readouterr()[0].splitlines()
-        assert ellipsis_match('Sunset at ... in location 1', lines[0]) \
-            == True
-        assert ellipsis_match('Sunset at ... in location 2', lines[1]) \
-            == True
+        assert ellipsis_match('Sunset at ... in location 1', lines[0])
+        assert ellipsis_match('Sunset at ... in location 2', lines[1])
 
     def test_flight_plan(self, capsys):
         locations = NumberedPoints(['52.015;-0.221', '52.168;0.040',
@@ -257,4 +248,4 @@ def test_cli():
     result = runner.invoke(cli, ['--location', '52.015;-0.221', '--verbose',
                                  'display'])
     assert result.output == \
-        "Location 1 is 52°00.90'N, 000°13.26'W\n"
+        'Location 1 is 52°00.90′N, 000°13.26′W\n'

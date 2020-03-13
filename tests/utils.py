@@ -24,7 +24,11 @@ from lxml import etree
 def xml_compare(elem1, elem2, ellipsis=False):
     """Compare XML elements
 
-    :param bool ellipsis: Support ellipsis for 'any' match
+    Args:
+        ellipsis (bool): Support ellipsis for 'any' match
+
+    Raises:
+        ValueError: On mismatch in ellipsised text
     """
     assert elem1.tag == elem2.tag
     for key, value in elem1.attrib.items():
@@ -37,11 +41,9 @@ def xml_compare(elem1, elem2, ellipsis=False):
     tail2 = elem2.tail.strip() if elem2.tail else ''
     if ellipsis:
         if not ellipsis_match(text1, text2):
-            raise ValueError('text mismatch: %r != %r' % (elem1.text,
-                                                          elem2.text))
+            raise ValueError(f'text mismatch: {elem1.text!r} != {elem2.text!r}')
         if not ellipsis_match(tail1, tail2):
-            raise ValueError('tail mismatch: %r != %r' % (elem1.text,
-                                                          elem2.text))
+            raise ValueError(f'tail mismatch: {elem1.tail!r} != {elem2.tail!r}')
     else:
         assert text1 == text2
         assert tail1 == tail2
@@ -55,7 +57,8 @@ def xml_compare(elem1, elem2, ellipsis=False):
 def xml_str_compare(string1, string2, ellipsis=False):
     """Compare XML string representations
 
-    :param bool ellipsis: Support ellipsis for 'any' match
+    Args:
+        ellipsis (bool): Support ellipsis for 'any' match
     """
     doc1 = etree.fromstring(string1)
     doc2 = etree.fromstring(string2)

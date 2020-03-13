@@ -4,7 +4,7 @@
 edist operates on one, or more, locations specified in the following format
 ``[+-]DD.DD;[+-]DDD.DD``.  For example, a location string of ``52.015;-0.221``
 would be interpreted as 52.015 degrees North by 0.221 degrees West.  Positive
-values can be specified with a ``+`` prefix, but it isn't required.
+values can be specified with a ``+`` prefix, but it isn’t required.
 
 For example::
 
@@ -41,10 +41,7 @@ from operator import itemgetter
 
 import click
 
-try:
-    from configparser import ConfigParser
-except ImportError:
-    from ConfigParser import ConfigParser
+from configparser import ConfigParser
 
 from . import (_version, point, utils)
 
@@ -77,9 +74,9 @@ class LocationsError(ValueError):
             str: Human readable error string
         """
         if self.function:
-            return 'More than one location is required for %s.' % self.function
+            return f'More than one location is required for {self.function}.'
         elif self.data:
-            return 'Location parsing failure in location %i %r.' % self.data
+            return 'Location parsing failure in location %i ‘%s’.' % self.data
         else:
             return 'Invalid location data.'
 
@@ -103,9 +100,9 @@ class NumberedPoint(point.Point):
         """Initialise a new ``NumberedPoint`` object.
 
         Args:
-            latitude (float): Location's latitude
-            longitude (float): Location's longitude
-            name (str): Location's name or command line position
+            latitude (float): Location’s latitude
+            longitude (float): Location’s longitude
+            name (str): Location’s name or command line position
             units (str): Unit type to be used for distances
         """
         super(NumberedPoint, self).__init__(latitude, longitude, units)
@@ -142,7 +139,7 @@ class NumberedPoints(point.Points):
             locations (list of str): Location identifiers
             format (str): Coordinate formatting system to use
             verbose (bool): Whether to generate verbose output
-            config_locations (dict): Locations imported from user's config
+            config_locations (dict): Locations imported from user’s config
                 file
             units (str): Unit type to be used for distances
         """
@@ -167,7 +164,7 @@ class NumberedPoints(point.Points):
 
         Args:
             locations (list of str): Location identifiers
-            config_locations (dict): Locations imported from user's config
+            config_locations (dict): Locations imported from user’s config
             file
         """
         for number, location in enumerate(locations):
@@ -199,7 +196,7 @@ class NumberedPoints(point.Points):
             else:
                 output = format(location, self.format)
             if self.verbose:
-                click.echo('Location %s is %s' % (location.name, output))
+                click.echo(f'Location {location.name} is {output}')
             else:
                 click.echo(output)
 
@@ -238,7 +235,7 @@ class NumberedPoints(point.Points):
         if string:
             bearings = map(utils.angle_to_name, bearings)
         else:
-            bearings = ['%i°' % bearing for bearing in bearings]
+            bearings = [f'{bearing:.0f}°' for bearing in bearings]
         if mode == 'bearing':
             verbose_fmt = 'Location %s to %s is %s'
         else:
@@ -293,8 +290,8 @@ class NumberedPoints(point.Points):
             else:
                 output = format(location, self.format)
             if self.verbose:
-                click.echo('Destination from location %s is %s'
-                           % (location.name, output))
+                click.echo(
+                    f'Destination from location {location.name} is {output}')
             else:
                 click.echo(output)
 
@@ -309,10 +306,10 @@ class NumberedPoints(point.Points):
         for location, time in zip(self, times):
             if self.verbose:
                 if time:
-                    click.echo('%s at %s UTC in location %s'
-                               % (mode_str, time, location.name))
+                    click.echo(
+                        f'{mode_str} at {time} UTC in location {location.name}')
                 else:
-                    click.echo("The sun doesn't %s at location %s on this date"
+                    click.echo('The sun doesn’t %s at location %s on this date'
                                % (mode_str[3:], location.name))
             else:
                 click.echo(time)
@@ -329,8 +326,8 @@ class NumberedPoints(point.Points):
         if len(self) == 1:
             raise LocationsError('flight_plan')
         if self.verbose:
-            click.echo('WAYPOINT,BEARING[°],DISTANCE[%s],ELAPSED_TIME[%s],'
-                       'LATITUDE[d.dd],LONGITUDE[d.dd]' % (self.units, time))
+            click.echo(f'WAYPOINT,BEARING[°],DISTANCE[{self.units}],'
+                       f'ELAPSED_TIME[{time}],LATITUDE[d.dd],LONGITUDE[d.dd]')
         legs = [(0, 0), ] + list(self.inverse())
         for leg, loc in zip(legs, self):
             if leg == (0, 0):
@@ -486,7 +483,7 @@ def sunset(globs):
 
 
 def read_locations(filename):
-    """Pull locations from a user's config file.
+    """Pull locations from a user’s config file.
 
     Args:
         filename (str): Config file to parse
@@ -515,9 +512,9 @@ def read_locations(filename):
 
 
 def read_csv(filename):
-    """Pull locations from a user's CSV file.
+    """Pull locations from a user’s CSV file.
 
-    Read gpsbabel_'s CSV output format
+    Read gpsbabel_’s CSV output format
 
     .. _gpsbabel: http://www.gpsbabel.org/
 
@@ -532,7 +529,7 @@ def read_csv(filename):
     locations = {}
     args = []
     for index, row in enumerate(data, 1):
-        name = '%02i:%s' % (index, row['name'])
+        name = f'{index:02d}:{row["name"]}'
         locations[name] = (row['latitude'], row['longitude'])
         args.append(name)
     return locations, args

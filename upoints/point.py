@@ -16,8 +16,6 @@
 # You should have received a copy of the GNU General Public License along with
 # upoints.  If not, see <http://www.gnu.org/licenses/>.
 
-from __future__ import division
-
 import math
 
 from . import utils
@@ -27,28 +25,24 @@ def _manage_location(attr):
     """Build managed property interface.
 
     Args:
-        attr (str): Property's name
+        attr (str): Property’s name
 
     Returns:
         property: Managed property interface
     """
-    return property(lambda self: getattr(self, '_%s' % attr),
+    return property(lambda self: getattr(self, f'_{attr}'),
                     lambda self, value: self._set_location(attr, value))
 
 
-def _dms_formatter(latitude, longitude, mode, unistr=False):
+def _dms_formatter(latitude, longitude, mode):
     """Generate a human readable DM/DMS location string.
 
     Args:
-        latitude (float): Location's latitude
-        longitude (float): Location's longitude
+        latitude (float): Location’s latitude
+        longitude (float): Location’s longitude
         mode (str): Coordinate formatting system to use
-        unistr (bool): Whether to use extended character set
     """
-    if unistr:
-        chars = ('°', '′', '″')
-    else:
-        chars = ('°', "'", '"')
+    chars = ('°', '′', '″')
 
     latitude_dms = tuple(map(abs, utils.to_dms(latitude, mode)))
     longitude_dms = tuple(map(abs, utils.to_dms(longitude, mode)))
@@ -80,8 +74,8 @@ class Point:
         """Initialise a new ``Point`` object.
 
         Args:
-            latitude (float, tuple or list): Location's latitude
-            longitude (float, tuple or list): Location's longitude
+            latitude (float, tuple or list): Location’s latitude
+            longitude (float, tuple or list): Location’s longitude
             angle (str): Type for specified angles
             units (str): Units type to be used for distances
             timezone (int): Offset from UTC in minutes
@@ -95,7 +89,7 @@ class Point:
         if angle in ('degrees', 'radians'):
             self._angle = angle
         else:
-            raise ValueError('Unknown angle type %r' % angle)
+            raise ValueError(f'Unknown angle type {angle!r}')
         self._set_location('latitude', latitude)
         self._set_location('longitude', longitude)
 
@@ -108,7 +102,7 @@ class Point:
         elif units == 'nm':
             self.units = 'nautical'
         else:
-            raise ValueError('Unknown units type %r' % units)
+            raise ValueError(f'Unknown units type {units!r}')
         self.timezone = timezone
 
     def _set_location(self, ltype, value):
@@ -122,11 +116,11 @@ class Point:
             setattr(self, '_rad_%s' % ltype, float(value))
             setattr(self, '_%s' % ltype, math.degrees(float(value)))
         else:
-            raise ValueError('Unknown angle type %r' % self._angle)
+            raise ValueError(f'Unknown angle type {self._angle!r}')
         if ltype == 'latitude' and not -90 <= self._latitude <= 90:
-            raise ValueError('Invalid latitude value %r' % value)
+            raise ValueError(f'Invalid latitude value {value!r}')
         elif ltype == 'longitude' and not -180 <= self._longitude <= 180:
-            raise ValueError('Invalid longitude value %r' % value)
+            raise ValueError(f'Invalid longitude value {value!r}')
     latitude = _manage_location('latitude')
     longitude = _manage_location('longitude')
     rad_latitude = _manage_location('rad_latitude')
@@ -146,7 +140,7 @@ class Point:
         while cls is not object:
             slots.extend(cls.__slots__)
             cls = cls.__base__
-        return dict((item, getattr(self, item)) for item in slots)
+        return {item: getattr(self, item) for item in slots}
 
     def __repr__(self):
         """Self-documenting string representation.
@@ -197,7 +191,7 @@ class Point:
         elif format_spec == 'locator':
             text.append(self.to_grid_locator())
         else:
-            raise ValueError('Unknown format_spec %r' % format_spec)
+            raise ValueError(f'Unknown format_spec {format_spec!r}')
 
         return ''.join(text)
 
@@ -259,7 +253,7 @@ class Point:
     def distance(self, other, method='haversine'):
         """Calculate the distance from self to other.
 
-        As a smoke test this check uses the example from Wikipedia's
+        As a smoke test this check uses the example from Wikipedia’s
         `Great-circle distance entry`_ of Nashville International Airport to
         Los Angeles International Airport, and is correct to within
         2 kilometres of the calculation there.
@@ -295,7 +289,7 @@ class Point:
                                  math.cos(longitude_difference)) * \
                 utils.BODY_RADIUS
         else:
-            raise ValueError('Unknown method type %r' % method)
+            raise ValueError(f'Unknown method type {method!r}')
 
         if self.units == 'imperial':
             return distance / utils.STATUTE_MILE
@@ -341,7 +335,7 @@ class Point:
         elif format == 'string':
             return utils.angle_to_name(bearing)
         else:
-            raise ValueError('Unknown format type %r' % format)
+            raise ValueError(f'Unknown format type {format!r}')
 
     def midpoint(self, other):
         """Calculate the midpoint from self to other.
@@ -389,7 +383,7 @@ class Point:
         elif format == 'string':
             return utils.angle_to_name(final_bearing)
         else:
-            raise ValueError('Unknown format type %r' % format)
+            raise ValueError(f'Unknown format type {format!r}')
 
     def destination(self, bearing, distance):
         """Calculate the destination from self given bearing and distance.
@@ -505,8 +499,8 @@ class TimedPoint(Point):
         """Initialise a new ``TimedPoint`` object.
 
         Args:
-            latitude (float, tuple or list): Location's latitude
-            longitude (float, tuple or list): Location's longitude
+            latitude (float, tuple or list): Location’s latitude
+            longitude (float, tuple or list): Location’s longitude
             angle (str): Type for specified angles
             units (str): Units type to be used for distances
             timezone (int): Offset from UTC in minutes
@@ -742,7 +736,7 @@ class KeyedPoints(dict):
                 self.import_locations(points)
             else:
                 if not all(x for x in points.values() if isinstance(x, Point)):
-                    raise TypeError("All `points` element's values must be an "
+                    raise TypeError('All `points` element’s values must be an '
                                     'instance of the `Point` class')
                 self.update(points)
 

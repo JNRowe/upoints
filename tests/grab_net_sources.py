@@ -16,16 +16,11 @@
 # You should have received a copy of the GNU General Public License along with
 # upoints.  If not, see <http://www.gnu.org/licenses/>.
 
-from __future__ import print_function
-
 import bz2
 import gzip
 import os
 import tempfile
-try:
-    from urllib.request import (urlopen, urlretrieve)
-except ImportError:
-    from urllib import (urlopen, urlretrieve)
+from urllib.request import (urlopen, urlretrieve)
 
 import click
 
@@ -55,10 +50,10 @@ def main(force):
     for filename, url in SOURCES.items():
         filename = os.path.join(os.path.dirname(__file__), 'data', filename)
         if not force and os.path.exists(filename):
-            print('%r already downloaded.' % filename)
+            print(f'{filename!r} already downloaded.')
             cached += 1
         else:
-            print('Fetching %r...' % url)
+            print(f'Fetching {url!r}...')
             if url.endswith('.gz'):
                 temp = tempfile.mkstemp()[1]
                 try:
@@ -76,7 +71,7 @@ def main(force):
                 urlretrieve(url, filename)
     if cached > 1:
         click.secho(
-            "You can force download with the `-f' option to this script.",
+            'You can force download with the ‘-f’ option to this script.',
             fg='yellow'
         )
 

@@ -42,9 +42,9 @@ class Trigpoint(point.Point):
         """Initialise a new ``Trigpoint`` object.
 
         Args:
-            latitude (float): Location's latitude
-            longitude (float): Location's longitude
-            altitude (float): Location's altitude
+            latitude (float): Location’s latitude
+            longitude (float): Location’s longitude
+            altitude (float): Location’s altitude
             name (str): Name for location
             identity (int): Database identifier, if known
         """
@@ -78,7 +78,7 @@ class Trigpoint(point.Point):
         """
         location = [super(Trigpoint, self).__format__(format_spec), ]
         if self.altitude:
-            location.append('alt %im' % self.altitude)
+            location.append(f'alt {self.altitude:.0f}m')
 
         if self.name:
             return '%s (%s)' % (self.name, ' '.join(location))
@@ -121,9 +121,9 @@ class Trigpoints(point.KeyedPoints):
         formatting should have no effect.  The above file processed by
         ``import_locations()`` will return the following ``dict`` object::
 
-            {500936: point.Point(52.066035, -0.281449, 37.0, "Broom Farm"),
-             501097: point.Point(52.010585, -0.173443, 97.0, "Bygrave"),
-             505392: point.Point(51.910886, -0.186462, 136.0, "Sish Lane")}
+            {500936: point.Point(52.066035, -0.281449, 37.0, 'Broom Farm'),
+             501097: point.Point(52.010585, -0.173443, 97.0, 'Bygrave'),
+             505392: point.Point(51.910886, -0.186462, 136.0, 'Sish Lane')}
 
         Args:
             marker_file (iter): Trigpoint marker data to read
