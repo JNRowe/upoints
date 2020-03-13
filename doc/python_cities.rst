@@ -103,7 +103,7 @@ tarball to see what can be done.
 .. _awk: http://www.gnu.org/software/gawk/gawk.html
 .. _geolocation and path cross: geolocation_and_pathcross.html
 .. _Mercurial: http://www.selenic.com/mercurial/
-.. _Python: http://www.python.org/
+.. _Python: https://www.python.org/
 .. _Trigpointing and point.py: trigpointing_and_point_py.html
 .. _gentoo: http://www.gentoo.org/
 .. _Sphinx: http://sphinx.pocoo.org/

@@ -23,7 +23,7 @@ User-visible changes
 * Added support for route data in GPX files
 
 .. _pip: https://crate.io/packages/pip/
-.. _pep-3101: http://www.python.org/dev/peps/pep-3101/
+.. _pep-3101: https://www.python.org/dev/peps/pep-3101/
 .. _aaargh: https://crate.io/packages/aaargh/
 .. _expecter: https://crate.io/packages/expecter/
 .. _nose2: https://crate.io/packages/nose2/
@@ -45,7 +45,7 @@ User-visible changes
 .. _OpenCellID: http://opencellid.org/
 .. _lxml: http://codespeak.net/lxml/
 .. _setuptools: http://peak.telecommunity.com/DevCenter/setuptools
-.. _PEP-8: http://www.python.org/dev/peps/pep-0008/
+.. _PEP-8: https://www.python.org/dev/peps/pep-0008/
 
 0.10.0 - 2008-03-27
 -------------------

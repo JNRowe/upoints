@@ -130,7 +130,7 @@ reproduce the problem, or even better a patch!
 .. _GPL v3: http://www.gnu.org/licenses/
 .. _xearth: http://hewgill.com/xearth/original/
 .. _xplanet: http://xplanet.sourceforge.net/
-.. _Python: http://www.python.org/
+.. _Python: https://www.python.org/
 .. _geolocation and path cross: doc/geolocation_and_pathcross.html
 .. _xearth and path cross: doc/xearth_and_pathcross.html
 .. _Trigpointing and point.py: doc/trigpointing_and_point_py.html

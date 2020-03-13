@@ -204,7 +204,7 @@ of code, so why not?
 .. _geoip: http://www.maxmind.com/geoip/api/c.shtml
 .. _pathcross: http://www.w3.org/wiki/PathCross
 .. _city: http://www.maxmind.com/app/city
-.. _Python: http://www.python.org/
+.. _Python: https://www.python.org/
 .. _Locate my IP: http://www.maxmind.com/app/locate_my_ip
 .. _UKFSN: http://www.ukfsn.org/
 .. _hCalendar: http://microformats.org/wiki/hcalendar

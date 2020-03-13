@@ -162,5 +162,5 @@ weather data for the station using the ever useful pymetar_ library.
 .. _xplanet: http://xplanet.sourceforge.net/
 .. _xearth: http://hewgill.com/xearth/original/
 .. _NOAA: http://weather.noaa.gov/
-.. _Python: http://www.python.org/
+.. _Python: https://www.python.org/
 .. _pymetar: http://www.schwarzvogel.de/software-pymetar.shtml

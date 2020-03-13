@@ -175,7 +175,7 @@ the classes and functions in the :mod:`upoints` tarball drop me a mail.
 .. _xearth: http://hewgill.com/xearth/original/
 .. _xplanet: http://xplanet.sourceforge.net/
 .. _Mercurial: http://www.selenic.com/mercurial/
-.. _Python: http://www.python.org/
+.. _Python: https://www.python.org/
 .. _Nokia: http://www.nokia.com/
 .. _IPython: http://ipython.scipy.org/
 .. _Bygrave: http://www.trigpointinguk.com/trigs/trig-details.php?t=1830

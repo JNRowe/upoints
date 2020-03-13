@@ -17,6 +17,6 @@ want to convince me that your style is better.
 New examples for the ``doc`` directory are as appreciated as code
 changes.
 
-.. _PEP 8: http://www.python.org/dev/peps/pep-0008/
-.. _PEP 257: http://www.python.org/dev/peps/pep-0257/
+.. _PEP 8: https://www.python.org/dev/peps/pep-0008/
+.. _PEP 257: https://www.python.org/dev/peps/pep-0257/
 .. _Sphinx: http://sphinx.pocoo.org/
