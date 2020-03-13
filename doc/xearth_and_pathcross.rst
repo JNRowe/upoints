@@ -26,7 +26,7 @@ because I don't have permission to publish the data but I'll give an
 example of its usage with a public file::
 
     >>> from upoints import xearth
-    >>> earth_markers = urllib.urlopen("http://xplanet.sourceforge.net/Extras/earth-markers-schaumann")
+    >>> earth_markers = urllib.urlopen('http://xplanet.sourceforge.net/Extras/earth-markers-schaumann')
     >>> markers = xearth.Xearths(earth_markers)
     >>> print(repr(markers['Cairo']))
     Xearth(30.05, 31.25, 'Egypt')
@@ -47,9 +47,9 @@ objects.
 
 ::
 
-    >>> print("Suva to Tokyo is %i kM" % markers['Suva'].distance(markers['Tokyo']))
+    >>> print('Suva to Tokyo is %i kM' % markers['Suva'].distance(markers['Tokyo']))
     Suva to Tokyo is 7253 kM
-    >>> print("Vienna to Brussels on %i°" % markers['Vienna'].bearing(markers['Brussels']))
+    >>> print('Vienna to Brussels on %i°' % markers['Vienna'].bearing(markers['Brussels']))
     Vienna to Brussels on 293°
 
 With the original purpose of the marker file export feature being
@@ -63,7 +63,7 @@ course that is possible too.
     >>> for marker in markers:
     ...      distance = Customer.distance(markers[marker])
     ...      if distance < 300:
-    ...          print("%i kM - %s, %s" % (distance, marker, markers[marker]))
+    ...          print('%i kM - %s, %s' % (distance, marker, markers[marker]))
     57 kM - London, United Kingdom (N51.500°; W000.170°)
 
 Imagining for a second the customer lives in my house, the only marker

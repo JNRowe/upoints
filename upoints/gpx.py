@@ -504,8 +504,8 @@ class Waypoints(point.TimedPoints):
         when importing data.  The above file processed by
         ``import_locations()`` will return the following ``list`` object::
 
-            [Waypoint(52.015, -0.221, "Home", "My place"),
-             Waypoint(52.167, 0.390, "MSR", "Microsoft Research, Cambridge")]
+            [Waypoint(52.015, -0.221, 'Home', 'My place'),
+             Waypoint(52.167, 0.390, 'MSR', 'Microsoft Research, Cambridge')]
 
         Args:
             gpx_file (iter): GPX data to read
@@ -611,8 +611,8 @@ class Trackpoints(_SegWrap):
         when importing data.  The above file processed by
         ``import_locations()`` will return the following ``list`` object::
 
-            [[Trackpoint(52.015, -0.221, "Home", "My place"),
-              Trackpoint(52.167, 0.390, "MSR", "Microsoft Research, Cambridge")], ]
+            [[Trackpoint(52.015, -0.221, 'Home', 'My place'),
+              Trackpoint(52.167, 0.390, 'MSR', 'Microsoft Research, Cambridge')], ]
 
         Args:
             gpx_file (iter): GPX data to read
@@ -725,8 +725,8 @@ class Routepoints(_SegWrap):
         when importing data.  The above file processed by
         ``import_locations()`` will return the following ``list`` object::
 
-            [[Routepoint(52.015, -0.221, "Home", "My place"),
-              Routepoint(52.167, 0.390, "MSR", "Microsoft Research, Cambridge")], ]
+            [[Routepoint(52.015, -0.221, 'Home', 'My place'),
+              Routepoint(52.167, 0.390, 'MSR', 'Microsoft Research, Cambridge')], ]
 
         Args:
             gpx_file (iter): GPX data to read

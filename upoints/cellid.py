@@ -152,9 +152,9 @@ class Cells(point.KeyedPoints):
                 cell = {n: p(row[n])
                         for n, p in zip(field_names, field_parsers)}
             except ValueError:
-                if r"\N" in row.values():
+                if r'\N' in row.values():
                     # A few entries are incomplete, and when that occurs the
-                    # export includes the string "\N" to denote missing
+                    # export includes the string '\N' to denote missing
                     # data.  We just ignore them for now
                     logging.debug('Skipping incomplete entry %r' % row)
                     break

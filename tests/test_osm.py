@@ -48,7 +48,7 @@ class TestNode:
         ('bare', 'Node(0, 52.0, 0.0, False, None, None, None)'),
         ('named',
          "Node(0, 52.0, 0.0, True, 'jnrowe', "
-         "Timestamp(2008, 1, 25, 0, 0), None)"),
+         'Timestamp(2008, 1, 25, 0, 0), None)'),
         ('tagged', "Node(0, 52.0, 0.0, False, None, None, {'key': 'value'})"),
     ])
     def test___repr__(self, node, result):
@@ -107,7 +107,7 @@ class TestWay:
         ('bare', 'Way(0, [0, 1, 2], False, None, None, None)'),
         ('named',
          "Way(0, [0, 1, 2], True, 'jnrowe', Timestamp(2008, 1, 25, 0, 0), "
-         "None)"),
+         'None)'),
         ('tagged', "Way(0, [0, 1, 2], False, None, None, {'key': 'value'})"),
     ])
     def test___repr__(self, node, result):

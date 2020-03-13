@@ -142,13 +142,13 @@ class Stations(point.KeyedPoints):
         And ``dict`` objects such as the following will be created when ICAO
         indexed data files are processed::
 
-            {'AYMD': Station("94", "014", "Madang", None, "Papua New Guinea",
+            {'AYMD': Station('94', '014', 'Madang', None, 'Papua New Guinea',
                              5, -5.216666, 145.783333, -5.216666,
                              145.78333333333333, 3, 5, True,
-             'AYMO': Station(None, None, "Manus Island/Momote", None,
-                             "Papua New Guinea", 5, -2.061944, 147.424166,
+             'AYMO': Station(None, None, 'Manus Island/Momote', None,
+                             'Papua New Guinea', 5, -2.061944, 147.424166,
                              None, None, 4, False,
-             'AYPY': Station("94", "035", "Moresby", None, "Papua New Guinea",
+             'AYPY': Station('94', '035', 'Moresby', None, 'Papua New Guinea',
                              5, -9.433333, 147.216667, -9.433333, 147.216667,
                              38, 49, True}
 

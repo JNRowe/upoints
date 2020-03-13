@@ -138,8 +138,8 @@ class Placemarks(point.KeyedPoints):
         when importing data.  The above file processed by
         ``import_locations()`` will return the following ``dict`` object::
 
-            {"Home": Placemark(52.015, -0.221, 60),
-             "Cambridge": Placemark(52.167, 0.390, None)}
+            {'Home': Placemark(52.015, -0.221, 60),
+             'Cambridge': Placemark(52.167, 0.390, None)}
 
         Args:
             kml_file (iter): KML data to read

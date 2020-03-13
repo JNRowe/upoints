@@ -84,7 +84,7 @@ Too inaccurate?
     >>> from upoints import point
     >>> Home = point.Point(52.015, -0.221)
     >>> Telford = point.Point(52.6333, -2.5000)
-    >>> print("%i kM" % Home.distance(Telford))
+    >>> print('%i kM' % Home.distance(Telford))
     169 kM
 
 The script above tells us that the distance from my house to Telford is
@@ -123,7 +123,7 @@ it is his fault I'm playing with Python and geoip :mod:`upoints` can
 tell us::
 
     >>> Seemant = point.Point(42, -71)
-    >>> print("%i kM" % Home.distance(Seemant))
+    >>> print('%i kM' % Home.distance(Seemant))
     5257 kM
 
 We now have to make a decision about the range for the proximity alert
@@ -182,7 +182,7 @@ of code, so why not?
 
 ::
 
-    >>> print("A heading of %i° will find the beers!" % Home.bearing(Telford))
+    >>> print('A heading of %i° will find the beers!' % Home.bearing(Telford))
     A heading of 294° will find the beers!
 
 .. [1] By "automatically updating" I mean simply a ping-and-forget

@@ -104,10 +104,10 @@ class Zones(point.Points):
         When processed by ``import_locations()`` a ``list`` object of the
         following style will be returned::
 
-            [Zone(None, None, "AN", "America/Curacao", None),
-             Zone(None, None, "AO", "Africa/Luanda", None),
-             Zone(None, None, "AO", "Antartica/McMurdo",
-                  ["McMurdo Station", "Ross Island"])]
+            [Zone(None, None, 'AN', 'America/Curacao', None),
+             Zone(None, None, 'AO', 'Africa/Luanda', None),
+             Zone(None, None, 'AO', 'Antartica/McMurdo',
+                  ['McMurdo Station', 'Ross Island'])]
 
         Args:
             zone_file (iter): ``zone.tab`` data to read
@@ -123,7 +123,7 @@ class Zones(point.Points):
         self._zone_file = zone_file
         field_names = ('country', 'location', 'zone', 'comments')
 
-        data = utils.prepare_csv_read(zone_file, field_names, delimiter=r"	")
+        data = utils.prepare_csv_read(zone_file, field_names, delimiter=r'	')
 
         for row in (x for x in data if not x['country'].startswith('#')):
             if row['comments']:

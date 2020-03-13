@@ -121,9 +121,9 @@ class Trigpoints(point.KeyedPoints):
         formatting should have no effect.  The above file processed by
         ``import_locations()`` will return the following ``dict`` object::
 
-            {500936: point.Point(52.066035, -0.281449, 37.0, "Broom Farm"),
-             501097: point.Point(52.010585, -0.173443, 97.0, "Bygrave"),
-             505392: point.Point(51.910886, -0.186462, 136.0, "Sish Lane")}
+            {500936: point.Point(52.066035, -0.281449, 37.0, 'Broom Farm'),
+             501097: point.Point(52.010585, -0.173443, 97.0, 'Bygrave'),
+             505392: point.Point(51.910886, -0.186462, 136.0, 'Sish Lane')}
 
         Args:
             marker_file (iter): Trigpoint marker data to read

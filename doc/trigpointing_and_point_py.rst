@@ -34,7 +34,7 @@ original ``edist.py`` script.
 ::
 
     >>> from upoints import trigpoints
-    >>> database_location = urllib.urlopen("http://www.haroldstreet.org.uk/waypoints/alltrigs-wgs84.txt")
+    >>> database_location = urllib.urlopen('http://www.haroldstreet.org.uk/waypoints/alltrigs-wgs84.txt')
     >>> Trigpoints = trigpoints.Trigpoints(database_location)
     >>> print(len(Trigpoints))
     6557
@@ -50,7 +50,7 @@ session::
     >>> Home = trigpoints.point.Point(52.015, -0.221)
     >>> for identifier, trigpoint in sorted(Trigpoints.items()):
     ...     if Home.__eq__(trigpoint, 20) and trigpoint.altitude < 60:
-    ...         print("%s - %s" % (identifier, trigpoint))
+    ...         print('%s - %s' % (identifier, trigpoint))
     500936 - Broom Farm (52°03'57"N, 000°16'53"W alt 37m)
     501822 - Crane Hill (52°11'10"N, 000°14'51"W alt 58m)
     503750 - Limlow Hill (52°03'31"N, 000°04'20"W alt 59m)
@@ -69,7 +69,7 @@ to show trigpoints within the region from 51°52'15"N, 000°28'29"W to
     >>> for identifier, trigpoint in sorted(Trigpoints.items()):
     ...     if latitude_min < trigpoint.latitude < latitude_max \
     ...       and longitude_min < trigpoint.longitude < longitude_max:
-    ...         print("%s - %s" % (identifier, trigpoint))
+    ...         print('%s - %s' % (identifier, trigpoint))
     500928 - Bromley Common (51°52'17"N, 000°06'14"W alt 118m)
     500936 - Broom Farm (52°03'57"N, 000°16'53"W alt 37m)
     501097 - Bygrave (52°00'38"N, 000°10'24"W alt 97m)
@@ -97,8 +97,8 @@ trigpoints above 1000m above sea level::
     >>> for identifier, trigpoint in Trigpoints.items():
     ...     if trigpoint.altitude > 1000:
     ...         high_markers[identifier] = trigpoint
-    >>> with open("high_markers.txt", "w") as f:
-    ...     f.write("\n".join(dump_xearth_markers(high_markers)))
+    >>> with open('high_markers.txt', 'w') as f:
+    ...     f.write('\n'.join(dump_xearth_markers(high_markers)))
 
 .. figure:: .static/Scotland_trigpoints.png
    :alt: xearth showing trigpoints higher than 1000m in Scotland
@@ -139,8 +139,8 @@ names as labels.
     >>> for identifier, trigpoint in Trigpoints.items():
     ...     if 900 < trigpoint.altitude < 910:
     ...         display_markers[identifier] = trigpoint
-    >>> with open("display_markers.txt", "w") as f:
-    ...     f.write("\n".join(dump_xearth_markers(display_markers, "name")))
+    >>> with open('display_markers.txt', 'w') as f:
+    ...     f.write('\n'.join(dump_xearth_markers(display_markers, 'name')))
 
 The result of how that query could be shown with xplanet can be found to the
 right.

@@ -150,12 +150,12 @@ class Cities(point.Points):
         When processed by ``import_locations()`` will return ``list`` object in
         the following style::
 
-            [City(1, "City", 210700, None, "Aberdeen", "UK", "Scotland",
-                  "Earth", -2.083, 57.15, None, (1996, 12, 6, 0, 0, 0, 4,
-                  341, -1), "Rob.Hooft@EMBL-Heidelberg.DE"),
-             City(2, "City", 1950000, None, "Abidjan", "Ivory Coast", "",
-                  "Earth", -3.867, 5.333, None, (1996, 12, 6, 0, 0, 0, 4,
-                  341, -1), "Rob.Hooft@EMBL-Heidelberg.DE")])
+            [City(1, 'City', 210700, None, 'Aberdeen', 'UK', 'Scotland',
+                  'Earth', -2.083, 57.15, None, (1996, 12, 6, 0, 0, 0, 4,
+                  341, -1), 'Rob.Hooft@EMBL-Heidelberg.DE'),
+             City(2, 'City', 1950000, None, 'Abidjan', 'Ivory Coast', "",
+                  'Earth', -3.867, 5.333, None, (1996, 12, 6, 0, 0, 0, 4,
+                  341, -1), 'Rob.Hooft@EMBL-Heidelberg.DE')])
 
         Args:
             data (iter): :abbr:`NOAA (National Oceanographic and Atmospheric Administration)`

@@ -44,7 +44,7 @@ The simplest way to show how ``upoints`` works is by example, and here goes::
     >>> from upoints import point
     >>> Home = point.Point(52.015, -0.221)
     >>> Telford = point.Point(52.6333, -2.5000)
-    >>> print("%d kM, with an initial bearing of %d°"
+    >>> print('%d kM, with an initial bearing of %d°'
     ...       % (Home.distance(Telford), Home.bearing(Telford)))
     169 kM, with an initial bearing of 294°
 

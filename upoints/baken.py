@@ -145,10 +145,10 @@ class Bakens(point.KeyedPoints):
         robust against encodings and such.  The above file processed by
         ``import_locations()`` will return the following ``dict`` object::
 
-            {"Abeche, Chad": Baken(14.460, 20.680, None, None, None, 0.000,
+            {'Abeche, Chad': Baken(14.460, 20.680, None, None, None, 0.000,
                                    None, None, None, None, None),
-             "GB3BUX": : Baken(None, None, "2 x Turnstile", None, 50.000,
-                               460.000, "IO93BF", "A1A", None, 25, None)}
+             'GB3BUX': : Baken(None, None, '2 x Turnstile', None, 50.000,
+                               460.000, 'IO93BF', 'A1A', None, 25, None)}
 
         Args::
             baken_file (iter): Baken data to read
@@ -170,7 +170,7 @@ class Bakens(point.KeyedPoints):
         else:
             raise TypeError('Unable to handle data of type %r'
                             % type(baken_file))
-        valid_locator = re.compile(r"[A-Z]{2}\d{2}[A-Z]{2}")
+        valid_locator = re.compile(r'[A-Z]{2}\d{2}[A-Z]{2}')
         for name in data.sections():
             elements = {}
             for item in ('latitude', 'longitude', 'antenna', 'direction',

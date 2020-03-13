@@ -148,7 +148,7 @@ def repr_assist(obj, remap=None):
             data.append(repr(value))
         else:
             data.append(str(value))
-    return "%s(%s)" % (obj.__class__.__name__, ', '.join(data))
+    return '%s(%s)' % (obj.__class__.__name__, ', '.join(data))
 
 
 def prepare_read(data, method='readlines', mode='r'):
@@ -1034,9 +1034,9 @@ def dump_xearth_markers(markers, name='identifier'):
     It expects a dictionary in one of the following formats. For support of
     :class:`Trigpoint` that is::
 
-        {500936: Trigpoint(52.066035, -0.281449, 37.0, "Broom Farm"),
-         501097: Trigpoint(52.010585, -0.173443, 97.0, "Bygrave"),
-         505392: Trigpoint(51.910886, -0.186462, 136.0, "Sish Lane")}
+        {500936: Trigpoint(52.066035, -0.281449, 37.0, 'Broom Farm'),
+         501097: Trigpoint(52.010585, -0.173443, 97.0, 'Bygrave'),
+         505392: Trigpoint(51.910886, -0.186462, 136.0, 'Sish Lane')}
 
     And generates output of the form::
 
@@ -1052,9 +1052,9 @@ def dump_xearth_markers(markers, name='identifier'):
 
     Point objects should be provided in the following format::
 
-        {"Broom Farm": Point(52.066035, -0.281449),
-         "Bygrave": Point(52.010585, -0.173443),
-         "Sish Lane": Point(51.910886, -0.186462)}
+        {'Broom Farm': Point(52.066035, -0.281449),
+         'Bygrave': Point(52.010585, -0.173443),
+         'Sish Lane': Point(51.910886, -0.186462)}
 
     And generates output of the form::
 

@@ -356,18 +356,18 @@ class Osm(point.Points):
         ``import_locations()`` will return the following `Osm` object::
 
             Osm([
-                Node(0, 52.015749, -0.221765, True, "jnrowe",
+                Node(0, 52.015749, -0.221765, True, 'jnrowe',
                      utils.Timestamp(2008, 1, 25, 12, 52, 11), None),
                 Node(1, 52.015761, -0.221767, True,
                      utils.Timestamp(2008, 1, 25, 12, 53), None,
-                     {"created_by": "hand", "highway": "crossing"}),
-                Node(2, 52.015754, -0.221766, True, "jnrowe",
+                     {'created_by': 'hand', 'highway': 'crossing'}),
+                Node(2, 52.015754, -0.221766, True, 'jnrowe',
                      utils.Timestamp(2008, 1, 25, 12, 52, 30),
-                     {"amenity": "pub"}),
+                     {'amenity': 'pub'}),
                 Way(0, [0, 1, 2], True, None,
                     utils.Timestamp(2008, 1, 25, 13, 00),
-                    {"ref": "My Way", "highway": "primary"})],
-                generator="upoints/0.9.0")
+                    {'ref': 'My Way', 'highway': 'primary'})],
+                generator='upoints/0.9.0')
 
         Args:
             osm_file (iter): OpenStreetMap data to read

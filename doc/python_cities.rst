@@ -44,36 +44,36 @@ On my Gentoo_ desktop the cities database is installed as
 :file:`/usr/share/misc/cities.dat`, and can be imported as simply as::
 
     >>> from upoints import cities
-    >>> with open("/usr/share/misc/cities.dat") as f:
+    >>> with open('/usr/share/misc/cities.dat') as f:
     ..      Cities = cities.Cities(f)
 
 And the imported database can be used in a variety of ways::
 
-    >>> print("%i cities" % len(Cities))
+    >>> print('%i cities' % len(Cities))
     497 cities
-    >>> print("Cities larger with more than 8 million people")
+    >>> print('Cities larger with more than 8 million people')
     Cities larger with more than 8 million people
     >>> for city in Cities:
     ...     if city.population > 8000000:
-    ...         print("  %s - %s" % (city.name, city.population))
+    ...         print('  %s - %s' % (city.name, city.population))
        Bombay - 8243405
        Jakarta - 9200000
        Moskwa - 8769000
        Sao Paolo - 10063110
        Tokyo - 8354615
        Mexico - 8831079
-    >>> print("Mountains")
+    >>> print('Mountains')
     Mountains
     >>> for city in Cities:
-    ...     if city.ptype == "Mountain":
-    ...         print("  %s" % city.name)
+    ...     if city.ptype == 'Mountain':
+    ...         print('  %s' % city.name)
        Aconcagua
        Popocatepetl
 
 You can recreate the database as a smoke test using the following::
 
-    >>> with open("cities.dat", "w") as f:
-    ...     f.write("\n//\n".join(map(str, Cities)))
+    >>> with open('cities.dat', 'w') as f:
+    ...     f.write('\n//\n'.join(map(str, Cities)))
 
 unfortunately the files aren't simply comparable using :command:`diff`
 because of some unusual formatting in the original file, but visually
@@ -90,8 +90,8 @@ of the parent classes.  For example, you could use the
 
     >>> from upoints.utils import dump_xearth_markers
     >>> scottish_markers = dict((x.identifier, x) for x in Cities
-    ...                         if x.region == "Scotland")
-    >>> print("\n".join(dump_xearth_markers(scottish_markers, "name")))
+    ...                         if x.region == 'Scotland')
+    >>> print('\n'.join(dump_xearth_markers(scottish_markers, 'name')))
     57.150000 -2.083000 "Aberdeen" # 1
     55.950000 -3.183000 "Edinburgh" # 83
     55.867000 -4.267000 "Glasgow" # 92

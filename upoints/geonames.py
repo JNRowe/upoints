@@ -182,18 +182,18 @@ class Locations(point.Points):
         ``import_locations()`` will return ``list`` objects of the following
         style::
 
-            [Location(2633441, "Afon Wyre", "Afon Wyre",
+            [Location(2633441, 'Afon Wyre', 'Afon Wyre',
                       ['River Wayrai', 'River Wyrai', 'Wyre'],
-                      52.3166667, -4.1666667, "H", "STM", "GB", ['GB'], "00",
-                      None, None, None, 0, None, -9999, "Europe/London",
+                      52.3166667, -4.1666667, 'H', 'STM', 'GB', ['GB'], '00',
+                      None, None, None, 0, None, -9999, 'Europe/London',
                       datetime.date(1994, 1, 13)),
-             Location(2633442, "Wyre", "Wyre", ['Viera'], 59.1166667,
-                      -2.9666667, "T", "ISL", "GB", ['GB'], "V9", None, None,
-                      None, 0, None, 1, "Europe/London",
+             Location(2633442, 'Wyre', 'Wyre', ['Viera'], 59.1166667,
+                      -2.9666667, 'T', 'ISL', 'GB', ['GB'], 'V9', None, None,
+                      None, 0, None, 1, 'Europe/London',
                       datetime.date(2004, 9, 24)),
-             Location(2633443, "Wraysbury", "Wraysbury", ['Wyrardisbury'],
-                      51.45, -0.55, "P", "PPL", "GB", None, "P9", None, None,
-                      None, 0, None, 28, "Europe/London",
+             Location(2633443, 'Wraysbury', 'Wraysbury', ['Wyrardisbury'],
+                      51.45, -0.55, 'P', 'PPL', 'GB', None, 'P9', None, None,
+                      None, 0, None, 28, 'Europe/London',
                       datetime.date(2006, 8, 21))]
 
         Args:
@@ -226,7 +226,7 @@ class Locations(point.Points):
                          str_or_none, str_or_none, comma_split, str_or_none,
                          str_or_none, str_or_none, str_or_none, int_or_none,
                          int_or_none, int_or_none, tz_parse, date_parse)
-        data = utils.prepare_csv_read(data, field_names, delimiter=r"	")
+        data = utils.prepare_csv_read(data, field_names, delimiter=r'	')
         for row in data:
             try:
                 for name, parser in zip(field_names, field_parsers):
@@ -255,9 +255,9 @@ class Locations(point.Points):
         ``import_timezones_file()`` will return ``dict`` object of the
         following style::
 
-            {"Europe/Andorra": (60, 120),
-             "Asia/Dubai": (240, 240),
-             "Asia/Kabul": (270, 270)}
+            {'Europe/Andorra': (60, 120),
+             'Asia/Dubai': (240, 240),
+             'Asia/Kabul': (270, 270)}
 
         Args:
             data (iter): geonames.org timezones data to read
@@ -274,7 +274,7 @@ class Locations(point.Points):
         self._tzfile = data
         field_names = ('ident', 'gmt_offset', 'dst_offset')
         time_parse = lambda n: int(float(n) * 60)
-        data = utils.prepare_csv_read(data, field_names, delimiter=r"	")
+        data = utils.prepare_csv_read(data, field_names, delimiter=r'	')
 
         self.timezones = {}
         for row in data:
