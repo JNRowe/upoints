@@ -29,8 +29,8 @@ a mail_ and I'll endeavour to fix it.
 The module has been tested on many UNIX-like systems, including Linux and OS X,
 but it should work fine on other systems too.
 
-To run the tests you'll need pytest_.  Once you have pytest_ installed you can run
-the tests with the following commands:
+To run the tests you'll need pytest_.  Once you have pytest_ installed you can
+run the tests with the following commands:
 
 .. code:: console
 
@@ -138,10 +138,10 @@ reproduce the problem, or even better a patch!
 .. _Pythons on a plane: doc/pythons_on_a_plane.html
 .. _NOAA: http://weather.noaa.gov/
 .. _mail: jnrowe@gmail.com
-.. _aaargh: https://crate.io/packages/aaargh/
+.. _aaargh: https://pypi.org/project/aaargh/
 .. _lxml: http://codespeak.net/lxml/
 .. _Sphinx: http://sphinx.pocoo.org/
-.. _pytest: https://pypi.python.org/packages/pytest/
+.. _pytest: https://pypi.org/project/pytest/
 .. _issue: https://github.com/JNRowe/upoints/issues
 
 .. |travis| image:: https://img.shields.io/travis/JNRowe/upoints.png
@@ -153,7 +153,7 @@ reproduce the problem, or even better a patch!
    :alt: Coverage state on master
 
 .. |pypi| image:: https://img.shields.io/pypi/v/upoints.png
-   :target: https://pypi.python.org/pypi/upoints/
+   :target: https://pypi.org/project/upoints/
    :alt: Current PyPI release
 
 .. |readthedocs| image:: https://img.shields.io/readthedocs/upoints/stable.png

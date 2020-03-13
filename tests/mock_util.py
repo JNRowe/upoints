@@ -161,6 +161,6 @@ class pymetar(ModuleType):
                 """Mock `getISOTime`.
 
                 Returns:
-                    str: Sample ISO time string
+                    str: Sample |ISO|-8601 time string
                 """
                 return '2007-11-28 19:20:00Z'

@@ -30,7 +30,7 @@ from . import (point, trigpoints, utils)
 class Location(trigpoints.Trigpoint):
     """Class for representing a location from a geonames.org_ data file.
 
-    All country codes are specified with their two letter ISO-3166 country
+    All country codes are specified with their two letter |ISO|-3166 country
     code.
 
     .. versionadded:: 0.3.0
@@ -65,8 +65,8 @@ class Location(trigpoints.Trigpoint):
             feature_code (str): Location's code
             country (str): Location's country
             alt_country (str): Alternate country codes for location
-            admin1 (str): FIPS code (subject to change to ISO code), ISO code
-                for the US and CH
+            admin1 (str): FIPS code (subject to change to |ISO| code), |ISO|
+                code for the US and CH
             admin2 (str): Code for the second administrative division, a county
                 in the US
             admin3 (str): Code for third level administrative division
