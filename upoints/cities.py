@@ -194,7 +194,7 @@ class Cities(point.Points):
             # Entry for Utrecht has the incorrect value of 0.000 for elevation.
             if entries['altitude'] == '0.000':
                 logging.debug('Ignoring ‘0.000’ value for elevation in %r '
-                              'entry' % record)
+                              'entry', record)
                 entries['altitude'] = ''
             for i in ('identifier', 'population', 'size', 'altitude'):
                 entries[i] = int(entries[i]) if entries[i] else None

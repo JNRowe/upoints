@@ -188,7 +188,7 @@ class Bakens(point.KeyedPoints):
                             elements[item] = data.getfloat(name, item)
                         except ValueError:
                             logging.debug('Multiple frequency workaround for '
-                                          '%r entry' % name)
+                                          '%r entry', name)
                             elements[item] = \
                                 map(float, data.get(name, item).split(','))
                 else:
@@ -196,7 +196,7 @@ class Bakens(point.KeyedPoints):
             if elements['latitude'] is None \
                and not valid_locator.match(elements['locator']):
                 logging.info('Skipping %r entry, as it contains no location '
-                             'data' % name)
+                             'data', name)
                 continue
 
             self[name] = Baken(**elements)

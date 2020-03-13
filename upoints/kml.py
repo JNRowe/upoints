@@ -157,7 +157,7 @@ class Placemarks(point.KeyedPoints):
             name = place.name.text
             coords = place.Point.coordinates.text
             if coords is None:
-                logging.info('No coordinates found for %r entry' % name)
+                logging.info('No coordinates found for %r entry', name)
                 continue
             coords = coords.split(',')
             if len(coords) == 2:

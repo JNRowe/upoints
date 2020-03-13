@@ -177,7 +177,7 @@ class Stations(point.KeyedPoints):
                     # and 14 are None.  Of the entries I've hand checked this
                     # assumption would be correct.
                     logging.debug('Extending ICAO %r entry, because it is '
-                                  'too short to process' % line)
+                                  'too short to process', line)
                     chunk.extend(['', ''])
                 elif index == 'WMO' and len(chunk) == 13:
                     # A few of the WMO indexed entries are missing their RBSN
@@ -185,7 +185,7 @@ class Stations(point.KeyedPoints):
                     # shows that they are correct if we just assume RBSN is
                     # false.
                     logging.debug('Extending WMO %r entry, because it is '
-                                  'too short to process' % line)
+                                  'too short to process', line)
                     chunk.append('')
                 else:
                     raise utils.FileFormatError('NOAA')
@@ -211,8 +211,8 @@ class Stations(point.KeyedPoints):
                 # Some entries in nsd_cccc.txt are of the format “DD-MM-
                 # N”, so we just take the spaces to mean 0 seconds.
                 if ' ' in i:
-                    logging.debug('Fixing unpadded location data in %r entry'
-                                  % line)
+                    logging.debug('Fixing unpadded location data in %r entry',
+                                  line)
                     i = i.replace(' ', '0')
                 values = map(int, i[:-1].split('-'))
                 if i[-1] in ('S', 'W'):

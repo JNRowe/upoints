@@ -156,7 +156,7 @@ class Cells(point.KeyedPoints):
                     # A few entries are incomplete, and when that occurs the
                     # export includes the string '\N' to denote missing
                     # data.  We just ignore them for now
-                    logging.debug('Skipping incomplete entry %r' % row)
+                    logging.debug('Skipping incomplete entry %r', row)
                     break
                 else:
                     raise utils.FileFormatError('opencellid.org')
