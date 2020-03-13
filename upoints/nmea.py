@@ -29,7 +29,7 @@ def calc_checksum(sentence):
     """Calculate a NMEA 0183 checksum for the given sentence.
 
     NMEA checksums are a simple XOR of all the characters in the sentence
-    between the leading "$" symbol, and the "*" checksum separator.
+    between the leading ``$`` symbol, and the ``*`` checksum separator.
 
     Args:
         sentence (str): NMEA 0183 formatted sentence
