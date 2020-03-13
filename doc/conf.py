@@ -56,7 +56,7 @@ release = upoints._version.dotted
 
 pygments_style = 'sphinx'
 with suppress(CalledProcessError):
-    proc = run(['git', 'log', "--pretty=format:'%ad [%h]'", '--date=short',
+    proc = run(['git', 'log', '--pretty=format:%ad [%h]', '--date=short',
                 '-n1'], stdout=PIPE)
     html_last_updated_fmt = proc.stdout.decode()
 
