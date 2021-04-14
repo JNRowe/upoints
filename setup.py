@@ -1,7 +1,9 @@
 #! /usr/bin/env python3
 """setup.py - Setuptools tasks and config for upoints."""
-# Copyright © 2007-2017  James Rowe <jnrowe@gmail.com>
+# Copyright © 2007-2021  James Rowe <jnrowe@gmail.com>
 #                        Petr Viktorin <encukou@gmail.com>
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
 #
 # This file is part of upoints.
 #

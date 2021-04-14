@@ -1,6 +1,8 @@
 #
 """conf - Sphinx configuration information."""
-# Copyright © 2008-2017  James Rowe <jnrowe@gmail.com>
+# Copyright © 2008-2021  James Rowe <jnrowe@gmail.com>
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
 #
 # This file is part of upoints.
 #
@@ -82,7 +84,7 @@ nitpicky = True
 project = 'upoints'
 
 author = 'James Rowe'
-copyright = f'2007-2020  {author}'
+copyright = f'2007-2021  {author}'
 
 version = '{major}.{minor}'.format_map(upoints._version.dict)
 release = upoints._version.dotted

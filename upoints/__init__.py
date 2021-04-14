@@ -34,7 +34,9 @@ datetime.time(3, 42)
 datetime.time(20, 24)
 
 """
-# Copyright © 2007-2017  James Rowe <jnrowe@gmail.com>
+# Copyright © 2007-2021  James Rowe <jnrowe@gmail.com>
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
 #
 # This file is part of upoints.
 #

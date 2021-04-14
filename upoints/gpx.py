@@ -1,6 +1,8 @@
 #
 """gpx - Imports GPS eXchange format data files."""
-# Copyright © 2008-2017  James Rowe <jnrowe@gmail.com>
+# Copyright © 2008-2021  James Rowe <jnrowe@gmail.com>
+#
+# SPDX-License-Identifier: GPL-3.0-or-later
 #
 # This file is part of upoints.
 #
