@@ -116,7 +116,7 @@ generate your own labels for the markers.
 There is a wealth of Sphinx_ generated HTML output in the tarball, including
 documentation and usage examples.  If you still have any questions after reading
 the documentation, drop me a mail_ and I’ll do my best to answer your questions.
-Also, I'd love to hear from you if come up with any clever uses for for the
+Also, I'd love to hear from you if come up with any clever uses for the
 modules in |modref|.
 
 .. [1] I've personally taken to creating and using :mod:`pickle` dumps of the

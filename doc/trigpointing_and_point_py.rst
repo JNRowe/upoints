@@ -23,7 +23,7 @@ trigpoints as a navigational challenge.
    in the UK.  It contains information about many of the trigpoints you can
    find, such as the one closest to me at Bygrave_
 
-Anybody who knows me well will attest that that I’m quite the navigation geek,
+Anybody who knows me well will attest that I’m quite the navigation geek,
 mostly just as a curiosity being that what we're really talking about is just
 applications of specific branches of math.  As such, I actually find the concept
 of trigpointing by hand quite intriguing.  That being said technology is here to
