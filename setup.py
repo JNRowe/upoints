@@ -24,23 +24,31 @@ import sys
 from setuptools import setup
 from setuptools.command.test import test
 
+
 class PytestTest(test):
     def finalize_options(self):
         test.finalize_options(self)
-        self.test_args = ['tests/', ]
+        self.test_args = [
+            'tests/',
+        ]
         self.test_suite = True
 
     def run_tests(self):
         from sys import exit
         from pytest import main
+
         exit(main(self.test_args))
 
 
 # Hack to import _version file without importing upoints/__init__.py, its
 # purpose is to allow import without requiring dependencies at this point.
 with open('upoints/_version.py') as ver_file:
-    _version = imp.load_module('_version', ver_file, ver_file.name,
-                            ('.py', ver_file.mode, imp.PY_SOURCE))
+    _version = imp.load_module(
+        '_version',
+        ver_file,
+        ver_file.name,
+        ('.py', ver_file.mode, imp.PY_SOURCE),
+    )
 
 
 def parse_requires(file):
@@ -53,8 +61,10 @@ def parse_requires(file):
             continue
         elif ';' in dep:
             dep, marker = dep.split(';')
-            if not eval(marker.strip(),
-                        {'python_version': '%s.%s' % sys.version_info[:2]}):
+            if not eval(
+                marker.strip(),
+                {'python_version': '%s.%s' % sys.version_info[:2]},
+            ):
                 continue
         deps.append(dep)
     return deps
@@ -74,12 +84,30 @@ setup(
     author_email='jnrowe@gmail.com',
     url='https://github.com/JNRowe/upoints/',
     license='GPL-3',
-    keywords=['baken', 'cities', 'geonames', 'gis', 'gps', 'gpx', 'navigation',
-              'nmea', 'openstreetmap', 'trigpointing', 'weather', 'xearth'],
-    packages=['upoints', ],
+    keywords=[
+        'baken',
+        'cities',
+        'geonames',
+        'gis',
+        'gps',
+        'gpx',
+        'navigation',
+        'nmea',
+        'openstreetmap',
+        'trigpointing',
+        'weather',
+        'xearth',
+    ],
+    packages=[
+        'upoints',
+    ],
     include_package_data=True,
     package_data={},
-    entry_points={'console_scripts': ['edist = upoints.edist:main', ]},
+    entry_points={
+        'console_scripts': [
+            'edist = upoints.edist:main',
+        ]
+    },
     zip_safe=False,
     classifiers=[
         'Development Status :: 7 - Inactive',

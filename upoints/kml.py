@@ -22,7 +22,7 @@ from operator import attrgetter
 
 from lxml import etree
 
-from . import (point, trigpoints, utils)
+from . import point, trigpoints, utils
 
 KML_NS = 'http://earth.google.com/kml/2.2'
 etree.register_namespace('kml', KML_NS)
@@ -36,8 +36,9 @@ class Placemark(trigpoints.Trigpoint):
     .. versionadded:: 0.6.0
     """
 
-    def __init__(self, latitude, longitude, altitude=None, name=None,
-                 description=None):
+    def __init__(
+        self, latitude, longitude, altitude=None, name=None, description=None
+    ):
         """Initialise a new ``Placemark`` object.
 
         Args:
@@ -76,8 +77,9 @@ class Placemark(trigpoints.Trigpoint):
             placemark.set('id', self.name)
             placemark.name = create_elem('name', text=self.name)
         if self.description:
-            placemark.description = create_elem('description',
-                                                text=self.description)
+            placemark.description = create_elem(
+                'description', text=self.description
+            )
         placemark.Point = create_elem('Point')
 
         data = [str(self.longitude), str(self.latitude)]
@@ -86,8 +88,9 @@ class Placemark(trigpoints.Trigpoint):
                 data.append('%i' % self.altitude)
             else:
                 data.append(str(self.altitude))
-        placemark.Point.coordinates = create_elem('coordinates',
-                                                  text=','.join(data))
+        placemark.Point.coordinates = create_elem(
+            'coordinates', text=','.join(data)
+        )
 
         return placemark
 
@@ -164,13 +167,16 @@ class Placemarks(point.KeyedPoints):
             elif len(coords) == 3:
                 longitude, latitude, altitude = coords
             else:
-                raise ValueError(f'Unable to handle coordinates value {coords!r}')
+                raise ValueError(
+                    f'Unable to handle coordinates value {coords!r}'
+                )
             try:
                 description = place.description
             except AttributeError:
                 description = None
-            self[name] = Placemark(latitude, longitude, altitude, name,
-                                   description)
+            self[name] = Placemark(
+                latitude, longitude, altitude, name, description
+            )
 
     def export_kml_file(self):
         """Generate KML element tree from ``Placemarks``.

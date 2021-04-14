@@ -21,7 +21,7 @@ import re
 
 from configparser import ConfigParser
 
-from . import (point, utils)
+from . import point, utils
 
 
 class Baken(point.Point):
@@ -32,9 +32,20 @@ class Baken(point.Point):
     .. _baken: http://www.qsl.net:80/g4klx/
     """
 
-    def __init__(self, latitude, longitude, antenna=None, direction=None,
-                 frequency=None, height=None, locator=None, mode=None,
-                 operator=None, power=None, qth=None):
+    def __init__(
+        self,
+        latitude,
+        longitude,
+        antenna=None,
+        direction=None,
+        frequency=None,
+        height=None,
+        locator=None,
+        mode=None,
+        operator=None,
+        power=None,
+        qth=None,
+    ):
         """Initialise a new ``Baken`` object.
 
         Args:
@@ -59,8 +70,10 @@ class Baken(point.Point):
             latitude, longitude = utils.from_grid_locator(locator)
             super(Baken, self).__init__(latitude, longitude)
         else:
-            raise LookupError('Unable to instantiate baken object, no '
-                              'latitude or locator string')
+            raise LookupError(
+                'Unable to instantiate baken object, no '
+                'latitude or locator string'
+            )
 
         self.antenna = antenna
         self.direction = direction
@@ -165,14 +178,25 @@ class Bakens(point.KeyedPoints):
             with open(baken_file) as f:
                 data.readfp(f)
         else:
-            raise TypeError('Unable to handle data of type %r'
-                            % type(baken_file))
+            raise TypeError(
+                'Unable to handle data of type %r' % type(baken_file)
+            )
         valid_locator = re.compile(r'[A-Z]{2}\d{2}[A-Z]{2}')
         for name in data.sections():
             elements = {}
-            for item in ('latitude', 'longitude', 'antenna', 'direction',
-                         'frequency', 'height', 'locator', 'mode', 'operator',
-                         'power', 'qth'):
+            for item in (
+                'latitude',
+                'longitude',
+                'antenna',
+                'direction',
+                'frequency',
+                'height',
+                'locator',
+                'mode',
+                'operator',
+                'power',
+                'qth',
+            ):
                 if data.has_option(name, item):
                     if item in ('antenna', 'locator', 'mode', 'power', 'qth'):
                         elements[item] = data.get(name, item)
@@ -184,16 +208,23 @@ class Bakens(point.KeyedPoints):
                         try:
                             elements[item] = data.getfloat(name, item)
                         except ValueError:
-                            logging.debug('Multiple frequency workaround for '
-                                          '%r entry', name)
-                            elements[item] = \
-                                map(float, data.get(name, item).split(','))
+                            logging.debug(
+                                'Multiple frequency workaround for '
+                                '%r entry',
+                                name,
+                            )
+                            elements[item] = map(
+                                float, data.get(name, item).split(',')
+                            )
                 else:
                     elements[item] = None
-            if elements['latitude'] is None \
-               and not valid_locator.match(elements['locator']):
-                logging.info('Skipping %r entry, as it contains no location '
-                             'data', name)
+            if elements['latitude'] is None and not valid_locator.match(
+                elements['locator']
+            ):
+                logging.info(
+                    'Skipping %r entry, as it contains no location ' 'data',
+                    name,
+                )
                 continue
 
             self[name] = Baken(**elements)

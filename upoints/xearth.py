@@ -16,7 +16,7 @@
 # You should have received a copy of the GNU General Public License along with
 # upoints.  If not, see <http://www.gnu.org/licenses/>.
 
-from . import (point, utils)
+from . import point, utils
 
 
 class Xearth(point.Point):
@@ -123,5 +123,5 @@ class Xearths(point.KeyedPoints):
             latitude, longitude, name = data.split(None, 2)
             name = name.strip()
             # Find matching start and end quote, and keep only the contents
-            name = name[1:name.find(name[0], 1)]
+            name = name[1 : name.find(name[0], 1)]
             self[name.strip()] = Xearth(latitude, longitude, comment)

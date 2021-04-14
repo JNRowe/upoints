@@ -20,20 +20,36 @@ from operator import attrgetter
 
 from pytest import mark
 
-from upoints.tzdata import (Zone, Zones)
+from upoints.tzdata import Zone, Zones
 
 
 class TestZone:
     def test___repr__(self):
-        assert repr(Zone('+513030-0000731', 'GB', 'Europe/London')) == \
-            "Zone('+513030-0000730', 'GB', 'Europe/London', None)"
+        assert (
+            repr(Zone('+513030-0000731', 'GB', 'Europe/London'))
+            == "Zone('+513030-0000730', 'GB', 'Europe/London', None)"
+        )
 
-    @mark.parametrize('args, result', [
-        (('+513030-0000731', 'GB', 'Europe/London'),
-         """Europe/London (GB: 51°30′30″N, 000°07′30″W)"""),
-        (('+0658-15813', 'FM', 'Pacific/Ponape', ['Ponape (Pohnpei)', ]),
-         """Pacific/Ponape (FM: 06°58′00″N, 158°13′00″W also Ponape (Pohnpei))"""),
-    ])
+    @mark.parametrize(
+        'args, result',
+        [
+            (
+                ('+513030-0000731', 'GB', 'Europe/London'),
+                """Europe/London (GB: 51°30′30″N, 000°07′30″W)""",
+            ),
+            (
+                (
+                    '+0658-15813',
+                    'FM',
+                    'Pacific/Ponape',
+                    [
+                        'Ponape (Pohnpei)',
+                    ],
+                ),
+                """Pacific/Ponape (FM: 06°58′00″N, 158°13′00″W also Ponape (Pohnpei))""",
+            ),
+        ],
+    )
     def test___str__(self, args, result):
         assert str(Zone(*args)) == result
 
@@ -52,7 +68,8 @@ class TestZones:
         ]
 
     def test_dump_zone_file(self):
-        assert Zones.dump_zone_file(self.zones) == \
-            ['AN\t+121100-0690000\tAmerica/Curacao',
-             'AO\t-084800+0131400\tAfrica/Luanda',
-             'AQ\t-775000+1663600\tAntarctica/McMurdo\tMcMurdo Station, Ross Island']
+        assert Zones.dump_zone_file(self.zones) == [
+            'AN\t+121100-0690000\tAmerica/Curacao',
+            'AO\t-084800+0131400\tAfrica/Luanda',
+            'AQ\t-775000+1663600\tAntarctica/McMurdo\tMcMurdo Station, Ross Island',
+        ]

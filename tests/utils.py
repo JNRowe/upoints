@@ -41,9 +41,13 @@ def xml_compare(elem1, elem2, ellipsis=False):
     tail2 = elem2.tail.strip() if elem2.tail else ''
     if ellipsis:
         if not ellipsis_match(text1, text2):
-            raise ValueError(f'text mismatch: {elem1.text!r} != {elem2.text!r}')
+            raise ValueError(
+                f'text mismatch: {elem1.text!r} != {elem2.text!r}'
+            )
         if not ellipsis_match(tail1, tail2):
-            raise ValueError(f'tail mismatch: {elem1.tail!r} != {elem2.tail!r}')
+            raise ValueError(
+                f'tail mismatch: {elem1.tail!r} != {elem2.tail!r}'
+            )
     else:
         assert text1 == text2
         assert tail1 == tail2

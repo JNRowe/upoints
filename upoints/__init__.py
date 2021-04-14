@@ -56,9 +56,36 @@ __version__ = _version.dotted
 __date__ = _version.date
 __copyright__ = 'Copyright (C) 2007-2017  James Rowe <jnrowe@gmail.com>'
 
-from . import (baken, cellid, cities, geonames, gpx, kml, nmea, osm, point,
-               trigpoints, tzdata, utils, weather_stations, xearth)
+from . import (
+    baken,
+    cellid,
+    cities,
+    geonames,
+    gpx,
+    kml,
+    nmea,
+    osm,
+    point,
+    trigpoints,
+    tzdata,
+    utils,
+    weather_stations,
+    xearth,
+)
 
-__all__ = ('baken', 'cellid', 'cities', 'geonames', 'gpx', 'kml', 'nmea',
-           'osm', 'point', 'trigpoints', 'tzdata', 'utils', 'weather_stations',
-           'xearth')
+__all__ = (
+    'baken',
+    'cellid',
+    'cities',
+    'geonames',
+    'gpx',
+    'kml',
+    'nmea',
+    'osm',
+    'point',
+    'trigpoints',
+    'tzdata',
+    'utils',
+    'weather_stations',
+    'xearth',
+)

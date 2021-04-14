@@ -37,22 +37,18 @@ from operator import add
 BODIES = {
     # Body radii in kilometres
     'Sun': 696000,
-
     # Terrestrial inner planets
     'Mercury': 2440,
     'Venus': 6052,
     'Earth': 6367,
     'Mars': 3390,
-
     # Gas giant outer planets
     'Jupiter': 69911,
     'Saturn': 58232,
     'Uranus': 25362,
     'Neptune': 24622,
-
     # only satellite to be added
     'Moon': 1738,
-
     # dwarf planets may be added
     'Pluto': 1153,
     'Ceres': 475,
@@ -99,8 +95,10 @@ class FileFormatError(ValueError):
             str: Human readable error string
         """
         if self.site:
-            return ('Incorrect data format, if you’re using a file downloaded '
-                    f'from {self.site} please report this to {__bug_report__}')
+            return (
+                'Incorrect data format, if you’re using a file downloaded '
+                f'from {self.site} please report this to {__bug_report__}'
+            )
         else:
             return 'Unsupported data format.'
 
@@ -142,8 +140,9 @@ def repr_assist(obj, remap=None):
                 value = getattr(obj, arg)
             except AttributeError:
                 value = getattr(obj, f'_{arg}')
-        if isinstance(value, (type(None), list, str, datetime.date,
-                              datetime.time)):
+        if isinstance(
+            value, (type(None), list, str, datetime.date, datetime.time)
+        ):
             data.append(repr(value))
         else:
             data.append(str(value))
@@ -234,8 +233,9 @@ def element_creator(namespace=None):
     Returns:
         function: Namespace-aware element creator
     """
-    element_maker = _objectify.ElementMaker(namespace=namespace,
-                                            annotate=False)
+    element_maker = _objectify.ElementMaker(
+        namespace=namespace, annotate=False
+    )
 
     def create_elem(tag, attr=None, text=None):
         """:class:`objectify.Element` wrapper with namespace defined.
@@ -257,6 +257,7 @@ def element_creator(namespace=None):
         return element
 
     return create_elem
+
 
 # }}}
 
@@ -280,11 +281,13 @@ def to_dms(angle, style='dms'):
     minutes, seconds = divmod(angle, 60)
     degrees, minutes = divmod(minutes, 60)
     if style == 'dms':
-        return tuple(sign * abs(i) for i in (int(degrees), int(minutes),
-                                             seconds))
+        return tuple(
+            sign * abs(i) for i in (int(degrees), int(minutes), seconds)
+        )
     elif style == 'dm':
-        return tuple(sign * abs(i) for i in (int(degrees),
-                                             (minutes + seconds / 60)))
+        return tuple(
+            sign * abs(i) for i in (int(degrees), (minutes + seconds / 60))
+        )
     else:
         raise ValueError(f'Unknown style type {style!r}')
 
@@ -321,19 +324,43 @@ def __chunk(segment, abbr=False):
         names = [s[0].upper() for s in names]
         sjoin = ''
     if segment % 2 == 0:
-        return (names[segment].capitalize(),
-                sjoin.join((names[segment].capitalize(), names[segment],
-                            names[segment + 1])),
-                sjoin.join((names[segment].capitalize(), names[segment + 1])),
-                sjoin.join((names[segment + 1].capitalize(), names[segment],
-                            names[segment + 1])))
+        return (
+            names[segment].capitalize(),
+            sjoin.join(
+                (
+                    names[segment].capitalize(),
+                    names[segment],
+                    names[segment + 1],
+                )
+            ),
+            sjoin.join((names[segment].capitalize(), names[segment + 1])),
+            sjoin.join(
+                (
+                    names[segment + 1].capitalize(),
+                    names[segment],
+                    names[segment + 1],
+                )
+            ),
+        )
     else:
-        return (names[segment].capitalize(),
-                sjoin.join((names[segment].capitalize(), names[segment + 1],
-                            names[segment])),
-                sjoin.join((names[segment + 1].capitalize(), names[segment])),
-                sjoin.join((names[segment + 1].capitalize(),
-                            names[segment + 1], names[segment])))
+        return (
+            names[segment].capitalize(),
+            sjoin.join(
+                (
+                    names[segment].capitalize(),
+                    names[segment + 1],
+                    names[segment],
+                )
+            ),
+            sjoin.join((names[segment + 1].capitalize(), names[segment])),
+            sjoin.join(
+                (
+                    names[segment + 1].capitalize(),
+                    names[segment + 1],
+                    names[segment],
+                )
+            ),
+        )
 
 
 COMPASS_NAMES = reduce(add, map(__chunk, range(4)))
@@ -358,11 +385,15 @@ def angle_to_name(angle, segments=8, abbr=False):
     elif segments == 16:
         string = COMPASS_NAMES[int((angle + 11.25) / 22.5) % 16]
     else:
-        raise ValueError(f'Segments parameter must be 4, 8 or 16 not {segments!r}')
+        raise ValueError(
+            f'Segments parameter must be 4, 8 or 16 not {segments!r}'
+        )
     if abbr:
         return ''.join(i[0].capitalize() for i in string.split('-'))
     else:
         return string
+
+
 # }}}
 
 
@@ -436,7 +467,9 @@ class Timestamp(datetime.datetime):
 
         .. _ISO 8601: http://www.cl.cam.ac.uk/~mgk25/iso-time.html
         """
-        text = [self.strftime('%Y-%m-%dT%H:%M:%S'), ]
+        text = [
+            self.strftime('%Y-%m-%dT%H:%M:%S'),
+        ]
         if self.tzinfo:
             text.append(self.tzinfo.as_timezone())
         else:
@@ -465,6 +498,7 @@ class Timestamp(datetime.datetime):
         timestamp = Timestamp.strptime(timestamp, '%Y-%m-%dT%H:%M:%S')
         timestamp = timestamp.replace(tzinfo=zone)
         return timestamp
+
 
 # }}}
 
@@ -516,8 +550,11 @@ def from_iso6709(coordinates):
     elif latitude_head == 5:  # ±DDMM(.M{1,4})?
         latitude = float(latitude[:3]) + (sign * (float(latitude[3:]) / 60))
     elif latitude_head == 7:  # ±DDMMSS(.S{1,4})?
-        latitude = float(latitude[:3]) + (sign * (float(latitude[3:5]) / 60)) \
+        latitude = (
+            float(latitude[:3])
+            + (sign * (float(latitude[3:5]) / 60))
             + (sign * (float(latitude[5:]) / 3600))
+        )
     else:
         raise ValueError(f'Incorrect format for latitude {latitude!r}')
     sign = 1 if longitude[0] == '+' else -1
@@ -527,9 +564,11 @@ def from_iso6709(coordinates):
     elif longitude_head == 6:  # ±DDDMM(.M{1,4})?
         longitude = float(longitude[:4]) + (sign * (float(longitude[4:]) / 60))
     elif longitude_head == 8:  # ±DDDMMSS(.S{1,4})?
-        longitude = float(longitude[:4]) \
-            + (sign * (float(longitude[4:6]) / 60)) \
+        longitude = (
+            float(longitude[:4])
+            + (sign * (float(longitude[4:6]) / 60))
             + (sign * (float(longitude[6:]) / 3600))
+        )
     else:
         raise ValueError(f'Incorrect format for longitude {longitude!r}')
     if altitude:
@@ -567,8 +606,17 @@ def to_iso6709(latitude, longitude, altitude=None, format='dd', precision=4):
     if format == 'd':
         text.append('%+03i%+04i' % (latitude, longitude))
     elif format == 'dd':
-        text.append('%+0*.*f%+0*.*f' % (precision + 4, precision, latitude,
-                                        precision + 5, precision, longitude))
+        text.append(
+            '%+0*.*f%+0*.*f'
+            % (
+                precision + 4,
+                precision,
+                latitude,
+                precision + 5,
+                precision,
+                longitude,
+            )
+        )
     elif format in ('dm', 'dms'):
         if format == 'dm':
             latitude_dms = to_dms(latitude, 'dm')
@@ -581,12 +629,11 @@ def to_iso6709(latitude, longitude, altitude=None, format='dd', precision=4):
         latitude_dms = tuple(abs(i) for i in latitude_dms)
         longitude_dms = tuple(abs(i) for i in longitude_dms)
         if format == 'dm':
-            text.append('%s%02i%02i' % ((latitude_sign, ) + latitude_dms))
-            text.append('%s%03i%02i' % ((longitude_sign, ) + longitude_dms))
+            text.append('%s%02i%02i' % ((latitude_sign,) + latitude_dms))
+            text.append('%s%03i%02i' % ((longitude_sign,) + longitude_dms))
         elif format == 'dms':
-            text.append('%s%02i%02i%02i' % ((latitude_sign, ) + latitude_dms))
-            text.append('%s%03i%02i%02i'
-                        % ((longitude_sign, ) + longitude_dms))
+            text.append('%s%02i%02i%02i' % ((latitude_sign,) + latitude_dms))
+            text.append('%s%03i%02i%02i' % ((longitude_sign,) + longitude_dms))
     else:
         raise ValueError(f'Unknown format type {format!r}')
     if altitude and int(altitude) == altitude:
@@ -661,7 +708,9 @@ def from_grid_locator(locator):
         ValueError: Invalid values in locator string
     """
     if not len(locator) in (4, 6, 8):
-        raise ValueError('Locator must be 4, 6 or 8 characters long {locator!r}')
+        raise ValueError(
+            'Locator must be 4, 6 or 8 characters long {locator!r}'
+        )
 
     # Convert the locator string to a list, because we need it to be mutable to
     # munge the values
@@ -688,28 +737,26 @@ def from_grid_locator(locator):
 
     # Check field values within 'A'(0) to 'R'(17), and square values are within
     # 0 to 9
-    if not 0 <= locator[0] <= 17 \
-       or not 0 <= locator[1] <= 17 \
-       or not 0 <= locator[2] <= 9 \
-       or not 0 <= locator[3] <= 9:
+    if (
+        not 0 <= locator[0] <= 17
+        or not 0 <= locator[1] <= 17
+        or not 0 <= locator[2] <= 9
+        or not 0 <= locator[3] <= 9
+    ):
         raise ValueError(f'Invalid values in locator {locator!r}')
 
     # Check subsquare values are within 'a'(0) to 'x'(23)
     if len(locator) >= 6:
-        if not 0 <= locator[4] <= 23 \
-           or not 0 <= locator[5] <= 23:
+        if not 0 <= locator[4] <= 23 or not 0 <= locator[5] <= 23:
             raise ValueError(f'Invalid values in locator {locator!r}')
 
     # Extended square values must be within 0 to 9
     if len(locator) == 8:
-        if not 0 <= locator[6] <= 9 \
-           or not 0 <= locator[7] <= 9:
+        if not 0 <= locator[6] <= 9 or not 0 <= locator[7] <= 9:
             raise ValueError(f'Invalid values in locator {locator!r}')
 
-    longitude = LONGITUDE_FIELD * locator[0] \
-        + LONGITUDE_SQUARE * locator[2]
-    latitude = LATITUDE_FIELD * locator[1] \
-        + LATITUDE_SQUARE * locator[3]
+    longitude = LONGITUDE_FIELD * locator[0] + LONGITUDE_SQUARE * locator[2]
+    latitude = LATITUDE_FIELD * locator[1] + LATITUDE_SQUARE * locator[3]
 
     if len(locator) >= 6:
         longitude += LONGITUDE_SUBSQUARE * locator[4]
@@ -801,6 +848,7 @@ def parse_location(location):
     Returns:
         tuple of float: Latitude and longitude of location
     """
+
     def split_dms(text, hemisphere):
         """Split degrees, minutes and seconds string.
 
@@ -853,6 +901,8 @@ def parse_location(location):
                 if chunks[3] == 'W':
                     longitude = -1 * longitude
             return latitude, longitude
+
+
 # }}}
 
 # Solar event utilities {{{
@@ -861,7 +911,6 @@ def parse_location(location):
 #: Sunrise/-set mappings from name to angle
 ZENITH = {
     # All values are specified in degrees!
-
     # Sunrise/sunset is defined as the moment the upper limb becomes visible,
     # taking in to account atmospheric refraction.  That is 34' for atmospheric
     # refraction and 16' for angle between the Sun’s centre and it’s upper
@@ -871,7 +920,6 @@ ZENITH = {
     # atmospheric refraction, because their effects are drowned out by rounding
     # errors in the equation.
     None: -50 / 60,
-
     # Twilight definitions specify the angle in degrees of the Sun below the
     # horizon
     'civil': -6,
@@ -880,8 +928,9 @@ ZENITH = {
 }
 
 
-def sun_rise_set(latitude, longitude, date, mode='rise', timezone=0,
-                 zenith=None):
+def sun_rise_set(
+    latitude, longitude, date, mode='rise', timezone=0, zenith=None
+):
     """Calculate sunrise or sunset for a specific location.
 
     This function calculates the time sunrise or sunset, or optionally the
@@ -932,8 +981,12 @@ def sun_rise_set(latitude, longitude, date, mode='rise', timezone=0,
     m = (0.9856 * t) - 3.289
 
     # Calculate the Sun’s true longitude
-    l = m + 1.916 * math.sin(math.radians(m)) + 0.020 \
-        * math.sin(2 * math.radians(m)) + 282.634
+    l = (
+        m
+        + 1.916 * math.sin(math.radians(m))
+        + 0.020 * math.sin(2 * math.radians(m))
+        + 282.634
+    )
     l = abs(l) % 360
 
     # Calculate the Sun’s right ascension
@@ -952,9 +1005,9 @@ def sun_rise_set(latitude, longitude, date, mode='rise', timezone=0,
     cos_dec = math.cos(math.asin(sin_dec))
 
     # Calculate the Sun’s local hour angle
-    cos_h = (math.radians(zenith) -
-             (sin_dec * math.sin(math.radians(latitude)))) \
-        / (cos_dec * math.cos(math.radians(latitude)))
+    cos_h = (
+        math.radians(zenith) - (sin_dec * math.sin(math.radians(latitude)))
+    ) / (cos_dec * math.cos(math.radians(latitude)))
 
     if cos_h > 1:
         # The sun never rises on this location (on the specified date)
@@ -1016,8 +1069,11 @@ def sun_events(latitude, longitude, date, timezone=0, zenith=None):
         tuple of datetime.time: The time for the given events in the specified
             timezone
     """
-    return (sun_rise_set(latitude, longitude, date, 'rise', timezone, zenith),
-            sun_rise_set(latitude, longitude, date, 'set', timezone, zenith))
+    return (
+        sun_rise_set(latitude, longitude, date, 'rise', timezone, zenith),
+        sun_rise_set(latitude, longitude, date, 'set', timezone, zenith),
+    )
+
 
 # }}}
 
@@ -1082,7 +1138,9 @@ def dump_xearth_markers(markers, name='identifier'):
     """
     output = []
     for identifier, point in markers.items():
-        line = ['%f %f ' % (point.latitude, point.longitude), ]
+        line = [
+            '%f %f ' % (point.latitude, point.longitude),
+        ]
         if hasattr(point, 'name') and point.name:
             if name == 'identifier':
                 line.append(f'"{identifier}" # {point.name}')

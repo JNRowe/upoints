@@ -18,7 +18,7 @@
 
 from operator import attrgetter
 
-from . import (point, utils)
+from . import point, utils
 
 
 class Zone(point.Point):
@@ -49,8 +49,9 @@ class Zone(point.Point):
         Returns:
             str: String to recreate ``Zone`` object
         """
-        location = utils.to_iso6709(self.latitude, self.longitude,
-                                    format='dms')[:-1]
+        location = utils.to_iso6709(
+            self.latitude, self.longitude, format='dms'
+        )[:-1]
         return utils.repr_assist(self, {'location': location})
 
     def __str__(self):
@@ -62,8 +63,10 @@ class Zone(point.Point):
         Returns:
             str: Human readable string representation of ``Zone`` object
         """
-        text = ['%s (%s: %s' % (self.zone, self.country,
-                                super(Zone, self).__format__('dms')), ]
+        text = [
+            '%s (%s: %s'
+            % (self.zone, self.country, super(Zone, self).__format__('dms')),
+        ]
         if self.comments:
             text.append(' also ' + ', '.join(self.comments))
         text.append(')')
@@ -136,11 +139,16 @@ class Zones(point.Points):
         """
         data = []
         for zone in sorted(self, key=attrgetter('country')):
-            text = ['%s	%s	%s'
-                    % (zone.country,
-                       utils.to_iso6709(zone.latitude, zone.longitude,
-                                        format='dms')[:-1],
-                       zone.zone), ]
+            text = [
+                '%s	%s	%s'
+                % (
+                    zone.country,
+                    utils.to_iso6709(
+                        zone.latitude, zone.longitude, format='dms'
+                    )[:-1],
+                    zone.zone,
+                ),
+            ]
             if zone.comments:
                 text.append('	%s' % ', '.join(zone.comments))
             data.append(''.join(text))

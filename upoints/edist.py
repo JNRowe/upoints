@@ -44,7 +44,7 @@ import click
 
 from configparser import ConfigParser
 
-from . import (_version, point, utils)
+from . import _version, point, utils
 
 
 class LocationsError(ValueError):
@@ -130,8 +130,14 @@ class NumberedPoints(point.Points):
     .. versionadded:: 0.6.0
     """
 
-    def __init__(self, locations=None, format='dd', verbose=True,
-                 config_locations=None, units='km'):
+    def __init__(
+        self,
+        locations=None,
+        format='dd',
+        verbose=True,
+        config_locations=None,
+        units='km',
+    ):
         """Initialise a new ``NumberedPoints`` object.
 
         Args:
@@ -169,8 +175,9 @@ class NumberedPoints(point.Points):
         for number, location in enumerate(locations):
             if config_locations and location in config_locations:
                 latitude, longitude = config_locations[location]
-                self.append(NumberedPoint(latitude, longitude, location,
-                                          self.units))
+                self.append(
+                    NumberedPoint(latitude, longitude, location, self.units)
+                )
             else:
                 try:
                     data = utils.parse_location(location)
@@ -178,8 +185,11 @@ class NumberedPoints(point.Points):
                         latitude, longitude = data
                     else:
                         latitude, longitude = utils.from_grid_locator(location)
-                    self.append(NumberedPoint(latitude, longitude, number + 1,
-                                              self.units))
+                    self.append(
+                        NumberedPoint(
+                            latitude, longitude, number + 1, self.units
+                        )
+                    )
                 except ValueError:
                     raise LocationsError(data=(number, location))
 
@@ -202,8 +212,12 @@ class NumberedPoints(point.Points):
     def distance(self):
         """Calculate distances between locations."""
         distances = list(super(NumberedPoints, self).distance())
-        leg_msg = ['Location %s to %s is %i', ]
-        total_msg = ['Total distance is %i', ]
+        leg_msg = [
+            'Location %s to %s is %i',
+        ]
+        total_msg = [
+            'Total distance is %i',
+        ]
         if self.units == 'sm':
             leg_msg.append('miles')
             total_msg.append('miles')
@@ -215,9 +229,10 @@ class NumberedPoints(point.Points):
             total_msg.append('kilometres')
         if self.verbose:
             for number, distance in enumerate(distances):
-                click.echo(' '.join(leg_msg)
-                           % (self[number].name, self[number + 1].name,
-                              distance))
+                click.echo(
+                    ' '.join(leg_msg)
+                    % (self[number].name, self[number + 1].name, distance)
+                )
             if len(distances) > 1:
                 click.echo(' '.join(total_msg) % sum(distances))
         else:
@@ -241,9 +256,10 @@ class NumberedPoints(point.Points):
             verbose_fmt = 'Final bearing from location %s to %s is %s'
         for number, bearing in enumerate(bearings):
             if self.verbose:
-                click.echo(verbose_fmt % (self[number].name,
-                                          self[number + 1].name,
-                                          bearing))
+                click.echo(
+                    verbose_fmt
+                    % (self[number].name, self[number + 1].name, bearing)
+                )
             else:
                 click.echo(bearing)
 
@@ -257,7 +273,9 @@ class NumberedPoints(point.Points):
         for location in self[1:]:
             in_range = test_location.__eq__(location, distance)
             if self.verbose:
-                text = ['Location %s is', ]
+                text = [
+                    'Location %s is',
+                ]
                 if not in_range:
                     text.append('not')
                 text.append('within %i')
@@ -268,8 +286,9 @@ class NumberedPoints(point.Points):
                 else:
                     text.append('kilometres')
                 text.append('of location %s')
-                click.echo(' '.join(text) % (location.name, distance,
-                                             self[0].name))
+                click.echo(
+                    ' '.join(text) % (location.name, distance, self[0].name)
+                )
             else:
                 click.echo(in_range)
 
@@ -281,8 +300,9 @@ class NumberedPoints(point.Points):
             bearing (float): Direction of travel
             locator (str): Accuracy of Maidenhead locator output
         """
-        destinations = super(NumberedPoints, self).destination(bearing,
-                                                               distance)
+        destinations = super(NumberedPoints, self).destination(
+            bearing, distance
+        )
         for location, destination in zip(self, destinations):
             if locator:
                 output = destination.to_grid_locator(locator)
@@ -290,7 +310,8 @@ class NumberedPoints(point.Points):
                 output = format(location, self.format)
             if self.verbose:
                 click.echo(
-                    f'Destination from location {location.name} is {output}')
+                    f'Destination from location {location.name} is {output}'
+                )
             else:
                 click.echo(output)
 
@@ -306,10 +327,13 @@ class NumberedPoints(point.Points):
             if self.verbose:
                 if time:
                     click.echo(
-                        f'{mode_str} at {time} UTC in location {location.name}')
+                        f'{mode_str} at {time} UTC in location {location.name}'
+                    )
                 else:
-                    click.echo('The sun doesn’t %s at location %s on this date'
-                               % (mode_str[3:], location.name))
+                    click.echo(
+                        'The sun doesn’t %s at location %s on this date'
+                        % (mode_str[3:], location.name)
+                    )
             else:
                 click.echo(time)
 
@@ -324,23 +348,48 @@ class NumberedPoints(point.Points):
         """
         if len(self) == 1:
             raise LocationsError('flight_plan')
-        fields = ['WAYPOINT', 'BEARING[°]', f'DISTANCE[{self.units}]',
-                  f'ELAPSED_TIME[{time}]', 'LATITUDE[d.dd]', 'LONGITUDE[d.dd]']
-        legs = [(0, 0), ] + list(self.inverse())
+        fields = [
+            'WAYPOINT',
+            'BEARING[°]',
+            f'DISTANCE[{self.units}]',
+            f'ELAPSED_TIME[{time}]',
+            'LATITUDE[d.dd]',
+            'LONGITUDE[d.dd]',
+        ]
+        legs = [
+            (0, 0),
+        ] + list(self.inverse())
         rows = []
         for leg, loc in zip(legs, self):
             # This odd formatting is purely to maintain backwards compatibility,
             # a better format will be added with a future release.
             if leg == (0, 0):
-                rows.append([loc.name, None, None, None, '%.6f' % loc.latitude,
-                             '%.6f' % loc.longitude])
+                rows.append(
+                    [
+                        loc.name,
+                        None,
+                        None,
+                        None,
+                        '%.6f' % loc.latitude,
+                        '%.6f' % loc.longitude,
+                    ]
+                )
             else:
                 leg_speed = '%.1f' % (leg[1] / speed) if speed != 0 else ''
-                rows.append([loc.name, int(leg[0]), '%.1f' % leg[1], leg_speed,
-                             '%.6f' % loc.latitude, '%.6f' % loc.longitude])
+                rows.append(
+                    [
+                        loc.name,
+                        int(leg[0]),
+                        '%.1f' % leg[1],
+                        leg_speed,
+                        '%.6f' % loc.latitude,
+                        '%.6f' % loc.longitude,
+                    ]
+                )
         # This odd dialect choice is to maintain backwards compatibility.
-        plan = csv.writer(sys.stdout, dialect=csv.unix_dialect,
-                          quoting=csv.QUOTE_MINIMAL)
+        plan = csv.writer(
+            sys.stdout, dialect=csv.unix_dialect, quoting=csv.QUOTE_MINIMAL
+        )
         if self.verbose:
             plan.writerow(fields)
         plan.writerows(rows)
@@ -355,40 +404,61 @@ class NumberedPoints(point.Points):
                 speed_marker = ''
                 overall_speed = '%.1f' % (overall_distance / speed)
                 direct_speed = '%.1f' % (direct_distance / speed)
-            click.echo('-- OVERALL --%s,,%.1f,%s,,'
-                       % (speed_marker, overall_distance, overall_speed))
-            click.echo('-- DIRECT --%s,%i,%.1f,%s,,'
-                       % (speed_marker, self[0].bearing(self[-1]),
-                          direct_distance, direct_speed))
+            click.echo(
+                '-- OVERALL --%s,,%.1f,%s,,'
+                % (speed_marker, overall_distance, overall_speed)
+            )
+            click.echo(
+                '-- DIRECT --%s,%i,%.1f,%s,,'
+                % (
+                    speed_marker,
+                    self[0].bearing(self[-1]),
+                    direct_distance,
+                    direct_speed,
+                )
+            )
 
 
-@click.group(help=__doc__[__doc__.find('\n\n')+2:__doc__.rfind('\n\n')],
-             epilog='Please report bugs at '
-                    'https://github.com/JNRowe/upoints/issues',
-             context_settings={'help_option_names': ['-h', '--help']})
+@click.group(
+    help=__doc__[__doc__.find('\n\n') + 2 : __doc__.rfind('\n\n')],
+    epilog='Please report bugs at ' 'https://github.com/JNRowe/upoints/issues',
+    context_settings={'help_option_names': ['-h', '--help']},
+)
 @click.version_option(_version.dotted)
-@click.option('-v', '--verbose/--quiet',
-              help='Change verbosity level of output.')
-@click.option('--config',
-              type=click.Path(dir_okay=False, resolve_path=True,
-                              allow_dash=True),
-              metavar='~/.edist.conf',
-              default=os.path.expanduser('~/.edist.conf'),
-              help='Config file to read custom locations from.')
-@click.option('--csv-file',
-              type=click.Path(exists=True, dir_okay=False, resolve_path=True),
-              help='CSV file (gpsbabel format) to read route/locations from.')
-@click.option('-o', '--format',
-              type=click.Choice(['dms', 'dm', 'dd']),
-              default='dms',
-              help='Produce output in dms, dm or dd format.')
-@click.option('-u', '--units',
-              type=click.Choice(['km', 'sm', 'nm']), metavar='km',
-              default='km',
-              help='Display distances in kilometres, statute miles or '
-                   'nautical miles.')
-@click.option('-l', '--location', multiple=True,
-              help='Location to operate on.')
+@click.option(
+    '-v', '--verbose/--quiet', help='Change verbosity level of output.'
+)
+@click.option(
+    '--config',
+    type=click.Path(dir_okay=False, resolve_path=True, allow_dash=True),
+    metavar='~/.edist.conf',
+    default=os.path.expanduser('~/.edist.conf'),
+    help='Config file to read custom locations from.',
+)
+@click.option(
+    '--csv-file',
+    type=click.Path(exists=True, dir_okay=False, resolve_path=True),
+    help='CSV file (gpsbabel format) to read route/locations from.',
+)
+@click.option(
+    '-o',
+    '--format',
+    type=click.Choice(['dms', 'dm', 'dd']),
+    default='dms',
+    help='Produce output in dms, dm or dd format.',
+)
+@click.option(
+    '-u',
+    '--units',
+    type=click.Choice(['km', 'sm', 'nm']),
+    metavar='km',
+    default='km',
+    help='Display distances in kilometres, statute miles or '
+    'nautical miles.',
+)
+@click.option(
+    '-l', '--location', multiple=True, help='Location to operate on.'
+)
 @click.pass_context
 def cli(ctx, verbose, config, csv_file, format, units, location):
     if csv_file:
@@ -397,13 +467,15 @@ def cli(ctx, verbose, config, csv_file, format, units, location):
         config_locations = read_locations(config)
 
     try:
-        locations = NumberedPoints(location, format, verbose, config_locations,
-                                   units)
+        locations = NumberedPoints(
+            location, format, verbose, config_locations, units
+        )
     except LocationsError as error:
         raise click.BadParameter(str(error))
 
     class Obj:
         pass
+
     ctx.obj = Obj()
     ctx.obj.locations = locations
 
@@ -417,10 +489,13 @@ def bearing(globs, string):
 
 
 @cli.command()
-@click.option('-l', '--locator',
-              type=click.Choice(['square', 'subsquare', 'extsquare']),
-              default='subsquare',
-              help='Accuracy of Maidenhead locator output.')
+@click.option(
+    '-l',
+    '--locator',
+    type=click.Choice(['square', 'subsquare', 'extsquare']),
+    default='subsquare',
+    help='Accuracy of Maidenhead locator output.',
+)
 @click.argument('distance', type=float)
 @click.argument('bearing', type=float)
 @click.pass_obj
@@ -430,9 +505,12 @@ def destination(globs, locator, distance, bearing):
 
 
 @cli.command()
-@click.option('-l', '--locator',
-              type=click.Choice(['square', 'subsquare', 'extsquare']),
-              help='Accuracy of Maidenhead locator output.')
+@click.option(
+    '-l',
+    '--locator',
+    type=click.Choice(['square', 'subsquare', 'extsquare']),
+    help='Accuracy of Maidenhead locator output.',
+)
 @click.pass_obj
 def display(globs, locator):
     """Pretty print the locations."""
@@ -447,8 +525,7 @@ def distance(globs):
 
 
 @cli.command()
-@click.option('-g', '--string', is_flag=True,
-              help='Display named bearings.')
+@click.option('-g', '--string', is_flag=True, help='Display named bearings.')
 @click.pass_obj
 def final_bearing(globs, string):
     """Calculate final bearing between locations."""
@@ -456,10 +533,20 @@ def final_bearing(globs, string):
 
 
 @cli.command()
-@click.option('-s', '--speed', default=0, type=float,
-              help='Speed to calculate elapsed time.')
-@click.option('-t', '--time', default='h', type=click.Choice(['h', 'm', 's']),
-              help='Display time in hours, minutes or seconds.')
+@click.option(
+    '-s',
+    '--speed',
+    default=0,
+    type=float,
+    help='Speed to calculate elapsed time.',
+)
+@click.option(
+    '-t',
+    '--time',
+    default='h',
+    type=click.Choice(['h', 'm', 's']),
+    help='Display time in hours, minutes or seconds.',
+)
 @click.pass_obj
 def flight_plan(globs, speed, time):
     """Calculate flight plan for locations."""
@@ -508,8 +595,9 @@ def read_locations(filename):
     locations = {}
     for name in data.sections():
         if data.has_option(name, 'locator'):
-            latitude, longitude = utils.from_grid_locator(data.get(name,
-                                                                   'locator'))
+            latitude, longitude = utils.from_grid_locator(
+                data.get(name, 'locator')
+            )
         else:
             latitude = data.getfloat(name, 'latitude')
             longitude = data.getfloat(name, 'longitude')

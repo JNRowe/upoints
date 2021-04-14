@@ -32,12 +32,25 @@ if not on_rtd:
     import sphinx_rtd_theme
 
 # General configuration {{{
-extensions = \
-    [f'sphinx.ext.{ext}'
-     for ext in ['autodoc', 'coverage', 'doctest', 'extlinks', 'intersphinx',
-                 'napoleon', 'todo', 'viewcode']] \
-    + [f'sphinxcontrib.{ext}' for ext in []] \
-    + ['sphinx_click.ext', ]
+extensions = (
+    [
+        f'sphinx.ext.{ext}'
+        for ext in [
+            'autodoc',
+            'coverage',
+            'doctest',
+            'extlinks',
+            'intersphinx',
+            'napoleon',
+            'todo',
+            'viewcode',
+        ]
+    ]
+    + [f'sphinxcontrib.{ext}' for ext in []]
+    + [
+        'sphinx_click.ext',
+    ]
+)
 
 if not on_rtd:
     # Showing document build durations is only valuable when writing, so we’ll
@@ -95,8 +108,10 @@ if not on_rtd:
     ]
 
 with suppress(CalledProcessError):
-    proc = run(['git', 'log', '--pretty=format:%ad [%h]', '--date=short',
-                '-n1'], stdout=PIPE)
+    proc = run(
+        ['git', 'log', '--pretty=format:%ad [%h]', '--date=short', '-n1'],
+        stdout=PIPE,
+    )
     html_last_updated_fmt = proc.stdout.decode()
 
 html_baseurl = 'https://upoints.readthedocs.io/'
@@ -105,9 +120,17 @@ html_copy_source = False
 # }}}
 
 # Options for manual page output {{{
-man_pages = [('edist.1', 'edist', 'upoints Documentation', [
-    'James Rowe',
-], 1)]
+man_pages = [
+    (
+        'edist.1',
+        'edist',
+        'upoints Documentation',
+        [
+            'James Rowe',
+        ],
+        1,
+    )
+]
 # }}}
 
 # autodoc extension settings {{{
@@ -122,10 +145,12 @@ coverage_write_headline = False
 # }}}
 
 # intersphinx extension settings
-intersphinx_mapping = {k: (v, os.getenv(f'SPHINX_{k.upper()}_OBJECTS'))
-                       for k, v in {
-                           'python': 'http://docs.python.org/',
-}.items()}
+intersphinx_mapping = {
+    k: (v, os.getenv(f'SPHINX_{k.upper()}_OBJECTS'))
+    for k, v in {
+        'python': 'http://docs.python.org/',
+    }.items()
+}
 
 # extlinks extension settings {{{
 extlinks = {

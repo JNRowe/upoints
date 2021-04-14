@@ -24,7 +24,7 @@ except ImportError:
     #: ``dateutil`` module reference if available
     tz = None
 
-from . import (point, trigpoints, utils)
+from . import point, trigpoints, utils
 
 
 class Location(trigpoints.Trigpoint):
@@ -43,10 +43,29 @@ class Location(trigpoints.Trigpoint):
     if tz:
         __TIMEZONES = {}
 
-    def __init__(self, geonameid, name, asciiname, alt_names, latitude,
-                 longitude, feature_class, feature_code, country, alt_country,
-                 admin1, admin2, admin3, admin4, population, altitude, gtopo30,
-                 tzname, modified_date, timezone=None):
+    def __init__(
+        self,
+        geonameid,
+        name,
+        asciiname,
+        alt_names,
+        latitude,
+        longitude,
+        feature_class,
+        feature_code,
+        country,
+        alt_country,
+        admin1,
+        admin2,
+        admin3,
+        admin4,
+        population,
+        altitude,
+        gtopo30,
+        tzname,
+        modified_date,
+        timezone=None,
+    ):
         """Initialise a new ``Location`` object.
 
         Args:
@@ -132,8 +151,11 @@ class Location(trigpoints.Trigpoint):
         text = super(Location.__base__, self).__format__(format_spec)
 
         if self.alt_names:
-            return '%s (%s - %s)' % (self.name, ', '.join(self.alt_names),
-                                     text)
+            return '%s (%s - %s)' % (
+                self.name,
+                ', '.join(self.alt_names),
+                text,
+            )
         else:
             return f'{self.name} ({text})'
 
@@ -204,11 +226,27 @@ class Locations(point.Points):
         .. _database export page: http://download.geonames.org/export/dump/
         """
         self._data = data
-        field_names = ('geonameid', 'name', 'asciiname', 'alt_names',
-                       'latitude', 'longitude', 'feature_class',
-                       'feature_code', 'country', 'alt_country', 'admin1',
-                       'admin2', 'admin3', 'admin4', 'population', 'altitude',
-                       'gtopo30', 'tzname', 'modified_date')
+        field_names = (
+            'geonameid',
+            'name',
+            'asciiname',
+            'alt_names',
+            'latitude',
+            'longitude',
+            'feature_class',
+            'feature_code',
+            'country',
+            'alt_country',
+            'admin1',
+            'admin2',
+            'admin3',
+            'admin4',
+            'population',
+            'altitude',
+            'gtopo30',
+            'tzname',
+            'modified_date',
+        )
         comma_split = lambda s: s.split(',')
         date_parse = lambda s: datetime.date(*map(int, s.split('-')))
         or_none = lambda x, s: x(s) if s else None
@@ -216,11 +254,27 @@ class Locations(point.Points):
         float_or_none = lambda s: or_none(float, s)
         int_or_none = lambda s: or_none(int, s)
         tz_parse = lambda s: self.timezones[s][0] if self.timezones else None
-        field_parsers = (int_or_none, str_or_none, str_or_none, comma_split,
-                         float_or_none, float_or_none, str_or_none,
-                         str_or_none, str_or_none, comma_split, str_or_none,
-                         str_or_none, str_or_none, str_or_none, int_or_none,
-                         int_or_none, int_or_none, tz_parse, date_parse)
+        field_parsers = (
+            int_or_none,
+            str_or_none,
+            str_or_none,
+            comma_split,
+            float_or_none,
+            float_or_none,
+            str_or_none,
+            str_or_none,
+            str_or_none,
+            comma_split,
+            str_or_none,
+            str_or_none,
+            str_or_none,
+            str_or_none,
+            int_or_none,
+            int_or_none,
+            int_or_none,
+            tz_parse,
+            date_parse,
+        )
         data = utils.prepare_csv_read(data, field_names, delimiter=r'	')
         for row in data:
             try:
@@ -276,8 +330,9 @@ class Locations(point.Points):
             if row['ident'] == 'TimeZoneId':
                 continue
             try:
-                delta = list(map(time_parse,
-                                 (row['gmt_offset'], row['dst_offset'])))
+                delta = list(
+                    map(time_parse, (row['gmt_offset'], row['dst_offset']))
+                )
             except ValueError:
                 raise utils.FileFormatError('geonames.org')
             self.timezones[row['ident']] = delta

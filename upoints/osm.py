@@ -23,7 +23,7 @@ from urllib.request import urlopen
 
 from lxml import etree
 
-from . import (point, utils)
+from . import point, utils
 from ._version import web as ua_string
 
 create_elem = utils.element_creator()
@@ -70,8 +70,11 @@ def _get_flags(osm_obj):
     if osm_obj.timestamp:
         flags.append('timestamp: %s' % osm_obj.timestamp.isoformat())
     if osm_obj.tags:
-        flags.append(', '.join('%s: %s' % (k, v)
-                               for k, v in sorted(osm_obj.tags.items())))
+        flags.append(
+            ', '.join(
+                '%s: %s' % (k, v) for k, v in sorted(osm_obj.tags.items())
+            )
+        )
     return flags
 
 
@@ -103,8 +106,9 @@ def get_area_url(location, distance):
 
     bounds = (min(longitudes), min(latitudes), max(longitudes), max(latitudes))
 
-    return ('http://api.openstreetmap.org/api/0.5/map?bbox='
-            + ','.join(map(str, bounds)))
+    return 'http://api.openstreetmap.org/api/0.5/map?bbox=' + ','.join(
+        map(str, bounds)
+    )
 
 
 class Node(point.Point):
@@ -113,8 +117,16 @@ class Node(point.Point):
     .. versionadded:: 0.9.0
     """
 
-    def __init__(self, ident, latitude, longitude, visible=False, user=None,
-                 timestamp=None, tags=None):
+    def __init__(
+        self,
+        ident,
+        latitude,
+        longitude,
+        visible=False,
+        user=None,
+        timestamp=None,
+        tags=None,
+    ):
         """Initialise a new ``Node`` object.
 
         Args:
@@ -140,8 +152,9 @@ class Node(point.Point):
         Returns:
             str: Human readable string representation of ``Node`` object
         """
-        text = ['Node %i (%s)' % (self.ident,
-                                  super(Node, self).__format__('dms')), ]
+        text = [
+            'Node %i (%s)' % (self.ident, super(Node, self).__format__('dms')),
+        ]
         flags = _get_flags(self)
 
         if flags:
@@ -154,9 +167,14 @@ class Node(point.Point):
         Returns:
             etree.Element: OSM node element
         """
-        node = create_elem('node', {'id': str(self.ident),
-                                    'lat': str(self.latitude),
-                                    'lon': str(self.longitude)})
+        node = create_elem(
+            'node',
+            {
+                'id': str(self.ident),
+                'lat': str(self.latitude),
+                'lon': str(self.longitude),
+            },
+        )
         node.set('visible', 'true' if self.visible else 'false')
         if self.user:
             node.set('user', self.user)
@@ -216,8 +234,9 @@ class Way(point.Points):
     .. versionadded:: 0.9.0
     """
 
-    def __init__(self, ident, nodes, visible=False, user=None, timestamp=None,
-                 tags=None):
+    def __init__(
+        self, ident, nodes, visible=False, user=None, timestamp=None, tags=None
+    ):
         """Initialise a new ``Way`` object.
 
         Args:
@@ -255,7 +274,9 @@ class Way(point.Points):
         Returns:
             str: Human readable string representation of ``Way`` object
         """
-        text = ['Way %i' % (self.ident), ]
+        text = [
+            'Way %i' % (self.ident),
+        ]
         if not nodes:
             text.append(' (nodes: %s)' % str(self[:])[1:-1])
         flags = _get_flags(self)
@@ -396,8 +417,9 @@ class Osm(point.Points):
 
     def export_osm_file(self):
         """Generate OpenStreetMap element tree from ``Osm``."""
-        osm = create_elem('osm', {'generator': self.generator,
-                                  'version': self.version})
+        osm = create_elem(
+            'osm', {'generator': self.generator, 'version': self.version}
+        )
         osm.extend(obj.toosm() for obj in self)
 
         return etree.ElementTree(osm)

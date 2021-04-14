@@ -23,7 +23,7 @@ from operator import attrgetter
 
 from lxml import etree
 
-from . import (point, utils)
+from . import point, utils
 from ._version import web as ua_string
 
 
@@ -35,8 +35,7 @@ create_elem = utils.element_creator(GPX_NS)
 GPX_ELEM_ATTRIB = {
     'creator': ua_string,
     'version': '1.1',
-    '{http://www.w3.org/2001/XMLSchema-instance}schemaLocation':
-        f'{GPX_NS} http://www.topografix.com/GPX/1/1/gpx.xsd',
+    '{http://www.w3.org/2001/XMLSchema-instance}schemaLocation': f'{GPX_NS} http://www.topografix.com/GPX/1/1/gpx.xsd',
 }
 
 
@@ -48,8 +47,15 @@ class _GpxElem(point.TimedPoint):
 
     _elem_name = None
 
-    def __init__(self, latitude, longitude, name=None, description=None,
-                 elevation=None, time=None):
+    def __init__(
+        self,
+        latitude,
+        longitude,
+        name=None,
+        description=None,
+        elevation=None,
+        time=None,
+    ):
         """Initialise a new ``_GpxElem`` object.
 
         Args:
@@ -78,9 +84,13 @@ class _GpxElem(point.TimedPoint):
         if self.time:
             location += ' on %s' % self.time.isoformat()
         if self.name:
-            text = [f'{self.name} ({location})', ]
+            text = [
+                f'{self.name} ({location})',
+            ]
         else:
-            text = [location, ]
+            text = [
+                location,
+            ]
         if self.description:
             text.append(f'[{self.description}]')
         return ' '.join(text)
@@ -91,9 +101,10 @@ class _GpxElem(point.TimedPoint):
         Returns:
             etree.Element: GPX element
         """
-        element = create_elem(self.__class__._elem_name,
-                              {'lat': str(self.latitude),
-                               'lon': str(self.longitude)})
+        element = create_elem(
+            self.__class__._elem_name,
+            {'lat': str(self.latitude), 'lon': str(self.longitude)},
+        )
         if self.name:
             element.append(create_elem('name', text=self.name))
         if self.description:
@@ -226,6 +237,7 @@ class _SegWrap(list):
                 and ``bearing``
         """
         return (segment.destination(bearing, distance) for segment in self)
+
     forward = destination
 
     def sunrise(self, date=None, zenith=None):
@@ -293,9 +305,18 @@ class _GpxMeta:
     .. versionadded:: 0.12.0
     """
 
-    def __init__(self, name=None, desc=None, author=None, copyright=None,
-                 link=None, time=None, keywords=None, bounds=None,
-                 extensions=None):
+    def __init__(
+        self,
+        name=None,
+        desc=None,
+        author=None,
+        copyright=None,
+        link=None,
+        time=None,
+        keywords=None,
+        bounds=None,
+        extensions=None,
+    ):
         """Initialise a new `_GpxMeta` object.
 
         Args:
@@ -337,8 +358,9 @@ class _GpxMeta:
             if self.author['name']:
                 element.append(create_elem('name', text=self.author['name']))
             if self.author['email']:
-                attr = dict(zip(self.author['email'].split('@'),
-                                ('id', 'domain')))
+                attr = dict(
+                    zip(self.author['email'].split('@'), ('id', 'domain'))
+                )
                 element.append(create_elem('email', attr))
             if self.author['link']:
                 element.append(create_elem('link', text=self.author['link']))
@@ -350,8 +372,9 @@ class _GpxMeta:
                 author = None
             element = create_elem('copyright', author)
             if self.copyright['year']:
-                element.append(create_elem('year',
-                                           text=self.copyright['year']))
+                element.append(
+                    create_elem('year', text=self.copyright['year'])
+                )
             if self.copyright['license']:
                 license = create_elem('license')
                 element.append(license)
@@ -416,8 +439,10 @@ class _GpxMeta:
                 self.author['name'] = child.findtext(metadata_elem('name'))
                 aemail = child.find(metadata_elem('email'))
                 if aemail:
-                    self.author['email'] = '%s@%s' % (aemail.get('id'),
-                                                      aemail.get('domain'))
+                    self.author['email'] = '%s@%s' % (
+                        aemail.get('id'),
+                        aemail.get('domain'),
+                    )
                 self.author['link'] = child.findtext(metadata_elem('link'))
             elif tag_name == 'bounds':
                 self.bounds = {
@@ -432,7 +457,9 @@ class _GpxMeta:
                 if child.get('author'):
                     self.copyright['name'] = child.get('author')
                 self.copyright['year'] = child.findtext(metadata_elem('year'))
-                self.copyright['license'] = child.findtext(metadata_elem('license'))
+                self.copyright['license'] = child.findtext(
+                    metadata_elem('license')
+                )
             elif tag_name == 'link':
                 link = {
                     'href': child.get('href'),
@@ -533,8 +560,11 @@ class Waypoints(point.TimedPoints):
                 time = utils.Timestamp.parse_isoformat(waypoint.time.text)
             except AttributeError:
                 time = None
-            self.append(Waypoint(latitude, longitude, name, description,
-                                 elevation, time))
+            self.append(
+                Waypoint(
+                    latitude, longitude, name, description, elevation, time
+                )
+            )
 
     def export_gpx_file(self):
         """Generate GPX element tree from ``Waypoints`` object.
@@ -637,11 +667,16 @@ class Trackpoints(_SegWrap):
                 except AttributeError:
                     elevation = None
                 try:
-                    time = utils.Timestamp.parse_isoformat(trackpoint.time.text)
+                    time = utils.Timestamp.parse_isoformat(
+                        trackpoint.time.text
+                    )
                 except AttributeError:
                     time = None
-                points.append(Trackpoint(latitude, longitude, name,
-                                         description, elevation, time))
+                points.append(
+                    Trackpoint(
+                        latitude, longitude, name, description, elevation, time
+                    )
+                )
             self.append(points)
 
     def export_gpx_file(self):
@@ -749,11 +784,16 @@ class Routepoints(_SegWrap):
                 except AttributeError:
                     elevation = None
                 try:
-                    time = utils.Timestamp.parse_isoformat(routepoint.time.text)
+                    time = utils.Timestamp.parse_isoformat(
+                        routepoint.time.text
+                    )
                 except AttributeError:
                     time = None
-                points.append(Routepoint(latitude, longitude, name,
-                                         description, elevation, time))
+                points.append(
+                    Routepoint(
+                        latitude, longitude, name, description, elevation, time
+                    )
+                )
             self.append(points)
 
     def export_gpx_file(self):

@@ -3,7 +3,7 @@
 
 dotted = '0.12.2'
 libtool = '12:22'
-hex = 0x000c02
+hex = 0x000C02
 date = '2014-02-20'
 tuple = (0, 12, 2)
 dict = {'micro': 2, 'minor': 12, 'major': 0}

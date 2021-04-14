@@ -28,9 +28,9 @@ def test_base():
     assert int(home.bearing(telford)) == 294
     assert int(home.final_bearing(telford)) == 293
 
-    assert home.sun_events(datetime.date(2007, 6, 28)) == \
-        (datetime.time(3, 42), datetime.time(20, 24))
-    assert home.sunrise(datetime.date(2007, 6, 28)) == \
-        datetime.time(3, 42)
-    assert home.sunset(datetime.date(2007, 6, 28)) == \
-        datetime.time(20, 24)
+    assert home.sun_events(datetime.date(2007, 6, 28)) == (
+        datetime.time(3, 42),
+        datetime.time(20, 24),
+    )
+    assert home.sunrise(datetime.date(2007, 6, 28)) == datetime.time(3, 42)
+    assert home.sunset(datetime.date(2007, 6, 28)) == datetime.time(20, 24)

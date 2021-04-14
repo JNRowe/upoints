@@ -19,7 +19,7 @@
 import logging
 import time
 
-from . import (point, trigpoints, utils)
+from . import point, trigpoints, utils
 
 #: GNU miscfiles cities.dat template
 TEMPLATE = """\
@@ -46,9 +46,22 @@ class City(trigpoints.Trigpoint):
     .. _GNU miscfiles: http://directory.fsf.org/project/miscfiles/
     """
 
-    def __init__(self, identifier, name, ptype, region, country, location,
-                 population, size, latitude, longitude, altitude, date,
-                 entered):
+    def __init__(
+        self,
+        identifier,
+        name,
+        ptype,
+        region,
+        country,
+        location,
+        population,
+        size,
+        latitude,
+        longitude,
+        altitude,
+        date,
+        entered,
+    ):
         """Initialise a new ``City`` object.
 
         Args:
@@ -83,15 +96,24 @@ class City(trigpoints.Trigpoint):
         Returns:
             str: Human readable string representation of ``City`` object
         """
-        values = map(utils.value_or_empty,
-                     (self.identifier, self.ptype,
-                      self.population, self.size,
-                      self.name, self.country,
-                      self.region, self.location,
-                      self.latitude, self.longitude,
-                      self.altitude,
-                      time.strftime('%Y%m%d', self.date) if self.date else '',
-                      self.entered))
+        values = map(
+            utils.value_or_empty,
+            (
+                self.identifier,
+                self.ptype,
+                self.population,
+                self.size,
+                self.name,
+                self.country,
+                self.region,
+                self.location,
+                self.latitude,
+                self.longitude,
+                self.altitude,
+                time.strftime('%Y%m%d', self.date) if self.date else '',
+                self.entered,
+            ),
+        )
         return TEMPLATE % tuple(values)
 
 
@@ -177,9 +199,21 @@ class Cities(point.Points):
         else:
             raise TypeError('Unable to handle data of type %r' % type(data))
 
-        keys = ('identifier', 'ptype', 'population', 'size', 'name', 'country',
-                'region', 'location', 'longitude', 'latitude', 'altitude',
-                'date', 'entered')
+        keys = (
+            'identifier',
+            'ptype',
+            'population',
+            'size',
+            'name',
+            'country',
+            'region',
+            'location',
+            'longitude',
+            'latitude',
+            'altitude',
+            'date',
+            'entered',
+        )
 
         for record in data:
             # We truncate after splitting because the v1.4.2 datafile contains
@@ -190,8 +224,10 @@ class Cities(point.Points):
 
             # Entry for Utrecht has the incorrect value of 0.000 for elevation.
             if entries['altitude'] == '0.000':
-                logging.debug('Ignoring ‘0.000’ value for elevation in %r '
-                              'entry', record)
+                logging.debug(
+                    'Ignoring ‘0.000’ value for elevation in %r ' 'entry',
+                    record,
+                )
                 entries['altitude'] = ''
             for i in ('identifier', 'population', 'size', 'altitude'):
                 entries[i] = int(entries[i]) if entries[i] else None

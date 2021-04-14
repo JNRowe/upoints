@@ -18,24 +18,33 @@
 
 from pytest import mark
 
-from upoints.trigpoints import (Trigpoint, Trigpoints)
+from upoints.trigpoints import Trigpoint, Trigpoints
 
 
 class TestTrigpoint:
     def test___repr__(self):
-        assert repr(Trigpoint(52.010585, -0.173443, 97.0, 'Bygrave')) == \
-            "Trigpoint(52.010585, -0.173443, 97.0, 'Bygrave', None)"
+        assert (
+            repr(Trigpoint(52.010585, -0.173443, 97.0, 'Bygrave'))
+            == "Trigpoint(52.010585, -0.173443, 97.0, 'Bygrave', None)"
+        )
 
     def test___str__(self):
-        assert str(Trigpoint(52.010585, -0.173443, 97.0)) == \
-            '52°00′38″N, 000°10′24″W alt 97m'
-        assert str(Trigpoint(52.010585, -0.173443, 97.0, 'Bygrave')) == \
-            'Bygrave (52°00′38″N, 000°10′24″W alt 97m)'
+        assert (
+            str(Trigpoint(52.010585, -0.173443, 97.0))
+            == '52°00′38″N, 000°10′24″W alt 97m'
+        )
+        assert (
+            str(Trigpoint(52.010585, -0.173443, 97.0, 'Bygrave'))
+            == 'Bygrave (52°00′38″N, 000°10′24″W alt 97m)'
+        )
 
-    @mark.parametrize('style, result', [
-        ('dd', 'N52.011°; W000.173° alt 97m'),
-        ('dm', '52°00.64′N, 000°10.41′W alt 97m'),
-    ])
+    @mark.parametrize(
+        'style, result',
+        [
+            ('dd', 'N52.011°; W000.173° alt 97m'),
+            ('dm', '52°00.64′N, 000°10.41′W alt 97m'),
+        ],
+    )
     def test___format__(self, style, result):
         assert format(Trigpoint(52.010585, -0.173443, 97.0), style) == result
 
@@ -52,8 +61,7 @@ class TestTrigpoints:
         ]
         with open('tests/data/southern_trigpoints') as f:
             markers = Trigpoints(f)
-        assert str(markers[1]) == \
-            'FakeLand (48°07′23″S, 000°07′23″W alt 12m)'
+        assert str(markers[1]) == 'FakeLand (48°07′23″S, 000°07′23″W alt 12m)'
         with open('tests/data/broken_trigpoints') as f:
             markers = Trigpoints(f)
         data = ['%s - %s' % (k, v) for k, v in sorted(markers.items())]

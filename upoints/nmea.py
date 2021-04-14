@@ -22,7 +22,7 @@ import logging
 from functools import reduce
 from operator import xor
 
-from . import (point, utils)
+from . import point, utils
 
 
 def calc_checksum(sentence):
@@ -49,8 +49,10 @@ def nmea_latitude(latitude):
     Returns:
         tuple: NMEA-formatted latitude values
     """
-    return ('%02i%07.4f' % utils.to_dms(abs(latitude), 'dm'),
-            'N' if latitude >= 0 else 'S')
+    return (
+        '%02i%07.4f' % utils.to_dms(abs(latitude), 'dm'),
+        'N' if latitude >= 0 else 'S',
+    )
 
 
 def nmea_longitude(longitude):
@@ -62,8 +64,10 @@ def nmea_longitude(longitude):
     Returns:
         tuple: NMEA-formatted longitude values
     """
-    return ('%03i%07.4f' % utils.to_dms(abs(longitude), 'dm'),
-            'E' if longitude >= 0 else 'W')
+    return (
+        '%03i%07.4f' % utils.to_dms(abs(longitude), 'dm'),
+        'E' if longitude >= 0 else 'W',
+    )
 
 
 def parse_latitude(latitude, hemisphere):
@@ -145,8 +149,10 @@ class LoranPosition(point.Point):
         data = [f'{talker}GLL']
         data.extend(nmea_latitude(self.latitude))
         data.extend(nmea_longitude(self.longitude))
-        data.append('%s.%02i' % (self.time.strftime('%H%M%S'),
-                                 self.time.microsecond / 1000000))
+        data.append(
+            '%s.%02i'
+            % (self.time.strftime('%H%M%S'), self.time.microsecond / 1000000)
+        )
         data.append('A' if self.status else 'V')
         if self.mode:
             data.append(self.mode)
@@ -177,8 +183,9 @@ class LoranPosition(point.Point):
         # instantiation
         latitude = parse_latitude(elements[0], elements[1])
         longitude = parse_longitude(elements[2], elements[3])
-        hour, minute, second = [int(elements[4][i:i + 2])
-                                for i in range(0, 6, 2)]
+        hour, minute, second = [
+            int(elements[4][i : i + 2]) for i in range(0, 6, 2)
+        ]
         usecond = int(elements[4][6:8]) * 10000
         time = datetime.time(hour, minute, second, usecond)
         active = True if elements[5] == 'A' else False
@@ -192,8 +199,18 @@ class Position(point.Point):
     .. versionadded:: 0.8.0
     """
 
-    def __init__(self, time, status, latitude, longitude, speed, track, date,
-                 variation, mode=None):
+    def __init__(
+        self,
+        time,
+        status,
+        latitude,
+        longitude,
+        speed,
+        track,
+        date,
+        variation,
+        mode=None,
+    ):
         """Initialise a new ``Position`` object.
 
         Args:
@@ -260,8 +277,9 @@ class Position(point.Point):
         """
         if not len(elements) in (11, 12):
             raise ValueError('Invalid RMC position data')
-        time = datetime.time(*[int(elements[0][i:i + 2])
-                               for i in range(0, 6, 2)])
+        time = datetime.time(
+            *[int(elements[0][i : i + 2]) for i in range(0, 6, 2)]
+        )
         active = True if elements[1] == 'A' else False
         # Latitude and longitude are checked for validity during Fix
         # instantiation
@@ -269,16 +287,28 @@ class Position(point.Point):
         longitude = parse_longitude(elements[4], elements[5])
         speed = float(elements[6])
         track = float(elements[7])
-        date = datetime.date(2000 + int(elements[8][4:6]),
-                             int(elements[8][2:4]), int(elements[8][:2]))
+        date = datetime.date(
+            2000 + int(elements[8][4:6]),
+            int(elements[8][2:4]),
+            int(elements[8][:2]),
+        )
         variation = float(elements[9]) if not elements[9] == '' else None
         if elements[10] == 'W':
             variation = -variation
         elif variation and not elements[10] == 'E':
             raise ValueError(f'Incorrect variation value {elements[10]!r}')
         mode = elements[11] if len(elements) == 12 else None
-        return Position(time, active, latitude, longitude, speed, track, date,
-                        variation, mode)
+        return Position(
+            time,
+            active,
+            latitude,
+            longitude,
+            speed,
+            track,
+            date,
+            variation,
+            mode,
+        )
 
 
 class Fix(point.Point):
@@ -292,16 +322,26 @@ class Fix(point.Point):
         'GPS',
         'DGPS',
         'PPS',
-        'Real Time Kinematic'
-        'Float RTK',
+        'Real Time Kinematic' 'Float RTK',
         'Estimated',
         'Manual',
         'Simulation',
     ]
 
-    def __init__(self, time, latitude, longitude, quality, satellites,
-                 dilution, altitude, geoid_delta, dgps_delta=None,
-                 dgps_station=None, mode=None):
+    def __init__(
+        self,
+        time,
+        latitude,
+        longitude,
+        quality,
+        satellites,
+        dilution,
+        altitude,
+        geoid_delta,
+        dgps_delta=None,
+        dgps_station=None,
+        mode=None,
+    ):
         """Initialise a new ``Fix`` object.
 
         Args:
@@ -370,8 +410,9 @@ class Fix(point.Point):
         """
         if not len(elements) in (14, 15):
             raise ValueError('Invalid GGA fix data')
-        time = datetime.time(*[int(elements[0][i:i + 2])
-                               for i in range(0, 6, 2)])
+        time = datetime.time(
+            *[int(elements[0][i : i + 2]) for i in range(0, 6, 2)]
+        )
         # Latitude and longitude are checked for validity during Fix
         # instantiation
         latitude = parse_latitude(elements[1], elements[2])
@@ -390,8 +431,10 @@ class Fix(point.Point):
             raise ValueError(f'Unknown altitude unit {elements[9]!r}')
         if elements[10] in ('-', ''):
             geoid_delta = False
-            logging.warning('Altitude data could be incorrect, as the geoid '
-                            'difference has not been provided')
+            logging.warning(
+                'Altitude data could be incorrect, as the geoid '
+                'difference has not been provided'
+            )
         else:
             geoid_delta = float(elements[10])
         if elements[11] == 'F':
@@ -401,8 +444,19 @@ class Fix(point.Point):
         dgps_delta = float(elements[12]) if elements[12] else None
         dgps_station = int(elements[13]) if elements[13] else None
         mode = elements[14] if len(elements) == 15 else None
-        return Fix(time, latitude, longitude, quality, satellites, dilution,
-                   altitude, geoid_delta, dgps_delta, dgps_station, mode)
+        return Fix(
+            time,
+            latitude,
+            longitude,
+            quality,
+            satellites,
+            dilution,
+            altitude,
+            geoid_delta,
+            dgps_delta,
+            dgps_station,
+            mode,
+        )
 
 
 class Waypoint(point.Point):
@@ -435,8 +489,10 @@ class Waypoint(point.Point):
         data = ','.join(data)
         text = '$%s*%02X\r' % (data, calc_checksum(data))
         if len(text) > 81:
-            raise ValueError('All NMEA sentences must be less than 82 bytes '
-                             'including line endings')
+            raise ValueError(
+                'All NMEA sentences must be less than 82 bytes '
+                'including line endings'
+            )
         return text
 
     @staticmethod
@@ -541,9 +597,11 @@ class Locations(point.Points):
         }
 
         if not checksum:
-            logging.warning('Disabling the checksum tests should only be used'
-                            'when the device is incapable of emitting the '
-                            'correct values!')
+            logging.warning(
+                'Disabling the checksum tests should only be used'
+                'when the device is incapable of emitting the '
+                'correct values!'
+            )
         for line in data:
             # The standard tells us lines should end in \r\n even though some
             # devices break this, but Python’s standard file object solves this

@@ -20,35 +20,63 @@ import datetime
 
 from pytest import mark, raises
 
-from upoints.geonames import (Location, Locations)
+from upoints.geonames import Location, Locations
 from upoints.utils import FileFormatError
 
 
 class TestLocation:
     def setup(self):
-        self.x = Location(2636782, 'Stotfold', 'Stotfold', None, 52.0,
-                          -0.2166667, 'P', 'PPL', 'GB', None, 'F8', None, None,
-                          None, 6245, None, 77, 'Europe/London',
-                          datetime.date(2007, 6, 15), 0)
+        self.x = Location(
+            2636782,
+            'Stotfold',
+            'Stotfold',
+            None,
+            52.0,
+            -0.2166667,
+            'P',
+            'PPL',
+            'GB',
+            None,
+            'F8',
+            None,
+            None,
+            None,
+            6245,
+            None,
+            77,
+            'Europe/London',
+            datetime.date(2007, 6, 15),
+            0,
+        )
 
     def test___repr__(self):
-        assert repr(self.x) == \
-            ("Location(2636782, 'Stotfold', 'Stotfold', None, 52.0, "
-             "-0.2166667, 'P', 'PPL', 'GB', None, 'F8', None, None, None, "
-             "6245, None, 77, 'Europe/London', datetime.date(2007, 6, 15), 0)")
+        assert repr(self.x) == (
+            "Location(2636782, 'Stotfold', 'Stotfold', None, 52.0, "
+            "-0.2166667, 'P', 'PPL', 'GB', None, 'F8', None, None, None, "
+            "6245, None, 77, 'Europe/London', datetime.date(2007, 6, 15), 0)"
+        )
 
-    @mark.parametrize('names, result', [
-        (None, 'Stotfold (N52.000°; W000.217°)'),
-        (['Home', 'Target'], 'Stotfold (Home, Target - N52.000°; W000.217°)'),
-    ])
+    @mark.parametrize(
+        'names, result',
+        [
+            (None, 'Stotfold (N52.000°; W000.217°)'),
+            (
+                ['Home', 'Target'],
+                'Stotfold (Home, Target - N52.000°; W000.217°)',
+            ),
+        ],
+    )
     def test___str__(self, names, result):
         self.x.alt_names = names
         assert str(self.x) == result
 
-    @mark.parametrize('style, result', [
-        ('dms', 'Stotfold (52°00′00″N, 000°13′00″W)'),
-        ('dm', 'Stotfold (52°00.00′N, 000°13.00′W)'),
-    ])
+    @mark.parametrize(
+        'style, result',
+        [
+            ('dms', 'Stotfold (52°00′00″N, 000°13′00″W)'),
+            ('dm', 'Stotfold (52°00.00′N, 000°13.00′W)'),
+        ],
+    )
     def test___format__(self, style, result):
         assert format(self.x, style) == result
 
@@ -64,10 +92,14 @@ class TestLocations:
         ]
 
     def test_import_locations_error(self):
-        with raises(FileFormatError,
-                    match=('Incorrect data format, if you’re using a file '
-                           'downloaded from geonames.org please report this '
-                           'to James Rowe <jnrowe@gmail.com>')):
+        with raises(
+            FileFormatError,
+            match=(
+                'Incorrect data format, if you’re using a file '
+                'downloaded from geonames.org please report this '
+                'to James Rowe <jnrowe@gmail.com>'
+            ),
+        ):
             with open('tests/data/broken_geonames') as f:
                 Locations(f)
 
@@ -86,9 +118,13 @@ class TestLocations:
         assert header_skip_check == Locations()
 
     def test_import_timezones_file_error(self):
-        with raises(FileFormatError,
-                    match=('Incorrect data format, if you’re using a file '
-                           'downloaded from geonames.org please report this '
-                           'to James Rowe <jnrowe@gmail.com>')):
+        with raises(
+            FileFormatError,
+            match=(
+                'Incorrect data format, if you’re using a file '
+                'downloaded from geonames.org please report this '
+                'to James Rowe <jnrowe@gmail.com>'
+            ),
+        ):
             with open('tests/data/geonames_timezones_broken') as f:
                 Locations(None, f)

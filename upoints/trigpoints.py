@@ -18,7 +18,7 @@
 
 from functools import partial
 
-from . import (point, utils)
+from . import point, utils
 
 
 class Trigpoint(point.Point):
@@ -35,8 +35,9 @@ class Trigpoint(point.Point):
     .. versionadded:: 0.2.0
     """
 
-    def __init__(self, latitude, longitude, altitude, name=None,
-                 identity=None):
+    def __init__(
+        self, latitude, longitude, altitude, name=None, identity=None
+    ):
         """Initialise a new ``Trigpoint`` object.
 
         Args:
@@ -74,7 +75,9 @@ class Trigpoint(point.Point):
         Raises:
             ValueError: Unknown value for ``format_spec``
         """
-        location = [super(Trigpoint, self).__format__(format_spec), ]
+        location = [
+            super(Trigpoint, self).__format__(format_spec),
+        ]
         if self.altitude:
             location.append(f'alt {self.altitude:.0f}m')
 
@@ -135,15 +138,29 @@ class Trigpoints(point.KeyedPoints):
         .. _alltrigs-wgs84.txt: http://www.haroldstreet.org.uk/trigpoints/
         """
         self._marker_file = marker_file
-        field_names = ('tag', 'identity', 'latitude', 'longitude', 'altitude',
-                       'name')
-        pos_parse = lambda x, s: float(s[1:]) if s[0] == x else 0 - float(s[1:])
+        field_names = (
+            'tag',
+            'identity',
+            'latitude',
+            'longitude',
+            'altitude',
+            'name',
+        )
+        pos_parse = (
+            lambda x, s: float(s[1:]) if s[0] == x else 0 - float(s[1:])
+        )
         latitude_parse = partial(pos_parse, 'N')
         longitude_parse = partial(pos_parse, 'E')
         # A value of 8888.0 denotes unavailable data
         altitude_parse = lambda s: None if s.strip() == '8888.0' else float(s)
-        field_parsers = (str, int, latitude_parse, longitude_parse,
-                         altitude_parse, str)
+        field_parsers = (
+            str,
+            int,
+            latitude_parse,
+            longitude_parse,
+            altitude_parse,
+            str,
+        )
 
         data = utils.prepare_csv_read(marker_file, field_names)
 

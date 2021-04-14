@@ -18,7 +18,7 @@
 
 import logging
 
-from . import (point, trigpoints, utils)
+from . import point, trigpoints, utils
 
 
 class Station(trigpoints.Trigpoint):
@@ -27,8 +27,21 @@ class Station(trigpoints.Trigpoint):
     .. versionadded:: 0.2.0
     """
 
-    def __init__(self, alt_id, name, state, country, wmo, latitude, longitude,
-                 ua_latitude, ua_longitude, altitude, ua_altitude, rbsn):
+    def __init__(
+        self,
+        alt_id,
+        name,
+        state,
+        country,
+        wmo,
+        latitude,
+        longitude,
+        ua_latitude,
+        ua_longitude,
+        altitude,
+        ua_altitude,
+        rbsn,
+    ):
         """Initialise a new ``Station`` object.
 
         Args:
@@ -173,16 +186,22 @@ class Stations(point.KeyedPoints):
                     # Some entries only have 12 or 13 elements, so we assume 13
                     # and 14 are None.  Of the entries I've hand checked this
                     # assumption would be correct.
-                    logging.debug('Extending ICAO %r entry, because it is '
-                                  'too short to process', line)
+                    logging.debug(
+                        'Extending ICAO %r entry, because it is '
+                        'too short to process',
+                        line,
+                    )
                     chunk.extend(['', ''])
                 elif index == 'WMO' and len(chunk) == 13:
                     # A few of the WMO indexed entries are missing their RBSN
                     # fields, hand checking the entries for 71046 and 71899
                     # shows that they are correct if we just assume RBSN is
                     # false.
-                    logging.debug('Extending WMO %r entry, because it is '
-                                  'too short to process', line)
+                    logging.debug(
+                        'Extending WMO %r entry, because it is '
+                        'too short to process',
+                        line,
+                    )
                     chunk.append('')
                 else:
                     raise utils.FileFormatError('NOAA')
@@ -208,8 +227,9 @@ class Stations(point.KeyedPoints):
                 # Some entries in nsd_cccc.txt are of the format “DD-MM-
                 # N”, so we just take the spaces to mean 0 seconds.
                 if ' ' in i:
-                    logging.debug('Fixing unpadded location data in %r entry',
-                                  line)
+                    logging.debug(
+                        'Fixing unpadded location data in %r entry', line
+                    )
                     i = i.replace(' ', '0')
                 values = map(int, i[:-1].split('-'))
                 if i[-1] in ('S', 'W'):
@@ -219,7 +239,17 @@ class Stations(point.KeyedPoints):
             altitude = int(chunk[11]) if chunk[11] else None
             ua_altitude = int(chunk[12]) if chunk[12] else None
             rbsn = False if not chunk[13] else True
-            self[identifier] = Station(alt_id, name, state, country, wmo,
-                                       latitude, longitude, ua_latitude,
-                                       ua_longitude, altitude, ua_altitude,
-                                       rbsn)
+            self[identifier] = Station(
+                alt_id,
+                name,
+                state,
+                country,
+                wmo,
+                latitude,
+                longitude,
+                ua_latitude,
+                ua_longitude,
+                altitude,
+                ua_altitude,
+                rbsn,
+            )

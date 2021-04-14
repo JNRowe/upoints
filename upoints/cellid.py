@@ -21,7 +21,7 @@ import logging
 
 from operator import attrgetter
 
-from . import (point, utils)
+from . import point, utils
 
 
 class Cell(point.Point):
@@ -32,8 +32,20 @@ class Cell(point.Point):
     .. _OpenCellID.org: http://opencellid.org/
     """
 
-    def __init__(self, ident, latitude, longitude, mcc, mnc, lac, cellid,
-                 crange, samples, created, updated):
+    def __init__(
+        self,
+        ident,
+        latitude,
+        longitude,
+        mcc,
+        mnc,
+        lac,
+        cellid,
+        crange,
+        samples,
+        created,
+        updated,
+    ):
         """Initialise a new ``Cell`` object.
 
         Args:
@@ -69,11 +81,19 @@ class Cell(point.Point):
         Returns:
             str: OpenCellID.org-style string representation of ``Cell`` object
         """
-        return '%i,%.13f,%.13f,%i,%i,%i,%i,%i,%i,%s,%s' \
-            % (self.ident, self.latitude, self.longitude, self.mcc, self.mnc,
-               self.lac, self.cellid, self.crange, self.samples,
-               self.created.strftime('%Y-%m-%d %H:%M:%S'),
-               self.updated.strftime('%Y-%m-%d %H:%M:%S'))
+        return '%i,%.13f,%.13f,%i,%i,%i,%i,%i,%i,%s,%s' % (
+            self.ident,
+            self.latitude,
+            self.longitude,
+            self.mcc,
+            self.mnc,
+            self.lac,
+            self.cellid,
+            self.crange,
+            self.samples,
+            self.created.strftime('%Y-%m-%d %H:%M:%S'),
+            self.updated.strftime('%Y-%m-%d %H:%M:%S'),
+        )
 
 
 class Cells(point.KeyedPoints):
@@ -95,8 +115,9 @@ class Cells(point.KeyedPoints):
         Returns:
             str: OpenCellID.org formatted output
         """
-        return '\n'.join(map(str, sorted(self.values(),
-                                         key=attrgetter('ident'))))
+        return '\n'.join(
+            map(str, sorted(self.values(), key=attrgetter('ident')))
+        )
 
     def import_locations(self, cells_file):
         """Parse OpenCellID.org data files.
@@ -136,18 +157,42 @@ class Cells(point.KeyedPoints):
         .. _OpenCellID.org: http://opencellid.org/
         """
         self._cells_file = cells_file
-        field_names = ('ident', 'latitude', 'longitude', 'mcc', 'mnc', 'lac',
-                       'cellid', 'crange', 'samples', 'created', 'updated')
-        parse_date = lambda s: datetime.datetime.strptime(s,
-                                                          '%Y-%m-%d %H:%M:%S')
-        field_parsers = (int, float, float, int, int, int, int, int, int,
-                         parse_date, parse_date)
+        field_names = (
+            'ident',
+            'latitude',
+            'longitude',
+            'mcc',
+            'mnc',
+            'lac',
+            'cellid',
+            'crange',
+            'samples',
+            'created',
+            'updated',
+        )
+        parse_date = lambda s: datetime.datetime.strptime(
+            s, '%Y-%m-%d %H:%M:%S'
+        )
+        field_parsers = (
+            int,
+            float,
+            float,
+            int,
+            int,
+            int,
+            int,
+            int,
+            int,
+            parse_date,
+            parse_date,
+        )
         data = utils.prepare_csv_read(cells_file, field_names)
 
         for row in data:
             try:
-                cell = {n: p(row[n])
-                        for n, p in zip(field_names, field_parsers)}
+                cell = {
+                    n: p(row[n]) for n, p in zip(field_names, field_parsers)
+                }
             except ValueError:
                 if r'\N' in row.values():
                     # A few entries are incomplete, and when that occurs the

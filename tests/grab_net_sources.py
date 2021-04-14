@@ -20,7 +20,7 @@ import bz2
 import gzip
 import os
 import tempfile
-from urllib.request import (urlopen, urlretrieve)
+from urllib.request import urlopen, urlretrieve
 
 import click
 
@@ -40,12 +40,14 @@ SOURCES = {
 def main(force):
     """Fetch non-free data files."""
     click.secho('WARNING', nl=False, fg='red', bold=True, blink=True)
-    click.echo(""":
+    click.echo(
+        """:
   This script will fetch some data files that can not be distributed
   legally!  In some jurisdictions you may not even be entitled to
   personal use of the data it fetches without express consent of the
   copyright holders.'
-    """)
+    """
+    )
     cached = 0
     for filename, url in SOURCES.items():
         filename = os.path.join(os.path.dirname(__file__), 'data', filename)
@@ -72,7 +74,7 @@ def main(force):
     if cached > 1:
         click.secho(
             'You can force download with the ‘-f’ option to this script.',
-            fg='yellow'
+            fg='yellow',
         )
 
 
