@@ -1,7 +1,7 @@
 ``upoints`` - Modules for working with points on Earth
 ======================================================
 
-|travis| |coveralls| |pypi| |readthedocs|
+|actions| |coveralls| |pypi| |readthedocs|
 
 .. warning::
 
@@ -144,8 +144,7 @@ reproduce the problem, or even better a patch!
 .. _pytest: https://pypi.org/project/pytest/
 .. _issue: https://github.com/JNRowe/upoints/issues
 
-.. |travis| image:: https://img.shields.io/travis/JNRowe/upoints.png
-   :target: https://travis-ci.org/JNRowe/upoints
+.. |actions| image:: https://img.shields.io/github/workflow/status/JNRowe/upoints/Test%20with%20pytest
    :alt: Test state on master
 
 .. |coveralls| image:: https://img.shields.io/coveralls/github/JNRowe/upoints/master.png
