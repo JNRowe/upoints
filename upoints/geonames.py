@@ -40,11 +40,6 @@ class Location(trigpoints.Trigpoint):
     .. _geonames.org: http://www.geonames.org/
     """
 
-    __slots__ = ('geonameid', 'asciiname', 'alt_names', 'feature_class',
-                 'feature_code', 'country', 'alt_country', 'admin1', 'admin2',
-                 'admin3', 'admin4', 'population', 'altitude', 'gtopo30',
-                 'tzname', 'modified_date')
-
     if tz:
         __TIMEZONES = {}
 

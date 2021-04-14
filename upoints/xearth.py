@@ -25,8 +25,6 @@ class Xearth(point.Point):
     .. versionadded:: 0.2.0
     """
 
-    __slots__ = ('comment', )
-
     def __init__(self, latitude, longitude, comment=None):
         """Initialise a new ``Xearth`` object.
 

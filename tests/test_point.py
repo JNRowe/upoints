@@ -59,8 +59,6 @@ class TestPoint:
 
     def test___dict___custom_class(self):
         class Test(Point):
-            __slots__ = ('TEST', )
-
             def __init__(self, latitude, longitude):
                 super(Test, self).__init__(latitude, longitude)
                 self.TEST = 'tested'

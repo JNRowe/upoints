@@ -27,9 +27,6 @@ class Station(trigpoints.Trigpoint):
     .. versionadded:: 0.2.0
     """
 
-    __slots__ = ('alt_id', 'state', 'country', 'wmo', 'ua_latitude',
-                 'ua_longitude', 'ua_altitude', 'rbsn')
-
     def __init__(self, alt_id, name, state, country, wmo, latitude, longitude,
                  ua_latitude, ua_longitude, altitude, ua_altitude, rbsn):
         """Initialise a new ``Station`` object.

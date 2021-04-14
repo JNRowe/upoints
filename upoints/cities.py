@@ -46,9 +46,6 @@ class City(trigpoints.Trigpoint):
     .. _GNU miscfiles: http://directory.fsf.org/project/miscfiles/
     """
 
-    __slots__ = ('identifier', 'ptype', 'population', 'size', 'country',
-                 'region', 'location', 'date', 'entered')
-
     def __init__(self, identifier, name, ptype, region, country, location,
                  population, size, latitude, longitude, altitude, date,
                  entered):

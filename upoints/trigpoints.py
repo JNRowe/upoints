@@ -35,8 +35,6 @@ class Trigpoint(point.Point):
     .. versionadded:: 0.2.0
     """
 
-    __slots__ = ('altitude', 'name', 'identity')
-
     def __init__(self, latitude, longitude, altitude, name=None,
                  identity=None):
         """Initialise a new ``Trigpoint`` object.

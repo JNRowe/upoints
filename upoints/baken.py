@@ -32,9 +32,6 @@ class Baken(point.Point):
     .. _baken: http://www.qsl.net:80/g4klx/
     """
 
-    __slots__ = ('antenna', 'direction', 'frequency', 'height', '_locator',
-                 'mode', 'operator', 'power', 'qth')
-
     def __init__(self, latitude, longitude, antenna=None, direction=None,
                  frequency=None, height=None, locator=None, mode=None,
                  operator=None, power=None, qth=None):

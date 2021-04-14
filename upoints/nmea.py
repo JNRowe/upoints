@@ -116,8 +116,6 @@ MODE_INDICATOR = {
 class LoranPosition(point.Point):
     """Class for representing a GPS NMEA-formatted Loran-C position."""
 
-    __slots__ = ('time', 'status', 'mode')
-
     def __init__(self, latitude, longitude, time, status, mode=None):
         """Initialise a new ``LoranPosition`` object.
 
@@ -193,9 +191,6 @@ class Position(point.Point):
 
     .. versionadded:: 0.8.0
     """
-
-    __slots__ = ('time', 'status', 'speed', 'track', 'date', 'variation',
-                 'mode')
 
     def __init__(self, time, status, latitude, longitude, speed, track, date,
                  variation, mode=None):
@@ -291,9 +286,6 @@ class Fix(point.Point):
 
     .. versionadded:: 0.8.0
     """
-
-    __slots__ = ('time', 'quality', 'satellites', 'dilution', 'altitude',
-                 'geoid_delta', 'dgps_delta', 'dgps_station', 'mode')
 
     fix_quality = [
         'Invalid',
@@ -418,8 +410,6 @@ class Waypoint(point.Point):
 
     .. versionadded:: 0.8.0
     """
-
-    __slots__ = ('name', )
 
     def __init__(self, latitude, longitude, name):
         """Initialise a new ``Waypoint`` object.

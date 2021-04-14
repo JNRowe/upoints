@@ -113,8 +113,6 @@ class Node(point.Point):
     .. versionadded:: 0.9.0
     """
 
-    __slots__ = ('ident', 'visible', 'user', 'timestamp', 'tags')
-
     def __init__(self, ident, latitude, longitude, visible=False, user=None,
                  timestamp=None, tags=None):
         """Initialise a new ``Node`` object.
@@ -217,8 +215,6 @@ class Way(point.Points):
 
     .. versionadded:: 0.9.0
     """
-
-    __slots__ = ('ident', 'visible', 'user', 'timestamp', 'tags')
 
     def __init__(self, ident, nodes, visible=False, user=None, timestamp=None,
                  tags=None):

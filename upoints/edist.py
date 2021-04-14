@@ -94,8 +94,6 @@ class NumberedPoint(point.Point):
         units: Unit type to be used for distances
     """
 
-    __slots__ = ('name', )
-
     def __init__(self, latitude, longitude, name, units='km'):
         """Initialise a new ``NumberedPoint`` object.
 

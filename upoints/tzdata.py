@@ -27,8 +27,6 @@ class Zone(point.Point):
     .. versionadded:: 0.6.0
     """
 
-    __slots__ = ('country', 'zone', 'comments')
-
     def __init__(self, location, country, zone, comments=None):
         """Initialise a new ``Zone`` object.
 

@@ -28,7 +28,8 @@ If ``upoints2`` was on the horizon, it would:
 
 .. rubric:: Footnotes
 
-.. [#] Semi-dynamic ``__slots__`` abuse is the perfect awful example here
+.. [#] The semi-dynamic ``__slots__`` abuse that was rife through to
+       v0.12 is the perfect awful example here.
 
 .. spelling::
 

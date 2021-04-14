@@ -32,9 +32,6 @@ class Cell(point.Point):
     .. _OpenCellID.org: http://opencellid.org/
     """
 
-    __slots__ = ('ident', 'mcc', 'mnc', 'lac', 'cellid', 'crange', 'samples',
-                 'created', 'updated')
-
     def __init__(self, ident, latitude, longitude, mcc, mnc, lac, cellid,
                  crange, samples, created, updated):
         """Initialise a new ``Cell`` object.

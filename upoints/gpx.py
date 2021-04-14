@@ -46,8 +46,6 @@ class _GpxElem(point.TimedPoint):
     .. versionadded:: 0.11.0
     """
 
-    __slots__ = ('name', 'description', 'elevation', 'time', )
-
     _elem_name = None
 
     def __init__(self, latitude, longitude, name=None, description=None,
@@ -295,9 +293,6 @@ class _GpxMeta:
     .. versionadded:: 0.12.0
     """
 
-    __slots__ = ('name', 'desc', 'author', 'copyright', 'link', 'time',
-                 'keywords', 'bounds', 'extensions')
-
     def __init__(self, name=None, desc=None, author=None, copyright=None,
                  link=None, time=None, keywords=None, bounds=None,
                  extensions=None):
@@ -456,8 +451,6 @@ class Waypoint(_GpxElem):
         _GpxElem
     """
 
-    __slots__ = ('name', 'description', )
-
     _elem_name = 'wpt'
 
 
@@ -567,8 +560,6 @@ class Trackpoint(_GpxElem):
     See also:
         _GpxElem
     """
-
-    __slots__ = ('name', 'description', )
 
     _elem_name = 'trkpt'
 
@@ -683,8 +674,6 @@ class Routepoint(_GpxElem):
     See also:
          _GpxElem
     """
-
-    __slots__ = ('name', 'description', )
 
     _elem_name = 'rtept'
 

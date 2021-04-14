@@ -36,8 +36,6 @@ class Placemark(trigpoints.Trigpoint):
     .. versionadded:: 0.6.0
     """
 
-    __slots__ = ('description', )
-
     def __init__(self, latitude, longitude, altitude=None, name=None,
                  description=None):
         """Initialise a new ``Placemark`` object.

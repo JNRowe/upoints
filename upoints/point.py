@@ -66,9 +66,6 @@ class Point:
     .. versionadded:: 0.2.0
     """
 
-    __slots__ = ('units', '_latitude', '_longitude', '_rad_latitude',
-                 '_rad_longitude', 'timezone', '_angle')
-
     def __init__(self, latitude, longitude, units='metric',
                  angle='degrees', timezone=0):
         """Initialise a new ``Point`` object.
@@ -125,22 +122,6 @@ class Point:
     longitude = _manage_location('longitude')
     rad_latitude = _manage_location('rad_latitude')
     rad_longitude = _manage_location('rad_longitude')
-
-    @property
-    def __dict__(self):
-        """Emulate ``__dict__`` class attribute for class.
-
-        Returns:
-            dict: Object attributes, as would be provided by a class that didn't
-                set ``__slots__``
-        """
-        slots = []
-        cls = self.__class__
-        # Build a tuple of __slots__ from all parent classes
-        while cls is not object:
-            slots.extend(cls.__slots__)
-            cls = cls.__base__
-        return {item: getattr(self, item) for item in slots}
 
     def __repr__(self):
         """Self-documenting string representation.
@@ -491,8 +472,6 @@ class TimedPoint(Point):
 
     .. versionadded:: 0.12.0
     """
-
-    __slots__ = ('time', )
 
     def __init__(self, latitude, longitude, units='metric',
                  angle='degrees', timezone=0, time=None):
