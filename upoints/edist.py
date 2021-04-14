@@ -450,7 +450,7 @@ def final_bearing(globs, string):
 @cli.command()
 @click.option('-s', '--speed', default=0, type=float,
               help='Speed to calculate elapsed time.')
-@click.option('-t', '--time', type=click.Choice(['h', 'm', 's']),
+@click.option('-t', '--time', default='h', type=click.Choice(['h', 'm', 's']),
               help='Display time in hours, minutes or seconds.')
 @click.pass_obj
 def flight_plan(globs, speed, time):
