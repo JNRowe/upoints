@@ -145,11 +145,11 @@ reproduce the problem, or even better a patch!
 .. _issue: https://github.com/JNRowe/upoints/issues
 
 .. |actions| image:: https://img.shields.io/github/workflow/status/JNRowe/upoints/Test%20with%20pytest
-   :alt: Test state on master
+   :alt: Test state on main
 
-.. |coveralls| image:: https://img.shields.io/coveralls/github/JNRowe/upoints/master.png
+.. |coveralls| image:: https://img.shields.io/coveralls/github/JNRowe/upoints/main.png
    :target: https://coveralls.io/repos/JNRowe/upoints
-   :alt: Coverage state on master
+   :alt: Coverage state on main
 
 .. |pypi| image:: https://img.shields.io/pypi/v/upoints.png
    :target: https://pypi.org/project/upoints/
