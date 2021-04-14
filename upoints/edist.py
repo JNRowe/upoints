@@ -33,6 +33,7 @@ Note:
 # You should have received a copy of the GNU General Public License along with
 # upoints.  If not, see <http://www.gnu.org/licenses/>.
 
+import csv
 import logging
 import os
 import sys
@@ -323,19 +324,26 @@ class NumberedPoints(point.Points):
         """
         if len(self) == 1:
             raise LocationsError('flight_plan')
-        if self.verbose:
-            click.echo(f'WAYPOINT,BEARING[°],DISTANCE[{self.units}],'
-                       f'ELAPSED_TIME[{time}],LATITUDE[d.dd],LONGITUDE[d.dd]')
+        fields = ['WAYPOINT', 'BEARING[°]', f'DISTANCE[{self.units}]',
+                  f'ELAPSED_TIME[{time}]', 'LATITUDE[d.dd]', 'LONGITUDE[d.dd]']
         legs = [(0, 0), ] + list(self.inverse())
+        rows = []
         for leg, loc in zip(legs, self):
+            # This odd formatting is purely to maintain backwards compatibility,
+            # a better format will be added with a future release.
             if leg == (0, 0):
-                click.echo('%s,,,,%f,%f' % (loc.name, loc.latitude,
-                                            loc.longitude))
+                rows.append([loc.name, None, None, None, '%.6f' % loc.latitude,
+                             '%.6f' % loc.longitude])
             else:
                 leg_speed = '%.1f' % (leg[1] / speed) if speed != 0 else ''
-                click.echo('%s,%i,%.1f,%s,%f,%f'
-                           % (loc.name, leg[0], leg[1], leg_speed,
-                              loc.latitude, loc.longitude))
+                rows.append([loc.name, int(leg[0]), '%.1f' % leg[1], leg_speed,
+                             '%.6f' % loc.latitude, '%.6f' % loc.longitude])
+        # This odd dialect choice is to maintain backwards compatibility.
+        plan = csv.writer(sys.stdout, dialect=csv.unix_dialect,
+                          quoting=csv.QUOTE_MINIMAL)
+        if self.verbose:
+            plan.writerow(fields)
+        plan.writerows(rows)
         if self.verbose:
             overall_distance = sum(map(itemgetter(1), legs))
             direct_distance = self[0].distance(self[-1])
