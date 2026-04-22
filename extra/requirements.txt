@@ -1,2 +1,2 @@
-click>=6.6
+click>=8.3.3
 lxml
