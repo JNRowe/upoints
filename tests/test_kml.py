@@ -27,12 +27,12 @@ from tests.utils import xml_compare
 
 class TestPlacemark:
     @mark.parametrize(
-        'args, result',
+        "args, result",
         [
-            ((52, 0, 4), 'Placemark(52.0, 0.0, 4.0, None, None)'),
-            ((52, 0, None), 'Placemark(52.0, 0.0, None, None, None)'),
+            ((52, 0, 4), "Placemark(52.0, 0.0, 4.0, None, None)"),
+            ((52, 0, None), "Placemark(52.0, 0.0, None, None, None)"),
             (
-                (52, 0, None, 'name', 'desc'),
+                (52, 0, None, "name", "desc"),
                 "Placemark(52.0, 0.0, None, 'name', 'desc')",
             ),
         ],
@@ -41,17 +41,17 @@ class TestPlacemark:
         assert Placemark(*args) == result
 
     @mark.parametrize(
-        'args, result',
+        "args, result",
         [
-            ((52, 0, 4), '52°00′00″N, 000°00′00″E alt 4m'),
-            ((52, 0, None), '52°00′00″N, 000°00′00″E'),
+            ((52, 0, 4), "52°00′00″N, 000°00′00″E alt 4m"),
+            ((52, 0, None), "52°00′00″N, 000°00′00″E"),
             (
-                (52, 0, None, 'name', 'desc'),
-                'name (52°00′00″N, 000°00′00″E) [desc]',
+                (52, 0, None, "name", "desc"),
+                "name (52°00′00″N, 000°00′00″E) [desc]",
             ),
             (
-                (52, 0, 42, 'name', 'desc'),
-                'name (52°00′00″N, 000°00′00″E alt 42m) [desc]',
+                (52, 0, 42, "name", "desc"),
+                "name (52°00′00″N, 000°00′00″E alt 42m) [desc]",
             ),
         ],
     )
@@ -59,31 +59,31 @@ class TestPlacemark:
         assert str(Placemark(*args)) == result
 
     @mark.parametrize(
-        'args, result',
+        "args, result",
         [
             (
                 (52, 0, 4),
                 b'<kml:Placemark xmlns:kml="http://earth.google.com/kml/2.2">'
-                b'<kml:Point><kml:coordinates>0.0,52.0,4</kml:coordinates></kml:Point>'
-                b'</kml:Placemark>',
+                b"<kml:Point><kml:coordinates>0.0,52.0,4</kml:coordinates></kml:Point>"
+                b"</kml:Placemark>",
             ),
             (
-                (52, 0, 4, 'Cambridge'),
+                (52, 0, 4, "Cambridge"),
                 b'<kml:Placemark xmlns:kml="http://earth.google.com/kml/2.2" id="Cambridge">'
-                b'<kml:name>Cambridge</kml:name><kml:Point><kml:coordinates>0.0,52.0,4</kml:coordinates></kml:Point>'
-                b'</kml:Placemark>',
+                b"<kml:name>Cambridge</kml:name><kml:Point><kml:coordinates>0.0,52.0,4</kml:coordinates></kml:Point>"
+                b"</kml:Placemark>",
             ),
             (
                 (52, 0, 4),
                 b'<kml:Placemark xmlns:kml="http://earth.google.com/kml/2.2">'
-                b'<kml:Point><kml:coordinates>0.0,52.0,4</kml:coordinates></kml:Point></kml:Placemark>',
+                b"<kml:Point><kml:coordinates>0.0,52.0,4</kml:coordinates></kml:Point></kml:Placemark>",
             ),
             (
-                (52, 0, 4, 'Cambridge', 'in the UK'),
+                (52, 0, 4, "Cambridge", "in the UK"),
                 b'<kml:Placemark xmlns:kml="http://earth.google.com/kml/2.2" id="Cambridge">'
-                b'<kml:name>Cambridge</kml:name><kml:description>in the UK</kml:description>'
-                b'<kml:Point><kml:coordinates>0.0,52.0,4</kml:coordinates></kml:Point>'
-                b'</kml:Placemark>',
+                b"<kml:name>Cambridge</kml:name><kml:description>in the UK</kml:description>"
+                b"<kml:Point><kml:coordinates>0.0,52.0,4</kml:coordinates></kml:Point>"
+                b"</kml:Placemark>",
             ),
         ],
     )
@@ -93,19 +93,19 @@ class TestPlacemark:
 
 class TestPlacemarks:
     @mark.parametrize(
-        'name, result',
+        "name, result",
         [
-            ('Cambridge', 'Cambridge (52°10′01″N, 000°23′24″E)'),
-            ('Home', 'Home (52°00′54″N, 000°13′15″W alt 60m)'),
+            ("Cambridge", "Cambridge (52°10′01″N, 000°23′24″E)"),
+            ("Home", "Home (52°00′54″N, 000°13′15″W alt 60m)"),
         ],
     )
     def test_import_locations(self, name, result):
-        with open('tests/data/kml') as f:
+        with open("tests/data/kml") as f:
             locations = Placemarks(f)
         assert str(locations[name]) == result
 
     def test_export_kml_file(self):
-        filename = 'tests/data/kml'
+        filename = "tests/data/kml"
         with open(filename) as f:
             locations = Placemarks(f)
         export = locations.export_kml_file()

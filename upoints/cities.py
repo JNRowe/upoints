@@ -112,7 +112,7 @@ class City(trigpoints.Trigpoint):
                 self.latitude,
                 self.longitude,
                 self.altitude,
-                time.strftime('%Y%m%d', self.date) if self.date else '',
+                time.strftime("%Y%m%d", self.date) if self.date else "",
                 self.entered,
             ),
         )
@@ -191,49 +191,49 @@ class Cities(point.Points):
         .. _GNU miscfiles: http://directory.fsf.org/project/miscfiles/
         """
         self._data = data
-        if hasattr(data, 'read'):
-            data = data.read().split('//\n')
+        if hasattr(data, "read"):
+            data = data.read().split("//\n")
         elif isinstance(data, list):
             pass
         elif isinstance(data, str):
             with open(data) as f:
-                data = f.read().split('//\n')
+                data = f.read().split("//\n")
         else:
-            raise TypeError('Unable to handle data of type %r' % type(data))
+            raise TypeError("Unable to handle data of type %r" % type(data))
 
         keys = (
-            'identifier',
-            'ptype',
-            'population',
-            'size',
-            'name',
-            'country',
-            'region',
-            'location',
-            'longitude',
-            'latitude',
-            'altitude',
-            'date',
-            'entered',
+            "identifier",
+            "ptype",
+            "population",
+            "size",
+            "name",
+            "country",
+            "region",
+            "location",
+            "longitude",
+            "latitude",
+            "altitude",
+            "date",
+            "entered",
         )
 
         for record in data:
             # We truncate after splitting because the v1.4.2 datafile contains
             # a broken separator between 229 and 230 that would otherwise break
             # the import
-            data = [i.split(':')[1].strip() for i in record.splitlines()[:13]]
+            data = [i.split(":")[1].strip() for i in record.splitlines()[:13]]
             entries = dict(zip(keys, data))
 
             # Entry for Utrecht has the incorrect value of 0.000 for elevation.
-            if entries['altitude'] == '0.000':
+            if entries["altitude"] == "0.000":
                 logging.debug(
-                    'Ignoring ‘0.000’ value for elevation in %r ' 'entry',
+                    "Ignoring ‘0.000’ value for elevation in %r entry",
                     record,
                 )
-                entries['altitude'] = ''
-            for i in ('identifier', 'population', 'size', 'altitude'):
+                entries["altitude"] = ""
+            for i in ("identifier", "population", "size", "altitude"):
                 entries[i] = int(entries[i]) if entries[i] else None
-            for i in ('longitude', 'latitude'):
+            for i in ("longitude", "latitude"):
                 entries[i] = float(entries[i]) if entries[i] else None
-            entries['date'] = time.strptime(entries['date'], '%Y%m%d')
+            entries["date"] = time.strptime(entries["date"], "%Y%m%d")
             self.append(City(**entries))

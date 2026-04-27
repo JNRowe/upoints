@@ -29,7 +29,7 @@ from upoints.point import KeyedPoints, Point, Points, TimedPoint, TimedPoints
 
 class TestPoint:
     def test___init__(self):
-        test = Point(math.pi / 4, math.pi / 2, angle='radians')
+        test = Point(math.pi / 4, math.pi / 2, angle="radians")
         assert test.latitude == 45
         assert test.longitude == 90
 
@@ -38,42 +38,42 @@ class TestPoint:
         assert test.longitude == approx(-1.053, rel=0.001)
 
     def test___init___validity(self):
-        with raises(ValueError, match='Unknown angle type None'):
+        with raises(ValueError, match="Unknown angle type None"):
             Point(52.015, -0.221, angle=None)
-        with raises(ValueError, match='Invalid latitude value -92'):
+        with raises(ValueError, match="Invalid latitude value -92"):
             Point(-92, -0.221)
-        with raises(ValueError, match='Invalid longitude value 185'):
+        with raises(ValueError, match="Invalid longitude value 185"):
             Point(52.015, 185)
-        with raises(ValueError, match='Unknown units type None'):
+        with raises(ValueError, match="Unknown units type None"):
             Point(52.015, -0.221, units=None)
 
     def test___dict__(self):
         home = Point(52.015, -0.221)
         assert home.__dict__ == {
-            '_angle': 'degrees',
-            '_latitude': 52.015,
-            '_longitude': -0.221,
-            '_rad_latitude': 0.9078330104248505,
-            '_rad_longitude': -0.0038571776469074684,
-            'timezone': 0,
-            'units': 'metric',
+            "_angle": "degrees",
+            "_latitude": 52.015,
+            "_longitude": -0.221,
+            "_rad_latitude": 0.9078330104248505,
+            "_rad_longitude": -0.0038571776469074684,
+            "timezone": 0,
+            "units": "metric",
         }
 
     def test___dict___custom_class(self):
         class Test(Point):
             def __init__(self, latitude, longitude):
                 super(Test, self).__init__(latitude, longitude)
-                self.TEST = 'tested'
+                self.TEST = "tested"
 
         assert Test(52.015, -0.221).__dict__ == {
-            'TEST': 'tested',
-            '_angle': 'degrees',
-            '_latitude': 52.015,
-            '_longitude': -0.221,
-            '_rad_latitude': 0.9078330104248505,
-            '_rad_longitude': -0.0038571776469074684,
-            'timezone': 0,
-            'units': 'metric',
+            "TEST": "tested",
+            "_angle": "degrees",
+            "_latitude": 52.015,
+            "_longitude": -0.221,
+            "_rad_latitude": 0.9078330104248505,
+            "_rad_longitude": -0.0038571776469074684,
+            "timezone": 0,
+            "units": "metric",
         }
 
     def test___repr__(self):
@@ -83,21 +83,21 @@ class TestPoint:
         )
 
     def test___str__(self):
-        assert str(Point(52.015, -0.221)) == 'N52.015°; W000.221°'
+        assert str(Point(52.015, -0.221)) == "N52.015°; W000.221°"
 
     @mark.parametrize(
-        'style, result',
+        "style, result",
         [
-            ('dm', '52°00.90′N, 000°13.26′W'),
-            ('dms', """52°00′54″N, 000°13′15″W"""),
-            ('locator', 'IO92'),
+            ("dm", "52°00.90′N, 000°13.26′W"),
+            ("dms", """52°00′54″N, 000°13′15″W"""),
+            ("locator", "IO92"),
         ],
     )
     def test___format__(self, style, result):
         assert format(Point(52.015, -0.221), style) == result
 
     def test___unicode__(self):
-        assert str(Point(52.015, -0.221)) == 'N52.015°; W000.221°'
+        assert str(Point(52.015, -0.221)) == "N52.015°; W000.221°"
 
     def test___eq__(self):
         assert Point(52.015, -0.221) == Point(52.015, -0.221)
@@ -106,33 +106,33 @@ class TestPoint:
         assert Point(52.015, -0.221) != Point(52.6333, -2.5)
 
     @mark.parametrize(
-        'accuracy, result',
+        "accuracy, result",
         [
-            ('extsquare', 'IO92va33'),
-            ('subsquare', 'IO92va'),
+            ("extsquare", "IO92va33"),
+            ("subsquare", "IO92va"),
         ],
     )
     def test_to_grid_locator(self, accuracy, result):
         assert Point(52.015, -0.221).to_grid_locator(accuracy) == result
 
     def test_to_grid_locator_default(self):
-        assert Point(52.015, -0.221).to_grid_locator() == 'IO92'
+        assert Point(52.015, -0.221).to_grid_locator() == "IO92"
 
     def test_distance(self):
         home = Point(52.015, -0.221)
         dest = Point(52.6333, -2.5)
         assert home.distance(dest) == approx(169, rel=0.5)
-        assert home.distance(dest, method='sloc') == approx(169, rel=0.5)
+        assert home.distance(dest, method="sloc") == approx(169, rel=0.5)
 
         with raises(ValueError, match="Unknown method type 'Invalid'"):
-            home.distance(dest, method='Invalid')
+            home.distance(dest, method="Invalid")
 
     @mark.parametrize(
-        'units, result',
+        "units, result",
         [
-            ('imperial', 1792),
-            ('nautical', 1557),
-            ('metric', 2884),
+            ("imperial", 1792),
+            ("nautical", 1557),
+            ("metric", 2884),
         ],
     )
     def test_distance2(self, units, result):
@@ -141,7 +141,7 @@ class TestPoint:
         assert int(start.distance(dest)) == result
 
     @mark.parametrize(
-        'p1, p2, result',
+        "p1, p2, result",
         [
             (Point(52.015, -0.221), Point(52.6333, -2.5), 294),
             (Point(52.6333, -2.5), Point(52.015, -0.221), 113),
@@ -154,14 +154,12 @@ class TestPoint:
 
     def test_bearing_format(self):
         assert (
-            Point(52.015, -0.221).bearing(
-                Point(52.6333, -2.5), format='string'
-            )
-            == 'North-west'
+            Point(52.015, -0.221).bearing(Point(52.6333, -2.5), format="string")
+            == "North-west"
         )
 
     @mark.parametrize(
-        'p1, p2, result',
+        "p1, p2, result",
         [
             (
                 Point(52.015, -0.221),
@@ -179,7 +177,7 @@ class TestPoint:
         assert p1.midpoint(p2) == result
 
     @mark.parametrize(
-        'p1, p2, result',
+        "p1, p2, result",
         [
             (Point(52.015, -0.221), Point(52.6333, -2.5), 293),
             (Point(52.6333, -2.5), Point(52.015, -0.221), 114),
@@ -192,18 +190,16 @@ class TestPoint:
 
     def test_final_bearing_format(self):
         assert (
-            Point(52.015, -0.221).bearing(
-                Point(52.6333, -2.5), format='string'
-            )
-            == 'North-west'
+            Point(52.015, -0.221).bearing(Point(52.6333, -2.5), format="string")
+            == "North-west"
         )
 
     @mark.parametrize(
-        'units, multiplier',
+        "units, multiplier",
         [
-            ('metric', 1),
-            ('imperial', utils.STATUTE_MILE),
-            ('nautical', utils.NAUTICAL_MILE),
+            ("metric", 1),
+            ("imperial", utils.STATUTE_MILE),
+            ("nautical", utils.NAUTICAL_MILE),
         ],
     )
     def test_destination(self, units, multiplier):
@@ -218,7 +214,7 @@ class TestPoint:
         )
 
     @mark.parametrize(
-        'p1, result',
+        "p1, result",
         [
             (Point(52.015, -0.221), datetime.time(3, 40)),
             (Point(52.6333, -2.5), datetime.time(3, 45)),
@@ -231,7 +227,7 @@ class TestPoint:
         assert p1.sunrise(date) == result
 
     @mark.parametrize(
-        'p1, result',
+        "p1, result",
         [
             (Point(52.015, -0.221), datetime.time(20, 22)),
             (Point(52.6333, -2.5), datetime.time(20, 35)),
@@ -244,7 +240,7 @@ class TestPoint:
         assert p1.sunset(date) == result
 
     @mark.parametrize(
-        'p1, result',
+        "p1, result",
         [
             (
                 Point(52.015, -0.221),
@@ -277,7 +273,7 @@ class TestPoint:
 class TestPoints:
     def setup(self):
         self.locs = Points(
-            ['52.015;-0.221', '52.168;0.040', '52.855;0.657'], parse=True
+            ["52.015;-0.221", "52.168;0.040", "52.855;0.657"], parse=True
         )
 
     def test___repr__(self):
@@ -292,7 +288,7 @@ class TestPoints:
 
     def test_import_locations(self):
         locations = Points()
-        locations.import_locations(['0;0', '52.015 -0.221'])
+        locations.import_locations(["0;0", "52.015 -0.221"])
         assert repr(locations) == (
             "Points([Point(0.0, 0.0, 'metric', 'degrees', 0), "
             "Point(52.015, -0.221, 'metric', 'degrees', 0)], "
@@ -323,28 +319,28 @@ class TestPoints:
     def test_midpoint(self):
         assert list(self.locs.midpoint()) == [
             Point(
-                52.09157204324692, -0.09072375391429187, 'metric', 'degrees', 0
+                52.09157204324692, -0.09072375391429187, "metric", "degrees", 0
             ),
             Point(
-                52.51190105089283, 0.3460886030865466, 'metric', 'degrees', 0
+                52.51190105089283, 0.3460886030865466, "metric", "degrees", 0
             ),
         ]
 
     def test_range(self):
         assert list(self.locs.range(Point(52.015, -0.221), 20)) == [
-            Point(52.015, -0.221, 'metric', 'degrees', 0)
+            Point(52.015, -0.221, "metric", "degrees", 0)
         ]
 
     def test_destination(self):
         assert list(self.locs.destination(42, 240)) == [
             Point(
-                53.59560782169536, 2.2141813683976777, 'metric', 'degrees', 0
+                53.59560782169536, 2.2141813683976777, "metric", "degrees", 0
             ),
             Point(
-                53.74846914951471, 2.4840382137470614, 'metric', 'degrees', 0
+                53.74846914951471, 2.4840382137470614, "metric", "degrees", 0
             ),
             Point(
-                54.43483380445103, 3.1418347849815293, 'metric', 'degrees', 0
+                54.43483380445103, 3.1418347849815293, "metric", "degrees", 0
             ),
         ]
 
@@ -370,10 +366,10 @@ class TestPoints:
         ]
 
     @mark.parametrize(
-        'accuracy, result',
+        "accuracy, result",
         [
-            ('extsquare', ['IO92va33', 'JO02ae40', 'JO02hu85']),
-            ('subsquare', ['IO92va', 'JO02ae', 'JO02hu']),
+            ("extsquare", ["IO92va33", "JO02ae40", "JO02hu85"]),
+            ("subsquare", ["IO92va", "JO02ae", "JO02hu"]),
         ],
     )
     def test_to_grid_locator(self, accuracy, result):
@@ -383,19 +379,17 @@ class TestPoints:
 class TestTimedPoints:
     def test_speed(self):
         locations = TimedPoints()
-        locations.extend(
-            [
-                TimedPoint(
-                    52.015, -0.221, time=datetime.datetime(2008, 7, 28, 16, 38)
-                ),
-                TimedPoint(
-                    52.168, 0.040, time=datetime.datetime(2008, 7, 28, 18, 38)
-                ),
-                TimedPoint(
-                    52.855, 0.657, time=datetime.datetime(2008, 7, 28, 19, 17)
-                ),
-            ]
-        )
+        locations.extend([
+            TimedPoint(
+                52.015, -0.221, time=datetime.datetime(2008, 7, 28, 16, 38)
+            ),
+            TimedPoint(
+                52.168, 0.040, time=datetime.datetime(2008, 7, 28, 18, 38)
+            ),
+            TimedPoint(
+                52.855, 0.657, time=datetime.datetime(2008, 7, 28, 19, 17)
+            ),
+        ])
         assert list(locations.speed()) == [
             approx(12.315, rel=0.001),
             approx(133.849, rel=0.001),
@@ -406,94 +400,95 @@ class TestKeyedPoints:
     def setup(self):
         self.locs = KeyedPoints(
             [
-                ('home', '52.015;-0.221'),
-                ('Carol', '52.168;0.040'),
-                ('Kenny', '52.855;0.657'),
+                ("home", "52.015;-0.221"),
+                ("Carol", "52.168;0.040"),
+                ("Kenny", "52.855;0.657"),
             ],
             parse=True,
         )
 
     def test_import_locations(self):
         locations = KeyedPoints()
-        locations.import_locations(
-            [('prime', '0;0'), ('home', '52.015 -0.221')]
-        )
+        locations.import_locations([
+            ("prime", "0;0"),
+            ("home", "52.015 -0.221"),
+        ])
         assert locations == KeyedPoints(
             {
-                'prime': Point(0.0, 0.0, 'metric', 'degrees', 0),
-                'home': Point(52.015, -0.221, 'metric', 'degrees', 0),
+                "prime": Point(0.0, 0.0, "metric", "degrees", 0),
+                "home": Point(52.015, -0.221, "metric", "degrees", 0),
             },
             False,
-            'metric',
+            "metric",
         )
 
     def test_distance(self):
-        assert sum(self.locs.distance(('home', 'Carol', 'Kenny'))) == approx(
+        assert sum(self.locs.distance(("home", "Carol", "Kenny"))) == approx(
             111.632, rel=0.001
         )
 
     def test_bearing(self):
-        assert list(self.locs.bearing(('home', 'Carol', 'Kenny'))) == [
+        assert list(self.locs.bearing(("home", "Carol", "Kenny"))) == [
             approx(46.242, rel=0.001),
             approx(28.416, rel=0.001),
         ]
 
     def test_final_bearing(self):
-        assert list(self.locs.final_bearing(('home', 'Carol', 'Kenny'))) == [
+        assert list(self.locs.final_bearing(("home", "Carol", "Kenny"))) == [
             approx(46.448, rel=0.001),
             approx(28.906, rel=0.001),
         ]
 
     def test_inverse(self):
-        assert list(self.locs.inverse(('home', 'Carol', 'Kenny'))) == [
+        assert list(self.locs.inverse(("home", "Carol", "Kenny"))) == [
             (46.24239319802467, 24.629669163425465),
             (28.41617384845358, 87.00207583308533),
         ]
 
     def test_midpoint(self):
-        assert list(self.locs.midpoint(('home', 'Carol', 'Kenny'))) == [
+        assert list(self.locs.midpoint(("home", "Carol", "Kenny"))) == [
             Point(
-                52.09157204324692, -0.09072375391429187, 'metric', 'degrees', 0
+                52.09157204324692, -0.09072375391429187, "metric", "degrees", 0
             ),
             Point(
-                52.51190105089283, 0.3460886030865466, 'metric', 'degrees', 0
+                52.51190105089283, 0.3460886030865466, "metric", "degrees", 0
             ),
         ]
 
     def test_range(self):
         assert list(self.locs.range(Point(52.015, -0.221), 20)) == [
-            ('home', Point(52.015, -0.221, 'metric', 'degrees', 0))
+            ("home", Point(52.015, -0.221, "metric", "degrees", 0))
         ]
 
     def test_destination(self):
         assert sorted(self.locs.destination(42, 240)) == [
             (
-                'Carol',
+                "Carol",
                 Point(
                     53.74846914951471,
                     2.4840382137470614,
-                    'metric',
-                    'degrees',
+                    "metric",
+                    "degrees",
                     0,
                 ),
             ),
             (
-                'Kenny',
+                "Kenny",
                 Point(
                     54.43483380445103,
                     3.1418347849815293,
-                    'metric',
-                    'degrees',
+                    "metric",
+                    "degrees",
                     0,
                 ),
             ),
             (
-                'home',
+                "home",
                 Point(
                     53.59560782169536,
                     2.2141813683976777,
-                    'metric',
-                    'degrees',
+                    "metric",
+                    "degrees",
                     0,
                 ),
             ),
@@ -501,39 +496,39 @@ class TestKeyedPoints:
 
     def test_sunrise(self):
         assert sorted(self.locs.sunrise(datetime.date(2008, 5, 2))) == [
-            ('Carol', datetime.time(4, 26)),
-            ('Kenny', datetime.time(4, 21)),
-            ('home', datetime.time(4, 28)),
+            ("Carol", datetime.time(4, 26)),
+            ("Kenny", datetime.time(4, 21)),
+            ("home", datetime.time(4, 28)),
         ]
 
     def test_sunset(self):
         assert sorted(self.locs.sunset(datetime.date(2008, 5, 2))) == [
-            ('Carol', datetime.time(19, 27)),
-            ('Kenny', datetime.time(19, 27)),
-            ('home', datetime.time(19, 28)),
+            ("Carol", datetime.time(19, 27)),
+            ("Kenny", datetime.time(19, 27)),
+            ("home", datetime.time(19, 28)),
         ]
 
     def test_sun_events(self):
         assert sorted(self.locs.sun_events(datetime.date(2008, 5, 2))) == [
-            ('Carol', (datetime.time(4, 26), datetime.time(19, 27))),
-            ('Kenny', (datetime.time(4, 21), datetime.time(19, 27))),
-            ('home', (datetime.time(4, 28), datetime.time(19, 28))),
+            ("Carol", (datetime.time(4, 26), datetime.time(19, 27))),
+            ("Kenny", (datetime.time(4, 21), datetime.time(19, 27))),
+            ("home", (datetime.time(4, 28), datetime.time(19, 28))),
         ]
 
     @mark.parametrize(
-        'accuracy, result',
+        "accuracy, result",
         [
             (
-                'extsquare',
+                "extsquare",
                 [
-                    ('Carol', 'JO02ae40'),
-                    ('Kenny', 'JO02hu85'),
-                    ('home', 'IO92va33'),
+                    ("Carol", "JO02ae40"),
+                    ("Kenny", "JO02hu85"),
+                    ("home", "IO92va33"),
                 ],
             ),
             (
-                'subsquare',
-                [('Carol', 'JO02ae'), ('Kenny', 'JO02hu'), ('home', 'IO92va')],
+                "subsquare",
+                [("Carol", "JO02ae"), ("Kenny", "JO02hu"), ("home", "IO92va")],
             ),
         ],
     )

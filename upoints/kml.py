@@ -26,8 +26,8 @@ from lxml import etree
 
 from . import point, trigpoints, utils
 
-KML_NS = 'http://earth.google.com/kml/2.2'
-etree.register_namespace('kml', KML_NS)
+KML_NS = "http://earth.google.com/kml/2.2"
+etree.register_namespace("kml", KML_NS)
 
 create_elem = utils.element_creator(KML_NS)
 
@@ -62,9 +62,9 @@ class Placemark(trigpoints.Trigpoint):
         Returns:
             str: Human readable string representation of ``Placemark`` object
         """
-        location = super(Placemark, self).__format__('dms')
+        location = super(Placemark, self).__format__("dms")
         if self.description:
-            return f'{location} [{self.description}]'
+            return f"{location} [{self.description}]"
         else:
             return location
 
@@ -74,24 +74,24 @@ class Placemark(trigpoints.Trigpoint):
         Returns:
             etree.Element: KML Placemark element
         """
-        placemark = create_elem('Placemark')
+        placemark = create_elem("Placemark")
         if self.name:
-            placemark.set('id', self.name)
-            placemark.name = create_elem('name', text=self.name)
+            placemark.set("id", self.name)
+            placemark.name = create_elem("name", text=self.name)
         if self.description:
             placemark.description = create_elem(
-                'description', text=self.description
+                "description", text=self.description
             )
-        placemark.Point = create_elem('Point')
+        placemark.Point = create_elem("Point")
 
         data = [str(self.longitude), str(self.latitude)]
         if self.altitude:
             if int(self.altitude) == self.altitude:
-                data.append('%i' % self.altitude)
+                data.append("%i" % self.altitude)
             else:
                 data.append(str(self.altitude))
         placemark.Point.coordinates = create_elem(
-            'coordinates', text=','.join(data)
+            "coordinates", text=",".join(data)
         )
 
         return placemark
@@ -160,9 +160,9 @@ class Placemarks(point.KeyedPoints):
             name = place.name.text
             coords = place.Point.coordinates.text
             if coords is None:
-                logging.info('No coordinates found for %r entry', name)
+                logging.info("No coordinates found for %r entry", name)
                 continue
-            coords = coords.split(',')
+            coords = coords.split(",")
             if len(coords) == 2:
                 longitude, latitude = coords
                 altitude = None
@@ -170,7 +170,7 @@ class Placemarks(point.KeyedPoints):
                 longitude, latitude, altitude = coords
             else:
                 raise ValueError(
-                    f'Unable to handle coordinates value {coords!r}'
+                    f"Unable to handle coordinates value {coords!r}"
                 )
             try:
                 description = place.description
@@ -186,9 +186,9 @@ class Placemarks(point.KeyedPoints):
         Returns:
             etree.ElementTree: KML element tree depicting ``Placemarks``
         """
-        kml = create_elem('kml')
-        kml.Document = create_elem('Document')
-        for place in sorted(self.values(), key=attrgetter('name')):
+        kml = create_elem("kml")
+        kml.Document = create_elem("Document")
+        for place in sorted(self.values(), key=attrgetter("name")):
             kml.Document.append(place.tokml())
 
         return etree.ElementTree(kml)

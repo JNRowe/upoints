@@ -83,7 +83,7 @@ class Cell(point.Point):
         Returns:
             str: OpenCellID.org-style string representation of ``Cell`` object
         """
-        return '%i,%.13f,%.13f,%i,%i,%i,%i,%i,%i,%s,%s' % (
+        return "%i,%.13f,%.13f,%i,%i,%i,%i,%i,%i,%s,%s" % (
             self.ident,
             self.latitude,
             self.longitude,
@@ -93,8 +93,8 @@ class Cell(point.Point):
             self.cellid,
             self.crange,
             self.samples,
-            self.created.strftime('%Y-%m-%d %H:%M:%S'),
-            self.updated.strftime('%Y-%m-%d %H:%M:%S'),
+            self.created.strftime("%Y-%m-%d %H:%M:%S"),
+            self.updated.strftime("%Y-%m-%d %H:%M:%S"),
         )
 
 
@@ -117,8 +117,8 @@ class Cells(point.KeyedPoints):
         Returns:
             str: OpenCellID.org formatted output
         """
-        return '\n'.join(
-            map(str, sorted(self.values(), key=attrgetter('ident')))
+        return "\n".join(
+            map(str, sorted(self.values(), key=attrgetter("ident")))
         )
 
     def import_locations(self, cells_file):
@@ -160,20 +160,20 @@ class Cells(point.KeyedPoints):
         """
         self._cells_file = cells_file
         field_names = (
-            'ident',
-            'latitude',
-            'longitude',
-            'mcc',
-            'mnc',
-            'lac',
-            'cellid',
-            'crange',
-            'samples',
-            'created',
-            'updated',
+            "ident",
+            "latitude",
+            "longitude",
+            "mcc",
+            "mnc",
+            "lac",
+            "cellid",
+            "crange",
+            "samples",
+            "created",
+            "updated",
         )
         parse_date = lambda s: datetime.datetime.strptime(
-            s, '%Y-%m-%d %H:%M:%S'
+            s, "%Y-%m-%d %H:%M:%S"
         )
         field_parsers = (
             int,
@@ -196,13 +196,13 @@ class Cells(point.KeyedPoints):
                     n: p(row[n]) for n, p in zip(field_names, field_parsers)
                 }
             except ValueError:
-                if r'\N' in row.values():
+                if r"\N" in row.values():
                     # A few entries are incomplete, and when that occurs the
                     # export includes the string '\N' to denote missing
                     # data.  We just ignore them for now
-                    logging.debug('Skipping incomplete entry %r', row)
+                    logging.debug("Skipping incomplete entry %r", row)
                     break
                 else:
-                    raise utils.FileFormatError('opencellid.org')
+                    raise utils.FileFormatError("opencellid.org")
             else:
-                self[row['ident']] = Cell(**cell)
+                self[row["ident"]] = Cell(**cell)

@@ -29,15 +29,15 @@ from . import point, utils
 from ._version import web as ua_string
 
 
-GPX_NS = 'http://www.topografix.com/GPX/1/1'
-etree.register_namespace('gpx', GPX_NS)
+GPX_NS = "http://www.topografix.com/GPX/1/1"
+etree.register_namespace("gpx", GPX_NS)
 
 create_elem = utils.element_creator(GPX_NS)
 
 GPX_ELEM_ATTRIB = {
-    'creator': ua_string,
-    'version': '1.1',
-    '{http://www.w3.org/2001/XMLSchema-instance}schemaLocation': f'{GPX_NS} http://www.topografix.com/GPX/1/1/gpx.xsd',
+    "creator": ua_string,
+    "version": "1.1",
+    "{http://www.w3.org/2001/XMLSchema-instance}schemaLocation": f"{GPX_NS} http://www.topografix.com/GPX/1/1/gpx.xsd",
 }
 
 
@@ -80,22 +80,22 @@ class _GpxElem(point.TimedPoint):
             str: Human readable string representation of :class:`_GpxElem`
                 object
         """
-        location = super(_GpxElem, self).__format__('dms')
+        location = super(_GpxElem, self).__format__("dms")
         if self.elevation:
-            location += ' @ %sm' % self.elevation
+            location += " @ %sm" % self.elevation
         if self.time:
-            location += ' on %s' % self.time.isoformat()
+            location += " on %s" % self.time.isoformat()
         if self.name:
             text = [
-                f'{self.name} ({location})',
+                f"{self.name} ({location})",
             ]
         else:
             text = [
                 location,
             ]
         if self.description:
-            text.append(f'[{self.description}]')
-        return ' '.join(text)
+            text.append(f"[{self.description}]")
+        return " ".join(text)
 
     def togpx(self):
         """Generate a GPX waypoint element subtree.
@@ -105,16 +105,16 @@ class _GpxElem(point.TimedPoint):
         """
         element = create_elem(
             self.__class__._elem_name,
-            {'lat': str(self.latitude), 'lon': str(self.longitude)},
+            {"lat": str(self.latitude), "lon": str(self.longitude)},
         )
         if self.name:
-            element.append(create_elem('name', text=self.name))
+            element.append(create_elem("name", text=self.name))
         if self.description:
-            element.append(create_elem('desc', text=self.description))
+            element.append(create_elem("desc", text=self.description))
         if self.elevation:
-            element.append(create_elem('ele', text=str(self.elevation)))
+            element.append(create_elem("ele", text=str(self.elevation)))
         if self.time:
-            element.append(create_elem('time', text=self.time.isoformat()))
+            element.append(create_elem("time", text=self.time.isoformat()))
         return element
 
 
@@ -132,7 +132,7 @@ class _SegWrap(list):
         if gpx_file:
             self.import_locations(gpx_file)
 
-    def distance(self, method='haversine'):
+    def distance(self, method="haversine"):
         """Calculate distances between locations in segments.
 
         Args:
@@ -150,7 +150,7 @@ class _SegWrap(list):
                 distances.append(segment.distance(method))
         return distances
 
-    def bearing(self, format='numeric'):
+    def bearing(self, format="numeric"):
         """Calculate bearing between locations in segments.
 
         Args:
@@ -168,7 +168,7 @@ class _SegWrap(list):
                 bearings.append(segment.bearing(format))
         return bearings
 
-    def final_bearing(self, format='numeric'):
+    def final_bearing(self, format="numeric"):
         """Calculate final bearing between locations in segments.
 
         Args:
@@ -280,7 +280,7 @@ class _SegWrap(list):
         """
         return (segment.sun_events(date, zenith) for segment in self)
 
-    def to_grid_locator(self, precision='square'):
+    def to_grid_locator(self, precision="square"):
         """Calculate Maidenhead locator for locations.
 
         Args:
@@ -350,72 +350,70 @@ class _GpxMeta:
         Returns:
             etree.Element: GPX metadata element
         """
-        metadata = create_elem('metadata')
+        metadata = create_elem("metadata")
         if self.name:
-            metadata.append(create_elem('name', text=self.name))
+            metadata.append(create_elem("name", text=self.name))
         if self.desc:
-            metadata.append(create_elem('desc', text=self.desc))
+            metadata.append(create_elem("desc", text=self.desc))
         if self.author:
-            element = create_elem('author')
-            if self.author['name']:
-                element.append(create_elem('name', text=self.author['name']))
-            if self.author['email']:
+            element = create_elem("author")
+            if self.author["name"]:
+                element.append(create_elem("name", text=self.author["name"]))
+            if self.author["email"]:
                 attr = dict(
-                    zip(self.author['email'].split('@'), ('id', 'domain'))
+                    zip(self.author["email"].split("@"), ("id", "domain"))
                 )
-                element.append(create_elem('email', attr))
-            if self.author['link']:
-                element.append(create_elem('link', text=self.author['link']))
+                element.append(create_elem("email", attr))
+            if self.author["link"]:
+                element.append(create_elem("link", text=self.author["link"]))
             metadata.append(element)
         if self.copyright:
-            if self.copyright['name']:
-                author = {'author': self.copyright['name']}
+            if self.copyright["name"]:
+                author = {"author": self.copyright["name"]}
             else:
                 author = None
-            element = create_elem('copyright', author)
-            if self.copyright['year']:
-                element.append(
-                    create_elem('year', text=self.copyright['year'])
-                )
-            if self.copyright['license']:
-                license = create_elem('license')
+            element = create_elem("copyright", author)
+            if self.copyright["year"]:
+                element.append(create_elem("year", text=self.copyright["year"]))
+            if self.copyright["license"]:
+                license = create_elem("license")
                 element.append(license)
             metadata.append(element)
         if self.link:
             for link in self.link:
                 if isinstance(link, str):
-                    element = create_elem('link', {'href': link})
+                    element = create_elem("link", {"href": link})
                 else:
-                    element = create_elem('link', {'href': link['href']})
-                    if link['text']:
-                        element.append(create_elem('text', text=link['text']))
-                    if link['type']:
-                        element.append(create_elem('type', text=link['type']))
+                    element = create_elem("link", {"href": link["href"]})
+                    if link["text"]:
+                        element.append(create_elem("text", text=link["text"]))
+                    if link["type"]:
+                        element.append(create_elem("type", text=link["type"]))
                 metadata.append(element)
         if isinstance(self.time, (time.struct_time, tuple)):
-            text = time.strftime('%Y-%m-%dT%H:%M:%S%z', self.time)
+            text = time.strftime("%Y-%m-%dT%H:%M:%S%z", self.time)
         elif isinstance(self.time, utils.Timestamp):
             text = self.time.isoformat()
         else:
-            text = time.strftime('%Y-%m-%dT%H:%M:%S%z')
-        metadata.append(create_elem('time', text=text))
+            text = time.strftime("%Y-%m-%dT%H:%M:%S%z")
+        metadata.append(create_elem("time", text=text))
         if self.keywords:
-            metadata.append(create_elem('keywords', text=self.keywords))
+            metadata.append(create_elem("keywords", text=self.keywords))
         if self.bounds:
             if not isinstance(self.bounds, dict):
-                latitudes = list(map(attrgetter('latitude'), self.bounds))
-                longitudes = list(map(attrgetter('longitude'), self.bounds))
+                latitudes = list(map(attrgetter("latitude"), self.bounds))
+                longitudes = list(map(attrgetter("longitude"), self.bounds))
                 bounds = {
-                    'minlat': str(min(latitudes)),
-                    'maxlat': str(max(latitudes)),
-                    'minlon': str(min(longitudes)),
-                    'maxlon': str(max(longitudes)),
+                    "minlat": str(min(latitudes)),
+                    "maxlat": str(max(latitudes)),
+                    "minlon": str(min(longitudes)),
+                    "maxlon": str(max(longitudes)),
                 }
             else:
                 bounds = {k: str(v) for k, v in self.bounds.items()}
-            metadata.append(create_elem('bounds', bounds))
+            metadata.append(create_elem("bounds", bounds))
         if self.extensions:
-            element = create_elem('extensions')
+            element = create_elem("extensions")
             for i in self.extensions:
                 element.append(i)
             metadata.append(self.extensions)
@@ -430,43 +428,43 @@ class _GpxMeta:
         metadata_elem = lambda name: etree.QName(GPX_NS, name)
 
         for child in elements.getchildren():
-            tag_ns, tag_name = child.tag[1:].split('}')
+            tag_ns, tag_name = child.tag[1:].split("}")
             if not tag_ns == GPX_NS:
                 continue
-            if tag_name in ('name', 'desc', 'keywords'):
+            if tag_name in ("name", "desc", "keywords"):
                 setattr(self, tag_name, child.text)
-            elif tag_name == 'time':
+            elif tag_name == "time":
                 self.time = utils.Timestamp.parse_isoformat(child.text)
-            elif tag_name == 'author':
-                self.author['name'] = child.findtext(metadata_elem('name'))
-                aemail = child.find(metadata_elem('email'))
+            elif tag_name == "author":
+                self.author["name"] = child.findtext(metadata_elem("name"))
+                aemail = child.find(metadata_elem("email"))
                 if aemail:
-                    self.author['email'] = '%s@%s' % (
-                        aemail.get('id'),
-                        aemail.get('domain'),
+                    self.author["email"] = "%s@%s" % (
+                        aemail.get("id"),
+                        aemail.get("domain"),
                     )
-                self.author['link'] = child.findtext(metadata_elem('link'))
-            elif tag_name == 'bounds':
+                self.author["link"] = child.findtext(metadata_elem("link"))
+            elif tag_name == "bounds":
                 self.bounds = {
-                    'minlat': child.get('minlat'),
-                    'maxlat': child.get('maxlat'),
-                    'minlon': child.get('minlon'),
-                    'maxlon': child.get('maxlon'),
+                    "minlat": child.get("minlat"),
+                    "maxlat": child.get("maxlat"),
+                    "minlon": child.get("minlon"),
+                    "maxlon": child.get("maxlon"),
                 }
-            elif tag_name == 'extensions':
+            elif tag_name == "extensions":
                 self.extensions = child.getchildren()
-            elif tag_name == 'copyright':
-                if child.get('author'):
-                    self.copyright['name'] = child.get('author')
-                self.copyright['year'] = child.findtext(metadata_elem('year'))
-                self.copyright['license'] = child.findtext(
-                    metadata_elem('license')
+            elif tag_name == "copyright":
+                if child.get("author"):
+                    self.copyright["name"] = child.get("author")
+                self.copyright["year"] = child.findtext(metadata_elem("year"))
+                self.copyright["license"] = child.findtext(
+                    metadata_elem("license")
                 )
-            elif tag_name == 'link':
+            elif tag_name == "link":
                 link = {
-                    'href': child.get('href'),
-                    'type': child.findtext(metadata_elem('type')),
-                    'text': child.findtext(metadata_elem('text')),
+                    "href": child.get("href"),
+                    "type": child.findtext(metadata_elem("type")),
+                    "text": child.findtext(metadata_elem("text")),
                 }
                 self.link.append(link)
 
@@ -480,7 +478,7 @@ class Waypoint(_GpxElem):
         _GpxElem
     """
 
-    _elem_name = 'wpt'
+    _elem_name = "wpt"
 
 
 class Waypoints(point.TimedPoints):
@@ -544,8 +542,8 @@ class Waypoints(point.TimedPoints):
             self.metadata.import_metadata(data.metadata)
 
         for waypoint in data.wpt:
-            latitude = waypoint.get('lat')
-            longitude = waypoint.get('lon')
+            latitude = waypoint.get("lat")
+            longitude = waypoint.get("lon")
             try:
                 name = waypoint.name.text
             except AttributeError:
@@ -574,7 +572,7 @@ class Waypoints(point.TimedPoints):
         Returns:
             etree.ElementTree: GPX element tree depicting ``Waypoints`` object
         """
-        gpx = create_elem('gpx', GPX_ELEM_ATTRIB)
+        gpx = create_elem("gpx", GPX_ELEM_ATTRIB)
         if not self.metadata.bounds:
             self.metadata.bounds = self[:]
         gpx.append(self.metadata.togpx())
@@ -593,7 +591,7 @@ class Trackpoint(_GpxElem):
         _GpxElem
     """
 
-    _elem_name = 'trkpt'
+    _elem_name = "trkpt"
 
 
 class Trackpoints(_SegWrap):
@@ -654,8 +652,8 @@ class Trackpoints(_SegWrap):
         for segment in data.trk.trkseg:
             points = point.TimedPoints()
             for trackpoint in segment.trkpt:
-                latitude = trackpoint.get('lat')
-                longitude = trackpoint.get('lon')
+                latitude = trackpoint.get("lat")
+                longitude = trackpoint.get("lon")
                 try:
                     name = trackpoint.name.text
                 except AttributeError:
@@ -669,9 +667,7 @@ class Trackpoints(_SegWrap):
                 except AttributeError:
                     elevation = None
                 try:
-                    time = utils.Timestamp.parse_isoformat(
-                        trackpoint.time.text
-                    )
+                    time = utils.Timestamp.parse_isoformat(trackpoint.time.text)
                 except AttributeError:
                     time = None
                 points.append(
@@ -688,14 +684,14 @@ class Trackpoints(_SegWrap):
             etree.ElementTree: GPX element tree depicting ``Trackpoints``
                 objects
         """
-        gpx = create_elem('gpx', GPX_ELEM_ATTRIB)
+        gpx = create_elem("gpx", GPX_ELEM_ATTRIB)
         if not self.metadata.bounds:
             self.metadata.bounds = [j for i in self for j in i]
         gpx.append(self.metadata.togpx())
-        track = create_elem('trk')
+        track = create_elem("trk")
         gpx.append(track)
         for segment in self:
-            chunk = create_elem('trkseg')
+            chunk = create_elem("trkseg")
             track.append(chunk)
             for place in segment:
                 chunk.append(place.togpx())
@@ -712,7 +708,7 @@ class Routepoint(_GpxElem):
          _GpxElem
     """
 
-    _elem_name = 'rtept'
+    _elem_name = "rtept"
 
 
 class Routepoints(_SegWrap):
@@ -771,8 +767,8 @@ class Routepoints(_SegWrap):
         for route in data.rte:
             points = point.TimedPoints()
             for routepoint in route.rtept:
-                latitude = routepoint.get('lat')
-                longitude = routepoint.get('lon')
+                latitude = routepoint.get("lat")
+                longitude = routepoint.get("lon")
                 try:
                     name = routepoint.name.text
                 except AttributeError:
@@ -786,9 +782,7 @@ class Routepoints(_SegWrap):
                 except AttributeError:
                     elevation = None
                 try:
-                    time = utils.Timestamp.parse_isoformat(
-                        routepoint.time.text
-                    )
+                    time = utils.Timestamp.parse_isoformat(routepoint.time.text)
                 except AttributeError:
                     time = None
                 points.append(
@@ -805,12 +799,12 @@ class Routepoints(_SegWrap):
             etree.ElementTree: GPX element tree depicting :class:`Routepoints`
                 objects
         """
-        gpx = create_elem('gpx', GPX_ELEM_ATTRIB)
+        gpx = create_elem("gpx", GPX_ELEM_ATTRIB)
         if not self.metadata.bounds:
             self.metadata.bounds = [j for i in self for j in i]
         gpx.append(self.metadata.togpx())
         for rte in self:
-            chunk = create_elem('rte')
+            chunk = create_elem("rte")
             gpx.append(chunk)
             for place in rte:
                 chunk.append(place.togpx())

@@ -41,12 +41,12 @@ from tests.utils import xml_compare, xml_str_compare
 
 class Test_GpxElem:
     @mark.parametrize(
-        'args, result',
+        "args, result",
         [
-            ((52, 0), '_GpxElem(52.0, 0.0, None, None, None, None)'),
-            ((52, 0, None), '_GpxElem(52.0, 0.0, None, None, None, None)'),
+            ((52, 0), "_GpxElem(52.0, 0.0, None, None, None, None)"),
+            ((52, 0, None), "_GpxElem(52.0, 0.0, None, None, None, None)"),
             (
-                (52, 0, 'name', 'desc'),
+                (52, 0, "name", "desc"),
                 "_GpxElem(52.0, 0.0, 'name', 'desc', None, None)",
             ),
         ],
@@ -55,17 +55,17 @@ class Test_GpxElem:
         assert repr(_GpxElem(*args)) == result
 
     @mark.parametrize(
-        'args, result',
+        "args, result",
         [
             ((52, 0), """52°00′00″N, 000°00′00″E"""),
             (
-                (52, 0, 'name', 'desc', 40),
+                (52, 0, "name", "desc", 40),
                 """name (52°00′00″N, 000°00′00″E @ 40m) [desc]""",
             ),
             (
-                (52, 0, 'name', 'desc', 40, utils.Timestamp(2008, 7, 25)),
+                (52, 0, "name", "desc", 40, utils.Timestamp(2008, 7, 25)),
                 """name (52°00′00″N, 000°00′00″E @ 40m on """
-                '2008-07-25T00:00:00+00:00) [desc]',
+                "2008-07-25T00:00:00+00:00) [desc]",
             ),
         ],
     )
@@ -75,25 +75,25 @@ class Test_GpxElem:
 
 class Test_GpxMeta:
     @mark.parametrize(
-        'bounds, result',
+        "bounds, result",
         [
             (
                 None,
                 b'<gpx:metadata xmlns:gpx="http://www.topografix.com/GPX/1/1">'
-                b'<gpx:time>2008-06-03T16:12:43+0000</gpx:time>'
-                b'</gpx:metadata>',
+                b"<gpx:time>2008-06-03T16:12:43+0000</gpx:time>"
+                b"</gpx:metadata>",
             ),
             (
-                {'minlat': 52, 'maxlat': 54, 'minlon': -2, 'maxlon': 1},
+                {"minlat": 52, "maxlat": 54, "minlon": -2, "maxlon": 1},
                 b'<gpx:metadata xmlns:gpx="http://www.topografix.com/GPX/1/1">'
                 b'<gpx:time>2008-06-03T16:12:43+0000</gpx:time><gpx:bounds maxlat="54" maxlon="1" minlat="52" minlon="-2"/>'
-                b'</gpx:metadata>',
+                b"</gpx:metadata>",
             ),
             (
                 [point.Point(52.015, -0.221), point.Point(52.167, 0.390)],
                 b'<gpx:metadata xmlns:gpx="http://www.topografix.com/GPX/1/1">'
                 b'<gpx:time>2008-06-03T16:12:43+0000</gpx:time><gpx:bounds maxlat="52.167" maxlon="0.39" minlat="52.015" minlon="-0.221"/>'
-                b'</gpx:metadata>',
+                b"</gpx:metadata>",
             ),
         ],
     )
@@ -105,44 +105,44 @@ class Test_GpxMeta:
 
 class TestWaypoint:
     assert (
-        repr(Waypoint(52, 0)) == 'Waypoint(52.0, 0.0, None, None, None, None)'
+        repr(Waypoint(52, 0)) == "Waypoint(52.0, 0.0, None, None, None, None)"
     )
     assert (
         repr(Waypoint(52, 0, None))
-        == 'Waypoint(52.0, 0.0, None, None, None, None)'
+        == "Waypoint(52.0, 0.0, None, None, None, None)"
     )
     assert (
-        repr(Waypoint(52, 0, 'name', 'desc'))
+        repr(Waypoint(52, 0, "name", "desc"))
         == "Waypoint(52.0, 0.0, 'name', 'desc', None, None)"
     )
 
 
 class TestWaypoints:
     def test_import_locations(self):
-        with open('tests/data/gpx') as f:
+        with open("tests/data/gpx") as f:
             waypoints = Waypoints(f)
-        assert [str(x) for x in sorted(waypoints, key=attrgetter('name'))] == [
-            'Home (52°00′54″N, 000°13′15″W on 2008-07-26T00:00:00+00:00) [My place]',
-            'MSR (52°10′01″N, 000°23′24″E on 2008-07-27T00:00:00+00:00) [Microsoft Research, Cambridge]',
+        assert [str(x) for x in sorted(waypoints, key=attrgetter("name"))] == [
+            "Home (52°00′54″N, 000°13′15″W on 2008-07-26T00:00:00+00:00) [My place]",
+            "MSR (52°10′01″N, 000°23′24″E on 2008-07-27T00:00:00+00:00) [Microsoft Research, Cambridge]",
         ]
 
     def test_export_gpx_file(self):
-        with open('tests/data/gpx') as f:
+        with open("tests/data/gpx") as f:
             locations = Waypoints(f)
         export = locations.export_gpx_file()
-        gpx_xml = etree.parse('tests/data/gpx')
+        gpx_xml = etree.parse("tests/data/gpx")
         for e1, e2 in zip(export.getiterator(), gpx_xml.getiterator()):
             xml_compare(e1, e2)
 
 
 class TestTrackpoint:
     @mark.parametrize(
-        'args, result',
+        "args, result",
         [
-            ((52, 0), 'Trackpoint(52.0, 0.0, None, None, None, None)'),
-            ((52, 0, None), 'Trackpoint(52.0, 0.0, None, None, None, None)'),
+            ((52, 0), "Trackpoint(52.0, 0.0, None, None, None, None)"),
+            ((52, 0, None), "Trackpoint(52.0, 0.0, None, None, None, None)"),
             (
-                (52, 0, 'name', 'desc'),
+                (52, 0, "name", "desc"),
                 "Trackpoint(52.0, 0.0, 'name', 'desc', None, None)",
             ),
         ],
@@ -153,32 +153,32 @@ class TestTrackpoint:
 
 class TestTrackpoints:
     def test_import_locations(self):
-        with open('tests/data/gpx_tracks') as f:
+        with open("tests/data/gpx_tracks") as f:
             trackpoints = Trackpoints(f)
         assert [
-            str(x) for x in sorted(trackpoints[0], key=attrgetter('name'))
+            str(x) for x in sorted(trackpoints[0], key=attrgetter("name"))
         ] == [
-            'Home (52°00′54″N, 000°13′15″W on 2008-07-26T00:00:00+00:00) [My place]',
-            'MSR (52°10′01″N, 000°23′24″E on 2008-07-27T00:00:00+00:00) [Microsoft Research, Cambridge]',
+            "Home (52°00′54″N, 000°13′15″W on 2008-07-26T00:00:00+00:00) [My place]",
+            "MSR (52°10′01″N, 000°23′24″E on 2008-07-27T00:00:00+00:00) [Microsoft Research, Cambridge]",
         ]
 
     def test_export_gpx_file(self):
-        with open('tests/data/gpx_tracks') as f:
+        with open("tests/data/gpx_tracks") as f:
             locations = Trackpoints(f)
         export = locations.export_gpx_file()
-        tracks_xml = etree.parse('tests/data/gpx_tracks')
+        tracks_xml = etree.parse("tests/data/gpx_tracks")
         for e1, e2 in zip(export.getiterator(), tracks_xml.getiterator()):
             xml_compare(e1, e2)
 
 
 class TestRoutepoint:
     @mark.parametrize(
-        'args, result',
+        "args, result",
         [
-            ((52, 0), 'Routepoint(52.0, 0.0, None, None, None, None)'),
-            ((52, 0, None), 'Routepoint(52.0, 0.0, None, None, None, None)'),
+            ((52, 0), "Routepoint(52.0, 0.0, None, None, None, None)"),
+            ((52, 0, None), "Routepoint(52.0, 0.0, None, None, None, None)"),
             (
-                (52, 0, 'name', 'desc'),
+                (52, 0, "name", "desc"),
                 "Routepoint(52.0, 0.0, 'name', 'desc', None, None)",
             ),
         ],
@@ -189,20 +189,20 @@ class TestRoutepoint:
 
 class TestRoutepoints:
     def test_import_locations(self):
-        with open('tests/data/gpx_routes') as f:
+        with open("tests/data/gpx_routes") as f:
             routepoints = Routepoints(f)
         assert [
-            str(x) for x in sorted(routepoints[0], key=attrgetter('name'))
+            str(x) for x in sorted(routepoints[0], key=attrgetter("name"))
         ] == [
-            'Home (52°00′54″N, 000°13′15″W on 2008-07-26T00:00:00+00:00) [My place]',
-            'MSR (52°10′01″N, 000°23′24″E on 2008-07-27T00:00:00+00:00) [Microsoft Research, Cambridge]',
+            "Home (52°00′54″N, 000°13′15″W on 2008-07-26T00:00:00+00:00) [My place]",
+            "MSR (52°10′01″N, 000°23′24″E on 2008-07-27T00:00:00+00:00) [Microsoft Research, Cambridge]",
         ]
 
     def test_export_gpx_file(self):
-        with open('tests/data/gpx_routes') as f:
+        with open("tests/data/gpx_routes") as f:
             locations = Routepoints(f)
         export = locations.export_gpx_file()
-        routes_xml = etree.parse('tests/data/gpx_routes')
+        routes_xml = etree.parse("tests/data/gpx_routes")
 
         for e1, e2 in zip(routes_xml.getiterator(), export.getiterator()):
             xml_compare(e1, e2, ellipsis=True)

@@ -28,20 +28,20 @@ import click
 
 
 SOURCES = {
-    'cities.dat': 'http://cvs.savannah.gnu.org/viewvc/*checkout*/miscfiles/cities.dat?root=miscfiles',
-    'nsd_bbsss.txt': 'http://weather.noaa.gov/data/nsd_bbsss.txt',
-    'nsd_cccc': 'http://weather.noaa.gov/data/nsd_cccc.txt',
-    'alltrigs-wgs84.txt': 'http://www.haroldstreet.org.uk/download.php?file=waypoints/files/alltrigs-wgs84.txt',
-    'cells.txt': 'http://myapp.fr/cellsIdData/cells.txt.gz',
-    'earth-markers-schaumann': 'http://xplanet.sourceforge.net/Extras/earth-markers-schaumann',
+    "cities.dat": "http://cvs.savannah.gnu.org/viewvc/*checkout*/miscfiles/cities.dat?root=miscfiles",
+    "nsd_bbsss.txt": "http://weather.noaa.gov/data/nsd_bbsss.txt",
+    "nsd_cccc": "http://weather.noaa.gov/data/nsd_cccc.txt",
+    "alltrigs-wgs84.txt": "http://www.haroldstreet.org.uk/download.php?file=waypoints/files/alltrigs-wgs84.txt",
+    "cells.txt": "http://myapp.fr/cellsIdData/cells.txt.gz",
+    "earth-markers-schaumann": "http://xplanet.sourceforge.net/Extras/earth-markers-schaumann",
 }
 
 
-@click.command(context_settings={'help_option_names': ['-h', '--help']})
-@click.option('-f', '--force/--no-force', help='Re-download files')
+@click.command(context_settings={"help_option_names": ["-h", "--help"]})
+@click.option("-f", "--force/--no-force", help="Re-download files")
 def main(force):
     """Fetch non-free data files."""
-    click.secho('WARNING', nl=False, fg='red', bold=True, blink=True)
+    click.secho("WARNING", nl=False, fg="red", bold=True, blink=True)
     click.echo(
         """:
   This script will fetch some data files that can not be distributed
@@ -52,33 +52,33 @@ def main(force):
     )
     cached = 0
     for filename, url in SOURCES.items():
-        filename = os.path.join(os.path.dirname(__file__), 'data', filename)
+        filename = os.path.join(os.path.dirname(__file__), "data", filename)
         if not force and os.path.exists(filename):
-            print(f'{filename!r} already downloaded.')
+            print(f"{filename!r} already downloaded.")
             cached += 1
         else:
-            print(f'Fetching {url!r}...')
-            if url.endswith('.gz'):
+            print(f"Fetching {url!r}...")
+            if url.endswith(".gz"):
                 temp = tempfile.mkstemp()[1]
                 try:
                     urlretrieve(url, temp)
                     data = gzip.GzipFile(temp).read()
                 finally:
                     os.unlink(temp)
-                with click.open_file(filename, 'w') as f:
+                with click.open_file(filename, "w") as f:
                     f.write(data)
-            elif url.endswith('.bz2'):
+            elif url.endswith(".bz2"):
                 data = bz2.decompress(urlopen(url).read())
-                with click.open_file(filename, 'w') as f:
+                with click.open_file(filename, "w") as f:
                     f.write(data)
             else:
                 urlretrieve(url, filename)
     if cached > 1:
         click.secho(
-            'You can force download with the ‘-f’ option to this script.',
-            fg='yellow',
+            "You can force download with the ‘-f’ option to this script.",
+            fg="yellow",
         )
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()

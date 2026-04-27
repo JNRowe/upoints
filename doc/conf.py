@@ -29,35 +29,35 @@ sys.path.insert(0, str(root_dir))
 
 import upoints  # NOQA: E402
 
-on_rtd = os.getenv('READTHEDOCS')
+on_rtd = os.getenv("READTHEDOCS")
 if not on_rtd:
     import sphinx_rtd_theme
 
 # General configuration {{{
 extensions = (
     [
-        f'sphinx.ext.{ext}'
+        f"sphinx.ext.{ext}"
         for ext in [
-            'autodoc',
-            'coverage',
-            'doctest',
-            'extlinks',
-            'intersphinx',
-            'napoleon',
-            'todo',
-            'viewcode',
+            "autodoc",
+            "coverage",
+            "doctest",
+            "extlinks",
+            "intersphinx",
+            "napoleon",
+            "todo",
+            "viewcode",
         ]
     ]
-    + [f'sphinxcontrib.{ext}' for ext in []]
+    + [f"sphinxcontrib.{ext}" for ext in []]
     + [
-        'sphinx_click.ext',
+        "sphinx_click.ext",
     ]
 )
 
 if not on_rtd:
     # Showing document build durations is only valuable when writing, so we’ll
     # only enable it locally
-    extensions.append('sphinx.ext.duration')
+    extensions.append("sphinx.ext.duration")
     # Only activate spelling if it is installed.  It is not required in the
     # general case and we don’t have the granularity to describe this in a
     # clean way
@@ -66,27 +66,27 @@ if not on_rtd:
     except ImportError:
         pass
     else:
-        extensions.append('sphinxcontrib.spelling')
+        extensions.append("sphinxcontrib.spelling")
 
 rst_epilog = """
 .. |PyPI| replace:: :abbr:`PyPI (Python Package Index)`
 .. |modref| replace:: :mod:`upoints`
 """
 
-default_role = 'any'
+default_role = "any"
 
-needs_sphinx = '2.4'
+needs_sphinx = "2.4"
 
 nitpicky = True
 # }}}
 
 # Project information {{{
-project = 'upoints'
+project = "upoints"
 
-author = 'James Rowe'
-copyright = f'2007-2021  {author}'
+author = "James Rowe"
+copyright = f"2007-2021  {author}"
 
-version = '{major}.{minor}'.format_map(upoints._version.dict)
+version = "{major}.{minor}".format_map(upoints._version.dict)
 release = upoints._version.dotted
 
 rst_prolog = """
@@ -94,7 +94,7 @@ rst_prolog = """
 """
 
 modindex_common_prefix = [
-    'upoints.',
+    "upoints.",
 ]
 
 trim_footnote_reference_space = True
@@ -104,19 +104,19 @@ trim_footnote_reference_space = True
 # readthedocs.org handles this setup for their builds, but it is nice to see
 # approximately correct builds on the local system too
 if not on_rtd:
-    html_theme = 'sphinx_rtd_theme'
+    html_theme = "sphinx_rtd_theme"
     html_theme_path = [
         sphinx_rtd_theme.get_html_theme_path(),
     ]
 
 with suppress(CalledProcessError):
     proc = run(
-        ['git', 'log', '--pretty=format:%ad [%h]', '--date=short', '-n1'],
+        ["git", "log", "--pretty=format:%ad [%h]", "--date=short", "-n1"],
         stdout=PIPE,
     )
     html_last_updated_fmt = proc.stdout.decode()
 
-html_baseurl = 'https://upoints.readthedocs.io/'
+html_baseurl = "https://upoints.readthedocs.io/"
 
 html_copy_source = False
 # }}}
@@ -124,11 +124,11 @@ html_copy_source = False
 # Options for manual page output {{{
 man_pages = [
     (
-        'edist.1',
-        'edist',
-        'upoints Documentation',
+        "edist.1",
+        "edist",
+        "upoints Documentation",
         [
-            'James Rowe',
+            "James Rowe",
         ],
         1,
     )
@@ -136,9 +136,9 @@ man_pages = [
 # }}}
 
 # autodoc extension settings {{{
-autoclass_content = 'both'
+autoclass_content = "both"
 autodoc_default_options = {
-    'members': None,
+    "members": None,
 }
 # }}}
 
@@ -148,23 +148,23 @@ coverage_write_headline = False
 
 # intersphinx extension settings
 intersphinx_mapping = {
-    k: (v, os.getenv(f'SPHINX_{k.upper()}_OBJECTS'))
+    k: (v, os.getenv(f"SPHINX_{k.upper()}_OBJECTS"))
     for k, v in {
-        'python': 'http://docs.python.org/',
+        "python": "http://docs.python.org/",
     }.items()
 }
 
 # extlinks extension settings {{{
 extlinks = {
-    'pypi': ('https://pypi.org/project/%s/', ''),
+    "pypi": ("https://pypi.org/project/%s/", ""),
 }
 # }}}
 
 # intersphinx extension settings {{{
 intersphinx_mapping = {
-    k: (v, os.getenv(f'SPHINX_{k.upper()}_OBJECTS'))
+    k: (v, os.getenv(f"SPHINX_{k.upper()}_OBJECTS"))
     for k, v in {
-        'python': 'https://docs.python.org/3/',
+        "python": "https://docs.python.org/3/",
     }.items()
 }
 # }}}
@@ -175,8 +175,8 @@ napoleon_numpy_docstring = False
 
 # spelling extension settings {{{
 spelling_ignore_acronyms = False
-spelling_lang = 'en_GB'
-spelling_word_list_filename = 'wordlist.txt'
+spelling_lang = "en_GB"
+spelling_word_list_filename = "wordlist.txt"
 spelling_ignore_python_builtins = False
 spelling_ignore_importable_modules = False
 # }}}

@@ -38,7 +38,7 @@ class Zone(point.Point):
             zone (str): Location’s zone name as used in zoneinfo database
             comments (list): Location’s alternate names
         """
-        latitude, longitude = utils.from_iso6709(location + '/')[:2]
+        latitude, longitude = utils.from_iso6709(location + "/")[:2]
         super(Zone, self).__init__(latitude, longitude)
 
         self.country = country
@@ -52,9 +52,9 @@ class Zone(point.Point):
             str: String to recreate ``Zone`` object
         """
         location = utils.to_iso6709(
-            self.latitude, self.longitude, format='dms'
+            self.latitude, self.longitude, format="dms"
         )[:-1]
-        return utils.repr_assist(self, {'location': location})
+        return utils.repr_assist(self, {"location": location})
 
     def __str__(self):
         """Pretty printed location string.
@@ -66,13 +66,13 @@ class Zone(point.Point):
             str: Human readable string representation of ``Zone`` object
         """
         text = [
-            '%s (%s: %s'
-            % (self.zone, self.country, super(Zone, self).__format__('dms')),
+            "%s (%s: %s"
+            % (self.zone, self.country, super(Zone, self).__format__("dms")),
         ]
         if self.comments:
-            text.append(' also ' + ', '.join(self.comments))
-        text.append(')')
-        return ''.join(text)
+            text.append(" also " + ", ".join(self.comments))
+        text.append(")")
+        return "".join(text)
 
 
 class Zones(point.Points):
@@ -124,13 +124,13 @@ class Zones(point.Points):
         .. _standard distribution site: ftp://elsie.nci.nih.gov/pub/
         """
         self._zone_file = zone_file
-        field_names = ('country', 'location', 'zone', 'comments')
+        field_names = ("country", "location", "zone", "comments")
 
-        data = utils.prepare_csv_read(zone_file, field_names, delimiter=r'	')
+        data = utils.prepare_csv_read(zone_file, field_names, delimiter=r"	")
 
-        for row in (x for x in data if not x['country'].startswith('#')):
-            if row['comments']:
-                row['comments'] = row['comments'].split(', ')
+        for row in (x for x in data if not x["country"].startswith("#")):
+            if row["comments"]:
+                row["comments"] = row["comments"].split(", ")
             self.append(Zone(**row))
 
     def dump_zone_file(self):
@@ -140,18 +140,18 @@ class Zones(point.Points):
             list: zoneinfo descriptions
         """
         data = []
-        for zone in sorted(self, key=attrgetter('country')):
+        for zone in sorted(self, key=attrgetter("country")):
             text = [
-                '%s	%s	%s'
+                "%s	%s	%s"
                 % (
                     zone.country,
                     utils.to_iso6709(
-                        zone.latitude, zone.longitude, format='dms'
+                        zone.latitude, zone.longitude, format="dms"
                     )[:-1],
                     zone.zone,
                 ),
             ]
             if zone.comments:
-                text.append('	%s' % ', '.join(zone.comments))
-            data.append(''.join(text))
+                text.append("	%s" % ", ".join(zone.comments))
+            data.append("".join(text))
         return data

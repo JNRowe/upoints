@@ -37,9 +37,7 @@ class Trigpoint(point.Point):
     .. versionadded:: 0.2.0
     """
 
-    def __init__(
-        self, latitude, longitude, altitude, name=None, identity=None
-    ):
+    def __init__(self, latitude, longitude, altitude, name=None, identity=None):
         """Initialise a new ``Trigpoint`` object.
 
         Args:
@@ -65,7 +63,7 @@ class Trigpoint(point.Point):
         """
         return self.__format__()
 
-    def __format__(self, format_spec='dms'):
+    def __format__(self, format_spec="dms"):
         """Extended pretty printing for location strings.
 
         Args:
@@ -81,12 +79,12 @@ class Trigpoint(point.Point):
             super(Trigpoint, self).__format__(format_spec),
         ]
         if self.altitude:
-            location.append(f'alt {self.altitude:.0f}m')
+            location.append(f"alt {self.altitude:.0f}m")
 
         if self.name:
-            return '%s (%s)' % (self.name, ' '.join(location))
+            return "%s (%s)" % (self.name, " ".join(location))
         else:
-            return ' '.join(location)
+            return " ".join(location)
 
 
 class Trigpoints(point.KeyedPoints):
@@ -141,20 +139,18 @@ class Trigpoints(point.KeyedPoints):
         """
         self._marker_file = marker_file
         field_names = (
-            'tag',
-            'identity',
-            'latitude',
-            'longitude',
-            'altitude',
-            'name',
+            "tag",
+            "identity",
+            "latitude",
+            "longitude",
+            "altitude",
+            "name",
         )
-        pos_parse = (
-            lambda x, s: float(s[1:]) if s[0] == x else 0 - float(s[1:])
-        )
-        latitude_parse = partial(pos_parse, 'N')
-        longitude_parse = partial(pos_parse, 'E')
+        pos_parse = lambda x, s: float(s[1:]) if s[0] == x else 0 - float(s[1:])
+        latitude_parse = partial(pos_parse, "N")
+        longitude_parse = partial(pos_parse, "E")
         # A value of 8888.0 denotes unavailable data
-        altitude_parse = lambda s: None if s.strip() == '8888.0' else float(s)
+        altitude_parse = lambda s: None if s.strip() == "8888.0" else float(s)
         field_parsers = (
             str,
             int,
@@ -166,14 +162,14 @@ class Trigpoints(point.KeyedPoints):
 
         data = utils.prepare_csv_read(marker_file, field_names)
 
-        for row in (x for x in data if x['tag'] == 'W'):
+        for row in (x for x in data if x["tag"] == "W"):
             for name, parser in zip(field_names, field_parsers):
                 row[name] = parser(row[name])
-            del row['tag']
+            del row["tag"]
             try:
-                self[row['identity']] = Trigpoint(**row)
+                self[row["identity"]] = Trigpoint(**row)
             except TypeError:
                 # Workaround formatting error in 506514 entry that contains
                 # spurious comma
                 del row[None]
-                self[row['identity']] = Trigpoint(**row)
+                self[row["identity"]] = Trigpoint(**row)

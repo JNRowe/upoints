@@ -26,22 +26,22 @@ from upoints.xearth import Xearth, Xearths
 class TestXearth:
     def test___repr__(self):
         assert (
-            repr(Xearth(52.015, -0.221, 'James Rowe’s house'))
+            repr(Xearth(52.015, -0.221, "James Rowe’s house"))
             == "Xearth(52.015, -0.221, 'James Rowe’s house')"
         )
 
     def test___str__(self):
-        assert str(Xearth(52.015, -0.221)) == 'N52.015°; W000.221°'
+        assert str(Xearth(52.015, -0.221)) == "N52.015°; W000.221°"
         assert (
-            str(Xearth(52.015, -0.221, 'James Rowe’s house'))
-            == 'James Rowe’s house (N52.015°; W000.221°)'
+            str(Xearth(52.015, -0.221, "James Rowe’s house"))
+            == "James Rowe’s house (N52.015°; W000.221°)"
         )
 
     @mark.parametrize(
-        'style, result',
+        "style, result",
         [
-            ('dms', '52°00′54″N, 000°13′15″W'),
-            ('dm', '52°00.90′N, 000°13.26′W'),
+            ("dms", "52°00′54″N, 000°13′15″W"),
+            ("dm", "52°00.90′N, 000°13.26′W"),
         ],
     )
     def test___format__(self, style, result):
@@ -50,7 +50,7 @@ class TestXearth:
 
 class TestXearths:
     def setup(self):
-        with open('tests/data/xearth') as f:
+        with open("tests/data/xearth") as f:
             self.markers = Xearths(f)
 
     def test___str__(self):
@@ -60,10 +60,10 @@ class TestXearths:
         ]
 
     @mark.parametrize(
-        'marker, result',
+        "marker, result",
         [
-            ('Home', 'James Rowe’s home (N52.015°; W000.221°)'),
-            ('Telford', 'N52.633°; W002.500°'),
+            ("Home", "James Rowe’s home (N52.015°; W000.221°)"),
+            ("Telford", "N52.633°; W002.500°"),
         ],
     )
     def test_import_locations(self, marker, result):

@@ -36,9 +36,9 @@ def calc_checksum(sentence):
     Args:
         sentence (str): NMEA 0183 formatted sentence
     """
-    if sentence.startswith('$'):
+    if sentence.startswith("$"):
         sentence = sentence[1:]
-    sentence = sentence.split('*')[0]
+    sentence = sentence.split("*")[0]
     return reduce(xor, map(ord, sentence))
 
 
@@ -52,8 +52,8 @@ def nmea_latitude(latitude):
         tuple: NMEA-formatted latitude values
     """
     return (
-        '%02i%07.4f' % utils.to_dms(abs(latitude), 'dm'),
-        'N' if latitude >= 0 else 'S',
+        "%02i%07.4f" % utils.to_dms(abs(latitude), "dm"),
+        "N" if latitude >= 0 else "S",
     )
 
 
@@ -67,8 +67,8 @@ def nmea_longitude(longitude):
         tuple: NMEA-formatted longitude values
     """
     return (
-        '%03i%07.4f' % utils.to_dms(abs(longitude), 'dm'),
-        'E' if longitude >= 0 else 'W',
+        "%03i%07.4f" % utils.to_dms(abs(longitude), "dm"),
+        "E" if longitude >= 0 else "W",
     )
 
 
@@ -83,10 +83,10 @@ def parse_latitude(latitude, hemisphere):
         float: Decimal representation of latitude
     """
     latitude = int(latitude[:2]) + float(latitude[2:]) / 60
-    if hemisphere == 'S':
+    if hemisphere == "S":
         latitude = -latitude
-    elif not hemisphere == 'N':
-        raise ValueError(f'Incorrect North/South value {hemisphere!r}')
+    elif not hemisphere == "N":
+        raise ValueError(f"Incorrect North/South value {hemisphere!r}")
     return latitude
 
 
@@ -101,21 +101,21 @@ def parse_longitude(longitude, hemisphere):
         float: Decimal representation of longitude
     """
     longitude = int(longitude[:3]) + float(longitude[3:]) / 60
-    if hemisphere == 'W':
+    if hemisphere == "W":
         longitude = -longitude
-    elif not hemisphere == 'E':
-        raise ValueError(f'Incorrect North/South value {hemisphere!r}')
+    elif not hemisphere == "E":
+        raise ValueError(f"Incorrect North/South value {hemisphere!r}")
     return longitude
 
 
 #: NMEA’s mapping of code to reading type
 MODE_INDICATOR = {
-    'A': 'Autonomous',
-    'D': 'Differential',
-    'E': 'Estimated',
-    'M': 'Manual',
-    'S': 'Simulated',
-    'N': 'Invalid',
+    "A": "Autonomous",
+    "D": "Differential",
+    "E": "Estimated",
+    "M": "Manual",
+    "S": "Simulated",
+    "N": "Invalid",
 }
 
 
@@ -137,7 +137,7 @@ class LoranPosition(point.Point):
         self.status = status
         self.mode = mode
 
-    def __str__(self, talker='GP'):
+    def __str__(self, talker="GP"):
         """Pretty printed position string.
 
         Args:
@@ -147,19 +147,19 @@ class LoranPosition(point.Point):
             str: Human readable string representation of ``Position`` object
         """
         if not len(talker) == 2:
-            raise ValueError(f'Talker ID must be two characters {talker!r}')
-        data = [f'{talker}GLL']
+            raise ValueError(f"Talker ID must be two characters {talker!r}")
+        data = [f"{talker}GLL"]
         data.extend(nmea_latitude(self.latitude))
         data.extend(nmea_longitude(self.longitude))
         data.append(
-            '%s.%02i'
-            % (self.time.strftime('%H%M%S'), self.time.microsecond / 1000000)
+            "%s.%02i"
+            % (self.time.strftime("%H%M%S"), self.time.microsecond / 1000000)
         )
-        data.append('A' if self.status else 'V')
+        data.append("A" if self.status else "V")
         if self.mode:
             data.append(self.mode)
-        data = ','.join(data)
-        return '$%s*%02X\r' % (data, calc_checksum(data))
+        data = ",".join(data)
+        return "$%s*%02X\r" % (data, calc_checksum(data))
 
     def mode_string(self):
         """Return a string version of the reading mode information.
@@ -167,7 +167,7 @@ class LoranPosition(point.Point):
         Returns:
             str: Quality information as string
         """
-        return MODE_INDICATOR.get(self.mode, 'Unknown')
+        return MODE_INDICATOR.get(self.mode, "Unknown")
 
     @staticmethod
     def parse_elements(elements):
@@ -180,7 +180,7 @@ class LoranPosition(point.Point):
             Fix: Fix object representing data
         """
         if not len(elements) in (6, 7):
-            raise ValueError('Invalid GLL position data')
+            raise ValueError("Invalid GLL position data")
         # Latitude and longitude are checked for validity during Fix
         # instantiation
         latitude = parse_latitude(elements[0], elements[1])
@@ -190,7 +190,7 @@ class LoranPosition(point.Point):
         ]
         usecond = int(elements[4][6:8]) * 10000
         time = datetime.time(hour, minute, second, usecond)
-        active = True if elements[5] == 'A' else False
+        active = True if elements[5] == "A" else False
         mode = elements[6] if len(elements) == 7 else None
         return LoranPosition(latitude, longitude, time, active, mode)
 
@@ -241,23 +241,23 @@ class Position(point.Point):
         Returns:
             str: Human readable string representation of ``Position`` object
         """
-        data = ['GPRMC']
-        data.append(self.time.strftime('%H%M%S'))
-        data.append('A' if self.status else 'V')
+        data = ["GPRMC"]
+        data.append(self.time.strftime("%H%M%S"))
+        data.append("A" if self.status else "V")
         data.extend(nmea_latitude(self.latitude))
         data.extend(nmea_longitude(self.longitude))
-        data.append('%.1f' % self.speed)
-        data.append('%.1f' % self.track)
-        data.append(self.date.strftime('%d%m%y'))
+        data.append("%.1f" % self.speed)
+        data.append("%.1f" % self.track)
+        data.append(self.date.strftime("%d%m%y"))
         if self.variation == int(self.variation):
-            data.append('%i' % abs(self.variation))
+            data.append("%i" % abs(self.variation))
         else:
-            data.append('%.1f' % abs(self.variation))
-        data.append('E' if self.variation >= 0 else 'W')
+            data.append("%.1f" % abs(self.variation))
+        data.append("E" if self.variation >= 0 else "W")
         if self.mode:
             data.append(self.mode)
-        data = ','.join(data)
-        return '$%s*%02X\r' % (data, calc_checksum(data))
+        data = ",".join(data)
+        return "$%s*%02X\r" % (data, calc_checksum(data))
 
     def mode_string(self):
         """Return a string version of the reading mode information.
@@ -265,7 +265,7 @@ class Position(point.Point):
         Returns:
             str: Quality information as string
         """
-        return MODE_INDICATOR.get(self.mode, 'Unknown')
+        return MODE_INDICATOR.get(self.mode, "Unknown")
 
     @staticmethod
     def parse_elements(elements):
@@ -278,11 +278,11 @@ class Position(point.Point):
             Position: Position object representing data
         """
         if not len(elements) in (11, 12):
-            raise ValueError('Invalid RMC position data')
-        time = datetime.time(
-            *[int(elements[0][i : i + 2]) for i in range(0, 6, 2)]
-        )
-        active = True if elements[1] == 'A' else False
+            raise ValueError("Invalid RMC position data")
+        time = datetime.time(*[
+            int(elements[0][i : i + 2]) for i in range(0, 6, 2)
+        ])
+        active = True if elements[1] == "A" else False
         # Latitude and longitude are checked for validity during Fix
         # instantiation
         latitude = parse_latitude(elements[2], elements[3])
@@ -294,11 +294,11 @@ class Position(point.Point):
             int(elements[8][2:4]),
             int(elements[8][:2]),
         )
-        variation = float(elements[9]) if not elements[9] == '' else None
-        if elements[10] == 'W':
+        variation = float(elements[9]) if not elements[9] == "" else None
+        if elements[10] == "W":
             variation = -variation
-        elif variation and not elements[10] == 'E':
-            raise ValueError(f'Incorrect variation value {elements[10]!r}')
+        elif variation and not elements[10] == "E":
+            raise ValueError(f"Incorrect variation value {elements[10]!r}")
         mode = elements[11] if len(elements) == 12 else None
         return Position(
             time,
@@ -320,14 +320,14 @@ class Fix(point.Point):
     """
 
     fix_quality = [
-        'Invalid',
-        'GPS',
-        'DGPS',
-        'PPS',
-        'Real Time Kinematic' 'Float RTK',
-        'Estimated',
-        'Manual',
-        'Simulation',
+        "Invalid",
+        "GPS",
+        "DGPS",
+        "PPS",
+        "Real Time KinematicFloat RTK",
+        "Estimated",
+        "Manual",
+        "Simulation",
     ]
 
     def __init__(
@@ -376,21 +376,21 @@ class Fix(point.Point):
         Returns:
             str: Human readable string representation of ``Fix`` object
         """
-        data = ['GPGGA']
-        data.append(self.time.strftime('%H%M%S'))
+        data = ["GPGGA"]
+        data.append(self.time.strftime("%H%M%S"))
         data.extend(nmea_latitude(self.latitude))
         data.extend(nmea_longitude(self.longitude))
         data.append(str(self.quality))
-        data.append('%02i' % self.satellites)
-        data.append('%.1f' % self.dilution)
-        data.append('%.1f' % self.altitude)
-        data.append('M')
-        data.append('-' if not self.geoid_delta else '%.1f' % self.geoid_delta)
-        data.append('M')
-        data.append('%.1f' % self.dgps_delta if self.dgps_delta else '')
-        data.append('%04i' % self.dgps_station if self.dgps_station else '')
-        data = ','.join(data)
-        return '$%s*%02X\r' % (data, calc_checksum(data))
+        data.append("%02i" % self.satellites)
+        data.append("%.1f" % self.dilution)
+        data.append("%.1f" % self.altitude)
+        data.append("M")
+        data.append("-" if not self.geoid_delta else "%.1f" % self.geoid_delta)
+        data.append("M")
+        data.append("%.1f" % self.dgps_delta if self.dgps_delta else "")
+        data.append("%04i" % self.dgps_station if self.dgps_station else "")
+        data = ",".join(data)
+        return "$%s*%02X\r" % (data, calc_checksum(data))
 
     def quality_string(self):
         """Return a string version of the quality information.
@@ -411,38 +411,38 @@ class Fix(point.Point):
             Fix: Fix object representing data
         """
         if not len(elements) in (14, 15):
-            raise ValueError('Invalid GGA fix data')
-        time = datetime.time(
-            *[int(elements[0][i : i + 2]) for i in range(0, 6, 2)]
-        )
+            raise ValueError("Invalid GGA fix data")
+        time = datetime.time(*[
+            int(elements[0][i : i + 2]) for i in range(0, 6, 2)
+        ])
         # Latitude and longitude are checked for validity during Fix
         # instantiation
         latitude = parse_latitude(elements[1], elements[2])
         longitude = parse_longitude(elements[3], elements[4])
         quality = int(elements[5])
         if not 0 <= quality <= 9:
-            raise ValueError(f'Invalid quality value {quality!r}')
+            raise ValueError(f"Invalid quality value {quality!r}")
         satellites = int(elements[6])
         if not 0 <= satellites <= 12:
-            raise ValueError(f'Invalid number of satellites {satellites!r}')
+            raise ValueError(f"Invalid number of satellites {satellites!r}")
         dilution = float(elements[7])
         altitude = float(elements[8])
-        if elements[9] == 'F':
+        if elements[9] == "F":
             altitude = altitude * 3.2808399
-        elif not elements[9] == 'M':
-            raise ValueError(f'Unknown altitude unit {elements[9]!r}')
-        if elements[10] in ('-', ''):
+        elif not elements[9] == "M":
+            raise ValueError(f"Unknown altitude unit {elements[9]!r}")
+        if elements[10] in ("-", ""):
             geoid_delta = False
             logging.warning(
-                'Altitude data could be incorrect, as the geoid '
-                'difference has not been provided'
+                "Altitude data could be incorrect, as the geoid "
+                "difference has not been provided"
             )
         else:
             geoid_delta = float(elements[10])
-        if elements[11] == 'F':
+        if elements[11] == "F":
             geoid_delta = geoid_delta * 3.2808399
-        elif geoid_delta and not elements[11] == 'M':
-            raise ValueError(f'Unknown geoid delta unit {elements[11]!r}')
+        elif geoid_delta and not elements[11] == "M":
+            raise ValueError(f"Unknown geoid delta unit {elements[11]!r}")
         dgps_delta = float(elements[12]) if elements[12] else None
         dgps_station = int(elements[13]) if elements[13] else None
         mode = elements[14] if len(elements) == 15 else None
@@ -484,16 +484,16 @@ class Waypoint(point.Point):
         Returns:
             str: Human readable string representation of ``Waypoint`` object
         """
-        data = ['GPWPL']
+        data = ["GPWPL"]
         data.extend(nmea_latitude(self.latitude))
         data.extend(nmea_longitude(self.longitude))
         data.append(self.name)
-        data = ','.join(data)
-        text = '$%s*%02X\r' % (data, calc_checksum(data))
+        data = ",".join(data)
+        text = "$%s*%02X\r" % (data, calc_checksum(data))
         if len(text) > 81:
             raise ValueError(
-                'All NMEA sentences must be less than 82 bytes '
-                'including line endings'
+                "All NMEA sentences must be less than 82 bytes "
+                "including line endings"
             )
         return text
 
@@ -508,7 +508,7 @@ class Waypoint(point.Point):
             nmea.Waypoint: Object representing data
         """
         if not len(elements) == 5:
-            raise ValueError('Invalid WPL waypoint data')
+            raise ValueError("Invalid WPL waypoint data")
         # Latitude and longitude are checked for validity during Fix
         # instantiation
         latitude = parse_latitude(elements[0], elements[1])
@@ -591,18 +591,18 @@ class Locations(point.Points):
         data = utils.prepare_read(gpsdata_file)
 
         parsers = {
-            'GPGGA': Fix,
-            'GPRMC': Position,
-            'GPWPL': Waypoint,
-            'GPGLL': LoranPosition,
-            'LCGLL': LoranPosition,
+            "GPGGA": Fix,
+            "GPRMC": Position,
+            "GPWPL": Waypoint,
+            "GPGLL": LoranPosition,
+            "LCGLL": LoranPosition,
         }
 
         if not checksum:
             logging.warning(
-                'Disabling the checksum tests should only be used'
-                'when the device is incapable of emitting the '
-                'correct values!'
+                "Disabling the checksum tests should only be used"
+                "when the device is incapable of emitting the "
+                "correct values!"
             )
         for line in data:
             # The standard tells us lines should end in \r\n even though some
@@ -612,11 +612,11 @@ class Locations(point.Points):
             if not line[1:6] in parsers:
                 continue
             if checksum:
-                values, checksum = line[1:].split('*')
+                values, checksum = line[1:].split("*")
                 if not calc_checksum(values) == int(checksum, 16):
-                    raise ValueError('Sentence has invalid checksum')
+                    raise ValueError("Sentence has invalid checksum")
             else:
-                values = line[1:].split('*')[0]
-            elements = values.split(',')
+                values = line[1:].split("*")[0]
+            elements = values.split(",")
             parser = parsers[elements[0]].parse_elements
             self.append(parser(elements[1:]))

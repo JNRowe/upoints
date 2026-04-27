@@ -138,7 +138,7 @@ class Location(trigpoints.Trigpoint):
         """
         return self.__format__()
 
-    def __format__(self, format_spec='dd'):
+    def __format__(self, format_spec="dd"):
         """Extended pretty printing for location strings.
 
         Args:
@@ -153,13 +153,13 @@ class Location(trigpoints.Trigpoint):
         text = super(Location.__base__, self).__format__(format_spec)
 
         if self.alt_names:
-            return '%s (%s - %s)' % (
+            return "%s (%s - %s)" % (
                 self.name,
-                ', '.join(self.alt_names),
+                ", ".join(self.alt_names),
                 text,
             )
         else:
-            return f'{self.name} ({text})'
+            return f"{self.name} ({text})"
 
 
 class Locations(point.Points):
@@ -229,28 +229,28 @@ class Locations(point.Points):
         """
         self._data = data
         field_names = (
-            'geonameid',
-            'name',
-            'asciiname',
-            'alt_names',
-            'latitude',
-            'longitude',
-            'feature_class',
-            'feature_code',
-            'country',
-            'alt_country',
-            'admin1',
-            'admin2',
-            'admin3',
-            'admin4',
-            'population',
-            'altitude',
-            'gtopo30',
-            'tzname',
-            'modified_date',
+            "geonameid",
+            "name",
+            "asciiname",
+            "alt_names",
+            "latitude",
+            "longitude",
+            "feature_class",
+            "feature_code",
+            "country",
+            "alt_country",
+            "admin1",
+            "admin2",
+            "admin3",
+            "admin4",
+            "population",
+            "altitude",
+            "gtopo30",
+            "tzname",
+            "modified_date",
         )
-        comma_split = lambda s: s.split(',')
-        date_parse = lambda s: datetime.date(*map(int, s.split('-')))
+        comma_split = lambda s: s.split(",")
+        date_parse = lambda s: datetime.date(*map(int, s.split("-")))
         or_none = lambda x, s: x(s) if s else None
         str_or_none = lambda s: or_none(str, s)
         float_or_none = lambda s: or_none(float, s)
@@ -277,13 +277,13 @@ class Locations(point.Points):
             tz_parse,
             date_parse,
         )
-        data = utils.prepare_csv_read(data, field_names, delimiter=r'	')
+        data = utils.prepare_csv_read(data, field_names, delimiter=r"	")
         for row in data:
             try:
                 for name, parser in zip(field_names, field_parsers):
                     row[name] = parser(row[name])
             except ValueError:
-                raise utils.FileFormatError('geonames.org')
+                raise utils.FileFormatError("geonames.org")
             self.append(Location(**row))
 
     def import_timezones_file(self, data):
@@ -323,18 +323,18 @@ class Locations(point.Points):
         .. _database export page: http://download.geonames.org/export/dump/
         """
         self._tzfile = data
-        field_names = ('ident', 'gmt_offset', 'dst_offset')
+        field_names = ("ident", "gmt_offset", "dst_offset")
         time_parse = lambda n: int(float(n) * 60)
-        data = utils.prepare_csv_read(data, field_names, delimiter=r'	')
+        data = utils.prepare_csv_read(data, field_names, delimiter=r"	")
 
         self.timezones = {}
         for row in data:
-            if row['ident'] == 'TimeZoneId':
+            if row["ident"] == "TimeZoneId":
                 continue
             try:
                 delta = list(
-                    map(time_parse, (row['gmt_offset'], row['dst_offset']))
+                    map(time_parse, (row["gmt_offset"], row["dst_offset"]))
                 )
             except ValueError:
-                raise utils.FileFormatError('geonames.org')
-            self.timezones[row['ident']] = delta
+                raise utils.FileFormatError("geonames.org")
+            self.timezones[row["ident"]] = delta

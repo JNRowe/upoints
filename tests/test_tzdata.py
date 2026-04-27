@@ -28,24 +28,24 @@ from upoints.tzdata import Zone, Zones
 class TestZone:
     def test___repr__(self):
         assert (
-            repr(Zone('+513030-0000731', 'GB', 'Europe/London'))
+            repr(Zone("+513030-0000731", "GB", "Europe/London"))
             == "Zone('+513030-0000730', 'GB', 'Europe/London', None)"
         )
 
     @mark.parametrize(
-        'args, result',
+        "args, result",
         [
             (
-                ('+513030-0000731', 'GB', 'Europe/London'),
+                ("+513030-0000731", "GB", "Europe/London"),
                 """Europe/London (GB: 51°30′30″N, 000°07′30″W)""",
             ),
             (
                 (
-                    '+0658-15813',
-                    'FM',
-                    'Pacific/Ponape',
+                    "+0658-15813",
+                    "FM",
+                    "Pacific/Ponape",
                     [
-                        'Ponape (Pohnpei)',
+                        "Ponape (Pohnpei)",
                     ],
                 ),
                 """Pacific/Ponape (FM: 06°58′00″N, 158°13′00″W also Ponape (Pohnpei))""",
@@ -58,11 +58,11 @@ class TestZone:
 
 class TestZones:
     def setup(self):
-        with open('tests/data/timezones') as f:
+        with open("tests/data/timezones") as f:
             self.zones = Zones(f)
 
     def test_import_locations(self):
-        data = [str(v) for v in sorted(self.zones, key=attrgetter('zone'))]
+        data = [str(v) for v in sorted(self.zones, key=attrgetter("zone"))]
         assert data == [
             """Africa/Luanda (AO: 08°48′00″S, 013°14′00″E)""",
             """America/Curacao (AN: 12°11′00″N, 069°00′00″W)""",
@@ -71,7 +71,7 @@ class TestZones:
 
     def test_dump_zone_file(self):
         assert Zones.dump_zone_file(self.zones) == [
-            'AN\t+121100-0690000\tAmerica/Curacao',
-            'AO\t-084800+0131400\tAfrica/Luanda',
-            'AQ\t-775000+1663600\tAntarctica/McMurdo\tMcMurdo Station, Ross Island',
+            "AN\t+121100-0690000\tAmerica/Curacao",
+            "AO\t-084800+0131400\tAfrica/Luanda",
+            "AQ\t-775000+1663600\tAntarctica/McMurdo\tMcMurdo Station, Ross Island",
         ]

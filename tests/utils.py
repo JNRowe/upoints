@@ -37,19 +37,15 @@ def xml_compare(elem1, elem2, ellipsis=False):
         assert elem2.attrib.get(key) == value
     for key in elem2.attrib.keys():
         assert key in elem1.attrib
-    text1 = elem1.text.strip() if elem1.text else ''
-    text2 = elem2.text.strip() if elem2.text else ''
-    tail1 = elem1.tail.strip() if elem1.tail else ''
-    tail2 = elem2.tail.strip() if elem2.tail else ''
+    text1 = elem1.text.strip() if elem1.text else ""
+    text2 = elem2.text.strip() if elem2.text else ""
+    tail1 = elem1.tail.strip() if elem1.tail else ""
+    tail2 = elem2.tail.strip() if elem2.tail else ""
     if ellipsis:
         if not ellipsis_match(text1, text2):
-            raise ValueError(
-                f'text mismatch: {elem1.text!r} != {elem2.text!r}'
-            )
+            raise ValueError(f"text mismatch: {elem1.text!r} != {elem2.text!r}")
         if not ellipsis_match(tail1, tail2):
-            raise ValueError(
-                f'tail mismatch: {elem1.tail!r} != {elem2.tail!r}'
-            )
+            raise ValueError(f"tail mismatch: {elem1.tail!r} != {elem2.tail!r}")
     else:
         assert text1 == text2
         assert tail1 == tail2

@@ -27,63 +27,63 @@ class TestCity:
     def setup(self):
         self.t = City(
             498,
-            'Zwickau',
-            'City',
-            'Sachsen',
-            'DE',
-            'Earth',
+            "Zwickau",
+            "City",
+            "Sachsen",
+            "DE",
+            "Earth",
             108835,
             None,
             12.5,
             50.72,
             None,
             (1997, 4, 10, 0, 0, 0, 3, 100, -1),
-            'M.Dowling@tu-bs.de',
+            "M.Dowling@tu-bs.de",
         )
 
     def test___repr__(self):
         assert repr(self.t) == (
             "City(498, 'Zwickau', 'City', 'Sachsen', 'DE', 'Earth', 108835, "
-            'None, 12.5, 50.72, None, (1997, 4, 10, 0, 0, 0, 3, 100, -1), '
+            "None, 12.5, 50.72, None, (1997, 4, 10, 0, 0, 0, 3, 100, -1), "
             "'M.Dowling@tu-bs.de')"
         )
 
     def test___str__(self):
         data = str(self.t).splitlines()
         assert data == [
-            'ID          : 498',
-            'Type        : City',
-            'Population  : 108835',
-            'Size        : ',
-            'Name        : Zwickau',
-            ' Country    : DE',
-            ' Region     : Sachsen',
-            'Location    : Earth',
-            ' Longitude  : 12.5',
-            ' Latitude   : 50.72',
-            ' Elevation  : ',
-            'Date        : 19970410',
-            'Entered-By  : M.Dowling@tu-bs.de',
+            "ID          : 498",
+            "Type        : City",
+            "Population  : 108835",
+            "Size        : ",
+            "Name        : Zwickau",
+            " Country    : DE",
+            " Region     : Sachsen",
+            "Location    : Earth",
+            " Longitude  : 12.5",
+            " Latitude   : 50.72",
+            " Elevation  : ",
+            "Date        : 19970410",
+            "Entered-By  : M.Dowling@tu-bs.de",
         ]
 
 
 class TestCities:
     def test_import_locations(self):
-        with open('tests/data/city_data') as f:
+        with open("tests/data/city_data") as f:
             cities = Cities(f)
         data = [
             (
-                '%i - %s (%s;%s)'
+                "%i - %s (%s;%s)"
                 % (city.identifier, city.name, city.latitude, city.longitude)
             )
-            for city in sorted(cities, key=attrgetter('identifier'))
+            for city in sorted(cities, key=attrgetter("identifier"))
         ]
         assert data == [
-            '126 - London (51.5;-0.083)',
-            '127 - Luxembourg (49.617;6.117)',
-            '128 - Lyon (45.767;4.867)',
+            "126 - London (51.5;-0.083)",
+            "127 - Luxembourg (49.617;6.117)",
+            "128 - Lyon (45.767;4.867)",
         ]
-        with open('tests/data/city_data') as f:
-            manual_list = f.read().split('//\\n')
+        with open("tests/data/city_data") as f:
+            manual_list = f.read().split("//\\n")
         cities = Cities(manual_list)
         assert len(cities) == 1

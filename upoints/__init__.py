@@ -56,7 +56,7 @@ from . import _version
 
 __version__ = _version.dotted
 __date__ = _version.date
-__copyright__ = 'Copyright (C) 2007-2017  James Rowe <jnrowe@gmail.com>'
+__copyright__ = "Copyright (C) 2007-2017  James Rowe <jnrowe@gmail.com>"
 
 from . import (
     baken,
@@ -76,18 +76,18 @@ from . import (
 )
 
 __all__ = (
-    'baken',
-    'cellid',
-    'cities',
-    'geonames',
-    'gpx',
-    'kml',
-    'nmea',
-    'osm',
-    'point',
-    'trigpoints',
-    'tzdata',
-    'utils',
-    'weather_stations',
-    'xearth',
+    "baken",
+    "cellid",
+    "cities",
+    "geonames",
+    "gpx",
+    "kml",
+    "nmea",
+    "osm",
+    "point",
+    "trigpoints",
+    "tzdata",
+    "utils",
+    "weather_stations",
+    "xearth",
 )

@@ -33,7 +33,7 @@ def _manage_location(attr):
         property: Managed property interface
     """
     return property(
-        lambda self: getattr(self, f'_{attr}'),
+        lambda self: getattr(self, f"_{attr}"),
         lambda self, value: self._set_location(attr, value),
     )
 
@@ -46,21 +46,21 @@ def _dms_formatter(latitude, longitude, mode):
         longitude (float): Location’s longitude
         mode (str): Coordinate formatting system to use
     """
-    chars = ('°', '′', '″')
+    chars = ("°", "′", "″")
 
     latitude_dms = tuple(map(abs, utils.to_dms(latitude, mode)))
     longitude_dms = tuple(map(abs, utils.to_dms(longitude, mode)))
     text = []
-    if mode == 'dms':
-        text.append('%%02i%s%%02i%s%%02i%s' % chars % latitude_dms)
+    if mode == "dms":
+        text.append("%%02i%s%%02i%s%%02i%s" % chars % latitude_dms)
     else:
-        text.append('%%02i%s%%05.2f%s' % chars[:2] % latitude_dms)
-    text.append('S' if latitude < 0 else 'N')
-    if mode == 'dms':
-        text.append(', %%03i%s%%02i%s%%02i%s' % chars % longitude_dms)
+        text.append("%%02i%s%%05.2f%s" % chars[:2] % latitude_dms)
+    text.append("S" if latitude < 0 else "N")
+    if mode == "dms":
+        text.append(", %%03i%s%%02i%s%%02i%s" % chars % longitude_dms)
     else:
-        text.append(', %%03i%s%%05.2f%s' % chars[:2] % longitude_dms)
-    text.append('W' if longitude < 0 else 'E')
+        text.append(", %%03i%s%%05.2f%s" % chars[:2] % longitude_dms)
+    text.append("W" if longitude < 0 else "E")
     return text
 
 
@@ -71,7 +71,7 @@ class Point:
     """
 
     def __init__(
-        self, latitude, longitude, units='metric', angle='degrees', timezone=0
+        self, latitude, longitude, units="metric", angle="degrees", timezone=0
     ):
         """Initialise a new ``Point`` object.
 
@@ -88,46 +88,46 @@ class Point:
             ValueError: Invalid value for ``latitude`` or ``longitude``
         """
         super(Point, self).__init__()
-        if angle in ('degrees', 'radians'):
+        if angle in ("degrees", "radians"):
             self._angle = angle
         else:
-            raise ValueError(f'Unknown angle type {angle!r}')
-        self._set_location('latitude', latitude)
-        self._set_location('longitude', longitude)
+            raise ValueError(f"Unknown angle type {angle!r}")
+        self._set_location("latitude", latitude)
+        self._set_location("longitude", longitude)
 
-        if units in ('imperial', 'metric', 'nautical'):
+        if units in ("imperial", "metric", "nautical"):
             self.units = units
-        elif units == 'km':
-            self.units = 'metric'
-        elif units in ('US customary', 'sm'):
-            self.units = 'imperial'
-        elif units == 'nm':
-            self.units = 'nautical'
+        elif units == "km":
+            self.units = "metric"
+        elif units in ("US customary", "sm"):
+            self.units = "imperial"
+        elif units == "nm":
+            self.units = "nautical"
         else:
-            raise ValueError(f'Unknown units type {units!r}')
+            raise ValueError(f"Unknown units type {units!r}")
         self.timezone = timezone
 
     def _set_location(self, ltype, value):
         """Check supplied location data for validity, and update."""
-        if self._angle == 'degrees':
+        if self._angle == "degrees":
             if isinstance(value, (tuple, list)):
                 value = utils.to_dd(*value)
-            setattr(self, '_%s' % ltype, float(value))
-            setattr(self, '_rad_%s' % ltype, math.radians(float(value)))
-        elif self._angle == 'radians':
-            setattr(self, '_rad_%s' % ltype, float(value))
-            setattr(self, '_%s' % ltype, math.degrees(float(value)))
+            setattr(self, "_%s" % ltype, float(value))
+            setattr(self, "_rad_%s" % ltype, math.radians(float(value)))
+        elif self._angle == "radians":
+            setattr(self, "_rad_%s" % ltype, float(value))
+            setattr(self, "_%s" % ltype, math.degrees(float(value)))
         else:
-            raise ValueError(f'Unknown angle type {self._angle!r}')
-        if ltype == 'latitude' and not -90 <= self._latitude <= 90:
-            raise ValueError(f'Invalid latitude value {value!r}')
-        elif ltype == 'longitude' and not -180 <= self._longitude <= 180:
-            raise ValueError(f'Invalid longitude value {value!r}')
+            raise ValueError(f"Unknown angle type {self._angle!r}")
+        if ltype == "latitude" and not -90 <= self._latitude <= 90:
+            raise ValueError(f"Invalid latitude value {value!r}")
+        elif ltype == "longitude" and not -180 <= self._longitude <= 180:
+            raise ValueError(f"Invalid longitude value {value!r}")
 
-    latitude = _manage_location('latitude')
-    longitude = _manage_location('longitude')
-    rad_latitude = _manage_location('rad_latitude')
-    rad_longitude = _manage_location('rad_longitude')
+    latitude = _manage_location("latitude")
+    longitude = _manage_location("longitude")
+    rad_latitude = _manage_location("rad_latitude")
+    rad_longitude = _manage_location("rad_longitude")
 
     def __repr__(self):
         """Self-documenting string representation.
@@ -135,7 +135,7 @@ class Point:
         Returnns:
             str: String to recreate ``Point`` object
         """
-        return utils.repr_assist(self, {'angle': 'degrees'})
+        return utils.repr_assist(self, {"angle": "degrees"})
 
     def __str__(self):
         """Pretty printed location string.
@@ -151,9 +151,9 @@ class Point:
         Returns:
             str: Human readable Unicode representation of ``Point`` object
         """
-        return _dms_formatter(self, 'dd', True)
+        return _dms_formatter(self, "dd", True)
 
-    def __format__(self, format_spec='dd'):
+    def __format__(self, format_spec="dd"):
         """Extended pretty printing for location strings.
 
         Args:
@@ -167,20 +167,20 @@ class Point:
         """
         text = []
         if not format_spec:  # default format calls set format_spec to ''
-            format_spec = 'dd'
-        if format_spec == 'dd':
-            text.append('S' if self.latitude < 0 else 'N')
-            text.append('%06.3f°; ' % abs(self.latitude))
-            text.append('W' if self.longitude < 0 else 'E')
-            text.append('%07.3f°' % abs(self.longitude))
-        elif format_spec in ('dm', 'dms'):
+            format_spec = "dd"
+        if format_spec == "dd":
+            text.append("S" if self.latitude < 0 else "N")
+            text.append("%06.3f°; " % abs(self.latitude))
+            text.append("W" if self.longitude < 0 else "E")
+            text.append("%07.3f°" % abs(self.longitude))
+        elif format_spec in ("dm", "dms"):
             text = _dms_formatter(self.latitude, self.longitude, format_spec)
-        elif format_spec == 'locator':
+        elif format_spec == "locator":
             text.append(self.to_grid_locator())
         else:
-            raise ValueError(f'Unknown format_spec {format_spec!r}')
+            raise ValueError(f"Unknown format_spec {format_spec!r}")
 
-        return ''.join(text)
+        return "".join(text)
 
     def __eq__(self, other, accuracy=None):
         """Compare ``Point`` objects for equality with optional accuracy amount.
@@ -226,7 +226,7 @@ class Point:
         """
         return hash(repr(self))
 
-    def to_grid_locator(self, precision='square'):
+    def to_grid_locator(self, precision="square"):
         """Calculate Maidenhead locator from latitude and longitude.
 
         Args:
@@ -237,7 +237,7 @@ class Point:
         """
         return utils.to_grid_locator(self.latitude, self.longitude, precision)
 
-    def distance(self, other, method='haversine'):
+    def distance(self, other, method="haversine"):
         """Calculate the distance from self to other.
 
         As a smoke test this check uses the example from Wikipedia’s
@@ -261,7 +261,7 @@ class Point:
         longitude_difference = other.rad_longitude - self.rad_longitude
         latitude_difference = other.rad_latitude - self.rad_latitude
 
-        if method == 'haversine':
+        if method == "haversine":
             temp = (
                 math.sin(latitude_difference / 2) ** 2
                 + math.cos(self.rad_latitude)
@@ -273,7 +273,7 @@ class Point:
                 * utils.BODY_RADIUS
                 * math.atan2(math.sqrt(temp), math.sqrt(1 - temp))
             )
-        elif method == 'sloc':
+        elif method == "sloc":
             distance = (
                 math.acos(
                     math.sin(self.rad_latitude) * math.sin(other.rad_latitude)
@@ -284,16 +284,16 @@ class Point:
                 * utils.BODY_RADIUS
             )
         else:
-            raise ValueError(f'Unknown method type {method!r}')
+            raise ValueError(f"Unknown method type {method!r}")
 
-        if self.units == 'imperial':
+        if self.units == "imperial":
             return distance / utils.STATUTE_MILE
-        elif self.units == 'nautical':
+        elif self.units == "nautical":
             return distance / utils.NAUTICAL_MILE
         else:
             return distance
 
-    def bearing(self, other, format='numeric'):
+    def bearing(self, other, format="numeric"):
         """Calculate the initial bearing from self to other.
 
         Note:
@@ -323,18 +323,16 @@ class Point:
             other.rad_latitude
         ) - math.sin(self.rad_latitude) * math.cos(
             other.rad_latitude
-        ) * math.cos(
-            longitude_difference
-        )
+        ) * math.cos(longitude_difference)
         bearing = math.degrees(math.atan2(y, x))
         # Always return positive North-aligned bearing
         bearing = (bearing + 360) % 360
-        if format == 'numeric':
+        if format == "numeric":
             return bearing
-        elif format == 'string':
+        elif format == "string":
             return utils.angle_to_name(bearing)
         else:
-            raise ValueError(f'Unknown format type {format!r}')
+            raise ValueError(f"Unknown format type {format!r}")
 
     def midpoint(self, other):
         """Calculate the midpoint from self to other.
@@ -353,15 +351,15 @@ class Point:
         x = math.cos(other.rad_latitude) * math.cos(longitude_difference)
         latitude = math.atan2(
             math.sin(self.rad_latitude) + math.sin(other.rad_latitude),
-            math.sqrt((math.cos(self.rad_latitude) + x) ** 2 + y ** 2),
+            math.sqrt((math.cos(self.rad_latitude) + x) ** 2 + y**2),
         )
         longitude = self.rad_longitude + math.atan2(
             y, math.cos(self.rad_latitude) + x
         )
 
-        return Point(latitude, longitude, angle='radians')
+        return Point(latitude, longitude, angle="radians")
 
-    def final_bearing(self, other, format='numeric'):
+    def final_bearing(self, other, format="numeric"):
         """Calculate the final bearing from self to other.
 
         See also:
@@ -378,12 +376,12 @@ class Point:
             ValueError: Unknown value for ``format``
         """
         final_bearing = (other.bearing(self) + 180) % 360
-        if format == 'numeric':
+        if format == "numeric":
             return final_bearing
-        elif format == 'string':
+        elif format == "string":
             return utils.angle_to_name(final_bearing)
         else:
-            raise ValueError(f'Unknown format type {format!r}')
+            raise ValueError(f"Unknown format type {format!r}")
 
     def destination(self, bearing, distance):
         """Calculate the destination from self given bearing and distance.
@@ -397,9 +395,9 @@ class Point:
         """
         bearing = math.radians(bearing)
 
-        if self.units == 'imperial':
+        if self.units == "imperial":
             distance *= utils.STATUTE_MILE
-        elif self.units == 'nautical':
+        elif self.units == "nautical":
             distance *= utils.NAUTICAL_MILE
 
         angular_distance = distance / utils.BODY_RADIUS
@@ -418,7 +416,7 @@ class Point:
             - math.sin(self.rad_latitude) * math.sin(dest_latitude),
         )
 
-        return Point(dest_latitude, dest_longitude, angle='radians')
+        return Point(dest_latitude, dest_longitude, angle="radians")
 
     def sunrise(self, date=None, zenith=None):
         """Calculate the sunrise time for a ``Point`` object.
@@ -435,7 +433,7 @@ class Point:
                 timezone
         """
         return utils.sun_rise_set(
-            self.latitude, self.longitude, date, 'rise', self.timezone, zenith
+            self.latitude, self.longitude, date, "rise", self.timezone, zenith
         )
 
     def sunset(self, date=None, zenith=None):
@@ -453,7 +451,7 @@ class Point:
                 timezone
         """
         return utils.sun_rise_set(
-            self.latitude, self.longitude, date, 'set', self.timezone, zenith
+            self.latitude, self.longitude, date, "set", self.timezone, zenith
         )
 
     def sun_events(self, date=None, zenith=None):
@@ -501,8 +499,8 @@ class TimedPoint(Point):
         self,
         latitude,
         longitude,
-        units='metric',
-        angle='degrees',
+        units="metric",
+        angle="degrees",
         timezone=0,
         time=None,
     ):
@@ -528,7 +526,7 @@ class Points(list):
     .. versionadded:: 0.2.0
     """
 
-    def __init__(self, points=None, parse=False, units='metric'):
+    def __init__(self, points=None, parse=False, units="metric"):
         """Initialise a new ``Points`` object.
 
         Args:
@@ -546,8 +544,8 @@ class Points(list):
             else:
                 if not all(x for x in points if isinstance(x, Point)):
                     raise TypeError(
-                        'All `points` elements must be an '
-                        'instance of the `Point` class'
+                        "All `points` elements must be an "
+                        "instance of the `Point` class"
                     )
                 self.extend(points)
 
@@ -557,7 +555,7 @@ class Points(list):
         Returns:
             str: String to recreate ``Points`` object
         """
-        return utils.repr_assist(self, {'points': self[:]})
+        return utils.repr_assist(self, {"points": self[:]})
 
     def import_locations(self, locations):
         """Import locations from arguments.
@@ -573,7 +571,7 @@ class Points(list):
                 latitude, longitude = utils.from_grid_locator(location)
             self.append(Point(latitude, longitude, self.units))
 
-    def distance(self, method='haversine'):
+    def distance(self, method="haversine"):
         """Calculate distances between locations.
 
         Args:
@@ -583,12 +581,12 @@ class Points(list):
             list of float: Distance between points in series
         """
         if not len(self) > 1:
-            raise RuntimeError('More than one location is required')
+            raise RuntimeError("More than one location is required")
         return (
             self[i].distance(self[i + 1], method) for i in range(len(self) - 1)
         )
 
-    def bearing(self, format='numeric'):
+    def bearing(self, format="numeric"):
         """Calculate bearing between locations.
 
         Args:
@@ -598,12 +596,12 @@ class Points(list):
             list of float: Bearing between points in series
         """
         if not len(self) > 1:
-            raise RuntimeError('More than one location is required')
+            raise RuntimeError("More than one location is required")
         return (
             self[i].bearing(self[i + 1], format) for i in range(len(self) - 1)
         )
 
-    def final_bearing(self, format='numeric'):
+    def final_bearing(self, format="numeric"):
         """Calculate final bearing between locations.
 
         Args:
@@ -613,7 +611,7 @@ class Points(list):
             list of float: Bearing between points in series
         """
         if len(self) == 1:
-            raise RuntimeError('More than one location is required')
+            raise RuntimeError("More than one location is required")
         return (
             self[i].final_bearing(self[i + 1], format)
             for i in range(len(self) - 1)
@@ -702,7 +700,7 @@ class Points(list):
         """
         return (x.sun_events(date, zenith) for x in self)
 
-    def to_grid_locator(self, precision='square'):
+    def to_grid_locator(self, precision="square"):
         """Calculate Maidenhead locator for locations.
 
         Args:
@@ -722,12 +720,12 @@ class TimedPoints(Points):
             list of float: Speed between :class:`Point` elements in km/h
         """
         if not len(self) > 1:
-            raise RuntimeError('More than one location is required')
+            raise RuntimeError("More than one location is required")
         try:
             times = [i.time for i in self]
         except AttributeError:
             raise NotImplementedError(
-                'Not all Point objects include time ' 'attribute'
+                "Not all Point objects include time attribute"
             )
 
         return (
@@ -742,7 +740,7 @@ class KeyedPoints(dict):
     .. versionadded:: 0.2.0
     """
 
-    def __init__(self, points=None, parse=False, units='metric'):
+    def __init__(self, points=None, parse=False, units="metric"):
         """Initialise a new ``KeyedPoints`` object.
 
         Args:
@@ -760,8 +758,8 @@ class KeyedPoints(dict):
             else:
                 if not all(x for x in points.values() if isinstance(x, Point)):
                     raise TypeError(
-                        'All `points` element’s values must be an '
-                        'instance of the `Point` class'
+                        "All `points` element’s values must be an "
+                        "instance of the `Point` class"
                     )
                 self.update(points)
 
@@ -771,7 +769,7 @@ class KeyedPoints(dict):
         Returns:
             str: String to recreate ``KeyedPoints`` object
         """
-        return utils.repr_assist(self, {'points': dict(self.items())})
+        return utils.repr_assist(self, {"points": dict(self.items())})
 
     def import_locations(self, locations):
         """Import locations from arguments.
@@ -787,7 +785,7 @@ class KeyedPoints(dict):
                 latitude, longitude = utils.from_grid_locator(location)
             self[identifier] = Point(latitude, longitude, self.units)
 
-    def distance(self, order, method='haversine'):
+    def distance(self, order, method="haversine"):
         """Calculate distances between locations.
 
         Args:
@@ -798,13 +796,13 @@ class KeyedPoints(dict):
             list of float: Distance between points in ``order``
         """
         if not len(self) > 1:
-            raise RuntimeError('More than one location is required')
+            raise RuntimeError("More than one location is required")
         return (
             self[order[i]].distance(self[order[i + 1]], method)
             for i in range(len(order) - 1)
         )
 
-    def bearing(self, order, format='numeric'):
+    def bearing(self, order, format="numeric"):
         """Calculate bearing between locations.
 
         Args:
@@ -815,13 +813,13 @@ class KeyedPoints(dict):
             list of float: Bearing between points in series
         """
         if not len(self) > 1:
-            raise RuntimeError('More than one location is required')
+            raise RuntimeError("More than one location is required")
         return (
             self[order[i]].bearing(self[order[i + 1]], format)
             for i in range(len(order) - 1)
         )
 
-    def final_bearing(self, order, format='numeric'):
+    def final_bearing(self, order, format="numeric"):
         """Calculate final bearing between locations.
 
         Args:
@@ -832,7 +830,7 @@ class KeyedPoints(dict):
             list of float: Bearing between points in series
         """
         if len(self) == 1:
-            raise RuntimeError('More than one location is required')
+            raise RuntimeError("More than one location is required")
         return (
             self[order[i]].final_bearing(self[order[i + 1]], format)
             for i in range(len(order) - 1)
@@ -932,7 +930,7 @@ class KeyedPoints(dict):
         """
         return ((x[0], x[1].sun_events(date, zenith)) for x in self.items())
 
-    def to_grid_locator(self, precision='square'):
+    def to_grid_locator(self, precision="square"):
         """Calculate Maidenhead locator for locations.
 
         Args:

@@ -77,11 +77,11 @@ class LocationsError(ValueError):
             str: Human readable error string
         """
         if self.function:
-            return f'More than one location is required for {self.function}.'
+            return f"More than one location is required for {self.function}."
         elif self.data:
-            return 'Location parsing failure in location %i ‘%s’.' % self.data
+            return "Location parsing failure in location %i ‘%s’." % self.data
         else:
-            return 'Invalid location data.'
+            return "Invalid location data."
 
 
 class NumberedPoint(point.Point):
@@ -97,7 +97,7 @@ class NumberedPoint(point.Point):
         units: Unit type to be used for distances
     """
 
-    def __init__(self, latitude, longitude, name, units='km'):
+    def __init__(self, latitude, longitude, name, units="km"):
         """Initialise a new ``NumberedPoint`` object.
 
         Args:
@@ -110,7 +110,7 @@ class NumberedPoint(point.Point):
 
         self.name = name
 
-    def __format__(self, format_spec='dd'):
+    def __format__(self, format_spec="dd"):
         """Extended pretty printing for location strings.
 
         Args:
@@ -123,7 +123,7 @@ class NumberedPoint(point.Point):
         Raises:
             ValueError: Unknown value for ``format_spec``
         """
-        return super(NumberedPoint, self).__format__('dm')
+        return super(NumberedPoint, self).__format__("dm")
 
 
 class NumberedPoints(point.Points):
@@ -135,10 +135,10 @@ class NumberedPoints(point.Points):
     def __init__(
         self,
         locations=None,
-        format='dd',
+        format="dd",
         verbose=True,
         config_locations=None,
-        units='km',
+        units="km",
     ):
         """Initialise a new ``NumberedPoints`` object.
 
@@ -164,7 +164,7 @@ class NumberedPoints(point.Points):
         Returns:
             str: String to recreate ``NumberedPoints`` object
         """
-        return utils.repr_assist(self, {'locations': self[:]})
+        return utils.repr_assist(self, {"locations": self[:]})
 
     def import_locations(self, locations, config_locations):
         """Import locations from arguments.
@@ -207,7 +207,7 @@ class NumberedPoints(point.Points):
             else:
                 output = format(location, self.format)
             if self.verbose:
-                click.echo(f'Location {location.name} is {output}')
+                click.echo(f"Location {location.name} is {output}")
             else:
                 click.echo(output)
 
@@ -215,28 +215,28 @@ class NumberedPoints(point.Points):
         """Calculate distances between locations."""
         distances = list(super(NumberedPoints, self).distance())
         leg_msg = [
-            'Location %s to %s is %i',
+            "Location %s to %s is %i",
         ]
         total_msg = [
-            'Total distance is %i',
+            "Total distance is %i",
         ]
-        if self.units == 'sm':
-            leg_msg.append('miles')
-            total_msg.append('miles')
-        elif self.units == 'nm':
-            leg_msg.append('nautical miles')
-            total_msg.append('nautical miles')
+        if self.units == "sm":
+            leg_msg.append("miles")
+            total_msg.append("miles")
+        elif self.units == "nm":
+            leg_msg.append("nautical miles")
+            total_msg.append("nautical miles")
         else:
-            leg_msg.append('kilometres')
-            total_msg.append('kilometres')
+            leg_msg.append("kilometres")
+            total_msg.append("kilometres")
         if self.verbose:
             for number, distance in enumerate(distances):
                 click.echo(
-                    ' '.join(leg_msg)
+                    " ".join(leg_msg)
                     % (self[number].name, self[number + 1].name, distance)
                 )
             if len(distances) > 1:
-                click.echo(' '.join(total_msg) % sum(distances))
+                click.echo(" ".join(total_msg) % sum(distances))
         else:
             click.echo(sum(distances))
 
@@ -251,11 +251,11 @@ class NumberedPoints(point.Points):
         if string:
             bearings = map(utils.angle_to_name, bearings)
         else:
-            bearings = [f'{bearing:.0f}°' for bearing in bearings]
-        if mode == 'bearing':
-            verbose_fmt = 'Location %s to %s is %s'
+            bearings = [f"{bearing:.0f}°" for bearing in bearings]
+        if mode == "bearing":
+            verbose_fmt = "Location %s to %s is %s"
         else:
-            verbose_fmt = 'Final bearing from location %s to %s is %s'
+            verbose_fmt = "Final bearing from location %s to %s is %s"
         for number, bearing in enumerate(bearings):
             if self.verbose:
                 click.echo(
@@ -276,20 +276,20 @@ class NumberedPoints(point.Points):
             in_range = test_location.__eq__(location, distance)
             if self.verbose:
                 text = [
-                    'Location %s is',
+                    "Location %s is",
                 ]
                 if not in_range:
-                    text.append('not')
-                text.append('within %i')
-                if self.units == 'sm':
-                    text.append('miles')
-                elif self.units == 'nm':
-                    text.append('nautical miles')
+                    text.append("not")
+                text.append("within %i")
+                if self.units == "sm":
+                    text.append("miles")
+                elif self.units == "nm":
+                    text.append("nautical miles")
                 else:
-                    text.append('kilometres')
-                text.append('of location %s')
+                    text.append("kilometres")
+                text.append("of location %s")
                 click.echo(
-                    ' '.join(text) % (location.name, distance, self[0].name)
+                    " ".join(text) % (location.name, distance, self[0].name)
                 )
             else:
                 click.echo(in_range)
@@ -312,7 +312,7 @@ class NumberedPoints(point.Points):
                 output = format(location, self.format)
             if self.verbose:
                 click.echo(
-                    f'Destination from location {location.name} is {output}'
+                    f"Destination from location {location.name} is {output}"
                 )
             else:
                 click.echo(output)
@@ -329,11 +329,11 @@ class NumberedPoints(point.Points):
             if self.verbose:
                 if time:
                     click.echo(
-                        f'{mode_str} at {time} UTC in location {location.name}'
+                        f"{mode_str} at {time} UTC in location {location.name}"
                     )
                 else:
                     click.echo(
-                        'The sun doesn’t %s at location %s on this date'
+                        "The sun doesn’t %s at location %s on this date"
                         % (mode_str[3:], location.name)
                     )
             else:
@@ -349,14 +349,14 @@ class NumberedPoints(point.Points):
             time (str): Time unit to use for output
         """
         if len(self) == 1:
-            raise LocationsError('flight_plan')
+            raise LocationsError("flight_plan")
         fields = [
-            'WAYPOINT',
-            'BEARING[°]',
-            f'DISTANCE[{self.units}]',
-            f'ELAPSED_TIME[{time}]',
-            'LATITUDE[d.dd]',
-            'LONGITUDE[d.dd]',
+            "WAYPOINT",
+            "BEARING[°]",
+            f"DISTANCE[{self.units}]",
+            f"ELAPSED_TIME[{time}]",
+            "LATITUDE[d.dd]",
+            "LONGITUDE[d.dd]",
         ]
         legs = [
             (0, 0),
@@ -366,28 +366,24 @@ class NumberedPoints(point.Points):
             # This odd formatting is purely to maintain backwards compatibility,
             # a better format will be added with a future release.
             if leg == (0, 0):
-                rows.append(
-                    [
-                        loc.name,
-                        None,
-                        None,
-                        None,
-                        '%.6f' % loc.latitude,
-                        '%.6f' % loc.longitude,
-                    ]
-                )
+                rows.append([
+                    loc.name,
+                    None,
+                    None,
+                    None,
+                    "%.6f" % loc.latitude,
+                    "%.6f" % loc.longitude,
+                ])
             else:
-                leg_speed = '%.1f' % (leg[1] / speed) if speed != 0 else ''
-                rows.append(
-                    [
-                        loc.name,
-                        int(leg[0]),
-                        '%.1f' % leg[1],
-                        leg_speed,
-                        '%.6f' % loc.latitude,
-                        '%.6f' % loc.longitude,
-                    ]
-                )
+                leg_speed = "%.1f" % (leg[1] / speed) if speed != 0 else ""
+                rows.append([
+                    loc.name,
+                    int(leg[0]),
+                    "%.1f" % leg[1],
+                    leg_speed,
+                    "%.6f" % loc.latitude,
+                    "%.6f" % loc.longitude,
+                ])
         # This odd dialect choice is to maintain backwards compatibility.
         plan = csv.writer(
             sys.stdout, dialect=csv.unix_dialect, quoting=csv.QUOTE_MINIMAL
@@ -399,19 +395,19 @@ class NumberedPoints(point.Points):
             overall_distance = sum(map(itemgetter(1), legs))
             direct_distance = self[0].distance(self[-1])
             if speed == 0:
-                speed_marker = '#'
-                overall_speed = ''
-                direct_speed = ''
+                speed_marker = "#"
+                overall_speed = ""
+                direct_speed = ""
             else:
-                speed_marker = ''
-                overall_speed = '%.1f' % (overall_distance / speed)
-                direct_speed = '%.1f' % (direct_distance / speed)
+                speed_marker = ""
+                overall_speed = "%.1f" % (overall_distance / speed)
+                direct_speed = "%.1f" % (direct_distance / speed)
             click.echo(
-                '-- OVERALL --%s,,%.1f,%s,,'
+                "-- OVERALL --%s,,%.1f,%s,,"
                 % (speed_marker, overall_distance, overall_speed)
             )
             click.echo(
-                '-- DIRECT --%s,%i,%.1f,%s,,'
+                "-- DIRECT --%s,%i,%.1f,%s,,"
                 % (
                     speed_marker,
                     self[0].bearing(self[-1]),
@@ -422,45 +418,42 @@ class NumberedPoints(point.Points):
 
 
 @click.group(
-    help=__doc__[__doc__.find('\n\n') + 2 : __doc__.rfind('\n\n')],
-    epilog='Please report bugs at ' 'https://github.com/JNRowe/upoints/issues',
-    context_settings={'help_option_names': ['-h', '--help']},
+    help=__doc__[__doc__.find("\n\n") + 2 : __doc__.rfind("\n\n")],
+    epilog="Please report bugs at https://github.com/JNRowe/upoints/issues",
+    context_settings={"help_option_names": ["-h", "--help"]},
 )
 @click.version_option(_version.dotted)
 @click.option(
-    '-v', '--verbose/--quiet', help='Change verbosity level of output.'
+    "-v", "--verbose/--quiet", help="Change verbosity level of output."
 )
 @click.option(
-    '--config',
+    "--config",
     type=click.Path(dir_okay=False, resolve_path=True, allow_dash=True),
-    metavar='~/.edist.conf',
-    default=os.path.expanduser('~/.edist.conf'),
-    help='Config file to read custom locations from.',
+    metavar="~/.edist.conf",
+    default=os.path.expanduser("~/.edist.conf"),
+    help="Config file to read custom locations from.",
 )
 @click.option(
-    '--csv-file',
+    "--csv-file",
     type=click.Path(exists=True, dir_okay=False, resolve_path=True),
-    help='CSV file (gpsbabel format) to read route/locations from.',
+    help="CSV file (gpsbabel format) to read route/locations from.",
 )
 @click.option(
-    '-o',
-    '--format',
-    type=click.Choice(['dms', 'dm', 'dd']),
-    default='dms',
-    help='Produce output in dms, dm or dd format.',
+    "-o",
+    "--format",
+    type=click.Choice(["dms", "dm", "dd"]),
+    default="dms",
+    help="Produce output in dms, dm or dd format.",
 )
 @click.option(
-    '-u',
-    '--units',
-    type=click.Choice(['km', 'sm', 'nm']),
-    metavar='km',
-    default='km',
-    help='Display distances in kilometres, statute miles or '
-    'nautical miles.',
+    "-u",
+    "--units",
+    type=click.Choice(["km", "sm", "nm"]),
+    metavar="km",
+    default="km",
+    help="Display distances in kilometres, statute miles or nautical miles.",
 )
-@click.option(
-    '-l', '--location', multiple=True, help='Location to operate on.'
-)
+@click.option("-l", "--location", multiple=True, help="Location to operate on.")
 @click.pass_context
 def cli(ctx, verbose, config, csv_file, format, units, location):
     if csv_file:
@@ -483,23 +476,23 @@ def cli(ctx, verbose, config, csv_file, format, units, location):
 
 
 @cli.command()
-@click.option('-g', '--string', is_flag=True, help='Display named bearings.')
+@click.option("-g", "--string", is_flag=True, help="Display named bearings.")
 @click.pass_obj
 def bearing(globs, string):
     """Calculate initial bearing between locations."""
-    globs.locations.bearing('bearing', string)
+    globs.locations.bearing("bearing", string)
 
 
 @cli.command()
 @click.option(
-    '-l',
-    '--locator',
-    type=click.Choice(['square', 'subsquare', 'extsquare']),
-    default='subsquare',
-    help='Accuracy of Maidenhead locator output.',
+    "-l",
+    "--locator",
+    type=click.Choice(["square", "subsquare", "extsquare"]),
+    default="subsquare",
+    help="Accuracy of Maidenhead locator output.",
 )
-@click.argument('distance', type=float)
-@click.argument('bearing', type=float)
+@click.argument("distance", type=float)
+@click.argument("bearing", type=float)
 @click.pass_obj
 def destination(globs, locator, distance, bearing):
     """Calculate destination from locations."""
@@ -508,10 +501,10 @@ def destination(globs, locator, distance, bearing):
 
 @cli.command()
 @click.option(
-    '-l',
-    '--locator',
-    type=click.Choice(['square', 'subsquare', 'extsquare']),
-    help='Accuracy of Maidenhead locator output.',
+    "-l",
+    "--locator",
+    type=click.Choice(["square", "subsquare", "extsquare"]),
+    help="Accuracy of Maidenhead locator output.",
 )
 @click.pass_obj
 def display(globs, locator):
@@ -527,27 +520,27 @@ def distance(globs):
 
 
 @cli.command()
-@click.option('-g', '--string', is_flag=True, help='Display named bearings.')
+@click.option("-g", "--string", is_flag=True, help="Display named bearings.")
 @click.pass_obj
 def final_bearing(globs, string):
     """Calculate final bearing between locations."""
-    globs.locations.bearing('final_bearing', string)
+    globs.locations.bearing("final_bearing", string)
 
 
 @cli.command()
 @click.option(
-    '-s',
-    '--speed',
+    "-s",
+    "--speed",
     default=0,
     type=float,
-    help='Speed to calculate elapsed time.',
+    help="Speed to calculate elapsed time.",
 )
 @click.option(
-    '-t',
-    '--time',
-    default='h',
-    type=click.Choice(['h', 'm', 's']),
-    help='Display time in hours, minutes or seconds.',
+    "-t",
+    "--time",
+    default="h",
+    type=click.Choice(["h", "m", "s"]),
+    help="Display time in hours, minutes or seconds.",
 )
 @click.pass_obj
 def flight_plan(globs, speed, time):
@@ -556,7 +549,7 @@ def flight_plan(globs, speed, time):
 
 
 @cli.command()
-@click.argument('distance', type=float)
+@click.argument("distance", type=float)
 @click.pass_obj
 def range(globs, distance):
     """Check locations are within a given range."""
@@ -567,14 +560,14 @@ def range(globs, distance):
 @click.pass_obj
 def sunrise(globs):
     """Calculate the sunrise time for locations."""
-    globs.locations.sun_events('sunrise')
+    globs.locations.sun_events("sunrise")
 
 
 @cli.command()
 @click.pass_obj
 def sunset(globs):
     """Calculate the sunset time for locations."""
-    globs.locations.sun_events('sunset')
+    globs.locations.sun_events("sunset")
 
 
 def read_locations(filename):
@@ -587,22 +580,22 @@ def read_locations(filename):
         dict: List of locations from config file
     """
     data = ConfigParser()
-    if filename == '-':
+    if filename == "-":
         data.read_file(sys.stdin)
     else:
         data.read(filename)
     if not data.sections():
-        logging.debug('Config file is empty')
+        logging.debug("Config file is empty")
 
     locations = {}
     for name in data.sections():
-        if data.has_option(name, 'locator'):
+        if data.has_option(name, "locator"):
             latitude, longitude = utils.from_grid_locator(
-                data.get(name, 'locator')
+                data.get(name, "locator")
             )
         else:
-            latitude = data.getfloat(name, 'latitude')
-            longitude = data.getfloat(name, 'longitude')
+            latitude = data.getfloat(name, "latitude")
+            longitude = data.getfloat(name, "longitude")
         locations[name] = (latitude, longitude)
     return locations
 
@@ -620,13 +613,13 @@ def read_csv(filename):
     Returns:
         tuple of dict and list: List of locations as ``str`` objects
     """
-    field_names = ('latitude', 'longitude', 'name')
+    field_names = ("latitude", "longitude", "name")
     data = utils.prepare_csv_read(filename, field_names, skipinitialspace=True)
     locations = {}
     args = []
     for index, row in enumerate(data, 1):
-        name = f'{index:02d}:{row["name"]}'
-        locations[name] = (row['latitude'], row['longitude'])
+        name = f"{index:02d}:{row['name']}"
+        locations[name] = (row["latitude"], row["longitude"])
         args.append(name)
     return locations, args
 
@@ -637,7 +630,7 @@ def main():
     Returns:
         int: 0 for success, >1 error code
     """
-    logging.basicConfig(format='%(asctime)s %(levelname)s:%(message)s')
+    logging.basicConfig(format="%(asctime)s %(levelname)s:%(message)s")
 
     try:
         cli()
