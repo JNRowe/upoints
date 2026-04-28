@@ -156,7 +156,7 @@ intersphinx_mapping = {
 
 # extlinks extension settings {{{
 extlinks = {
-    "pypi": ("https://pypi.org/project/%s/", ""),
+    "pypi": ("https://pypi.org/project/%s/", "%s"),
 }
 # }}}
 
