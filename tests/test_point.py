@@ -21,6 +21,8 @@
 import datetime
 import math
 
+from hypothesis import given
+from hypothesis import strategies as st
 from pytest import approx, fixture, mark, raises
 
 from upoints import utils
@@ -35,6 +37,16 @@ def test_Point___init__():
     test = Point((50, 20, 10), (-1, -3, -12))
     assert test.latitude == approx(50.336, rel=0.001)
     assert test.longitude == approx(-1.053, rel=0.001)
+
+
+@given(
+    st.floats(min_value=-90, max_value=90),
+    st.floats(min_value=180, max_value=180),
+)
+def test_Point___init___invariant(lat, lon):
+    test = Point(lat, lon, angle="degrees")
+    assert test.latitude == lat
+    assert test.longitude == lon
 
 
 def test_Point___init___validity():
