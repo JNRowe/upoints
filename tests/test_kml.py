@@ -25,90 +25,91 @@ from upoints.kml import Placemark, Placemarks, etree
 from tests.utils import xml_compare
 
 
-class TestPlacemark:
-    @mark.parametrize(
-        "args, result",
-        [
-            ((52, 0, 4), "Placemark(52.0, 0.0, 4.0, None, None)"),
-            ((52, 0, None), "Placemark(52.0, 0.0, None, None, None)"),
-            (
-                (52, 0, None, "name", "desc"),
-                "Placemark(52.0, 0.0, None, 'name', 'desc')",
-            ),
-        ],
-    )
-    def test___repr__(self, args, result):
-        assert Placemark(*args) == result
-
-    @mark.parametrize(
-        "args, result",
-        [
-            ((52, 0, 4), "52°00′00″N, 000°00′00″E alt 4m"),
-            ((52, 0, None), "52°00′00″N, 000°00′00″E"),
-            (
-                (52, 0, None, "name", "desc"),
-                "name (52°00′00″N, 000°00′00″E) [desc]",
-            ),
-            (
-                (52, 0, 42, "name", "desc"),
-                "name (52°00′00″N, 000°00′00″E alt 42m) [desc]",
-            ),
-        ],
-    )
-    def test___str__(self, args, result):
-        assert str(Placemark(*args)) == result
-
-    @mark.parametrize(
-        "args, result",
-        [
-            (
-                (52, 0, 4),
-                b'<kml:Placemark xmlns:kml="http://earth.google.com/kml/2.2">'
-                b"<kml:Point><kml:coordinates>0.0,52.0,4</kml:coordinates></kml:Point>"
-                b"</kml:Placemark>",
-            ),
-            (
-                (52, 0, 4, "Cambridge"),
-                b'<kml:Placemark xmlns:kml="http://earth.google.com/kml/2.2" id="Cambridge">'
-                b"<kml:name>Cambridge</kml:name><kml:Point><kml:coordinates>0.0,52.0,4</kml:coordinates></kml:Point>"
-                b"</kml:Placemark>",
-            ),
-            (
-                (52, 0, 4),
-                b'<kml:Placemark xmlns:kml="http://earth.google.com/kml/2.2">'
-                b"<kml:Point><kml:coordinates>0.0,52.0,4</kml:coordinates></kml:Point></kml:Placemark>",
-            ),
-            (
-                (52, 0, 4, "Cambridge", "in the UK"),
-                b'<kml:Placemark xmlns:kml="http://earth.google.com/kml/2.2" id="Cambridge">'
-                b"<kml:name>Cambridge</kml:name><kml:description>in the UK</kml:description>"
-                b"<kml:Point><kml:coordinates>0.0,52.0,4</kml:coordinates></kml:Point>"
-                b"</kml:Placemark>",
-            ),
-        ],
-    )
-    def test_tokml(self, args, result):
-        assert etree.tostring(Placemark(*args).tokml()) == result
+@mark.parametrize(
+    "args, result",
+    [
+        ((52, 0, 4), "Placemark(52.0, 0.0, 4.0, None, None)"),
+        ((52, 0, None), "Placemark(52.0, 0.0, None, None, None)"),
+        (
+            (52, 0, None, "name", "desc"),
+            "Placemark(52.0, 0.0, None, 'name', 'desc')",
+        ),
+    ],
+)
+def test_Placemark___repr__(args, result):
+    assert Placemark(*args) == result
 
 
-class TestPlacemarks:
-    @mark.parametrize(
-        "name, result",
-        [
-            ("Cambridge", "Cambridge (52°10′01″N, 000°23′24″E)"),
-            ("Home", "Home (52°00′54″N, 000°13′15″W alt 60m)"),
-        ],
-    )
-    def test_import_locations(self, name, result):
-        with open("tests/data/kml") as f:
-            locations = Placemarks(f)
-        assert str(locations[name]) == result
+@mark.parametrize(
+    "args, result",
+    [
+        ((52, 0, 4), "52°00′00″N, 000°00′00″E alt 4m"),
+        ((52, 0, None), "52°00′00″N, 000°00′00″E"),
+        (
+            (52, 0, None, "name", "desc"),
+            "name (52°00′00″N, 000°00′00″E) [desc]",
+        ),
+        (
+            (52, 0, 42, "name", "desc"),
+            "name (52°00′00″N, 000°00′00″E alt 42m) [desc]",
+        ),
+    ],
+)
+def test_Placemark___str__(args, result):
+    assert str(Placemark(*args)) == result
 
-    def test_export_kml_file(self):
-        filename = "tests/data/kml"
-        with open(filename) as f:
-            locations = Placemarks(f)
-        export = locations.export_kml_file()
-        kml_xml = etree.parse(filename)
-        for e1, e2 in zip(export.getiterator(), kml_xml.getiterator()):
-            xml_compare(e1, e2)
+
+@mark.parametrize(
+    "args, result",
+    [
+        (
+            (52, 0, 4),
+            b'<kml:Placemark xmlns:kml="http://earth.google.com/kml/2.2">'
+            b"<kml:Point><kml:coordinates>0.0,52.0,4</kml:coordinates></kml:Point>"
+            b"</kml:Placemark>",
+        ),
+        (
+            (52, 0, 4, "Cambridge"),
+            b'<kml:Placemark xmlns:kml="http://earth.google.com/kml/2.2" id="Cambridge">'
+            b"<kml:name>Cambridge</kml:name><kml:Point><kml:coordinates>0.0,52.0,4</kml:coordinates></kml:Point>"
+            b"</kml:Placemark>",
+        ),
+        (
+            (52, 0, 4),
+            b'<kml:Placemark xmlns:kml="http://earth.google.com/kml/2.2">'
+            b"<kml:Point><kml:coordinates>0.0,52.0,4</kml:coordinates></kml:Point></kml:Placemark>",
+        ),
+        (
+            (52, 0, 4, "Cambridge", "in the UK"),
+            b'<kml:Placemark xmlns:kml="http://earth.google.com/kml/2.2" id="Cambridge">'
+            b"<kml:name>Cambridge</kml:name><kml:description>in the UK</kml:description>"
+            b"<kml:Point><kml:coordinates>0.0,52.0,4</kml:coordinates></kml:Point>"
+            b"</kml:Placemark>",
+        ),
+    ],
+)
+def test_Placemark_tokml(args, result):
+    assert etree.tostring(Placemark(*args).tokml()) == result
+
+
+@mark.parametrize(
+    "name, result",
+    [
+        ("Cambridge", "Cambridge (52°10′01″N, 000°23′24″E)"),
+        ("Home", "Home (52°00′54″N, 000°13′15″W alt 60m)"),
+    ],
+)
+def test_Placemarks_import_locations(name, result):
+    with open("tests/data/kml") as f:
+        locations = Placemarks(f)
+    assert str(locations[name]) == result
+
+
+def test_Placemarks_export_kml_file():
+    filename = "tests/data/kml"
+    with open(filename) as f:
+        locations = Placemarks(f)
+    export = locations.export_kml_file()
+    kml_xml = etree.parse(filename)
+    for e1, e2 in zip(export.getiterator(), kml_xml.getiterator()):
+        xml_compare(e1, e2)

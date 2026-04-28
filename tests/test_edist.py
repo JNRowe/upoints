@@ -20,8 +20,6 @@
 
 from doctest import _ellipsis_match as ellipsis_match
 
-from io import StringIO
-
 from click.testing import CliRunner
 from pytest import mark, raises
 
@@ -34,7 +32,7 @@ from upoints.edist import (
 )
 
 
-class TestLocationsError:
+def test_LocationsError():
     with raises(LocationsError, match="Invalid location data."):
         raise LocationsError()
     with raises(
@@ -49,241 +47,257 @@ class TestLocationsError:
         raise LocationsError(data=(4, "52;None"))
 
 
-class TestNumberedPoint:
-    @mark.parametrize(
-        "args, result",
-        [
-            (
-                (52.015, -0.221, 4),
-                "NumberedPoint(52.015, -0.221, 4, 'metric')",
-            ),
-            (
-                (52.015, -0.221, "Home"),
-                "NumberedPoint(52.015, -0.221, 'Home', 'metric')",
-            ),
-        ],
+@mark.parametrize(
+    "args, result",
+    [
+        (
+            (52.015, -0.221, 4),
+            "NumberedPoint(52.015, -0.221, 4, 'metric')",
+        ),
+        (
+            (52.015, -0.221, "Home"),
+            "NumberedPoint(52.015, -0.221, 'Home', 'metric')",
+        ),
+    ],
+)
+def test_NumberedPoint___repr__(args, result):
+    assert repr(NumberedPoint(*args)) == result
+
+
+def test_NumberedPoints___repr__():
+    locations = ["0;0"] * 4
+    assert (
+        repr(NumberedPoints(locations))
+        == "NumberedPoints([NumberedPoint(0.0, 0.0, 1, 'metric'), NumberedPoint(0.0, 0.0, 2, 'metric'), NumberedPoint(0.0, 0.0, 3, 'metric'), NumberedPoint(0.0, 0.0, 4, 'metric')], 'dd', True, None, 'km')"
     )
-    def test___repr__(self, args, result):
-        assert repr(NumberedPoint(*args)) == result
 
 
-class TestNumberedPoints:
-    def test___repr__(self):
-        locations = ["0;0"] * 4
-        assert (
-            repr(NumberedPoints(locations))
-            == "NumberedPoints([NumberedPoint(0.0, 0.0, 1, 'metric'), NumberedPoint(0.0, 0.0, 2, 'metric'), NumberedPoint(0.0, 0.0, 3, 'metric'), NumberedPoint(0.0, 0.0, 4, 'metric')], 'dd', True, None, 'km')"
-        )
-
-    def test_import_locations(self):
-        locs = NumberedPoints(
-            ["0;0", "Home", "0;0"], config_locations={"Home": (52.015, -0.221)}
-        )
-        assert (
-            repr(locs)
-            == "NumberedPoints([NumberedPoint(0.0, 0.0, 1, 'metric'), NumberedPoint(52.015, -0.221, 'Home', 'metric'), NumberedPoint(0.0, 0.0, 3, 'metric')], 'dd', True, {'Home': (52.015, -0.221)}, 'km')"
-        )
-
-    def test_display(self, capsys):
-        locs = NumberedPoints(
-            ["Home", "52.168;0.040"],
-            config_locations={"Home": (52.015, -0.221)},
-        )
-        locs.display(None)
-        stdout = capsys.readouterr()[0]
-        assert stdout == (
-            "Location Home is 52°00.90′N, 000°13.26′W\n"
-            "Location 2 is 52°10.08′N, 000°02.40′E\n"
-        )
-
-    def test_display_locator(self, capsys):
-        locs = NumberedPoints(
-            ["Home", "52.168;0.040"],
-            config_locations={"Home": (52.015, -0.221)},
-        )
-        locs.format = "locator"
-        locs.display("extsquare")
-        assert capsys.readouterr()[0] == (
-            "Location Home is IO92va33\nLocation 2 is JO02ae40\n"
-        )
-
-    def test_display_non_verbose(self, capsys):
-        locs = NumberedPoints(
-            ["Home", "52.168;0.040"],
-            config_locations={"Home": (52.015, -0.221)},
-        )
-        locs.format = "locator"
-        locs.verbose = False
-        locs.display("extsquare")
-        assert capsys.readouterr()[0] == "IO92va33\nJO02ae40\n"
-
-    @mark.parametrize(
-        "units, result",
-        [
-            ("metric", "24 kilometres"),
-            ("sm", "15 miles"),
-            ("nm", "13 nautical miles"),
-        ],
+def test_NumberedPoints_import_locations():
+    locs = NumberedPoints(
+        ["0;0", "Home", "0;0"], config_locations={"Home": (52.015, -0.221)}
     )
-    def test_distance(self, units, result, capsys):
-        locations = NumberedPoints(
-            ["52.015;-0.221", "52.168;0.040"], units=units
-        )
-        locations.distance()
-        assert capsys.readouterr()[0] == f"Location 1 to 2 is {result}\n"
-
-    def test_distance_multi(self, capsys):
-        locations = NumberedPoints([
-            "52.015;-0.221",
-            "52.168;0.040",
-            "51.420;-1.500",
-        ])
-        locations.distance()
-        assert capsys.readouterr()[0] == (
-            "Location 1 to 2 is 24 kilometres\n"
-            "Location 2 to 3 is 134 kilometres\n"
-            "Total distance is 159 kilometres\n"
-        )
-
-    def test_bearing(self, capsys):
-        locations = NumberedPoints(["52.015;-0.221", "52.168;0.040"])
-        locations.bearing("bearing", False)
-        assert capsys.readouterr()[0] == "Location 1 to 2 is 46°\n"
-
-    def test_bearing_symbolic(self, capsys):
-        locations = NumberedPoints(["52.015;-0.221", "52.168;0.040"])
-        locations.bearing("bearing", True)
-        assert capsys.readouterr()[0] == "Location 1 to 2 is North-east\n"
-
-    def test_final_bearing(self, capsys):
-        locations = NumberedPoints(["52.015;-0.221", "52.168;0.040"])
-        locations.bearing("final_bearing", False)
-        assert (
-            capsys.readouterr()[0]
-            == "Final bearing from location 1 to 2 is 46°\n"
-        )
-
-    def test_final_bearing_symbolic(self, capsys):
-        locations = NumberedPoints(["52.015;-0.221", "52.168;0.040"])
-        locations.bearing("final_bearing", True)
-        assert (
-            capsys.readouterr()[0]
-            == "Final bearing from location 1 to 2 is North-east\n"
-        )
-
-    def test_bearing_non_verbose(self, capsys):
-        locations = NumberedPoints(["52.015;-0.221", "52.168;0.040"])
-        locations.verbose = False
-        locations.bearing("bearing", True)
-        assert capsys.readouterr()[0] == "North-east\n"
-
-    def test_final_bearing_non_verbose(self, capsys):
-        locations = NumberedPoints(["52.015;-0.221", "52.168;0.040"])
-        locations.verbose = False
-        locations.bearing("final_bearing", True)
-        assert capsys.readouterr()[0] == "North-east\n"
-
-    @mark.parametrize(
-        "distance, result",
-        [
-            (20, False),
-            (30, True),
-        ],
+    assert (
+        repr(locs)
+        == "NumberedPoints([NumberedPoint(0.0, 0.0, 1, 'metric'), NumberedPoint(52.015, -0.221, 'Home', 'metric'), NumberedPoint(0.0, 0.0, 3, 'metric')], 'dd', True, {'Home': (52.015, -0.221)}, 'km')"
     )
-    def test_range(self, distance, result, capsys):
-        locations = NumberedPoints(["52.015;-0.221", "52.168;0.040"])
-        locations.range(distance)
-        stdout = capsys.readouterr()[0]
-        if result is True:
-            assert "is within" in stdout
-        else:
-            assert "is not within" in stdout
 
-    @mark.parametrize(
-        "distance, result",
-        [
-            (20, "False"),
-            (30, "True"),
-        ],
+
+def test_NumberedPoints_display(capsys):
+    locs = NumberedPoints(
+        ["Home", "52.168;0.040"],
+        config_locations={"Home": (52.015, -0.221)},
     )
-    def test_range_non_verbose(self, distance, result, capsys):
-        locations = NumberedPoints(["52.015;-0.221", "52.168;0.040"])
-        locations.verbose = False
-        locations.range(distance)
-        assert capsys.readouterr()[0] == result + "\n"
+    locs.display(None)
+    stdout = capsys.readouterr()[0]
+    assert stdout == (
+        "Location Home is 52°00.90′N, 000°13.26′W\n"
+        "Location 2 is 52°10.08′N, 000°02.40′E\n"
+    )
 
-    def test_destination(self, capsys):
-        locations = NumberedPoints(["52.015;-0.221", "52.168;0.040"])
-        locations.destination(42, 240, False)
-        stdout = capsys.readouterr()[0]
-        assert stdout == (
-            "Destination from location 1 is 52°00.90′N, 000°13.26′W\n"
-            "Destination from location 2 is 52°10.08′N, 000°02.40′E\n"
-        )
 
-    def test_destination_locator(self, capsys):
-        locations = NumberedPoints(["52.015;-0.221", "52.168;0.040"])
-        locations.format = "locator"
-        locations.destination(42, 240, "subsquare")
-        assert capsys.readouterr()[0] == (
-            "Destination from location 1 is IO91ot\n"
-            "Destination from location 2 is IO91sx\n"
-        )
+def test_NumberedPoints_display_locator(capsys):
+    locs = NumberedPoints(
+        ["Home", "52.168;0.040"],
+        config_locations={"Home": (52.015, -0.221)},
+    )
+    locs.format = "locator"
+    locs.display("extsquare")
+    assert capsys.readouterr()[0] == (
+        "Location Home is IO92va33\nLocation 2 is JO02ae40\n"
+    )
 
-    def test_destination_locator_non_verbose(self, capsys):
-        locations = NumberedPoints(["52.015;-0.221", "52.168;0.040"])
-        locations.format = "locator"
-        locations.verbose = False
-        locations.destination(42, 240, "extsquare")
-        assert capsys.readouterr()[0] == "IO91ot97\nIO91sx14\n"
 
-    def test_sunrise(self, capsys):
-        locations = NumberedPoints(["52.015;-0.221", "52.168;0.040"])
-        locations.sun_events("sunrise")
-        lines = capsys.readouterr()[0].splitlines()
-        assert ellipsis_match("Sunrise at ... in location 1", lines[0])
-        assert ellipsis_match("Sunrise at ... in location 2", lines[1])
+def test_NumberedPoints_display_non_verbose(capsys):
+    locs = NumberedPoints(
+        ["Home", "52.168;0.040"],
+        config_locations={"Home": (52.015, -0.221)},
+    )
+    locs.format = "locator"
+    locs.verbose = False
+    locs.display("extsquare")
+    assert capsys.readouterr()[0] == "IO92va33\nJO02ae40\n"
 
-    def test_sunset(self, capsys):
-        locations = NumberedPoints(["52.015;-0.221", "52.168;0.040"])
-        locations.sun_events("sunset")
-        lines = capsys.readouterr()[0].splitlines()
-        assert ellipsis_match("Sunset at ... in location 1", lines[0])
-        assert ellipsis_match("Sunset at ... in location 2", lines[1])
 
-    def test_flight_plan(self, capsys):
-        locations = NumberedPoints([
-            "52.015;-0.221",
-            "52.168;0.040",
-            "52.249;0.130",
-            "52.494;0.654",
-        ])
-        locations.flight_plan(0, "h")
-        assert capsys.readouterr()[0] == (
-            "WAYPOINT,BEARING[°],DISTANCE[km],ELAPSED_TIME[h],LATITUDE[d.dd],LONGITUDE[d.dd]\n"
-            "1,,,,52.015000,-0.221000\n"
-            "2,46,24.6,,52.168000,0.040000\n"
-            "3,34,10.9,,52.249000,0.130000\n"
-            "4,52,44.8,,52.494000,0.654000\n"
-            "-- OVERALL --#,,80.3,,,\n"
-            "-- DIRECT --#,47,79.9,,,\n"
-        )
+@mark.parametrize(
+    "units, result",
+    [
+        ("metric", "24 kilometres"),
+        ("sm", "15 miles"),
+        ("nm", "13 nautical miles"),
+    ],
+)
+def test_NumberedPoints_distance(units, result, capsys):
+    locations = NumberedPoints(["52.015;-0.221", "52.168;0.040"], units=units)
+    locations.distance()
+    assert capsys.readouterr()[0] == f"Location 1 to 2 is {result}\n"
 
-    def test_flight_plan_minute(self, capsys):
-        locations = NumberedPoints(
-            ["52.015;-0.221", "52.168;0.040", "52.249;0.130", "52.494;0.654"],
-            units="nm",
-        )
-        locations.flight_plan(20, "m")
-        assert capsys.readouterr()[0] == (
-            "WAYPOINT,BEARING[°],DISTANCE[nm],ELAPSED_TIME[m],LATITUDE[d.dd],LONGITUDE[d.dd]\n"
-            "1,,,,52.015000,-0.221000\n"
-            "2,46,13.3,0.7,52.168000,0.040000\n"
-            "3,34,5.9,0.3,52.249000,0.130000\n"
-            "4,52,24.2,1.2,52.494000,0.654000\n"
-            "-- OVERALL --,,43.4,2.2,,\n"
-            "-- DIRECT --,47,43.1,2.2,,\n"
-        )
+
+def test_NumberedPoints_distance_multi(capsys):
+    locations = NumberedPoints([
+        "52.015;-0.221",
+        "52.168;0.040",
+        "51.420;-1.500",
+    ])
+    locations.distance()
+    assert capsys.readouterr()[0] == (
+        "Location 1 to 2 is 24 kilometres\n"
+        "Location 2 to 3 is 134 kilometres\n"
+        "Total distance is 159 kilometres\n"
+    )
+
+
+def test_NumberedPoints_bearing(capsys):
+    locations = NumberedPoints(["52.015;-0.221", "52.168;0.040"])
+    locations.bearing("bearing", False)
+    assert capsys.readouterr()[0] == "Location 1 to 2 is 46°\n"
+
+
+def test_NumberedPoints_bearing_symbolic(capsys):
+    locations = NumberedPoints(["52.015;-0.221", "52.168;0.040"])
+    locations.bearing("bearing", True)
+    assert capsys.readouterr()[0] == "Location 1 to 2 is North-east\n"
+
+
+def test_NumberedPoints_final_bearing(capsys):
+    locations = NumberedPoints(["52.015;-0.221", "52.168;0.040"])
+    locations.bearing("final_bearing", False)
+    assert (
+        capsys.readouterr()[0] == "Final bearing from location 1 to 2 is 46°\n"
+    )
+
+
+def test_NumberedPoints_final_bearing_symbolic(capsys):
+    locations = NumberedPoints(["52.015;-0.221", "52.168;0.040"])
+    locations.bearing("final_bearing", True)
+    assert (
+        capsys.readouterr()[0]
+        == "Final bearing from location 1 to 2 is North-east\n"
+    )
+
+
+def test_NumberedPoints_bearing_non_verbose(capsys):
+    locations = NumberedPoints(["52.015;-0.221", "52.168;0.040"])
+    locations.verbose = False
+    locations.bearing("bearing", True)
+    assert capsys.readouterr()[0] == "North-east\n"
+
+
+def test_NumberedPoints_final_bearing_non_verbose(capsys):
+    locations = NumberedPoints(["52.015;-0.221", "52.168;0.040"])
+    locations.verbose = False
+    locations.bearing("final_bearing", True)
+    assert capsys.readouterr()[0] == "North-east\n"
+
+
+@mark.parametrize(
+    "distance, result",
+    [
+        (20, False),
+        (30, True),
+    ],
+)
+def test_NumberedPoints_range(distance, result, capsys):
+    locations = NumberedPoints(["52.015;-0.221", "52.168;0.040"])
+    locations.range(distance)
+    stdout = capsys.readouterr()[0]
+    if result is True:
+        assert "is within" in stdout
+    else:
+        assert "is not within" in stdout
+
+
+@mark.parametrize(
+    "distance, result",
+    [
+        (20, "False"),
+        (30, "True"),
+    ],
+)
+def test_NumberedPoints_range_non_verbose(distance, result, capsys):
+    locations = NumberedPoints(["52.015;-0.221", "52.168;0.040"])
+    locations.verbose = False
+    locations.range(distance)
+    assert capsys.readouterr()[0] == result + "\n"
+
+
+def test_NumberedPoints_destination(capsys):
+    locations = NumberedPoints(["52.015;-0.221", "52.168;0.040"])
+    locations.destination(42, 240, False)
+    stdout = capsys.readouterr()[0]
+    assert stdout == (
+        "Destination from location 1 is 52°00.90′N, 000°13.26′W\n"
+        "Destination from location 2 is 52°10.08′N, 000°02.40′E\n"
+    )
+
+
+def test_NumberedPoints_destination_locator(capsys):
+    locations = NumberedPoints(["52.015;-0.221", "52.168;0.040"])
+    locations.format = "locator"
+    locations.destination(42, 240, "subsquare")
+    assert capsys.readouterr()[0] == (
+        "Destination from location 1 is IO91ot\n"
+        "Destination from location 2 is IO91sx\n"
+    )
+
+
+def test_NumberedPoints_destination_locator_non_verbose(capsys):
+    locations = NumberedPoints(["52.015;-0.221", "52.168;0.040"])
+    locations.format = "locator"
+    locations.verbose = False
+    locations.destination(42, 240, "extsquare")
+    assert capsys.readouterr()[0] == "IO91ot97\nIO91sx14\n"
+
+
+def test_NumberedPoints_sunrise(capsys):
+    locations = NumberedPoints(["52.015;-0.221", "52.168;0.040"])
+    locations.sun_events("sunrise")
+    lines = capsys.readouterr()[0].splitlines()
+    assert ellipsis_match("Sunrise at ... in location 1", lines[0])
+    assert ellipsis_match("Sunrise at ... in location 2", lines[1])
+
+
+def test_NumberedPoints_sunset(capsys):
+    locations = NumberedPoints(["52.015;-0.221", "52.168;0.040"])
+    locations.sun_events("sunset")
+    lines = capsys.readouterr()[0].splitlines()
+    assert ellipsis_match("Sunset at ... in location 1", lines[0])
+    assert ellipsis_match("Sunset at ... in location 2", lines[1])
+
+
+def test_NumberedPoints_flight_plan(capsys):
+    locations = NumberedPoints([
+        "52.015;-0.221",
+        "52.168;0.040",
+        "52.249;0.130",
+        "52.494;0.654",
+    ])
+    locations.flight_plan(0, "h")
+    assert capsys.readouterr()[0] == (
+        "WAYPOINT,BEARING[°],DISTANCE[km],ELAPSED_TIME[h],LATITUDE[d.dd],LONGITUDE[d.dd]\n"
+        "1,,,,52.015000,-0.221000\n"
+        "2,46,24.6,,52.168000,0.040000\n"
+        "3,34,10.9,,52.249000,0.130000\n"
+        "4,52,44.8,,52.494000,0.654000\n"
+        "-- OVERALL --#,,80.3,,,\n"
+        "-- DIRECT --#,47,79.9,,,\n"
+    )
+
+
+def test_NumberedPoints_flight_plan_minute(capsys):
+    locations = NumberedPoints(
+        ["52.015;-0.221", "52.168;0.040", "52.249;0.130", "52.494;0.654"],
+        units="nm",
+    )
+    locations.flight_plan(20, "m")
+    assert capsys.readouterr()[0] == (
+        "WAYPOINT,BEARING[°],DISTANCE[nm],ELAPSED_TIME[m],LATITUDE[d.dd],LONGITUDE[d.dd]\n"
+        "1,,,,52.015000,-0.221000\n"
+        "2,46,13.3,0.7,52.168000,0.040000\n"
+        "3,34,5.9,0.3,52.249000,0.130000\n"
+        "4,52,24.2,1.2,52.494000,0.654000\n"
+        "-- OVERALL --,,43.4,2.2,,\n"
+        "-- DIRECT --,47,43.1,2.2,,\n"
+    )
 
 
 def test_read_csv():

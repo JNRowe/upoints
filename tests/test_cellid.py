@@ -20,84 +20,88 @@
 
 import datetime
 
+from pytest import fixture
+
 from upoints.cellid import Cell, Cells
 
 
-class TestCell:
-    def test___repr__(self):
-        assert repr(
-            Cell(
-                4,
-                52.015,
-                -0.221,
-                21,
-                46,
-                40000,
-                10,
-                0,
-                1,
-                datetime.datetime(2008, 4, 15, 15, 21, 35),
-                datetime.datetime(2008, 4, 15, 15, 28, 49),
-            )
-        ) == (
-            "Cell(4, 52.015, -0.221, 21, 46, 40000, 10, 0, 1, "
-            "datetime.datetime(2008, 4, 15, 15, 21, 35), "
-            "datetime.datetime(2008, 4, 15, 15, 28, 49))"
-        )
-
-    def test___str__(self):
-        assert str(
-            Cell(
-                4,
-                52.015,
-                -0.221,
-                21,
-                46,
-                40000,
-                10,
-                0,
-                1,
-                datetime.datetime(2008, 4, 15, 15, 21, 35),
-                datetime.datetime(2008, 4, 15, 15, 28, 49),
-            )
-        ) == (
-            "4,52.0150000000000,-0.2210000000000,21,46,40000,10,0,1,"
-            "2008-04-15 15:21:35,2008-04-15 15:28:49"
-        )
-
-
-class TestCells:
-    def setup(self):
-        with open("tests/data/cells") as f:
-            self.cells = Cells(f)
-
-    def test___str__(self):
-        assert sorted(str(x) for x in self.cells.values()) == [
-            (
-                "22747,52.0438995361328,-0.2246370017529,234,33,2319,647,0,1,"
-                "2008-04-05 21:32:40,2008-04-05 21:32:40"
-            ),
-            (
-                "22995,52.3305015563965,-0.2255620062351,234,10,20566,4068,0,1,"
-                "2008-04-05 21:32:59,2008-04-05 21:32:59"
-            ),
-            (
-                "23008,52.3506011962891,-0.2234109938145,234,10,10566,4068,0,1,"
-                "2008-04-05 21:32:59,2008-04-05 21:32:59"
-            ),
-        ]
-
-    def test_import_locations(self):
-        assert self.cells["22747"] == Cell(
-            22747,
-            52.0438995361328,
-            -0.224637001752853,
-            234,
-            33,
-            2319,
-            647,
+def test_Cell___repr__():
+    assert repr(
+        Cell(
+            4,
+            52.015,
+            -0.221,
+            21,
+            46,
+            40000,
+            10,
             0,
             1,
-            datetime.datetime(2008, 4, 5, 21, 32, 40),
-            datetime.datetime(2008, 4, 5, 21, 32, 40),
+            datetime.datetime(2008, 4, 15, 15, 21, 35),
+            datetime.datetime(2008, 4, 15, 15, 28, 49),
         )
+    ) == (
+        "Cell(4, 52.015, -0.221, 21, 46, 40000, 10, 0, 1, "
+        "datetime.datetime(2008, 4, 15, 15, 21, 35), "
+        "datetime.datetime(2008, 4, 15, 15, 28, 49))"
+    )
+
+
+def test_Cell___str__():
+    assert str(
+        Cell(
+            4,
+            52.015,
+            -0.221,
+            21,
+            46,
+            40000,
+            10,
+            0,
+            1,
+            datetime.datetime(2008, 4, 15, 15, 21, 35),
+            datetime.datetime(2008, 4, 15, 15, 28, 49),
+        )
+    ) == (
+        "4,52.0150000000000,-0.2210000000000,21,46,40000,10,0,1,"
+        "2008-04-15 15:21:35,2008-04-15 15:28:49"
+    )
+
+
+@fixture
+def sample_Cells():
+    with open("tests/data/cells") as f:
+        yield Cells(f)
+
+
+def test_Cities___str__(sample_Cells):
+    assert sorted(str(x) for x in sample_Cells.values()) == [
+        (
+            "22747,52.0438995361328,-0.2246370017529,234,33,2319,647,0,1,"
+            "2008-04-05 21:32:40,2008-04-05 21:32:40"
+        ),
+        (
+            "22995,52.3305015563965,-0.2255620062351,234,10,20566,4068,0,1,"
+            "2008-04-05 21:32:59,2008-04-05 21:32:59"
+        ),
+        (
+            "23008,52.3506011962891,-0.2234109938145,234,10,10566,4068,0,1,"
+            "2008-04-05 21:32:59,2008-04-05 21:32:59"
+        ),
+    ]
+
+
+def test_Cells_import_locations(sample_Cells):
+    assert sample_Cells["22747"] == Cell(
+        22747,
+        52.0438995361328,
+        -0.224637001752853,
+        234,
+        33,
+        2319,
+        647,
+        0,
+        1,
+        datetime.datetime(2008, 4, 5, 21, 32, 40),
+        datetime.datetime(2008, 4, 5, 21, 32, 40),
+    )

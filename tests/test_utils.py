@@ -49,7 +49,7 @@ from upoints.utils import (
 )
 
 
-class TestFileFormatError:
+def test_file_format_error():
     with raises(FileFormatError, match="Unsupported data format."):
         raise FileFormatError
     with raises(
@@ -182,49 +182,49 @@ def test_angle_to_name(args, result):
     assert angle_to_name(*args) == result
 
 
-class TestTzOffset:
-    @mark.parametrize(
-        "string, result",
-        [
-            ("+00:00", datetime.timedelta(0)),
-            ("-00:00", datetime.timedelta(0)),
-            ("+05:30", datetime.timedelta(0, 19800)),
-            ("-08:00", datetime.timedelta(-1, 57600)),
-        ],
+@mark.parametrize(
+    "string, result",
+    [
+        ("+00:00", datetime.timedelta(0)),
+        ("-00:00", datetime.timedelta(0)),
+        ("+05:30", datetime.timedelta(0, 19800)),
+        ("-08:00", datetime.timedelta(-1, 57600)),
+    ],
+)
+def test_TzOffset_offset(string, result):
+    assert TzOffset(string).utcoffset() == result
+
+
+@mark.parametrize(
+    "string",
+    [
+        "+00:00",
+        "+05:30",
+        "-08:00",
+    ],
+)
+def test_TzOffset___repr__(string):
+    assert repr(TzOffset(string)) == f"TzOffset('{string}')"
+
+
+def test_TzOffset___repr___normalise():
+    assert repr(TzOffset("-00:00")) == "TzOffset('+00:00')"
+
+
+@mark.parametrize(
+    "string, result",
+    [
+        ("2008-02-06T13:33:26+0000", TzOffset("+00:00")),
+        ("2008-02-06T13:33:26+00:00", TzOffset("+00:00")),
+        ("2008-02-06T13:33:26+05:30", TzOffset("+05:30")),
+        ("2008-02-06T13:33:26-08:00", TzOffset("-08:00")),
+        ("2008-02-06T13:33:26z", TzOffset("+00:00")),
+    ],
+)
+def test_Timestamp_parse_isoformat(string, result):
+    assert Timestamp.parse_isoformat(string) == Timestamp(
+        2008, 2, 6, 13, 33, 26, tzinfo=result
     )
-    def test__offset(self, string, result):
-        assert TzOffset(string).utcoffset() == result
-
-    @mark.parametrize(
-        "string",
-        [
-            "+00:00",
-            "+05:30",
-            "-08:00",
-        ],
-    )
-    def test___repr__(self, string):
-        assert repr(TzOffset(string)) == f"TzOffset('{string}')"
-
-    def test___repr___normalise(self):
-        assert repr(TzOffset("-00:00")) == "TzOffset('+00:00')"
-
-
-class TestTimestamp:
-    @mark.parametrize(
-        "string, result",
-        [
-            ("2008-02-06T13:33:26+0000", TzOffset("+00:00")),
-            ("2008-02-06T13:33:26+00:00", TzOffset("+00:00")),
-            ("2008-02-06T13:33:26+05:30", TzOffset("+05:30")),
-            ("2008-02-06T13:33:26-08:00", TzOffset("-08:00")),
-            ("2008-02-06T13:33:26z", TzOffset("+00:00")),
-        ],
-    )
-    def test_parse_isoformat(self, string, result):
-        assert Timestamp.parse_isoformat(string) == Timestamp(
-            2008, 2, 6, 13, 33, 26, tzinfo=result
-        )
 
 
 @mark.parametrize(

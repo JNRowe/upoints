@@ -20,58 +20,60 @@
 
 from operator import attrgetter
 
-from pytest import mark
+from pytest import fixture, mark
 
 from upoints.tzdata import Zone, Zones
 
 
-class TestZone:
-    def test___repr__(self):
-        assert (
-            repr(Zone("+513030-0000731", "GB", "Europe/London"))
-            == "Zone('+513030-0000730', 'GB', 'Europe/London', None)"
-        )
-
-    @mark.parametrize(
-        "args, result",
-        [
-            (
-                ("+513030-0000731", "GB", "Europe/London"),
-                """Europe/London (GB: 51°30′30″N, 000°07′30″W)""",
-            ),
-            (
-                (
-                    "+0658-15813",
-                    "FM",
-                    "Pacific/Ponape",
-                    [
-                        "Ponape (Pohnpei)",
-                    ],
-                ),
-                """Pacific/Ponape (FM: 06°58′00″N, 158°13′00″W also Ponape (Pohnpei))""",
-            ),
-        ],
+def test_Zone__repr__():
+    assert (
+        repr(Zone("+513030-0000731", "GB", "Europe/London"))
+        == "Zone('+513030-0000730', 'GB', 'Europe/London', None)"
     )
-    def test___str__(self, args, result):
-        assert str(Zone(*args)) == result
 
 
-class TestZones:
-    def setup(self):
-        with open("tests/data/timezones") as f:
-            self.zones = Zones(f)
+@mark.parametrize(
+    "args, result",
+    [
+        (
+            ("+513030-0000731", "GB", "Europe/London"),
+            """Europe/London (GB: 51°30′30″N, 000°07′30″W)""",
+        ),
+        (
+            (
+                "+0658-15813",
+                "FM",
+                "Pacific/Ponape",
+                [
+                    "Ponape (Pohnpei)",
+                ],
+            ),
+            """Pacific/Ponape (FM: 06°58′00″N, 158°13′00″W also Ponape (Pohnpei))""",
+        ),
+    ],
+)
+def test_Zone__str__(args, result):
+    assert str(Zone(*args)) == result
 
-    def test_import_locations(self):
-        data = [str(v) for v in sorted(self.zones, key=attrgetter("zone"))]
-        assert data == [
-            """Africa/Luanda (AO: 08°48′00″S, 013°14′00″E)""",
-            """America/Curacao (AN: 12°11′00″N, 069°00′00″W)""",
-            """Antarctica/McMurdo (AQ: 77°50′00″S, 166°36′00″E also McMurdo Station, Ross Island)""",
-        ]
 
-    def test_dump_zone_file(self):
-        assert Zones.dump_zone_file(self.zones) == [
-            "AN\t+121100-0690000\tAmerica/Curacao",
-            "AO\t-084800+0131400\tAfrica/Luanda",
-            "AQ\t-775000+1663600\tAntarctica/McMurdo\tMcMurdo Station, Ross Island",
-        ]
+@fixture
+def sample_data():
+    with open("tests/data/timezones") as f:
+        yield Zones(f)
+
+
+def test_Zones_import_locations(sample_data):
+    data = [str(v) for v in sorted(sample_data, key=attrgetter("zone"))]
+    assert data == [
+        """Africa/Luanda (AO: 08°48′00″S, 013°14′00″E)""",
+        """America/Curacao (AN: 12°11′00″N, 069°00′00″W)""",
+        """Antarctica/McMurdo (AQ: 77°50′00″S, 166°36′00″E also McMurdo Station, Ross Island)""",
+    ]
+
+
+def test_Zones_dump_zone_file(sample_data):
+    assert Zones.dump_zone_file(sample_data) == [
+        "AN\t+121100-0690000\tAmerica/Curacao",
+        "AO\t-084800+0131400\tAfrica/Luanda",
+        "AQ\t-775000+1663600\tAntarctica/McMurdo\tMcMurdo Station, Ross Island",
+    ]

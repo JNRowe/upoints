@@ -23,27 +23,93 @@ from pytest import raises
 from upoints.baken import Baken, Bakens
 
 
-class TestBaken:
-    def test___repr__(self):
-        assert (
-            repr(
-                Baken(
-                    14.460,
-                    20.680,
-                    None,
-                    None,
-                    None,
-                    0.000,
-                    None,
-                    None,
-                    None,
-                    None,
-                    None,
-                )
+def test_Baken___repr__():
+    assert (
+        repr(
+            Baken(
+                14.460,
+                20.680,
+                None,
+                None,
+                None,
+                0.000,
+                None,
+                None,
+                None,
+                None,
+                None,
             )
-            == "Baken(14.46, 20.68, None, None, None, 0.0, None, None, None, None, None)"
         )
-        assert repr(
+        == "Baken(14.46, 20.68, None, None, None, 0.0, None, None, None, None, None)"
+    )
+    assert repr(
+        Baken(
+            None,
+            None,
+            "2 x Turnstile",
+            None,
+            50.000,
+            460.000,
+            "IO93BF",
+            "A1A",
+            None,
+            25,
+            None,
+        )
+    ) == (
+        "Baken(53.229166666666686, -1.875, '2 x Turnstile', None, 50.0, "
+        "460.0, 'IO93BF', 'A1A', None, 25, None)"
+    )
+
+    with raises(
+        LookupError,
+        match=(
+            "Unable to instantiate baken object, no latitude or locator string"
+        ),
+    ):
+        Baken(None, None)
+
+
+def test_Baken__set_locator():
+    test = Baken(
+        None,
+        None,
+        "2 x Turnstile",
+        None,
+        50.000,
+        460.000,
+        "IO93BF",
+        "A1A",
+        None,
+        25,
+        None,
+    )
+    test.locator = "JN44FH"
+    assert test.latitude == 44.3125
+    assert test.longitude == 8.458333333333314
+
+
+def test_Baken___str__():
+    assert (
+        str(
+            Baken(
+                14.460,
+                20.680,
+                None,
+                None,
+                None,
+                0.000,
+                None,
+                None,
+                None,
+                None,
+                None,
+            )
+        )
+        == "14°27′36″N, 020°40′48″E"
+    )
+    assert (
+        str(
             Baken(
                 None,
                 None,
@@ -57,90 +123,24 @@ class TestBaken:
                 25,
                 None,
             )
-        ) == (
-            "Baken(53.229166666666686, -1.875, '2 x Turnstile', None, 50.0, "
-            "460.0, 'IO93BF', 'A1A', None, 25, None)"
         )
-
-        with raises(
-            LookupError,
-            match=(
-                "Unable to instantiate baken object, no latitude "
-                "or locator string"
-            ),
-        ):
-            Baken(None, None)
-
-    def test__set_locator(self):
-        test = Baken(
-            None,
-            None,
-            "2 x Turnstile",
-            None,
-            50.000,
-            460.000,
-            "IO93BF",
-            "A1A",
-            None,
-            25,
-            None,
-        )
-        test.locator = "JN44FH"
-        assert test.latitude == 44.3125
-        assert test.longitude == 8.458333333333314
-
-    def test___str__(self):
-        assert (
-            str(
-                Baken(
-                    14.460,
-                    20.680,
-                    None,
-                    None,
-                    None,
-                    0.000,
-                    None,
-                    None,
-                    None,
-                    None,
-                    None,
-                )
-            )
-            == "14°27′36″N, 020°40′48″E"
-        )
-        assert (
-            str(
-                Baken(
-                    None,
-                    None,
-                    "2 x Turnstile",
-                    None,
-                    50.000,
-                    460.000,
-                    "IO93BF",
-                    "A1A",
-                    None,
-                    25,
-                    None,
-                )
-            )
-            == "IO93BF (53°13′45″N, 001°52′30″W)"
-        )
+        == "IO93BF (53°13′45″N, 001°52′30″W)"
+    )
 
 
-class TestBakens:
-    def test_import_locations(self):
-        with open("tests/data/baken_data") as f:
-            locations = Bakens(f)
-        data = ["%s - %s" % (k, v) for k, v in sorted(locations.items())]
+def test_Bakens_import_locations():
+    with open("tests/data/baken_data") as f:
+        locations = Bakens(f)
+    data = ["%s - %s" % (k, v) for k, v in sorted(locations.items())]
 
-        assert data == [
-            "Abeche, Chad - 14°27′36″N, 020°40′48″E",
-            "GB3BUX - IO93BF (53°13′45″N, 001°52′30″W)",
-            "IW1RCT - JN44FH (44°18′45″N, 008°27′29″E)",
-        ]
+    assert data == [
+        "Abeche, Chad - 14°27′36″N, 020°40′48″E",
+        "GB3BUX - IO93BF (53°13′45″N, 001°52′30″W)",
+        "IW1RCT - JN44FH (44°18′45″N, 008°27′29″E)",
+    ]
 
-    def test_import_locations2(self):
-        with open("tests/data/no_valid_baken") as f:
-            locations = Bakens(f)
-        assert len(locations) == 0
+
+def test_Bakens_import_locations2():
+    with open("tests/data/no_valid_baken") as f:
+        locations = Bakens(f)
+    assert len(locations) == 0

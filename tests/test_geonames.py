@@ -20,113 +20,119 @@
 
 import datetime
 
-from pytest import mark, raises
+from pytest import fixture, mark, raises
 
 from upoints.geonames import Location, Locations
 from upoints.utils import FileFormatError
 
 
-class TestLocation:
-    def setup(self):
-        self.x = Location(
-            2636782,
-            "Stotfold",
-            "Stotfold",
-            None,
-            52.0,
-            -0.2166667,
-            "P",
-            "PPL",
-            "GB",
-            None,
-            "F8",
-            None,
-            None,
-            None,
-            6245,
-            None,
-            77,
-            "Europe/London",
-            datetime.date(2007, 6, 15),
-            0,
-        )
-
-    def test___repr__(self):
-        assert repr(self.x) == (
-            "Location(2636782, 'Stotfold', 'Stotfold', None, 52.0, "
-            "-0.2166667, 'P', 'PPL', 'GB', None, 'F8', None, None, None, "
-            "6245, None, 77, 'Europe/London', datetime.date(2007, 6, 15), 0)"
-        )
-
-    @mark.parametrize(
-        "names, result",
-        [
-            (None, "Stotfold (N52.000°; W000.217°)"),
-            (
-                ["Home", "Target"],
-                "Stotfold (Home, Target - N52.000°; W000.217°)",
-            ),
-        ],
+@fixture
+def sample_Location():
+    yield Location(
+        2636782,
+        "Stotfold",
+        "Stotfold",
+        None,
+        52.0,
+        -0.2166667,
+        "P",
+        "PPL",
+        "GB",
+        None,
+        "F8",
+        None,
+        None,
+        None,
+        6245,
+        None,
+        77,
+        "Europe/London",
+        datetime.date(2007, 6, 15),
+        0,
     )
-    def test___str__(self, names, result):
-        self.x.alt_names = names
-        assert str(self.x) == result
 
-    @mark.parametrize(
-        "style, result",
-        [
-            ("dms", "Stotfold (52°00′00″N, 000°13′00″W)"),
-            ("dm", "Stotfold (52°00.00′N, 000°13.00′W)"),
-        ],
+
+def test_Location___repr__(sample_Location):
+    assert repr(sample_Location) == (
+        "Location(2636782, 'Stotfold', 'Stotfold', None, 52.0, "
+        "-0.2166667, 'P', 'PPL', 'GB', None, 'F8', None, None, None, "
+        "6245, None, 77, 'Europe/London', datetime.date(2007, 6, 15), 0)"
     )
-    def test___format__(self, style, result):
-        assert format(self.x, style) == result
 
 
-class TestLocations:
-    def test_import_locations(self):
-        with open("tests/data/geonames") as f:
-            locs = Locations(f)
-        assert [str(l) for l in locs] == [
-            "Afon Wyre (River Wayrai, River Wyrai, Wyre - N52.317°; W004.167°)",
-            "Wyre (Viera - N59.117°; W002.967°)",
-            "Wraysbury (Wyrardisbury - N51.450°; W000.550°)",
-        ]
+@mark.parametrize(
+    "names, result",
+    [
+        (None, "Stotfold (N52.000°; W000.217°)"),
+        (
+            ["Home", "Target"],
+            "Stotfold (Home, Target - N52.000°; W000.217°)",
+        ),
+    ],
+)
+def test_Location___str__(sample_Location, names, result):
+    sample_Location.alt_names = names
+    assert str(sample_Location) == result
 
-    def test_import_locations_error(self):
-        with raises(
-            FileFormatError,
-            match=(
-                "Incorrect data format, if you’re using a file "
-                "downloaded from geonames.org please report this "
-                "to James Rowe <jnrowe@gmail.com>"
-            ),
-        ):
-            with open("tests/data/broken_geonames") as f:
-                Locations(f)
 
-    def test_import_timezones_file(self):
-        with open("tests/data/geonames_timezones") as f:
-            locations = Locations(None, f)
-        assert locations.timezones == {
-            "Asia/Dubai": [240, 240],
-            "Asia/Kabul": [270, 270],
-            "Europe/Andorra": [60, 120],
-        }
+@mark.parametrize(
+    "style, result",
+    [
+        ("dms", "Stotfold (52°00′00″N, 000°13′00″W)"),
+        ("dm", "Stotfold (52°00.00′N, 000°13.00′W)"),
+    ],
+)
+def test_Location___format__(sample_Location, style, result):
+    assert format(sample_Location, style) == result
 
-    def test_import_timezones_file_header(self):
-        with open("tests/data/geonames_timezones_header") as f:
-            header_skip_check = Locations(None, f)
-        assert header_skip_check == Locations()
 
-    def test_import_timezones_file_error(self):
-        with raises(
-            FileFormatError,
-            match=(
-                "Incorrect data format, if you’re using a file "
-                "downloaded from geonames.org please report this "
-                "to James Rowe <jnrowe@gmail.com>"
-            ),
-        ):
-            with open("tests/data/geonames_timezones_broken") as f:
-                Locations(None, f)
+def test_Locations_import_locations():
+    with open("tests/data/geonames") as f:
+        locs = Locations(f)
+    assert [str(l) for l in locs] == [
+        "Afon Wyre (River Wayrai, River Wyrai, Wyre - N52.317°; W004.167°)",
+        "Wyre (Viera - N59.117°; W002.967°)",
+        "Wraysbury (Wyrardisbury - N51.450°; W000.550°)",
+    ]
+
+
+def test_Locations_import_locations_error():
+    with raises(
+        FileFormatError,
+        match=(
+            "Incorrect data format, if you’re using a file "
+            "downloaded from geonames.org please report this "
+            "to James Rowe <jnrowe@gmail.com>"
+        ),
+    ):
+        with open("tests/data/broken_geonames") as f:
+            Locations(f)
+
+
+def test_Locations_import_timezones_file():
+    with open("tests/data/geonames_timezones") as f:
+        locations = Locations(None, f)
+    assert locations.timezones == {
+        "Asia/Dubai": [240, 240],
+        "Asia/Kabul": [270, 270],
+        "Europe/Andorra": [60, 120],
+    }
+
+
+def test_Locations_import_timezones_file_header():
+    with open("tests/data/geonames_timezones_header") as f:
+        header_skip_check = Locations(None, f)
+    assert header_skip_check == Locations()
+
+
+def test_Locations_import_timezones_file_error():
+    with raises(
+        FileFormatError,
+        match=(
+            "Incorrect data format, if you’re using a file "
+            "downloaded from geonames.org please report this "
+            "to James Rowe <jnrowe@gmail.com>"
+        ),
+    ):
+        with open("tests/data/geonames_timezones_broken") as f:
+            Locations(None, f)
